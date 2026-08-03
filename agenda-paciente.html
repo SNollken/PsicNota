@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Área do paciente para solicitar consultas no PsiNote" />
+  <title>PsiNote | Agendar consulta</title>
+  <link rel="stylesheet" href="assets/css/agenda.css" />
+  <link rel="stylesheet" href="assets/css/agenda-paciente.css" />
+</head>
+<body class="patient-view">
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegação do paciente">
+      <a class="brand" href="agenda-paciente.html"><span class="brand-mark" aria-hidden="true">Ψ</span><span>PsiNote</span></a>
+      <nav class="main-nav">
+        <p class="nav-label">MINHAS CONSULTAS</p>
+        <a class="nav-item active" href="agenda-paciente.html" aria-current="page">
+          <svg viewBox="0 0 24 24"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18M12 12v5m-2.5-2.5h5"/></svg>
+          Agendar consulta
+        </a>
+        <a class="nav-item" href="#meus-pedidos">
+          <svg viewBox="0 0 24 24"><path d="M5 3h14v18H5zM8 8h8M8 12h8M8 16h5"/></svg>
+          Meus pedidos
+        </a>
+        <a class="nav-item" href="#proximas">
+          <svg viewBox="0 0 24 24"><path d="M12 8v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+          Próxima consulta
+        </a>
+        <p class="nav-label nav-label-spaced">CONTA</p>
+        <a class="nav-item" href="perfil.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7 8a7 7 0 0 0-14 0"/></svg>
+          Meu perfil
+        </a>
+      </nav>
+      <div class="sidebar-footer"><a class="nav-item logout" id="logoutLink" href="login.html">Sair da conta</a></div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+        <div class="page-heading"><p class="eyebrow">ÁREA DO PACIENTE</p><h1>Agendar consulta</h1></div>
+        <a class="account-summary" href="perfil.html" aria-label="Abrir meu perfil"><div class="mini-avatar" id="patientAvatar" aria-hidden="true">MC</div><div><strong id="patientNameTop">Mariana Costa</strong><span>Paciente · Editar perfil</span></div></a>
+      </header>
+
+      <section class="patient-hero">
+        <div><span class="patient-kicker">AGENDE COM TRANQUILIDADE</span><h2>Escolha um dia e um horário disponível</h2><p>Seu pedido será enviado ao psicólogo para aprovação. A ordem da fila considera o momento exato em que você concluir a solicitação.</p></div>
+        <div class="therapist-card"><span class="therapist-avatar" id="therapistAvatar">Ψ</span><div><small>Psicólogo responsável</small><strong id="therapistName">Profissional PsiNote</strong><span id="therapistDetails">Atendimento online e presencial</span></div></div>
+      </section>
+
+      <section class="patient-summary" id="proximas" aria-label="Resumo dos pedidos">
+        <article><span>Em análise</span><strong id="patientPendingCount">0</strong><small>solicitações aguardando</small></article>
+        <article><span>Aprovadas</span><strong id="patientApprovedCount">0</strong><small>consultas confirmadas</small></article>
+        <article class="next-patient-appointment"><span>Próxima consulta</span><strong id="patientNextAppointment">Nenhuma consulta confirmada</strong><small id="patientNextMode">Escolha um horário no calendário</small></article>
+      </section>
+
+      <section class="patient-scheduler" aria-label="Calendário de disponibilidade">
+        <div class="patient-calendar-column">
+          <div class="calendar-toolbar">
+            <div class="month-navigation">
+              <button class="icon-button" id="patientPreviousMonth" type="button" aria-label="Mês anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+              <div class="month-title"><h2 id="patientMonthTitle"></h2><span>Selecione um dia disponível</span></div>
+              <button class="icon-button" id="patientNextMonth" type="button" aria-label="Próximo mês"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>
+            </div>
+            <button class="button button-secondary button-compact" id="patientTodayButton" type="button">Hoje</button>
+          </div>
+
+          <div class="patient-calendar-shell">
+            <div class="weekdays" aria-hidden="true"><span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span></div>
+            <div class="calendar-grid patient-calendar-grid" id="patientCalendarGrid" role="grid"></div>
+          </div>
+          <div class="patient-legend"><span><i class="legend-dot available-dot"></i> Horários disponíveis</span><span><i class="legend-dot selected-dot"></i> Dia selecionado</span><span><i class="legend-dot unavailable-dot"></i> Sem disponibilidade</span></div>
+        </div>
+
+        <aside class="booking-panel">
+          <header class="booking-panel-header"><p class="eyebrow">HORÁRIOS DISPONÍVEIS</p><h2 id="bookingDateTitle"></h2><span id="bookingDateWeekday"></span></header>
+          <form id="bookingForm" novalidate>
+            <fieldset class="time-fieldset"><legend>Escolha o horário</legend><div class="time-slot-grid" id="timeSlotGrid"></div><p class="no-slots" id="noSlots" hidden>Não há horários livres nesta data. Escolha outro dia.</p></fieldset>
+            <label class="field"><span>Modalidade</span><select name="mode" id="bookingMode"><option value="Online">Online</option><option value="Presencial">Presencial</option></select></label>
+            <label class="field"><span>Observação <small>opcional</small></span><textarea name="note" rows="4" maxlength="180" placeholder="Ex.: prefiro o atendimento online."></textarea></label>
+            <div class="queue-explanation"><span aria-hidden="true">i</span><p><strong>Como funciona a fila?</strong> Ao enviar, registraremos o dia e o horário exatos do pedido. O psicólogo verá quem solicitou primeiro.</p></div>
+            <p class="form-error" id="bookingError" role="alert" hidden></p>
+            <button class="button button-primary booking-submit" type="submit">Enviar solicitação</button>
+          </form>
+        </aside>
+      </section>
+
+      <section class="my-requests-section" id="meus-pedidos" aria-labelledby="myRequestsTitle">
+        <header><div><p class="eyebrow">ACOMPANHAMENTO</p><h2 id="myRequestsTitle">Meus pedidos de consulta</h2><p>Confira quando cada pedido foi enviado e acompanhe a aprovação.</p></div></header>
+        <div class="patient-request-list" id="patientRequestList"></div>
+        <div class="request-empty" id="patientRequestEmpty" hidden><strong>Você ainda não fez nenhuma solicitação</strong><p>Escolha uma data e um horário para começar.</p></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="patientToast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span><span id="patientToastMessage"></span></div>
+  <script src="assets/js/shared-data.js"></script>
+  <script src="assets/js/agenda-paciente.js"></script>
+</body>
+</html>
