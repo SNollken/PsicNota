@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Acesse sua conta no PsiNote.">
+  <title>Entrar | PsiNote</title>
+  <link rel="stylesheet" href="assets/css/auth.css">
+</head>
+<body>
+  <main class="auth-layout">
+    <section class="auth-brand" aria-labelledby="brand-title">
+      <a class="brand" href="login.html" aria-label="Página inicial do PsiNote">
+        <span class="brand-mark" aria-hidden="true">Ψ</span>
+        <span>PsiNote</span>
+      </a>
+
+      <div class="brand-content">
+        <p class="eyebrow">CUIDADO E ORGANIZAÇÃO</p>
+        <h1 id="brand-title">Sua rotina clínica em um só lugar.</h1>
+        <p>
+          Organize consultas, acompanhe pacientes e mantenha suas informações
+          importantes acessíveis com segurança e clareza.
+        </p>
+
+        <ul class="benefits" aria-label="Benefícios do PsiNote">
+          <li><span aria-hidden="true">✓</span> Agenda de consultas organizada</li>
+          <li><span aria-hidden="true">✓</span> Perfis separados para paciente e psicólogo</li>
+          <li><span aria-hidden="true">✓</span> Experiência simples e profissional</li>
+        </ul>
+      </div>
+
+      <p class="brand-footer">PsiNote · Organização para um atendimento mais humano.</p>
+    </section>
+
+    <section class="auth-panel" aria-labelledby="login-title">
+      <div class="auth-panel-inner">
+        <header class="auth-header">
+          <p class="eyebrow">BEM-VINDO(A) DE VOLTA</p>
+          <h2 id="login-title">Entre na sua conta</h2>
+          <p>Informe seus dados para continuar.</p>
+        </header>
+
+        <form id="loginForm" class="auth-form" novalidate>
+          <div class="form-group">
+            <label for="loginEmail">E-mail</label>
+            <input
+              id="loginEmail"
+              name="email"
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              placeholder="seuemail@exemplo.com"
+              aria-describedby="loginEmailError"
+              required
+            >
+            <small class="field-error" id="loginEmailError"></small>
+          </div>
+
+          <div class="form-group">
+            <div class="label-row">
+              <label for="loginPassword">Senha</label>
+              <a class="text-link" href="#" id="forgotPassword">Esqueci minha senha</a>
+            </div>
+
+            <div class="password-field">
+              <input
+                id="loginPassword"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Digite sua senha"
+                aria-describedby="loginPasswordError"
+                required
+              >
+              <button
+                class="password-toggle"
+                type="button"
+                data-password-toggle="loginPassword"
+                aria-label="Mostrar senha"
+                aria-pressed="false"
+              >Mostrar</button>
+            </div>
+            <small class="field-error" id="loginPasswordError"></small>
+          </div>
+
+          <label class="checkbox-row" for="rememberMe">
+            <input id="rememberMe" name="rememberMe" type="checkbox">
+            <span>Lembrar de mim neste dispositivo</span>
+          </label>
+
+          <div id="loginMessage" class="form-message" role="status" aria-live="polite"></div>
+
+          <button class="primary-button" type="submit">Entrar</button>
+        </form>
+
+        <p class="auth-switch">
+          Ainda não possui uma conta?
+          <a class="text-link strong" href="cadastro.html">Criar conta</a>
+        </p>
+
+        <p class="demo-note">
+          Esta versão contém apenas a interface e as validações do frontend. A autenticação real deverá ser conectada ao backend.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/js/login.js"></script>
+</body>
+</html>
