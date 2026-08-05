@@ -564,13 +564,7 @@ function applyProfile() {
         currentRole;
     });
 
-  document.querySelector(
-    "[data-header-name]"
-  ).textContent = displayName;
-
-  document.querySelector(
-    "[data-header-role]"
-  ).textContent = roleLabel;
+  
 
   document.querySelector(
     "[data-profile-name]"
@@ -1051,20 +1045,36 @@ form.addEventListener(
       return;
     }
 
-    if (!saveProfile()) {
-      return;
+    try {
+      const saved = saveProfile();
+
+      if (!saved) {
+        return;
+      }
+
+      applyProfile();
+
+      showFeedback(
+        "Alterações salvas com sucesso."
+      );
+
+      document
+        .querySelector("#perfil")
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+    } catch (error) {
+      console.error(
+        "Erro ao salvar o perfil:",
+        error
+      );
+
+      showFeedback(
+        "Não foi possível salvar as alterações.",
+        true
+      );
     }
-
-    applyProfile();
-
-    showFeedback(
-      "Alterações salvas com sucesso."
-    );
-
-    window.scrollTo({
-      top: 90,
-      behavior: "smooth"
-    });
   }
 );
 
@@ -1227,45 +1237,47 @@ document
     }
   );
 
-mobileMenu.addEventListener(
-  "click",
-  () => {
-    const isOpen =
-      sidebar.classList.toggle("open");
-
-    mobileMenu.setAttribute(
-      "aria-expanded",
-      String(isOpen)
-    );
-  }
-);
-
-document.addEventListener(
-  "click",
-  (event) => {
-    if (window.innerWidth > 720) {
-      return;
-    }
-
-    const clickedInsideSidebar =
-      sidebar.contains(event.target);
-
-    const clickedMenuButton =
-      mobileMenu.contains(event.target);
-
-    if (
-      !clickedInsideSidebar &&
-      !clickedMenuButton
-    ) {
-      sidebar.classList.remove("open");
+if (mobileMenu) {
+  mobileMenu.addEventListener(
+    "click",
+    () => {
+      const isOpen =
+        sidebar.classList.toggle("open");
 
       mobileMenu.setAttribute(
         "aria-expanded",
-        "false"
+        String(isOpen)
       );
     }
-  }
-);
+  );
+
+  document.addEventListener(
+    "click",
+    (event) => {
+      if (window.innerWidth > 720) {
+        return;
+      }
+
+      const clickedInsideSidebar =
+        sidebar.contains(event.target);
+
+      const clickedMenuButton =
+        mobileMenu.contains(event.target);
+
+      if (
+        !clickedInsideSidebar &&
+        !clickedMenuButton
+      ) {
+        sidebar.classList.remove("open");
+
+        mobileMenu.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+      }
+    }
+  );
+}
 
 logoutLink.addEventListener(
   "click",
