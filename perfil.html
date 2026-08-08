@@ -3,443 +3,257 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta
-    name="description"
-    content="Edição de perfil do paciente e do psicólogo no PsiNote"
-  />
-
-  <title>PsiNote | Meu perfil</title>
-
+  <meta name="description" content="Edição de perfil do paciente e do psicólogo no PsicNota" />
+  <title>PsicNota | Meu perfil</title>
   <link rel="stylesheet" href="assets/css/perfil.css" />
 </head>
-
 <body>
   <div class="app-shell">
-    <aside class="sidebar" aria-label="Navegação da conta">
-      <a
-        class="brand"
-        id="brandLink"
-        href="agenda-paciente.html"
-        aria-label="PsiNote - página inicial"
-      >
-        <span class="brand-mark" aria-hidden="true">Ψ</span>
-        <span>PsiNote</span>
+    <aside class="sidebar" aria-label="Navegação principal">
+      <a class="brand" id="brandLink" href="agenda-paciente.html" aria-label="PsicNota - página inicial">
+        <span class="brand-logo" aria-hidden="true">
+          <svg viewBox="0 0 44 50">
+            <rect x="7" y="8" width="26" height="35" rx="3"></rect>
+            <path d="M13 34 31 12l5 5-18 22-7 2 2-7Z"></path>
+            <path d="m28 15 5 5"></path>
+            <path d="M14 13h10"></path>
+          </svg>
+        </span>
+        <span>PsicNota</span>
       </a>
 
       <nav class="main-nav">
-        <p class="nav-label">CONTA</p>
+        <p class="nav-label">MENU</p>
 
-        <a
-          class="nav-item active"
-          href="perfil.html"
-          aria-current="page"
-        >
+        <a class="nav-item active" id="agendaLink" href="agenda-paciente.html">
           <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7 8a7 7 0 0 0-14 0"
-            />
+            <path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"></path>
           </svg>
-
-          Meu perfil
+          <span id="agendaLinkText">Agendar consulta</span>
         </a>
 
-        <p class="nav-label nav-label-spaced">ATENDIMENTO</p>
-
-        <a
-          class="nav-item"
-          id="agendaLink"
-          href="agenda-paciente.html"
-        >
+        <a class="nav-item" href="#" data-placeholder-link>
           <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"
-            />
+            <path d="m8.5 15.5 7-7a3 3 0 0 1 4.2 4.2l-7 7a5 5 0 0 1-7.1-7.1l7.4-7.4"></path>
           </svg>
-
-          <span id="agendaLinkText">Agendar consulta</span>
+          <span>Relatórios</span>
         </a>
       </nav>
 
       <div class="sidebar-footer">
-        <a
-          class="nav-item logout"
-          id="logoutLink"
-          href="login.html"
-        >
+        <a class="settings-link" href="#" data-placeholder-link>
           <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M10 5H5v14h5m4-4 4-3-4-3m4 3H9" />
+            <path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5Z"></path>
+            <path d="M19.4 15a1.8 1.8 0 0 0 .36 2l.06.06-2.12 2.12-.06-.06a1.8 1.8 0 0 0-2-.36 1.8 1.8 0 0 0-1.1 1.65V20.5h-3v-.09a1.8 1.8 0 0 0-1.1-1.65 1.8 1.8 0 0 0-2 .36l-.06.06-2.12-2.12.06-.06a1.8 1.8 0 0 0 .36-2A1.8 1.8 0 0 0 5 13.9H4.9v-3H5a1.8 1.8 0 0 0 1.65-1.1 1.8 1.8 0 0 0-.36-2l-.06-.06 2.12-2.12.06.06a1.8 1.8 0 0 0 2 .36A1.8 1.8 0 0 0 11.5 4.4V4.3h3v.1a1.8 1.8 0 0 0 1.1 1.65 1.8 1.8 0 0 0 2-.36l.06-.06 2.12 2.12-.06.06a1.8 1.8 0 0 0-.36 2A1.8 1.8 0 0 0 21 10.9h.1v3H21a1.8 1.8 0 0 0-1.6 1.1Z"></path>
           </svg>
-
-          Sair da conta
+          Configurações
         </a>
       </div>
     </aside>
 
     <main class="main-content">
-      
+      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+
       <form id="profileForm" novalidate>
-        <section class="profile-hero" id="perfil">
-          <div class="profile-hero-main">
-            <div class="large-avatar avatar-frame" data-avatar>
-              PN
-            </div>
+        <header class="profile-header" id="perfil">
+          <div class="profile-person">
+            <div class="profile-avatar avatar-frame" data-avatar>PN</div>
 
-            <div class="profile-heading">
-              <div class="role-pill" data-role-pill>
-                Paciente
-              </div>
-
-              <h2 data-profile-name>Usuário PsiNote</h2>
-
-              <p data-profile-description>
-                Gerencie seus dados pessoais e suas preferências de
-                atendimento.
-              </p>
-            </div>
-
-            <div class="intro-actions">
-              <input
-                id="avatarInput"
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
-                hidden
-              />
-
-              <button
-                class="button button-secondary"
-                id="changePhotoButton"
-                type="button"
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    d="M4 7h3l2-2h6l2 2h3v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7Zm8 9a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
-                  />
-                </svg>
-
-                Alterar foto
-              </button>
-
-              <button
-                class="button button-primary"
-                id="editButton"
-                type="button"
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    d="m4 16-1 5 5-1L19 9l-4-4L4 16Zm9-9 4 4"
-                  />
-                </svg>
-
-                Editar perfil
-              </button>
+            <div class="profile-person-copy">
+              <span class="profile-role" data-role-pill>Paciente</span>
+              <h1 data-profile-name>Usuário PsicNota</h1>
+              <span class="sr-only" data-profile-description>Gerencie seu perfil.</span>
             </div>
           </div>
 
-          <div class="profile-progress-wrap">
-            <div class="profile-progress-head">
-              <strong>
-                <span data-profile-completion>85</span>% completo
-              </strong>
+          <div class="profile-actions">
+            <input
+              id="avatarInput"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              hidden
+            />
 
-              <span data-profile-completion-message>
-                Falta pouco!
-              </span>
-            </div>
-
-            <div
-              class="profile-progress-track"
-              aria-hidden="true"
-            >
-              <span
-                class="profile-progress-fill"
-                data-profile-progress-fill
-                style="width: 85%"
-              ></span>
-            </div>
-          </div>
-        </section>
-
-        <div
-          class="feedback"
-          id="feedback"
-          role="status"
-          aria-live="polite"
-          hidden
-        >
-          <span aria-hidden="true">✓</span>
-
-          <span id="feedbackText">
-            Alterações salvas com sucesso.
-          </span>
-        </div>
-
-        <section
-          class="summary-grid"
-          aria-label="Resumo do perfil"
-        >
-          <article class="summary-card">
-            <div class="summary-icon">
+            <button class="button button-photo" id="changePhotoButton" type="button">
               <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M4 6h16v12H4zM4 7l8 6 8-6" />
+                <path d="M4 7h3l2-2h6l2 2h3v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
               </svg>
-            </div>
-
-            <span class="summary-label">E-mail</span>
-
-            <strong
-              class="summary-value"
-              data-summary-email
-            >
-              Não informado
-            </strong>
-          </article>
-
-          <article class="summary-card">
-            <div class="summary-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M5 4h3l2 5-2 1.5a15 15 0 0 0 5.5 5.5L15 14l5 2v3a2 2 0 0 1-2 2A15 15 0 0 1 3 6a2 2 0 0 1 2-2Z"
-                />
-              </svg>
-            </div>
-
-            <span class="summary-label">Telefone</span>
-
-            <strong
-              class="summary-value"
-              data-summary-phone
-            >
-              Não informado
-            </strong>
-          </article>
-
-          <article class="summary-card">
-            <div class="summary-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Zm0-8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
-                />
-              </svg>
-            </div>
-
-            <span class="summary-label">
-              Cidade / Estado
-            </span>
-
-            <strong
-              class="summary-value"
-              data-summary-location
-            >
-              Não informado
-            </strong>
-          </article>
-
-          <article class="summary-card">
-            <div class="summary-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M7 2v4m10-4v4M4 9h16M5 5h14a2 2 0 0 1 2 2v12H3V7a2 2 0 0 1 2-2Z"
-                />
-              </svg>
-            </div>
-
-            <span
-              class="summary-label"
-              data-summary-preference-label
-            >
-              Atendimento preferido
-            </span>
-
-            <strong
-              class="summary-value"
-              data-summary-preference
-            >
-              Não informado
-            </strong>
-          </article>
-
-          <article class="summary-card summary-card-status">
-            <div class="summary-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M12 3l7 3v5c0 5-3.5 8-7 10-3.5-2-7-5-7-10V6l7-3Zm-2.5 9.5 2 2 4-4"
-                />
-              </svg>
-            </div>
-
-            <span class="summary-label">
-              Status do perfil
-            </span>
-
-            <strong
-              class="summary-status"
-              data-summary-status
-            >
-              Em andamento
-            </strong>
-          </article>
-        </section>
-
-        <section
-          class="section-card"
-          data-edit-target="informacoes-pessoais"
-        >
-          <div class="section-aside">
-            <div class="section-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7 8a7 7 0 0 0-14 0"
-                />
-              </svg>
-            </div>
-
-            <div class="section-title">
-              <h3>Informações pessoais</h3>
-
-              <p>
-                Dados básicos utilizados para identificar sua conta.
-              </p>
-            </div>
-          </div>
-
-          <div class="section-content">
-            <button
-              class="section-edit-button"
-              type="button"
-              data-edit-section
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="m4 16-1 5 5-1L19 9l-4-4L4 16Zm9-9 4 4"
-                />
-              </svg>
-
-              Editar
+              Alterar foto
             </button>
 
+            <button class="button button-edit" id="editButton" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m4 16-1 5 5-1L19 9l-4-4L4 16Zm9-9 4 4"></path>
+              </svg>
+              Editar perfil
+            </button>
+
+            <div class="editing-actions" id="formActions" hidden>
+              <button class="button button-cancel" id="cancelButton" type="button">
+                Cancelar
+              </button>
+
+              <button class="button button-save" type="submit">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 4h12l2 2v14H5V4Zm3 0v6h8V4M8 15h8"></path>
+                </svg>
+                Salvar alterações
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <div class="header-divider"></div>
+
+        <div class="feedback" id="feedback" role="status" aria-live="polite" hidden>
+          <span id="feedbackText">Alterações salvas com sucesso.</span>
+        </div>
+
+        <section class="summary-grid" aria-label="Resumo do perfil">
+
+          <article class="summary-card">
+            <span class="summary-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 6h16v12H4zM4 7l8 6 8-6"></path>
+              </svg>
+            </span>
+
+            <div>
+              <span class="summary-label">E-mail</span>
+              <strong data-summary-email>Não informado</strong>
+            </div>
+          </article>
+
+          <article class="summary-card">
+            <span class="summary-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 4h3l2 5-2 1.5a15 15 0 0 0 5.5 5.5L15 14l5 2v3a2 2 0 0 1-2 2A15 15 0 0 1 3 6a2 2 0 0 1 2-2Z"></path>
+              </svg>
+            </span>
+
+            <div>
+              <span class="summary-label">Telefone</span>
+              <strong data-summary-phone>Não informado</strong>
+            </div>
+          </article>
+
+          <article class="summary-card">
+            <span class="summary-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Zm0-8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"></path>
+              </svg>
+            </span>
+
+            <div>
+              <span class="summary-label">Cidade/Estado</span>
+              <strong data-summary-location>Não informado</strong>
+            </div>
+          </article>
+
+          <article class="summary-card">
+            <span class="summary-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 2v4m10-4v4M4 9h16M5 5h14a2 2 0 0 1 2 2v12H3V7a2 2 0 0 1 2-2Z"></path>
+              </svg>
+            </span>
+
+            <div>
+              <span
+                class="summary-label"
+                data-summary-preference-label
+              >
+                Forma de atendimento
+              </span>
+
+              <strong data-summary-preference>Não informado</strong>
+            </div>
+          </article>
+        </section>
+
+        <section class="profile-panel">
+
+          <section class="profile-section">
+            <div class="section-heading">
+              <span class="section-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7 8a7 7 0 0 0-14 0"></path>
+                </svg>
+              </span>
+
+              <h2>Informações pessoais</h2>
+            </div>
+
             <div class="fields-grid">
+
               <label class="field">
                 <span>Nome completo</span>
-
                 <input
                   name="fullName"
                   type="text"
-                  disabled
-                  required
                   minlength="3"
+                  required
+                  disabled
                 />
               </label>
 
               <label class="field">
                 <span>Data de nascimento</span>
-
-                <input
-                  name="birthDate"
-                  type="date"
-                  disabled
-                  
-                />
+                <input name="birthDate" type="date" disabled />
               </label>
 
               <label class="field">
-                <span>
-                  Nome social
-                  <small>opcional</small>
-                </span>
-
+                <span>Nome social</span>
                 <input
                   name="socialName"
                   type="text"
-                  placeholder="Como prefere ser chamado(a)"
+                  placeholder="Não informado(a)"
                   disabled
                 />
               </label>
 
               <label class="field">
-                <span>
-                  Pronome
-                  <small>opcional</small>
-                </span>
+                <span>Pronome</span>
 
                 <select name="pronoun" disabled>
                   <option value="">Não informado</option>
-                  <option value="Ela/dela">Ela/dela</option>
-                  <option value="Ele/dele">Ele/dele</option>
-                  <option value="Elu/delu">Elu/delu</option>
-
+                  <option value="Ela/Dela">Ela/Dela</option>
+                  <option value="Ele/Dele">Ele/Dele</option>
+                  <option value="Elu/Delu">Elu/Delu</option>
                   <option value="Prefiro não informar">
                     Prefiro não informar
                   </option>
                 </select>
               </label>
+
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section
-          class="section-card"
-          id="contato"
-          data-edit-target="contato"
-        >
-          <div class="section-aside">
-            <div class="section-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M5 4h3l2 5-2 1.5a15 15 0 0 0 5.5 5.5L15 14l5 2v3a2 2 0 0 1-2 2A15 15 0 0 1 3 6a2 2 0 0 1 2-2Z"
-                />
-              </svg>
+          <section class="profile-section">
+            <div class="section-heading">
+              <span class="section-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 4h3l2 5-2 1.5a15 15 0 0 0 5.5 5.5L15 14l5 2v3a2 2 0 0 1-2 2A15 15 0 0 1 3 6a2 2 0 0 1 2-2Z"></path>
+                </svg>
+              </span>
+
+              <h2>Contato</h2>
             </div>
-
-            <div class="section-title">
-              <h3>Contato</h3>
-
-              <p>
-                Informações usadas para acesso, avisos e lembretes.
-              </p>
-            </div>
-          </div>
-
-          <div class="section-content">
-            <button
-              class="section-edit-button"
-              type="button"
-              data-edit-section
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="m4 16-1 5 5-1L19 9l-4-4L4 16Zm9-9 4 4"
-                />
-              </svg>
-
-              Editar
-            </button>
 
             <div class="fields-grid">
+
               <label class="field">
                 <span>E-mail</span>
-
-                <input
-                  name="email"
-                  type="email"
-                  disabled
-                  
-                />
+                <input name="email" type="email" disabled />
               </label>
 
               <label class="field">
                 <span>Telefone</span>
-
-                <input
-                  name="phone"
-                  type="tel"
-                  maxlength="16"
-                  disabled
-                />
+                <input name="phone" type="tel" maxlength="16" disabled />
               </label>
 
               <label class="field">
                 <span>Cidade</span>
-
                 <input
                   name="city"
                   type="text"
@@ -453,80 +267,56 @@
 
                 <select name="state" disabled>
                   <option value="">Selecione</option>
-                  <option value="AC">Acre</option>
-                  <option value="AL">Alagoas</option>
-                  <option value="AP">Amapá</option>
-                  <option value="AM">Amazonas</option>
-                  <option value="BA">Bahia</option>
-                  <option value="CE">Ceará</option>
-                  <option value="DF">Distrito Federal</option>
-                  <option value="ES">Espírito Santo</option>
-                  <option value="GO">Goiás</option>
-                  <option value="MA">Maranhão</option>
-                  <option value="MT">Mato Grosso</option>
-                  <option value="MS">Mato Grosso do Sul</option>
-                  <option value="MG">Minas Gerais</option>
-                  <option value="PA">Pará</option>
-                  <option value="PB">Paraíba</option>
-                  <option value="PR">Paraná</option>
-                  <option value="PE">Pernambuco</option>
-                  <option value="PI">Piauí</option>
-                  <option value="RJ">Rio de Janeiro</option>
-                  <option value="RN">Rio Grande do Norte</option>
-                  <option value="RS">Rio Grande do Sul</option>
-                  <option value="RO">Rondônia</option>
-                  <option value="RR">Roraima</option>
-                  <option value="SC">Santa Catarina</option>
-                  <option value="SP">São Paulo</option>
-                  <option value="SE">Sergipe</option>
-                  <option value="TO">Tocantins</option>
+                  <option value="AC">AC</option>
+                  <option value="AL">AL</option>
+                  <option value="AP">AP</option>
+                  <option value="AM">AM</option>
+                  <option value="BA">BA</option>
+                  <option value="CE">CE</option>
+                  <option value="DF">DF</option>
+                  <option value="ES">ES</option>
+                  <option value="GO">GO</option>
+                  <option value="MA">MA</option>
+                  <option value="MT">MT</option>
+                  <option value="MS">MS</option>
+                  <option value="MG">MG</option>
+                  <option value="PA">PA</option>
+                  <option value="PB">PB</option>
+                  <option value="PR">PR</option>
+                  <option value="PE">PE</option>
+                  <option value="PI">PI</option>
+                  <option value="RJ">RJ</option>
+                  <option value="RN">RN</option>
+                  <option value="RS">RS</option>
+                  <option value="RO">RO</option>
+                  <option value="RR">RR</option>
+                  <option value="SC">SC</option>
+                  <option value="SP">SP</option>
+                  <option value="SE">SE</option>
+                  <option value="TO">TO</option>
                 </select>
               </label>
+
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section
-          class="section-card conditional-section"
-          id="patientSection"
-          data-profile-section="paciente"
-          data-edit-target="preferencias-atendimento"
-        >
-          <div class="section-aside">
-            <div class="section-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="m12 3 2.6 5.3 5.9.8-4.2 4.1 1 5.8-5.3-2.8-5.3 2.8 1-5.8-4.2-4.1 5.9-.8L12 3Z"
-                />
-              </svg>
+          <!-- PACIENTE -->
+          <section
+            class="profile-section conditional-section"
+            data-profile-section="paciente"
+          >
+            <div class="section-heading">
+              <span class="section-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m12 3 2.6 5.3 5.9.8-4.2 4.1 1 5.8-5.3-2.8-5.3 2.8 1-5.8-4.2-4.1 5.9-.8L12 3Z"></path>
+                </svg>
+              </span>
+
+              <h2>Preferências de atendimento</h2>
             </div>
-
-            <div class="section-title">
-              <h3>Preferências de atendimento</h3>
-
-              <p>
-                Opções do paciente para facilitar o agendamento das
-                consultas.
-              </p>
-            </div>
-          </div>
-
-          <div class="section-content">
-            <button
-              class="section-edit-button"
-              type="button"
-              data-edit-section
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="m4 16-1 5 5-1L19 9l-4-4L4 16Zm9-9 4 4"
-                />
-              </svg>
-
-              Editar
-            </button>
 
             <div class="fields-grid">
+
               <label class="field">
                 <span>Formato preferido</span>
 
@@ -534,7 +324,6 @@
                   <option value="">Não informado</option>
                   <option value="Online">Online</option>
                   <option value="Presencial">Presencial</option>
-
                   <option value="Online ou presencial">
                     Online ou presencial
                   </option>
@@ -552,81 +341,36 @@
                 </select>
               </label>
 
-              <label class="field field-wide">
-                <span>
-                  Necessidades de acessibilidade
-                  <small>opcional</small>
-                </span>
-
-                <textarea
-                  name="accessibility"
-                  rows="3"
-                  maxlength="280"
-                  placeholder="Informe somente o que considerar necessário"
-                  disabled
-                ></textarea>
-              </label>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section
-          class="section-card conditional-section"
-          id="psychologistSection"
-          data-profile-section="psicologo"
-          data-edit-target="informacoes-profissionais"
-          hidden
-        >
-          <div class="section-aside">
-            <div class="section-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M12 3l7 3v5c0 5-3.5 8-7 10-3.5-2-7-5-7-10V6l7-3Z"
-                />
-              </svg>
+          <!-- PSICÓLOGO -->
+          <section
+            class="profile-section conditional-section professional-section"
+            data-profile-section="psicologo"
+            hidden
+          >
+            <div class="section-heading">
+              <span class="section-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 3l7 3v5c0 5-3.5 8-7 10-3.5-2-7-5-7-10V6l7-3Z"></path>
+                </svg>
+              </span>
+
+              <h2>Informações profissionais</h2>
             </div>
-
-            <div class="section-title">
-              <h3>Informações profissionais</h3>
-
-              <p>
-                Dados profissionais usados na identificação do
-                psicólogo.
-              </p>
-            </div>
-          </div>
-
-          <div class="section-content">
-            <button
-              class="section-edit-button"
-              type="button"
-              data-edit-section
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="m4 16-1 5 5-1L19 9l-4-4L4 16Zm9-9 4 4"
-                />
-              </svg>
-
-              Editar
-            </button>
 
             <div class="fields-grid">
+
               <label class="field">
                 <span>Número do CRP</span>
-
-                <input
-                  name="crp"
-                  type="text"
-                  disabled
-                  
-                />
+                <input name="crp" type="text" disabled />
               </label>
 
               <label class="field">
                 <span>Estado do CRP</span>
 
-                <select name="crpState" disabled >
+                <select name="crpState" disabled>
                   <option value="">Selecione</option>
                   <option value="AC">AC</option>
                   <option value="AL">AL</option>
@@ -660,256 +404,91 @@
 
               <label class="field">
                 <span>Área de atuação</span>
-
                 <input
                   name="specialty"
                   type="text"
                   placeholder="Ex.: Psicologia clínica"
                   disabled
-                  
                 />
               </label>
 
               <label class="field">
                 <span>Formato de atendimento</span>
 
-                <select
-                  name="serviceFormat"
-                  disabled
-                  
-                >
+                <select name="serviceFormat" disabled>
                   <option value="">Selecione</option>
+                  <option value="online">Online</option>
+                  <option value="presencial">Presencial</option>
+                  <option value="ambos">Online/presencial</option>
+                </select>
+              </label>
 
-                  <option value="online">
-                    Somente online
-                  </option>
+              <label class="field">
+                <span>Gênero</span>
 
-                  <option value="presencial">
-                    Somente presencial
-                  </option>
-
-                  <option value="ambos">
-                    Online e presencial
+                <select name="gender" disabled>
+                  <option value="">Não informado</option>
+                  <option value="Feminino">Feminino</option>
+                  <option value="Masculino">Masculino</option>
+                  <option value="Não binário">Não binário</option>
+                  <option value="Prefiro não informar">
+                    Prefiro não informar
                   </option>
                 </select>
               </label>
 
-              <label class="field field-wide">
-                <span>
-                  Abordagem terapêutica
-                  <small>opcional</small>
-                </span>
+            </div>
+          </section>
+
+          <!-- NOTIFICAÇÕES DO PACIENTE -->
+          <section
+            class="profile-section conditional-section notifications-section"
+            data-profile-section="paciente"
+          >
+            <div class="section-heading">
+              <span class="section-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 22a2.5 2.5 0 0 0 2.4-2h-4.8A2.5 2.5 0 0 0 12 22Zm6-6V11a6 6 0 0 0-4-5.6V4a2 2 0 1 0-4 0v1.4A6 6 0 0 0 6 11v5l-2 2h16l-2-2Z"></path>
+                </svg>
+              </span>
+
+              <h2>Notificações</h2>
+            </div>
+
+            <div class="notification-list">
+
+              <label class="notification-row">
+                <span>Lembretes de consulta</span>
 
                 <input
-                  name="approach"
-                  type="text"
-                  placeholder="Ex.: Terapia Cognitivo-Comportamental"
-                  disabled
-                />
-              </label>
-
-              <label class="field field-wide">
-                <span>
-                  Apresentação profissional
-                  <small>opcional</small>
-                </span>
-
-                <textarea
-                  name="biography"
-                  rows="4"
-                  maxlength="500"
-                  placeholder="Escreva uma apresentação breve para os pacientes"
-                  disabled
-                ></textarea>
-              </label>
-            </div>
-          </div>
-        </section>
-
-        <section
-          class="section-card"
-          id="preferencias"
-          data-edit-target="notificacoes"
-        >
-          <div class="section-aside">
-            <div class="section-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M12 22a2.5 2.5 0 0 0 2.4-2h-4.8A2.5 2.5 0 0 0 12 22Zm6-6V11a6 6 0 0 0-4-5.6V4a2 2 0 1 0-4 0v1.4A6 6 0 0 0 6 11v5l-2 2h16l-2-2Z"
-                />
-              </svg>
-            </div>
-
-            <div class="section-title">
-              <h3>Notificações</h3>
-
-              <p>
-                Escolha como deseja receber atualizações importantes.
-              </p>
-            </div>
-          </div>
-
-          <div class="section-content">
-            <button
-              class="section-edit-button"
-              type="button"
-              data-edit-section
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="m4 16-1 5 5-1L19 9l-4-4L4 16Zm9-9 4 4"
-                />
-              </svg>
-
-              Editar
-            </button>
-
-            <div class="settings-list settings-list-card">
-              <label class="setting-row">
-                <span>
-                  <strong>Lembretes de consulta</strong>
-
-                  <small>
-                    Receba um aviso antes dos atendimentos.
-                  </small>
-                </span>
-
-                <input
-                  class="switch"
+                  class="switch-input"
                   name="appointmentReminders"
                   type="checkbox"
                   disabled
                 />
               </label>
 
-              <label class="setting-row">
-                <span>
-                  <strong>Notificações por e-mail</strong>
-
-                  <small>
-                    Receba atualizações sobre agendamentos e
-                    solicitações.
-                  </small>
-                </span>
+              <label class="notification-row">
+                <span>Notificações por e-mail</span>
 
                 <input
-                  class="switch"
+                  class="switch-input"
                   name="emailNotifications"
                   type="checkbox"
                   disabled
                 />
               </label>
+
             </div>
-          </div>
+          </section>
+
         </section>
 
-        <section
-          class="section-card security-card"
-          id="seguranca"
-          data-edit-target="seguranca"
-        >
-          <div class="section-aside">
-            <div class="section-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M12 3l7 3v5c0 5-3.5 8-7 10-3.5-2-7-5-7-10V6l7-3Zm0 7a2 2 0 0 0-2 2v3h4v-3a2 2 0 0 0-2-2Zm-3 5h6v4H9v-4Z"
-                />
-              </svg>
-            </div>
+        <span data-profile-completion hidden>100</span>
+        <span data-profile-completion-message hidden></span>
+        <span data-profile-progress-fill hidden></span>
+        <span data-summary-status hidden></span>
 
-            <div class="section-title">
-              <h3>Segurança</h3>
-
-              <p>
-                A senha será gerenciada pelo sistema de autenticação.
-              </p>
-            </div>
-          </div>
-
-          <div class="section-content">
-            <button
-              class="section-edit-button"
-              type="button"
-              data-edit-section
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="m4 16-1 5 5-1L19 9l-4-4L4 16Zm9-9 4 4"
-                />
-              </svg>
-
-              Editar
-            </button>
-
-            <button
-              class="security-action"
-              id="changePasswordButton"
-              type="button"
-            >
-              <span class="security-action-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    d="M14 3a5 5 0 0 0-4.9 6.1L3 15.2V21h5.8l6.1-6.1A5 5 0 1 0 14 3Zm0 3a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z"
-                  />
-                </svg>
-              </span>
-
-              <span>
-                <strong>Alterar senha</strong>
-
-                <small>
-                  Atualize sua senha de acesso.
-                </small>
-              </span>
-
-              <span
-                class="security-action-arrow"
-                aria-hidden="true"
-              >
-                →
-              </span>
-            </button>
-          </div>
-        </section>
-
-        <footer
-          class="form-actions"
-          id="formActions"
-          hidden
-        >
-          <p>
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                d="M12 3l7 3v5c0 5-3.5 8-7 10-3.5-2-7-5-7-10V6l7-3Zm-2.5 9.5 2 2 4-4"
-              />
-            </svg>
-
-            Revise as informações antes de salvar.
-          </p>
-
-          <div>
-            <button
-              class="button button-secondary"
-              id="cancelButton"
-              type="button"
-            >
-              Cancelar
-            </button>
-
-            <button
-              class="button button-primary"
-              type="submit"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M6 3h9l3 3v15H6V3Zm3 0v5h6V3M9 14h6"
-                />
-              </svg>
-
-              Salvar alterações
-            </button>
-          </div>
-        </footer>
       </form>
     </main>
   </div>

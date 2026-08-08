@@ -3,6 +3,7 @@
 const data = window.PsiNoteData;
 
 const form = document.querySelector("#profileForm");
+
 const editButton = document.querySelector("#editButton");
 const cancelButton = document.querySelector("#cancelButton");
 const formActions = document.querySelector("#formActions");
@@ -10,29 +11,18 @@ const formActions = document.querySelector("#formActions");
 const feedback = document.querySelector("#feedback");
 const feedbackText = document.querySelector("#feedbackText");
 
+const avatarInput = document.querySelector("#avatarInput");
+const changePhotoButton = document.querySelector("#changePhotoButton");
+
+const agendaLink = document.querySelector("#agendaLink");
+const agendaLinkText = document.querySelector("#agendaLinkText");
+const brandLink = document.querySelector("#brandLink");
+
 const sidebar = document.querySelector(".sidebar");
 const mobileMenu = document.querySelector(".mobile-menu");
 
-const avatarInput = document.querySelector("#avatarInput");
-
-const changePhotoButton = document.querySelector(
-  "#changePhotoButton"
-);
-
-const agendaLink = document.querySelector("#agendaLink");
-
-const agendaLinkText = document.querySelector(
-  "#agendaLinkText"
-);
-
-const brandLink = document.querySelector("#brandLink");
-const logoutLink = document.querySelector("#logoutLink");
-
-const sectionEditButtons = document.querySelectorAll(
-  "[data-edit-section]"
-);
-
 let profiles = data.getProfiles();
+
 const session = data.getSession();
 
 let currentProfile = resolveCurrentProfile();
@@ -42,27 +32,42 @@ let currentRole = normalizeRole(
 );
 
 let editing = false;
+
 let originalValues = {};
 
 let pendingAvatar =
   currentProfile.avatarDataUrl || "";
 
+
+/* =========================
+   TIPO DE USUÁRIO
+========================= */
+
 function normalizeRole(role) {
-  const psychologistRoles = [
+  const normalized = String(role || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+
+  return [
     "psicologo",
     "psychologist"
-  ];
-
-  return psychologistRoles.includes(role)
+  ].includes(normalized)
     ? "psicologo"
     : "paciente";
 }
+
+
+/* =========================
+   LOCALIZA PERFIL ATUAL
+========================= */
 
 function resolveCurrentProfile() {
   const byId =
     session?.id &&
     profiles.find(
-      (profile) => profile.id === session.id
+      (profile) =>
+        profile.id === session.id
     );
 
   const byEmail =
@@ -73,16 +78,17 @@ function resolveCurrentProfile() {
         session.email.toLowerCase()
     );
 
-  const latest = (() => {
-    try {
-      return JSON.parse(
-        localStorage.getItem("psinoteProfileDemo") ||
-          "null"
-      );
-    } catch {
-      return null;
-    }
-  })();
+  let latest = null;
+
+  try {
+    latest = JSON.parse(
+      localStorage.getItem(
+        "psinoteProfileDemo"
+      ) || "null"
+    );
+  } catch {
+    latest = null;
+  }
 
   return (
     byId ||
@@ -99,19 +105,26 @@ function resolveCurrentProfile() {
       fullName:
         session?.fullName ||
         session?.name ||
-        "Usuário PsiNote",
+        "Usuário PsicNota",
 
       email:
         session?.email ||
         "",
 
       birthDate: "",
+
       phone: "",
 
-      createdAt: new Date().toISOString()
+      createdAt:
+        new Date().toISOString()
     }
   );
 }
+
+
+/* =========================
+   INICIAIS
+========================= */
 
 function getInitials(name) {
   return (
@@ -122,17 +135,28 @@ function getInitials(name) {
       .slice(0, 2)
       .map((part) => part[0])
       .join("")
-      .toUpperCase() || "PN"
+      .toUpperCase() ||
+    "PN"
   );
 }
+
+
+/* =========================
+   CAMPOS EDITÁVEIS
+========================= */
 
 function editableControls() {
   return [
     ...form.querySelectorAll(
-      "input[name], select[name], textarea[name]"
+      "input[name], select[name]"
     )
   ];
 }
+
+
+/* =========================
+   DEFINE VALOR
+========================= */
 
 function setControlValue(name, value) {
   const control = form.elements[name];
@@ -148,6 +172,11 @@ function setControlValue(name, value) {
   }
 }
 
+
+/* =========================
+   PEGA VALOR
+========================= */
+
 function getControlValue(name) {
   const control = form.elements[name];
 
@@ -159,82 +188,121 @@ function getControlValue(name) {
     return control.checked;
   }
 
-  return control.value.trim();
+  return String(
+    control.value || ""
+  ).trim();
 }
+
+
+/* =========================
+   GUARDA VALORES ANTES DE EDITAR
+========================= */
 
 function storeOriginalValues() {
   originalValues = {};
 
-  editableControls().forEach((control) => {
-    originalValues[control.name] =
-      control.type === "checkbox"
-        ? control.checked
-        : control.value;
-  });
+  editableControls().forEach(
+    (control) => {
+      originalValues[control.name] =
+        control.type === "checkbox"
+          ? control.checked
+          : control.value;
+    }
+  );
 
   originalValues.avatarDataUrl =
     currentProfile.avatarDataUrl || "";
 }
 
-function restoreOriginalValues() {
-  editableControls().forEach((control) => {
-    if (!(control.name in originalValues)) {
-      return;
-    }
 
-    if (control.type === "checkbox") {
-      control.checked =
-        originalValues[control.name];
-    } else {
-      control.value =
-        originalValues[control.name];
+/* =========================
+   CANCELAR ALTERAÇÕES
+========================= */
+
+function restoreOriginalValues() {
+  editableControls().forEach(
+    (control) => {
+      if (
+        !(control.name in originalValues)
+      ) {
+        return;
+      }
+
+      if (
+        control.type === "checkbox"
+      ) {
+        control.checked =
+          originalValues[control.name];
+      } else {
+        control.value =
+          originalValues[control.name];
+      }
     }
-  });
+  );
 
   pendingAvatar =
     originalValues.avatarDataUrl || "";
 
   renderAvatar();
-  updateProfileSummary();
-  updateProfileCompletion();
+  updateHeaderAndSummary();
 }
+
+
+/* =========================
+   MODO EDIÇÃO
+========================= */
 
 function setEditing(state) {
   editing = state;
 
-  editableControls().forEach((control) => {
-    const hiddenSection = control.closest(
-      "[data-profile-section][hidden]"
-    );
+  editableControls().forEach(
+    (control) => {
+      const section =
+        control.closest(
+          "[data-profile-section]"
+        );
 
-    control.disabled =
-      !state || Boolean(hiddenSection);
-  });
+      const sectionIsHidden =
+        section?.hidden;
+
+      control.disabled =
+        !state ||
+        Boolean(sectionIsHidden);
+    }
+  );
 
   formActions.hidden = !state;
-  editButton.hidden = state;
 
-  changePhotoButton.disabled = !state;
+  editButton.hidden = state;
 
   feedback.hidden = true;
 
   if (state) {
     storeOriginalValues();
+
     form.elements.fullName?.focus();
   }
 }
+
+
+/* =========================
+   FOTO / AVATAR
+========================= */
 
 function renderAvatar() {
   const name =
     getControlValue("fullName") ||
     currentProfile.fullName;
 
-  const initials = getInitials(name);
+  const initials =
+    getInitials(name);
 
   document
     .querySelectorAll("[data-avatar]")
     .forEach((avatar) => {
-      avatar.textContent = initials;
+
+      avatar.textContent =
+        initials;
 
       avatar.classList.toggle(
         "has-photo",
@@ -248,214 +316,132 @@ function renderAvatar() {
     });
 }
 
+
+/* =========================
+   TEXTO PADRÃO
+========================= */
+
 function textOrFallback(
   value,
   fallback = "Não informado"
 ) {
-  return value ? value : fallback;
+  return value || fallback;
 }
 
-function updateProfileSummary() {
-  const city = getControlValue("city");
-  const state = getControlValue("state");
+
+/* =========================
+   FORMATO DE ATENDIMENTO
+========================= */
+
+function serviceFormatLabel(value) {
+  const map = {
+    online: "Online",
+    presencial: "Presencial",
+    ambos: "Online/presencial"
+  };
+
+  return (
+    map[value] ||
+    value ||
+    "Não informado"
+  );
+}
+
+
+/* =========================
+   CABEÇALHO E RESUMO
+========================= */
+
+function updateHeaderAndSummary() {
+  const city =
+    getControlValue("city");
+
+  const state =
+    getControlValue("state");
 
   const location =
     city && state
-      ? `${city} / ${state}`
-      : city || state || "Não informado";
+      ? `${city}/${state}`
+      : city ||
+        state ||
+        "Não informado";
+
+  const displayName =
+    getControlValue("socialName") ||
+    getControlValue("fullName") ||
+    currentProfile.fullName ||
+    "Usuário PsicNota";
+
+  document.querySelector(
+    "[data-profile-name]"
+  ).textContent = displayName;
 
   document.querySelector(
     "[data-summary-email]"
-  ).textContent = textOrFallback(
-    getControlValue("email")
-  );
+  ).textContent =
+    textOrFallback(
+      getControlValue("email")
+    );
 
   document.querySelector(
     "[data-summary-phone]"
-  ).textContent = textOrFallback(
-    getControlValue("phone")
-  );
+  ).textContent =
+    textOrFallback(
+      getControlValue("phone")
+    );
 
   document.querySelector(
     "[data-summary-location]"
-  ).textContent = location;
-
-  const preferenceLabel =
-    document.querySelector(
-      "[data-summary-preference-label]"
-    );
-
-  const preferenceValue =
-    document.querySelector(
-      "[data-summary-preference]"
-    );
-
-  if (currentRole === "psicologo") {
-    preferenceLabel.textContent =
-      "Formato de atendimento";
-
-    const formatMap = {
-      online: "Somente online",
-      presencial: "Somente presencial",
-      ambos: "Online e presencial"
-    };
-
-    const selectedFormat =
-      getControlValue("serviceFormat");
-
-    preferenceValue.textContent =
-      textOrFallback(
-        formatMap[selectedFormat] ||
-          selectedFormat
-      );
-  } else {
-    preferenceLabel.textContent =
-      "Atendimento preferido";
-
-    preferenceValue.textContent =
-      textOrFallback(
-        getControlValue("preferredFormat")
-      );
-  }
-}
-
-function calculateProfileCompletion() {
-  const requiredCommon = [
-    "fullName",
-    "birthDate",
-    "email",
-    "phone",
-    "city",
-    "state"
-  ];
-
-  const roleSpecific =
-    currentRole === "psicologo"
-      ? [
-          "crp",
-          "crpState",
-          "specialty",
-          "serviceFormat",
-          "approach",
-          "biography"
-        ]
-      : [
-          "preferredFormat",
-          "preferredPeriod",
-          "accessibility",
-          "socialName",
-          "pronoun"
-        ];
-
-  const allFields = [
-    ...requiredCommon,
-    ...roleSpecific
-  ];
-
-  const filledCount = allFields.filter(
-    (field) => {
-      const value = getControlValue(field);
-      return Boolean(value);
-    }
-  ).length;
-
-  const notificationBonus = [
-    "appointmentReminders",
-    "emailNotifications"
-  ].filter((field) =>
-    getControlValue(field)
-  ).length;
-
-  const totalItems =
-    allFields.length + 2;
-
-  const completedItems =
-    filledCount + notificationBonus;
-
-  const rawScore = Math.round(
-    (completedItems / totalItems) * 100
-  );
-
-  return Math.max(
-    35,
-    Math.min(100, rawScore)
-  );
-}
-
-function profileCompletionMessage(value) {
-  if (value >= 100) {
-    return "Perfil completo!";
-  }
-
-  if (value >= 80) {
-    return "Falta pouco!";
-  }
-
-  if (value >= 60) {
-    return "Você está indo bem!";
-  }
-
-  return "Complete mais alguns dados";
-}
-
-function updateProfileCompletion() {
-  const completion =
-    calculateProfileCompletion();
-
-  document.querySelector(
-    "[data-profile-completion]"
-  ).textContent = String(completion);
-
-  document.querySelector(
-    "[data-profile-progress-fill]"
-  ).style.width = `${completion}%`;
-
-  document.querySelector(
-    "[data-profile-completion-message]"
   ).textContent =
-    profileCompletionMessage(completion);
+    location;
 
-  const status = document.querySelector(
-    "[data-summary-status]"
-  );
+  document.querySelector(
+    "[data-summary-preference-label]"
+  ).textContent =
+    "Forma de atendimento";
 
-  if (completion >= 100) {
-    status.textContent = "Completo";
-  } else if (completion >= 70) {
-    status.textContent = "Quase completo";
-  } else {
-    status.textContent = "Em andamento";
-  }
+  const preference =
+    currentRole === "psicologo"
+      ? serviceFormatLabel(
+          getControlValue(
+            "serviceFormat"
+          )
+        )
+      : textOrFallback(
+          getControlValue(
+            "preferredFormat"
+          )
+        );
+
+  document.querySelector(
+    "[data-summary-preference]"
+  ).textContent =
+    preference;
 }
+
+
+/* =========================
+   CARREGA PERFIL
+========================= */
 
 function applyProfile() {
-  currentRole = normalizeRole(
-    currentProfile.role
-  );
+  currentRole =
+    normalizeRole(
+      currentProfile.role ||
+      session?.role
+    );
 
   const professional =
-    currentProfile.professionalData || {};
+    currentProfile.professionalData ||
+    {};
 
   const patient =
-    currentProfile.patientData || {};
+    currentProfile.patientData ||
+    {};
 
   const preferences =
-    currentProfile.preferences || {};
-
-  const displayName =
-    currentProfile.socialName ||
-    currentProfile.fullName ||
-    "Usuário PsiNote";
-
-  const roleLabel =
-    currentRole === "psicologo"
-      ? "Psicólogo"
-      : "Paciente";
-
-  const agendaHref =
-    currentRole === "psicologo"
-      ? "agenda.html"
-      : "agenda-paciente.html";
+    currentProfile.preferences ||
+    {};
 
   setControlValue(
     "fullName",
@@ -472,8 +458,17 @@ function applyProfile() {
     currentProfile.socialName
   );
 
+  const pronounMap = {
+    "Ela/dela": "Ela/Dela",
+    "Ele/dele": "Ele/Dele",
+    "Elu/delu": "Elu/Delu"
+  };
+
   setControlValue(
     "pronoun",
+    pronounMap[
+      currentProfile.pronoun
+    ] ||
     currentProfile.pronoun
   );
 
@@ -497,6 +492,8 @@ function applyProfile() {
     currentProfile.state
   );
 
+  /* PACIENTE */
+
   setControlValue(
     "preferredFormat",
     patient.preferredFormat
@@ -507,10 +504,7 @@ function applyProfile() {
     patient.preferredPeriod
   );
 
-  setControlValue(
-    "accessibility",
-    patient.accessibility
-  );
+  /* PSICÓLOGO */
 
   setControlValue(
     "crp",
@@ -533,225 +527,289 @@ function applyProfile() {
   );
 
   setControlValue(
-    "approach",
-    professional.approach
+    "gender",
+    professional.gender ||
+    currentProfile.gender
   );
 
-  setControlValue(
-    "biography",
-    professional.biography
-  );
+  /* NOTIFICAÇÕES */
 
   setControlValue(
     "appointmentReminders",
     preferences.appointmentReminders ??
-      true
+    true
   );
 
   setControlValue(
     "emailNotifications",
     preferences.emailNotifications ??
-      true
+    true
   );
+
+  /* MOSTRA A SEÇÃO CORRETA */
 
   document
     .querySelectorAll(
       "[data-profile-section]"
     )
     .forEach((section) => {
+
       section.hidden =
-        section.dataset.profileSection !==
+        section.dataset
+          .profileSection !==
         currentRole;
+
     });
 
-  
+  const roleLabel =
+    currentRole === "psicologo"
+      ? "Psicólogo"
+      : "Paciente";
 
-  document.querySelector(
-    "[data-profile-name]"
-  ).textContent = displayName;
+  const agendaHref =
+    currentRole === "psicologo"
+      ? "agenda.html"
+      : "agenda-paciente.html";
 
   document.querySelector(
     "[data-role-pill]"
-  ).textContent = roleLabel;
+  ).textContent =
+    roleLabel;
 
   document.querySelector(
     "[data-profile-description]"
   ).textContent =
     currentRole === "psicologo"
-      ? "Atualize suas informações profissionais e os dados apresentados aos pacientes."
-      : "Gerencie seus dados pessoais e suas preferências de atendimento.";
+      ? "Atualize suas informações profissionais."
+      : "Atualize seus dados e preferências de atendimento.";
 
-  agendaLink.href = agendaHref;
-  brandLink.href = agendaHref;
+  agendaLink.href =
+    agendaHref;
+
+  brandLink.href =
+    agendaHref;
 
   agendaLinkText.textContent =
-    currentRole === "psicologo"
-      ? "Agenda"
-      : "Agendar consulta";
+    "Agendar consulta";
 
   pendingAvatar =
-    currentProfile.avatarDataUrl || "";
+    currentProfile.avatarDataUrl ||
+    "";
 
   renderAvatar();
-  updateProfileSummary();
-  updateProfileCompletion();
+
+  updateHeaderAndSummary();
+
   setEditing(false);
 }
+
+
+/* =========================
+   MENSAGENS
+========================= */
 
 function showFeedback(
   message,
   isError = false
 ) {
-  feedbackText.textContent = message;
+  feedbackText.textContent =
+    message;
 
   feedback.classList.toggle(
     "is-error",
     isError
   );
 
-  feedback.hidden = false;
+  feedback.hidden =
+    false;
 }
 
-function formatPhone(value) {
-  const digits = value
-    .replace(/\D/g, "")
-    .slice(0, 11);
 
-  if (digits.length <= 2) {
+/* =========================
+   TELEFONE
+========================= */
+
+function formatPhone(value) {
+  const digits =
+    String(value)
+      .replace(/\D/g, "")
+      .slice(0, 11);
+
+  if (
+    digits.length <= 2
+  ) {
     return digits;
   }
 
-  if (digits.length <= 6) {
-    return (
-      `(${digits.slice(0, 2)}) ` +
-      digits.slice(2)
-    );
+  if (
+    digits.length <= 6
+  ) {
+    return `(${digits.slice(
+      0,
+      2
+    )}) ${digits.slice(2)}`;
   }
 
-  if (digits.length <= 10) {
-    return (
-      `(${digits.slice(0, 2)}) ` +
-      `${digits.slice(2, 6)}-` +
-      digits.slice(6)
-    );
+  if (
+    digits.length <= 10
+  ) {
+    return `(${digits.slice(
+      0,
+      2
+    )}) ${digits.slice(
+      2,
+      6
+    )}-${digits.slice(6)}`;
   }
 
-  return (
-    `(${digits.slice(0, 2)}) ` +
-    `${digits.slice(2, 7)}-` +
-    digits.slice(7)
-  );
+  return `(${digits.slice(
+    0,
+    2
+  )}) ${digits.slice(
+    2,
+    7
+  )}-${digits.slice(7)}`;
 }
+
+
+/* =========================
+   ATUALIZA SESSÃO
+========================= */
 
 function updateStoredSessions(
-  updatedProfile
+  updatedProfile,
+  oldEmail
 ) {
-  [localStorage, sessionStorage].forEach(
-    (storage) => {
-      [
-        "psinote.auth.session",
-        "psinoteSession"
-      ].forEach((key) => {
-        try {
-          const stored = JSON.parse(
+
+  [
+    localStorage,
+    sessionStorage
+  ].forEach((storage) => {
+
+    [
+      "psinote.auth.session",
+      "psinoteSession"
+    ].forEach((key) => {
+
+      try {
+
+        const stored =
+          JSON.parse(
             storage.getItem(key) ||
-              "null"
+            "null"
           );
 
-          if (!stored) {
-            return;
-          }
-
-          const sameUser =
-            stored.id ===
-              updatedProfile.id ||
-            stored.email?.toLowerCase() ===
-              currentProfile.email?.toLowerCase();
-
-          if (!sameUser) {
-            return;
-          }
-
-          storage.setItem(
-            key,
-            JSON.stringify({
-              ...stored,
-
-              id: updatedProfile.id,
-
-              name:
-                updatedProfile.fullName,
-
-              fullName:
-                updatedProfile.fullName,
-
-              email:
-                updatedProfile.email,
-
-              role:
-                updatedProfile.role,
-
-              professionalData:
-                updatedProfile.professionalData ||
-                null,
-
-              avatarDataUrl:
-                updatedProfile.avatarDataUrl ||
-                ""
-            })
-          );
-        } catch {
-          storage.removeItem(key);
+        if (!stored) {
+          return;
         }
-      });
-    }
-  );
+
+        const sameUser =
+          stored.id ===
+            updatedProfile.id ||
+
+          stored.email
+            ?.toLowerCase() ===
+            oldEmail
+              ?.toLowerCase();
+
+        if (!sameUser) {
+          return;
+        }
+
+        storage.setItem(
+          key,
+          JSON.stringify({
+            ...stored,
+
+            id:
+              updatedProfile.id,
+
+            name:
+              updatedProfile.fullName,
+
+            fullName:
+              updatedProfile.fullName,
+
+            email:
+              updatedProfile.email,
+
+            role:
+              updatedProfile.role,
+
+            professionalData:
+              updatedProfile
+                .professionalData ||
+              null,
+
+            avatarDataUrl:
+              updatedProfile
+                .avatarDataUrl ||
+              ""
+          })
+        );
+
+      } catch {
+
+        storage.removeItem(
+          key
+        );
+
+      }
+
+    });
+
+  });
 }
+
+
+/* =========================
+   ATUALIZA CONSULTAS
+========================= */
 
 function updateRelatedNames(
   updatedProfile
 ) {
-  if (currentRole !== "paciente") {
+  if (
+    currentRole !== "paciente"
+  ) {
     return;
   }
 
-  const requests = data
-    .getRequests()
-    .map((item) => {
-      if (
+  data.saveRequests(
+    data
+      .getRequests()
+      .map((item) =>
         item.patientId ===
         updatedProfile.id
-      ) {
-        return {
-          ...item,
-          patient:
-            updatedProfile.fullName
-        };
-      }
+          ? {
+              ...item,
+              patient:
+                updatedProfile.fullName
+            }
+          : item
+      )
+  );
 
-      return item;
-    });
-
-  const appointments = data
-    .getAppointments()
-    .map((item) => {
-      if (
+  data.saveAppointments(
+    data
+      .getAppointments()
+      .map((item) =>
         item.patientId ===
         updatedProfile.id
-      ) {
-        return {
-          ...item,
-          patient:
-            updatedProfile.fullName
-        };
-      }
-
-      return item;
-    });
-
-  data.saveRequests(requests);
-  data.saveAppointments(appointments);
+          ? {
+              ...item,
+              patient:
+                updatedProfile.fullName
+            }
+          : item
+      )
+  );
 }
+
+
+/* =========================
+   SALVAR PERFIL
+========================= */
 
 function saveProfile() {
   const oldEmail =
@@ -760,38 +818,57 @@ function saveProfile() {
   const updatedProfile = {
     ...currentProfile,
 
-    role: currentRole,
+    role:
+      currentRole,
 
     fullName:
-      getControlValue("fullName"),
+      getControlValue(
+        "fullName"
+      ),
 
     birthDate:
-      getControlValue("birthDate"),
+      getControlValue(
+        "birthDate"
+      ),
 
     socialName:
-      getControlValue("socialName"),
+      getControlValue(
+        "socialName"
+      ),
 
     pronoun:
-      getControlValue("pronoun"),
+      getControlValue(
+        "pronoun"
+      ),
 
     email:
-      getControlValue("email"),
+      getControlValue(
+        "email"
+      ),
 
     phone:
-      getControlValue("phone"),
+      getControlValue(
+        "phone"
+      ),
 
     city:
-      getControlValue("city"),
+      getControlValue(
+        "city"
+      ),
 
     state:
-      getControlValue("state"),
+      getControlValue(
+        "state"
+      ),
 
     avatarDataUrl:
       pendingAvatar,
 
     preferences: {
-      ...(currentProfile.preferences ||
-        {}),
+      ...(
+        currentProfile.preferences ||
+        {}
+      ),
 
       appointmentReminders:
         getControlValue(
@@ -808,10 +885,18 @@ function saveProfile() {
       new Date().toISOString()
   };
 
-  if (currentRole === "paciente") {
+
+  /* PACIENTE */
+
+  if (
+    currentRole === "paciente"
+  ) {
+
     updatedProfile.patientData = {
-      ...(currentProfile.patientData ||
-        {}),
+      ...(
+        currentProfile.patientData ||
+        {}
+      ),
 
       preferredFormat:
         getControlValue(
@@ -821,51 +906,71 @@ function saveProfile() {
       preferredPeriod:
         getControlValue(
           "preferredPeriod"
-        ),
-
-      accessibility:
-        getControlValue(
-          "accessibility"
         )
     };
+
   } else {
+
+    /* PSICÓLOGO */
+
     updatedProfile.professionalData = {
-      ...(currentProfile.professionalData ||
-        {}),
+      ...(
+        currentProfile
+          .professionalData ||
+        {}
+      ),
 
       crp:
         getControlValue("crp"),
 
       crpState:
-        getControlValue("crpState"),
+        getControlValue(
+          "crpState"
+        ),
 
       specialty:
-        getControlValue("specialty"),
+        getControlValue(
+          "specialty"
+        ),
 
       serviceFormat:
         getControlValue(
           "serviceFormat"
         ),
 
-      approach:
-        getControlValue("approach"),
-
-      biography:
-        getControlValue("biography")
+      gender:
+        getControlValue(
+          "gender"
+        )
     };
+
+    updatedProfile.gender =
+      getControlValue(
+        "gender"
+      );
   }
 
+
+  /* VERIFICA E-MAIL DUPLICADO */
+
   const emailConflict =
-    profiles.some((profile) => {
-      return (
+    profiles.some(
+      (profile) =>
         profile.id !==
           updatedProfile.id &&
-        profile.email?.toLowerCase() ===
-          updatedProfile.email.toLowerCase()
-      );
-    });
 
-  if (emailConflict) {
+        updatedProfile.email &&
+
+        profile.email
+          ?.toLowerCase() ===
+          updatedProfile.email
+            .toLowerCase()
+    );
+
+  if (
+    emailConflict
+  ) {
+
     showFeedback(
       "Este e-mail já está sendo usado por outra conta.",
       true
@@ -874,88 +979,122 @@ function saveProfile() {
     return false;
   }
 
-  profiles = profiles.filter(
-    (profile) => {
-      const differentId =
+
+  /* REMOVE PERFIL ANTIGO */
+
+  profiles =
+    profiles.filter(
+      (profile) =>
         profile.id !==
-        updatedProfile.id;
+          updatedProfile.id &&
 
-      const differentEmail =
-        profile.email?.toLowerCase() !==
-        oldEmail?.toLowerCase();
+        profile.email
+          ?.toLowerCase() !==
+          oldEmail
+            ?.toLowerCase()
+    );
 
-      return (
-        differentId &&
-        differentEmail
-      );
-    }
+
+  /* ADICIONA PERFIL ATUALIZADO */
+
+  profiles.push(
+    updatedProfile
   );
 
-  profiles.push(updatedProfile);
 
-  data.saveProfiles(profiles);
+  /* SALVA */
+
+  data.saveProfiles(
+    profiles
+  );
 
   localStorage.setItem(
     "psinoteProfileDemo",
-    JSON.stringify(updatedProfile)
+    JSON.stringify(
+      updatedProfile
+    )
   );
 
-  updateStoredSessions(updatedProfile);
-  updateRelatedNames(updatedProfile);
+  updateStoredSessions(
+    updatedProfile,
+    oldEmail
+  );
 
-  currentProfile = updatedProfile;
+  updateRelatedNames(
+    updatedProfile
+  );
+
+  currentProfile =
+    updatedProfile;
 
   return true;
 }
 
+
+/* =========================
+   REDIMENSIONAR FOTO
+========================= */
+
 function resizeAvatar(file) {
   return new Promise(
     (resolve, reject) => {
-      const reader = new FileReader();
 
-      reader.onerror = () => {
+      const reader =
+        new FileReader();
+
+      reader.onerror = () =>
         reject(
           new Error(
             "Não foi possível ler a imagem."
           )
         );
-      };
 
       reader.onload = () => {
-        const image = new Image();
 
-        image.onerror = () => {
+        const image =
+          new Image();
+
+        image.onerror = () =>
           reject(
             new Error(
               "A imagem selecionada não é válida."
             )
           );
-        };
 
         image.onload = () => {
-          const size = 320;
+
+          const size =
+            320;
 
           const canvas =
             document.createElement(
               "canvas"
             );
 
-          canvas.width = size;
-          canvas.height = size;
+          canvas.width =
+            size;
+
+          canvas.height =
+            size;
 
           const context =
-            canvas.getContext("2d");
+            canvas.getContext(
+              "2d"
+            );
 
-          const scale = Math.max(
-            size / image.width,
-            size / image.height
-          );
+          const scale =
+            Math.max(
+              size / image.width,
+              size / image.height
+            );
 
           const width =
-            image.width * scale;
+            image.width *
+            scale;
 
           const height =
-            image.height * scale;
+            image.height *
+            scale;
 
           context.drawImage(
             image,
@@ -971,42 +1110,24 @@ function resizeAvatar(file) {
               0.82
             )
           );
+
         };
 
-        image.src = reader.result;
+        image.src =
+          reader.result;
       };
 
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(
+        file
+      );
     }
   );
 }
 
-function enableEditingAndFocus(
-  sectionButton
-) {
-  if (!editing) {
-    setEditing(true);
-  }
 
-  const section =
-    sectionButton.closest(
-      ".section-card"
-    );
-
-  const firstControl =
-    section?.querySelector(
-      "input[name]:not([disabled]), select[name]:not([disabled]), textarea[name]:not([disabled])"
-    );
-
-  if (firstControl) {
-    firstControl.focus();
-
-    firstControl.scrollIntoView({
-      behavior: "smooth",
-      block: "center"
-    });
-  }
-}
+/* =========================
+   BOTÃO EDITAR
+========================= */
 
 editButton.addEventListener(
   "click",
@@ -1015,16 +1136,10 @@ editButton.addEventListener(
   }
 );
 
-sectionEditButtons.forEach(
-  (button) => {
-    button.addEventListener(
-      "click",
-      () => {
-        enableEditingAndFocus(button);
-      }
-    );
-  }
-);
+
+/* =========================
+   BOTÃO CANCELAR
+========================= */
 
 cancelButton.addEventListener(
   "click",
@@ -1034,37 +1149,40 @@ cancelButton.addEventListener(
   }
 );
 
+
+/* =========================
+   BOTÃO SALVAR
+========================= */
+
 form.addEventListener(
   "submit",
   (event) => {
+
     event.preventDefault();
 
-    feedback.hidden = true;
+    feedback.hidden =
+      true;
 
-    if (!form.reportValidity()) {
+    if (
+      !form.reportValidity()
+    ) {
       return;
     }
 
     try {
-      const saved = saveProfile();
 
-      if (!saved) {
+      if (
+        !saveProfile()
+      ) {
         return;
       }
 
       applyProfile();
 
-      showFeedback(
-        "Alterações salvas com sucesso."
-      );
+      
 
-      document
-        .querySelector("#perfil")
-        ?.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
     } catch (error) {
+
       console.error(
         "Erro ao salvar o perfil:",
         error
@@ -1074,112 +1192,118 @@ form.addEventListener(
         "Não foi possível salvar as alterações.",
         true
       );
+
     }
+
   }
 );
 
-form.elements.phone.addEventListener(
-  "input",
-  () => {
-    form.elements.phone.value =
-      formatPhone(
-        form.elements.phone.value
-      );
 
-    updateProfileSummary();
-    updateProfileCompletion();
-  }
-);
+/* =========================
+   MÁSCARA DE TELEFONE
+========================= */
 
-const watchedFields = [
+form.elements.phone
+  ?.addEventListener(
+    "input",
+    () => {
+
+      form.elements.phone.value =
+        formatPhone(
+          form.elements.phone.value
+        );
+
+      updateHeaderAndSummary();
+
+    }
+  );
+
+
+/* =========================
+   ATUALIZA RESUMO ENQUANTO EDITA
+========================= */
+
+[
   "fullName",
   "socialName",
   "email",
+  "phone",
   "city",
   "state",
   "preferredFormat",
-  "serviceFormat",
   "preferredPeriod",
-  "accessibility",
   "crp",
   "crpState",
   "specialty",
-  "approach",
-  "biography",
+  "serviceFormat",
+  "gender",
   "pronoun",
   "birthDate"
-];
-
-watchedFields.forEach(
+].forEach(
   (fieldName) => {
+
     const control =
-      form.elements[fieldName];
+      form.elements[
+        fieldName
+      ];
 
     if (!control) {
       return;
     }
 
+    const update = () => {
+
+      if (
+        fieldName ===
+        "fullName"
+      ) {
+        renderAvatar();
+      }
+
+      updateHeaderAndSummary();
+
+    };
+
     control.addEventListener(
       "input",
-      () => {
-        if (
-          fieldName === "fullName"
-        ) {
-          renderAvatar();
-        }
-
-        updateProfileSummary();
-        updateProfileCompletion();
-      }
+      update
     );
 
     control.addEventListener(
       "change",
-      () => {
-        if (
-          fieldName === "fullName"
-        ) {
-          renderAvatar();
-        }
-
-        updateProfileSummary();
-        updateProfileCompletion();
-      }
+      update
     );
+
   }
 );
 
-[
-  "appointmentReminders",
-  "emailNotifications"
-].forEach((fieldName) => {
-  const control =
-    form.elements[fieldName];
 
-  if (!control) {
-    return;
-  }
-
-  control.addEventListener(
-    "change",
-    updateProfileCompletion
-  );
-});
+/* =========================
+   ALTERAR FOTO
+========================= */
 
 changePhotoButton.addEventListener(
   "click",
   () => {
+
     if (!editing) {
-      return;
+      setEditing(true);
     }
 
     avatarInput.click();
+
   }
 );
+
+
+/* =========================
+   SELEÇÃO DA FOTO
+========================= */
 
 avatarInput.addEventListener(
   "change",
   async () => {
+
     const file =
       avatarInput.files?.[0];
 
@@ -1187,7 +1311,12 @@ avatarInput.addEventListener(
       return;
     }
 
-    if (!file.type.startsWith("image/")) {
+    if (
+      !file.type.startsWith(
+        "image/"
+      )
+    ) {
+
       showFeedback(
         "Selecione um arquivo de imagem válido.",
         true
@@ -1200,6 +1329,7 @@ avatarInput.addEventListener(
       file.size >
       5 * 1024 * 1024
     ) {
+
       showFeedback(
         "Escolha uma imagem com até 5 MB.",
         true
@@ -1209,81 +1339,114 @@ avatarInput.addEventListener(
     }
 
     try {
+
       pendingAvatar =
-        await resizeAvatar(file);
+        await resizeAvatar(
+          file
+        );
 
       renderAvatar();
+
     } catch (error) {
+
       showFeedback(
         error.message,
         true
       );
+
     } finally {
-      avatarInput.value = "";
+
+      avatarInput.value =
+        "";
+
     }
+
   }
 );
 
-document
-  .querySelector(
-    "#changePasswordButton"
-  )
-  .addEventListener(
-    "click",
-    () => {
-      showFeedback(
-        "A alteração de senha será conectada ao backend posteriormente."
-      );
-    }
-  );
+
+/* =========================
+   MENU MOBILE
+========================= */
 
 if (mobileMenu) {
+
   mobileMenu.addEventListener(
     "click",
     () => {
+
       const isOpen =
-        sidebar.classList.toggle("open");
+        sidebar.classList.toggle(
+          "open"
+        );
 
       mobileMenu.setAttribute(
         "aria-expanded",
         String(isOpen)
       );
+
     }
   );
 
   document.addEventListener(
     "click",
     (event) => {
-      if (window.innerWidth > 720) {
+
+      if (
+        window.innerWidth >
+        720
+      ) {
         return;
       }
 
-      const clickedInsideSidebar =
-        sidebar.contains(event.target);
-
-      const clickedMenuButton =
-        mobileMenu.contains(event.target);
-
       if (
-        !clickedInsideSidebar &&
-        !clickedMenuButton
+        sidebar.contains(
+          event.target
+        ) ||
+        mobileMenu.contains(
+          event.target
+        )
       ) {
-        sidebar.classList.remove("open");
-
-        mobileMenu.setAttribute(
-          "aria-expanded",
-          "false"
-        );
+        return;
       }
+
+      sidebar.classList.remove(
+        "open"
+      );
+
+      mobileMenu.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+
     }
   );
 }
 
-logoutLink.addEventListener(
-  "click",
-  () => {
-    data.clearSession();
-  }
-);
+
+/* =========================
+   LINKS AINDA NÃO IMPLEMENTADOS
+========================= */
+
+document
+  .querySelectorAll(
+    "[data-placeholder-link]"
+  )
+  .forEach(
+    (link) => {
+
+      link.addEventListener(
+        "click",
+        (event) =>
+          event.preventDefault()
+      );
+
+    }
+  );
+
+
+/* =========================
+   INICIALIZA
+========================= */
 
 applyProfile();
