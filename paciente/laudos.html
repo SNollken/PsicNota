@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Laudos e receitas disponíveis para o paciente no PsicNota" />
   <title>PsicNota | Laudos e receitas</title>
-  <link rel="stylesheet" href="assets/css/agenda.css" />
-  <link rel="stylesheet" href="assets/css/agenda-paciente.css" />
-  <link rel="stylesheet" href="assets/css/app.css" />
+  <link rel="stylesheet" href="../assets/css/agenda.css" />
+  <link rel="stylesheet" href="../assets/css/agenda-paciente.css" />
+  <link rel="stylesheet" href="../assets/css/app.css" />
 </head>
 <body class="patient-view">
   <div class="app-shell">
@@ -26,19 +26,19 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8l4 4v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4Zm8 0v4h4M9 13h6M9 17h4"></path></svg>
           Laudos e receitas
         </a>
-        <a class="nav-item" href="perfil.html">
+        <a class="nav-item" href="../perfil.html">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7 8a7 7 0 0 0-14 0"></path></svg>
           Meu perfil
         </a>
       </nav>
-      <div class="sidebar-footer"><a class="nav-item logout" id="logoutLink" href="login.html">Sair da conta</a></div>
+      <div class="sidebar-footer"><a class="nav-item logout" id="logoutLink" href="../login.html">Sair da conta</a></div>
     </aside>
 
     <main class="main-content">
       <header class="topbar">
         <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
         <div class="page-heading"><p class="eyebrow">ÁREA DO PACIENTE</p><h1>Laudos e receitas</h1></div>
-        <a class="account-summary" href="perfil.html" aria-label="Abrir meu perfil"><div class="mini-avatar" id="patientAvatar" aria-hidden="true">PA</div><div><strong id="patientName">Paciente</strong><span>Paciente · Editar perfil</span></div></a>
+        <a class="account-summary" href="../perfil.html" aria-label="Abrir meu perfil"><div class="mini-avatar" id="patientAvatar" aria-hidden="true">PA</div><div><strong id="patientName">Paciente</strong><span>Paciente · Editar perfil</span></div></a>
       </header>
 
       <section class="patient-hero">
@@ -65,7 +65,7 @@
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span><span id="toastMessage"></span></div>
-  <script src="assets/js/shared-data.js"></script>
-  <script src="assets/js/laudos.js"></script>
+  <script src="../assets/js/shared-data.js"></script>
+  <script src="../assets/js/laudos.js"></script>
 </body>
 </html>
