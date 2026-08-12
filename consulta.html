@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Consulta: notas rápidas, relatório e documentos do paciente" />
+  <title>PsicNota | Consulta</title>
+  <link rel="stylesheet" href="assets/css/agenda.css" />
+  <link rel="stylesheet" href="assets/css/app.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegação principal">
+      <a class="brand" href="agenda.html"><span class="brand-mark" aria-hidden="true">Ψ</span><span>PsicNota</span></a>
+      <nav class="main-nav">
+        <p class="nav-label">ATENDIMENTO</p>
+        <a class="nav-item" href="agenda.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18M7 13h2m3 0h2m3 0h2M7 17h2m3 0h2"/></svg>
+          Agenda
+        </a>
+        <a class="nav-item active" href="#" aria-current="page">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm2 5h8M8 12h8M8 16h5"/></svg>
+          Consulta
+        </a>
+        <a class="nav-item" href="relatorios.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8l4 4v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4Zm8 0v4h4M9 13h6M9 17h4"/></svg>
+          Relatórios
+        </a>
+        <p class="nav-label nav-label-spaced">CONTA</p>
+        <a class="nav-item" href="perfil.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7 8a7 7 0 0 0-14 0"/></svg>
+          Meu perfil
+        </a>
+      </nav>
+      <div class="sidebar-footer"><a class="nav-item logout" id="logoutLink" href="login.html">Sair da conta</a></div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+        <div class="page-heading"><p class="eyebrow">ATENDIMENTO</p><h1>Consulta</h1></div>
+        <a class="account-summary" href="perfil.html" aria-label="Abrir meu perfil"><div class="mini-avatar" id="psychologistAvatar" aria-hidden="true">PS</div><div><strong id="psychologistName">Psicólogo</strong><span>Psicólogo · Editar perfil</span></div></a>
+      </header>
+
+      <div id="notFound" class="content-card" hidden>
+        <div class="card-heading"><div><h2>Consulta não encontrada</h2><p>O link pode estar desatualizado. Volte para a agenda e escolha uma consulta.</p></div></div>
+        <div class="action-row"><a class="button button-primary" href="agenda.html">Voltar para a agenda</a></div>
+      </div>
+
+      <div id="consultaContent" hidden>
+        <section class="content-card" aria-labelledby="consultaTitle">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">DADOS DA CONSULTA</p>
+              <h2 id="consultaTitle">Paciente</h2>
+              <p id="consultaSub"></p>
+            </div>
+            <div class="action-row">
+              <a class="button button-secondary" id="historicoLink" href="historico.html">Histórico do paciente</a>
+              <a class="button button-primary" id="relatorioLink" href="relatorios.html">Relatório da consulta</a>
+            </div>
+          </div>
+          <div class="info-grid">
+            <div class="info-item"><span>Data</span><strong id="infoDate"></strong></div>
+            <div class="info-item"><span>Horário</span><strong id="infoTime"></strong></div>
+            <div class="info-item"><span>Duração</span><strong id="infoDuration"></strong></div>
+            <div class="info-item"><span>Modalidade</span><strong id="infoMode"></strong></div>
+            <div class="info-item"><span>Situação</span><strong id="infoStatus"></strong></div>
+          </div>
+        </section>
+
+        <section class="content-card" aria-labelledby="notasTitle">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">DURANTE A SESSÃO</p>
+              <h2 id="notasTitle">Notas rápidas</h2>
+              <p>Texto livre para anotar durante a consulta. Salve sempre que precisar. O paciente não vê essas notas.</p>
+            </div>
+            <span class="save-status" id="noteSaveStatus"></span>
+          </div>
+          <label class="sr-only" for="sessionNote">Notas rápidas da consulta</label>
+          <textarea class="note-area" id="sessionNote" rows="8" placeholder="Ex.: paciente chegou ansioso, retomamos o tema da última sessão..."></textarea>
+          <div class="note-toolbar">
+            <span id="noteUpdatedAt"></span>
+            <div class="action-row">
+              <button class="button button-secondary" id="useInReportButton" type="button">Usar no relatório</button>
+              <button class="button button-primary" id="saveNoteButton" type="button">Salvar notas</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-card" aria-labelledby="docsTitle">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">PARA O PACIENTE</p>
+              <h2 id="docsTitle">Laudos e receitas</h2>
+              <p>Anexe um documento para este paciente. Ele aparece na área do paciente para download.</p>
+            </div>
+          </div>
+          <form id="attachDocForm" class="form-row-inline" novalidate>
+            <label class="field"><span>Tipo</span>
+              <select id="docType">
+                <option value="laudo">Laudo</option>
+                <option value="receita">Receita</option>
+              </select>
+            </label>
+            <label class="field"><span>Nome do documento</span>
+              <input id="docName" type="text" placeholder="Ex.: Laudo de acompanhamento, março de 2026" required />
+            </label>
+            <button class="button button-primary" type="submit">Anexar</button>
+          </form>
+          <div class="doc-list" id="patientDocs"></div>
+          <p class="compact-empty" id="emptyDocs" hidden>Nenhum documento anexado para este paciente ainda.</p>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span><span id="toastMessage"></span></div>
+  <script src="assets/js/shared-data.js"></script>
+  <script src="assets/js/consulta.js"></script>
+</body>
+</html>

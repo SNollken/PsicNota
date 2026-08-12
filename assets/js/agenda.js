@@ -234,11 +234,15 @@ function createAppointmentElement(appointment) {
   if (activeMenuId === appointment.id) {
     const actions = document.createElement('div');
     actions.className = 'appointment-actions';
+    const open = document.createElement('button');
+    open.type = 'button';
+    open.textContent = 'Abrir consulta';
+    open.addEventListener('click', () => { window.location.href = `consulta.html?id=${appointment.id}`; });
     const cancel = document.createElement('button');
     cancel.type = 'button';
     cancel.textContent = 'Cancelar consulta';
     cancel.addEventListener('click', () => deleteAppointment(appointment.id));
-    actions.append(cancel);
+    actions.append(open, cancel);
     menu.append(actions);
   }
 

@@ -105,31 +105,38 @@ svg {
 .brand {
   display: flex;
   align-items: center;
-  gap: 0.2px;
+  gap: 12px;
 
-  min-height: 64px;
-  padding: 0 5px 18px;
+  min-height: 74px;
+
+  padding: 0 18px 18px;
+
+  color: #12181d;
 
   text-decoration: none;
-}
 
-.brand .brand-icon {
-  width: 85px !important;
-  height: 85px !important;
-  min-width: 85px;
-  max-width: none !important;
-
-  object-fit: contain;
-  flex: 0 0 85px;
-}
-
-.brand-text {
-  font-family: "Laila", serif;
-  font-size: 32px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 30px;
   font-weight: 500;
-  line-height: 0.1;
 
-  color: #1F637A;
+  letter-spacing: 0.01em;
+}
+
+.brand-logo {
+  width: 58px;
+  height: 62px;
+
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 auto;
+}
+
+.brand-logo svg {
+  width: 58px;
+  height: 62px;
+
+  stroke-width: 1.8;
 }
 
 .main-nav {
@@ -256,9 +263,6 @@ svg {
   gap: 14px;
 
   min-width: 0;
-
-    transform: translateY(-1px);
-
 }
 
 .profile-avatar {
@@ -297,7 +301,7 @@ svg {
 .profile-person-copy {
   min-width: 0;
 
-  padding-top: 0;
+  padding-top: 32px;
 }
 
 .profile-role {
