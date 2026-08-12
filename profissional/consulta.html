@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Consulta: notas rápidas, relatório e documentos do paciente" />
   <title>PsicNota | Consulta</title>
-  <link rel="stylesheet" href="assets/css/agenda.css" />
-  <link rel="stylesheet" href="assets/css/app.css" />
+  <link rel="stylesheet" href="../assets/css/agenda.css" />
+  <link rel="stylesheet" href="../assets/css/app.css" />
 </head>
 <body>
   <div class="app-shell">
@@ -27,19 +27,19 @@
           Relatórios
         </a>
         <p class="nav-label nav-label-spaced">CONTA</p>
-        <a class="nav-item" href="perfil.html">
+        <a class="nav-item" href="../perfil.html">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7 8a7 7 0 0 0-14 0"/></svg>
           Meu perfil
         </a>
       </nav>
-      <div class="sidebar-footer"><a class="nav-item logout" id="logoutLink" href="login.html">Sair da conta</a></div>
+      <div class="sidebar-footer"><a class="nav-item logout" id="logoutLink" href="../login.html">Sair da conta</a></div>
     </aside>
 
     <main class="main-content">
       <header class="topbar">
         <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
         <div class="page-heading"><p class="eyebrow">ATENDIMENTO</p><h1>Consulta</h1></div>
-        <a class="account-summary" href="perfil.html" aria-label="Abrir meu perfil"><div class="mini-avatar" id="psychologistAvatar" aria-hidden="true">PS</div><div><strong id="psychologistName">Psicólogo</strong><span>Psicólogo · Editar perfil</span></div></a>
+        <a class="account-summary" href="../perfil.html" aria-label="Abrir meu perfil"><div class="mini-avatar" id="psychologistAvatar" aria-hidden="true">PS</div><div><strong id="psychologistName">Psicólogo</strong><span>Psicólogo · Editar perfil</span></div></a>
       </header>
 
       <div id="notFound" class="content-card" hidden>
@@ -117,7 +117,7 @@
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span><span id="toastMessage"></span></div>
-  <script src="assets/js/shared-data.js"></script>
-  <script src="assets/js/consulta.js"></script>
+  <script src="../assets/js/shared-data.js"></script>
+  <script src="../assets/js/consulta.js"></script>
 </body>
 </html>

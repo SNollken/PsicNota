@@ -568,8 +568,8 @@ function applyProfile() {
 
   const agendaHref =
     currentRole === "psicologo"
-      ? "agenda.html"
-      : "agenda-paciente.html";
+      ? "profissional/agenda.html"
+      : "paciente/agenda-paciente.html";
 
   document.querySelector(
     "[data-role-pill]"
