@@ -5,6 +5,8 @@
     appointments: "psinote.agenda.appointments",
     requests: "psinote.agenda.requests",
     notes: "psinote.agenda.notes",
+    reports: "psinote.reports",
+    documents: "psinote.documents",
     profiles: "psinoteProfilesDemo",
     latestProfile: "psinoteProfileDemo",
     session: "psinote.auth.session"
@@ -72,6 +74,8 @@
       const latest = readStorage(localStorage, STORAGE_KEYS.latestProfile, null);
       write(STORAGE_KEYS.profiles, latest ? [latest] : []);
     }
+    if (!Array.isArray(readStorage(localStorage, STORAGE_KEYS.reports, null))) write(STORAGE_KEYS.reports, []);
+    if (!Array.isArray(readStorage(localStorage, STORAGE_KEYS.documents, null))) write(STORAGE_KEYS.documents, []);
   }
 
   function getAppointments() {
@@ -108,6 +112,45 @@
 
   function saveProfiles(profiles) {
     write(STORAGE_KEYS.profiles, profiles);
+  }
+
+  function getReports() {
+    ensureData();
+    return readStorage(localStorage, STORAGE_KEYS.reports, []);
+  }
+
+  function saveReports(items) {
+    write(STORAGE_KEYS.reports, items);
+  }
+
+  function getDocuments() {
+    ensureData();
+    return readStorage(localStorage, STORAGE_KEYS.documents, []);
+  }
+
+  function saveDocuments(items) {
+    write(STORAGE_KEYS.documents, items);
+  }
+
+  function appointmentNoteKey(appointmentId) {
+    return `appt:${appointmentId}`;
+  }
+
+  function getAppointmentNote(appointmentId) {
+    return getNotes()[appointmentNoteKey(appointmentId)] || "";
+  }
+
+  function setAppointmentNote(appointmentId, text) {
+    const allNotes = getNotes();
+    const key = appointmentNoteKey(appointmentId);
+    const value = String(text || "").trim();
+    if (value) allNotes[key] = value;
+    else delete allNotes[key];
+    saveNotes(allNotes);
+  }
+
+  function hasAppointmentNote(appointmentId) {
+    return Boolean(getAppointmentNote(appointmentId).trim());
   }
 
   function getOpenSlots(dateKey) {
@@ -168,6 +211,13 @@
     saveRequests,
     getNotes,
     saveNotes,
+    getReports,
+    saveReports,
+    getDocuments,
+    saveDocuments,
+    getAppointmentNote,
+    setAppointmentNote,
+    hasAppointmentNote,
     getProfiles,
     saveProfiles,
     getSession,
