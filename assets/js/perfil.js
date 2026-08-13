@@ -405,17 +405,25 @@ function updateHeaderAndSummary() {
     "Forma de atendimento";
 
   const preference =
-    currentRole === "psicologo"
-      ? serviceFormatLabel(
-          getControlValue(
-            "serviceFormat"
-          )
-        )
-      : textOrFallback(
-          getControlValue(
-            "preferredFormat"
-          )
-        );
+  currentRole === "psicologo"
+    ? serviceFormatLabel(
+        getControlValue("serviceFormat")
+      )
+    : (() => {
+        const formato =
+          getControlValue("preferredFormat");
+
+        const periodo =
+          getControlValue("preferredPeriod");
+
+        if (formato && periodo) {
+          return `${formato} / ${periodo}`;
+        }
+
+        return formato ||
+          periodo ||
+          "Não informado";
+      })();
 
   document.querySelector(
     "[data-summary-preference]"
