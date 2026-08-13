@@ -355,7 +355,7 @@ h1 {
 .button-photo {
   min-width: 150px;
 
-  border: 1.5px solid #2d6f89;
+  border: 2px solid #2d6f89;
 
   background: #ffffff;
   color: #1e5e77;
@@ -383,7 +383,7 @@ h1 {
 }
 
 .button-cancel {
-  border: 1px solid #aac8d3;
+  border: 2px solid #aac8d3;
 
   background: #ffffff;
   color: #365661;
@@ -397,7 +397,7 @@ h1 {
 .button-remove-photo {
   min-width: 130px;
 
-  border: 1.5px solid #9f3f3f;
+  border: 2px solid #9f3f3f;
 
   background: #ffffff;
   color: #9f3f3f;
