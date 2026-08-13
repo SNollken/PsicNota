@@ -210,12 +210,29 @@ function createAppointmentElement(appointment) {
   meta.className = 'appointment-meta';
   meta.innerHTML = `<span>${formatDuration(appointment.duration)}</span><span>${escapeHtml(appointment.mode)}</span>`;
   info.append(patient, meta);
+  if (data.hasAppointmentNote(appointment.id)) {
+    const badge = document.createElement('span');
+    badge.className = 'appointment-note-badge';
+    badge.textContent = '✎ Com notas';
+    info.append(badge);
+  }
   if (appointment.observation) {
     const observation = document.createElement('p');
     observation.className = 'appointment-observation';
     observation.textContent = appointment.observation;
     info.append(observation);
   }
+
+  const menuRow = document.createElement('div');
+  menuRow.className = 'appointment-menu-row';
+
+  const quickNote = document.createElement('a');
+  quickNote.className = 'appointment-quick-note';
+  if (data.hasAppointmentNote(appointment.id)) quickNote.classList.add('has-note');
+  quickNote.href = `consulta.html?id=${appointment.id}`;
+  quickNote.setAttribute('aria-label', `Notas rápidas da consulta de ${appointment.patient}`);
+  quickNote.title = data.hasAppointmentNote(appointment.id) ? 'Ver notas rápidas' : 'Registrar notas rápidas';
+  quickNote.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
 
   const menu = document.createElement('div');
   menu.className = 'appointment-menu';

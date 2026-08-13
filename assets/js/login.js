@@ -117,7 +117,7 @@ loginForm.addEventListener("submit", (event) => {
   submitButton.textContent = "Entrando...";
 
   window.setTimeout(() => {
-    window.location.href = profile.role === "psicologo" ? "profissional/agenda.html" : "paciente/agenda-paciente.html";
+    window.location.href = profile.role === "psicologo" ? "profissional/home.html" : "paciente/home.html";
   }, 700);
 });
 

@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Histórico do paciente no PsicNota" />
-  <title>PsicNota | Histórico do paciente</title>
+  <meta name="description" content="Lista de pacientes do PsicNota com acesso ao histórico" />
+  <title>PsicNota | Pacientes</title>
   <link rel="stylesheet" href="../assets/css/agenda.css" />
   <link rel="stylesheet" href="../assets/css/app.css" />
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Navegação principal">
-      <a class="brand" href="agenda.html"><span class="brand-mark" aria-hidden="true">Ψ</span><span>PsicNota</span></a>
+      <a class="brand" href="home.html"><span class="brand-mark" aria-hidden="true">Ψ</span><span>PsicNota</span></a>
       <nav class="main-nav">
         <p class="nav-label">ATENDIMENTO</p>
         <a class="nav-item" href="home.html">
@@ -22,17 +22,13 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18M7 13h2m3 0h2m3 0h2M7 17h2m3 0h2"/></svg>
           Agenda
         </a>
-        <a class="nav-item" href="pacientes.html">
+        <a class="nav-item active" href="pacientes.html" aria-current="page">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 19a4 4 0 0 0-8 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm7 8a3 3 0 0 0-3-3m-8 3a3 3 0 0 1 3-3"/></svg>
           Pacientes
         </a>
         <a class="nav-item" href="relatorios.html">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8l4 4v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4Zm8 0v4h4M9 13h6M9 17h4"/></svg>
           Relatórios
-        </a>
-        <a class="nav-item active" href="#" aria-current="page">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-          Histórico
         </a>
         <p class="nav-label nav-label-spaced">CONTA</p>
         <a class="nav-item" href="../perfil.html">
@@ -46,54 +42,39 @@
     <main class="main-content">
       <header class="topbar">
         <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
-        <div class="page-heading"><p class="eyebrow">ACOMPANHAMENTO</p><h1>Histórico do paciente</h1></div>
+        <div class="page-heading"><p class="eyebrow">ACOMPANHAMENTO</p><h1>Pacientes</h1></div>
         <a class="account-summary" href="../perfil.html" aria-label="Abrir meu perfil"><div class="mini-avatar" id="psychologistAvatar" aria-hidden="true">PS</div><div><strong id="psychologistName">Psicólogo</strong><span>Psicólogo · Editar perfil</span></div></a>
       </header>
 
       <section class="agenda-intro" aria-labelledby="introTitle">
         <div>
-          <h2 id="introTitle">Paciente</h2>
-          <p>Linha do tempo com consultas, notas rápidas, relatórios e documentos deste paciente.</p>
+          <h2 id="introTitle">Seus pacientes</h2>
+          <p>Pacientes aparecem aqui a partir das consultas cadastradas na agenda. Acesse o histórico completo de cada um.</p>
         </div>
-        <div class="action-row">
-          <a class="button button-secondary" href="agenda.html">Voltar para a agenda</a>
-        </div>
+        <label class="patient-search">
+          <span class="sr-only" for="patientSearch">Buscar paciente pelo nome</span>
+          <input id="patientSearch" type="search" placeholder="Buscar paciente pelo nome" />
+        </label>
       </section>
 
-      <section class="summary-strip summary-strip-four" aria-label="Resumo do paciente">
-        <div class="summary-item"><span class="summary-label">Consultas confirmadas</span><strong id="statConsultas">0</strong></div>
-        <div class="summary-item"><span class="summary-label">Relatórios</span><strong id="statRelatorios">0</strong></div>
-        <div class="summary-item"><span class="summary-label">Notas registradas</span><strong id="statNotas">0</strong></div>
-        <div class="summary-item"><span class="summary-label">Documentos</span><strong id="statDocs">0</strong></div>
-      </section>
-
-      <section class="content-card" aria-labelledby="timelineTitle">
+      <section class="content-card" aria-labelledby="listaTitle">
         <div class="card-heading">
           <div>
-            <p class="eyebrow">LINHA DO TEMPO</p>
-            <h2 id="timelineTitle">Tudo sobre este paciente</h2>
-            <p>Mais recente primeiro.</p>
+            <p class="eyebrow">LISTA</p>
+            <h2 id="listaTitle">Todos os pacientes</h2>
+            <p>Ordenados pelo atendimento mais recente.</p>
           </div>
+          <span class="request-total" id="patientTotal">0 pacientes</span>
         </div>
-        <div class="timeline" id="timeline"></div>
-        <div class="request-empty" id="emptyTimeline" hidden><strong>Nada registrado ainda</strong><p>Quando houver consultas, notas ou relatórios, eles aparecem aqui.</p></div>
-      </section>
-
-      <section class="content-card" aria-labelledby="docsTitle">
-        <div class="card-heading">
-          <div>
-            <p class="eyebrow">DOCUMENTOS</p>
-            <h2 id="docsTitle">Laudos e receitas anexados</h2>
-          </div>
-        </div>
-        <div class="doc-list" id="docList"></div>
-        <p class="compact-empty" id="emptyDocs" hidden>Nenhum documento para este paciente.</p>
+        <div class="patient-list" id="patientList"></div>
+        <div class="request-empty" id="emptyPatients" hidden><strong>Nenhum paciente ainda</strong><p>Quando você cadastrar ou aprovar consultas, os pacientes aparecem aqui.</p></div>
+        <p class="compact-empty" id="noMatch" hidden>Nenhum paciente corresponde à busca.</p>
       </section>
     </main>
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span><span id="toastMessage"></span></div>
   <script src="../assets/js/shared-data.js"></script>
-  <script src="../assets/js/historico.js"></script>
+  <script src="../assets/js/pacientes.js"></script>
 </body>
 </html>
