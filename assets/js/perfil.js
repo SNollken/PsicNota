@@ -600,6 +600,11 @@ function applyProfile() {
       currentRole !== "paciente";
   }
 
+  if (relatoriosLink) {
+    relatoriosLink.hidden =
+      currentRole !== "psicologo";
+  }
+
   pendingAvatar =
     currentProfile.avatarDataUrl ||
     "";
