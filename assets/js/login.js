@@ -48,6 +48,90 @@ function readProfiles() {
   }
 }
 
+/* Contas de demonstração para testar o protótipo sem cadastro.
+   Quando houver backend, esse bloco sai e a autenticação vira real. */
+const TEST_ACCOUNTS = [
+  {
+    email: "psicologo",
+    password: "123",
+    profile: {
+      id: "perfil-teste-psicologo",
+      role: "psicologo",
+      fullName: "Psicólogo Teste",
+      birthDate: "1990-05-14",
+      phone: "(61) 99999-0001",
+      email: "psicologo",
+      professionalData: {
+        crp: "01/00001",
+        crpState: "DF",
+        specialty: "Psicologia clínica",
+        serviceFormat: "ambos"
+      },
+      createdAt: "2026-08-13T00:00:00.000Z"
+    }
+  },
+  {
+    email: "paciente",
+    password: "123",
+    profile: {
+      id: "perfil-teste-paciente",
+      role: "paciente",
+      fullName: "Paciente Teste",
+      birthDate: "2000-01-20",
+      phone: "(61) 99999-0002",
+      email: "paciente",
+      professionalData: null,
+      createdAt: "2026-08-13T00:00:00.000Z"
+    }
+  }
+];
+
+/* Garante que as contas teste existam no storage sem sobrescrever
+   edições que o usuário já fez nelas. */
+function ensureTestAccounts() {
+  const profiles = readProfiles();
+  let changed = false;
+  TEST_ACCOUNTS.forEach((account) => {
+    if (!profiles.some((item) => item.email?.toLowerCase() === account.email)) {
+      profiles.push(account.profile);
+      changed = true;
+    }
+  });
+  if (changed) {
+    localStorage.setItem("psinoteProfilesDemo", JSON.stringify(profiles));
+  }
+}
+
+function enterWithProfile(profile, remember) {
+  const session = {
+    id: profile.id || `perfil-${(profile.email || "demo").toLowerCase()}`,
+    name: profile.fullName,
+    fullName: profile.fullName,
+    email: profile.email,
+    role: profile.role,
+    professionalData: profile.professionalData || null,
+    avatarDataUrl: profile.avatarDataUrl || "",
+    loggedAt: new Date().toISOString()
+  };
+
+  [localStorage, sessionStorage].forEach((storage) => {
+    storage.removeItem("psinote.auth.session");
+    storage.removeItem("psinoteSession");
+  });
+  const storage = remember ? localStorage : sessionStorage;
+  storage.setItem("psinote.auth.session", JSON.stringify(session));
+  storage.setItem("psinoteSession", JSON.stringify(session));
+
+  showMessage("Login validado. Abrindo sua área...", "success");
+  const submitButton = loginForm.querySelector('button[type="submit"]');
+  submitButton.disabled = true;
+  submitButton.textContent = "Entrando...";
+
+  window.setTimeout(() => {
+    window.location.href = profile.role === "psicologo" ? "profissional/home.html" : "paciente/home.html";
+  }, 700);
+}
+
 loginForm.addEventListener("submit", (event) => {
   event.preventDefault();
   clearMessage();
@@ -61,6 +145,18 @@ loginForm.addEventListener("submit", (event) => {
 
   setFieldError(emailInput, "");
   setFieldError(passwordInput, "");
+
+  const testAccount = TEST_ACCOUNTS.find((account) => account.email === email.toLowerCase());
+  if (testAccount) {
+    if (password !== testAccount.password) {
+      setFieldError(passwordInput, "Senha incorreta para a conta teste.");
+      showMessage("Confira a senha: as contas teste usam a senha 123.", "error");
+      passwordInput.focus();
+      return;
+    }
+    enterWithProfile(testAccount.profile, rememberMe.checked);
+    return;
+  }
 
   if (!email) {
     setFieldError(emailInput, "Informe seu e-mail.");
@@ -92,33 +188,7 @@ loginForm.addEventListener("submit", (event) => {
     return;
   }
 
-  const session = {
-    id: profile.id || `perfil-${email.toLowerCase()}`,
-    name: profile.fullName,
-    fullName: profile.fullName,
-    email: profile.email,
-    role: profile.role,
-    professionalData: profile.professionalData || null,
-    avatarDataUrl: profile.avatarDataUrl || "",
-    loggedAt: new Date().toISOString()
-  };
-
-  [localStorage, sessionStorage].forEach((storage) => {
-    storage.removeItem("psinote.auth.session");
-    storage.removeItem("psinoteSession");
-  });
-  const storage = rememberMe.checked ? localStorage : sessionStorage;
-  storage.setItem("psinote.auth.session", JSON.stringify(session));
-  storage.setItem("psinoteSession", JSON.stringify(session));
-
-  showMessage("Login validado. Abrindo sua agenda...", "success");
-  const submitButton = loginForm.querySelector('button[type="submit"]');
-  submitButton.disabled = true;
-  submitButton.textContent = "Entrando...";
-
-  window.setTimeout(() => {
-    window.location.href = profile.role === "psicologo" ? "profissional/home.html" : "paciente/home.html";
-  }, 700);
+  enterWithProfile(profile, rememberMe.checked);
 });
 
 loginForm.addEventListener("input", (event) => {
@@ -134,3 +204,4 @@ forgotPasswordLink.addEventListener("click", (event) => {
 });
 
 setupPasswordToggles();
+ensureTestAccounts();
