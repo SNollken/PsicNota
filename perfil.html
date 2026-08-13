@@ -5,21 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Edição de perfil do paciente e do psicólogo no PsicNota" />
   <title>PsicNota | Meu perfil</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="assets/css/perfil.css" />
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Navegação principal">
       <a class="brand" id="brandLink" href="paciente/agenda-paciente.html" aria-label="PsicNota - página inicial">
-        <span class="brand-logo" aria-hidden="true">
-          <svg viewBox="0 0 44 50">
-            <rect x="7" y="8" width="26" height="35" rx="3"></rect>
-            <path d="M13 34 31 12l5 5-18 22-7 2 2-7Z"></path>
-            <path d="m28 15 5 5"></path>
-            <path d="M14 13h10"></path>
-          </svg>
-        </span>
-        <span>PsicNota</span>
+        <img src="assets/img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />
+        <span class="brand-text">PsicNota</span>
       </a>
 
       <nav class="main-nav">
@@ -46,16 +44,6 @@
           <span>Laudos e receitas</span>
         </a>
       </nav>
-
-      <div class="sidebar-footer">
-        <a class="settings-link" href="#" data-placeholder-link>
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5Z"></path>
-            <path d="M19.4 15a1.8 1.8 0 0 0 .36 2l.06.06-2.12 2.12-.06-.06a1.8 1.8 0 0 0-2-.36 1.8 1.8 0 0 0-1.1 1.65V20.5h-3v-.09a1.8 1.8 0 0 0-1.1-1.65 1.8 1.8 0 0 0-2 .36l-.06.06-2.12-2.12.06-.06a1.8 1.8 0 0 0 .36-2A1.8 1.8 0 0 0 5 13.9H4.9v-3H5a1.8 1.8 0 0 0 1.65-1.1 1.8 1.8 0 0 0-.36-2l-.06-.06 2.12-2.12.06.06a1.8 1.8 0 0 0 2 .36A1.8 1.8 0 0 0 11.5 4.4V4.3h3v.1a1.8 1.8 0 0 0 1.1 1.65 1.8 1.8 0 0 0 2-.36l.06-.06 2.12 2.12-.06.06a1.8 1.8 0 0 0-.36 2A1.8 1.8 0 0 0 21 10.9h.1v3H21a1.8 1.8 0 0 0-1.6 1.1Z"></path>
-          </svg>
-          Configurações
-        </a>
-      </div>
     </aside>
 
     <main class="main-content">
@@ -87,6 +75,10 @@
                 <circle cx="12" cy="12" r="3"></circle>
               </svg>
               Alterar foto
+            </button>
+
+            <button class="button button-remove-photo" id="removePhotoButton" type="button" hidden>
+              Remover foto
             </button>
 
             <button class="button button-edit" id="editButton" type="button">

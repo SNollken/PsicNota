@@ -105,38 +105,31 @@ svg {
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.2px;
 
-  min-height: 74px;
-
-  padding: 0 18px 18px;
-
-  color: #12181d;
+  min-height: 64px;
+  padding: 0 5px 18px;
 
   text-decoration: none;
+}
 
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 30px;
+.brand .brand-icon {
+  width: 70px !important;
+  height: 70px !important;
+  min-width: 70px;
+  max-width: none !important;
+
+  object-fit: contain;
+  flex: 0 0 85px;
+}
+
+.brand-text {
+  font-family: "Laila", serif;
+  font-size: 32px;
   font-weight: 500;
+  line-height: 0.1;
 
-  letter-spacing: 0.01em;
-}
-
-.brand-logo {
-  width: 58px;
-  height: 62px;
-
-  display: grid;
-  place-items: center;
-
-  flex: 0 0 auto;
-}
-
-.brand-logo svg {
-  width: 58px;
-  height: 62px;
-
-  stroke-width: 1.8;
+  color: #1F637A;
 }
 
 .main-nav {
@@ -147,12 +140,12 @@ svg {
 .nav-label {
   margin: 0 0 2px;
 
-  padding: 0 8px;
+  padding: 0 10px;
 
   color: #52636b;
 
-  font-size: 10px;
-  font-weight: 500;
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .nav-item,
@@ -203,25 +196,6 @@ svg {
   color: #153f50;
 }
 
-.sidebar-footer {
-  margin-top: auto;
-
-  padding-top: 18px;
-
-  border-top: 1px solid #d7e8ee;
-}
-
-.settings-link {
-  min-height: 38px;
-
-  padding-inline: 8px;
-
-  border: 0;
-  border-radius: 8px;
-
-  font-size: 12px;
-  font-weight: 500;
-}
 
 /* =========================
    CONTEÚDO
@@ -263,6 +237,9 @@ svg {
   gap: 14px;
 
   min-width: 0;
+
+    transform: translateY(-1px);
+
 }
 
 .profile-avatar {
@@ -301,7 +278,7 @@ svg {
 .profile-person-copy {
   min-width: 0;
 
-  padding-top: 32px;
+  padding-top: 0;
 }
 
 .profile-role {
@@ -417,6 +394,18 @@ h1 {
   gap: 10px;
 }
 
+.button-remove-photo {
+  min-width: 130px;
+
+  border: 1.5px solid #9f3f3f;
+
+  background: #ffffff;
+  color: #9f3f3f;
+}
+
+.button-remove-photo:hover {
+  background: #fff5f5;
+}
 /* =========================
    LINHA
 ========================= */
@@ -521,8 +510,8 @@ h1 {
 
   color: #15242b;
 
-  font-size: 10px;
-  font-weight: 800;
+  font-size: 12px;
+  font-weight: 790;
 }
 
 .summary-card strong {
@@ -532,7 +521,7 @@ h1 {
 
   color: #11191d;
 
-  font-size: 11px;
+  font-size: 15px;
   line-height: 1.2;
 
   text-overflow: ellipsis;
@@ -564,7 +553,7 @@ h1 {
   display: grid;
 
   grid-template-columns:
-    250px minmax(0, 1fr);
+    350px minmax(0, 1fr);
 
   align-items: start;
 
@@ -593,8 +582,8 @@ h1 {
 }
 
 .section-icon svg {
-  width: 21px;
-  height: 21px;
+  width: 24px;
+  height: 24px;
 }
 
 .section-heading h2 {
@@ -634,7 +623,7 @@ h1 {
 .field > span {
   color: #111b20;
 
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 800;
 }
 
@@ -647,7 +636,7 @@ select {
 
   padding: 0 14px;
 
-  border: 1.4px solid #1f637a;
+  border: 2px solid #1f637a;
   border-radius: 6px;
 
   outline: none;
@@ -655,7 +644,7 @@ select {
   background: #ffffff;
   color: #18516a;
 
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
 
   text-align: center;
@@ -729,13 +718,13 @@ input::placeholder {
 
   padding: 0 7px 0 20px;
 
-  border: 1.4px solid #1f637a;
+  border: 2px solid #1f637a;
   border-radius: 9px;
 
   background: #ffffff;
-  color: #172329;
+  color: #1f637a;
 
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
 }
 

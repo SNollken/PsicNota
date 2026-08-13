@@ -13,6 +13,7 @@ const feedbackText = document.querySelector("#feedbackText");
 
 const avatarInput = document.querySelector("#avatarInput");
 const changePhotoButton = document.querySelector("#changePhotoButton");
+const removePhotoButton = document.querySelector("#removePhotoButton");
 
 const agendaLink = document.querySelector("#agendaLink");
 const agendaLinkText = document.querySelector("#agendaLinkText");
@@ -276,6 +277,9 @@ function setEditing(state) {
   editButton.hidden = state;
 
   feedback.hidden = true;
+
+  removePhotoButton.hidden =
+    !state || !pendingAvatar;
 
   if (state) {
     storeOriginalValues();
@@ -1308,6 +1312,18 @@ changePhotoButton.addEventListener(
   }
 );
 
+removePhotoButton.addEventListener(
+  "click",
+  () => {
+
+    pendingAvatar = "";
+
+    renderAvatar();
+
+    removePhotoButton.hidden = true;
+  }
+);
+
 
 /* =========================
    SELEÇÃO DA FOTO
@@ -1359,6 +1375,8 @@ avatarInput.addEventListener(
         );
 
       renderAvatar();
+
+      removePhotoButton.hidden = false;
 
     } catch (error) {
 
