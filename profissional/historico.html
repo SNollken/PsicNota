@@ -3,17 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Histórico do paciente no PsicNota" />
+  <meta name="description" content="Histórico clínico do paciente no PsicNota" />
   <title>PsicNota | Histórico do paciente</title>
-  <link rel="stylesheet" href="../assets/css/agenda.css" />
-  <link rel="stylesheet" href="../assets/css/app.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/css/base.css" />
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Navegação principal">
-      <a class="brand" href="agenda.html"><span class="brand-mark" aria-hidden="true">Ψ</span><span>PsicNota</span></a>
+      <a class="brand" href="home.html" aria-label="PsicNota - página inicial">
+        <img src="../assets/img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />
+        <span class="brand-text">PsicNota</span>
+      </a>
       <nav class="main-nav">
-        <p class="nav-label">ATENDIMENTO</p>
+        <p class="nav-label">MENU</p>
         <a class="nav-item" href="home.html">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 12 4l8 7v9h-5v-6h-6v6H4v-9Z"/></svg>
           Início
@@ -22,7 +29,7 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18M7 13h2m3 0h2m3 0h2M7 17h2m3 0h2"/></svg>
           Agenda
         </a>
-        <a class="nav-item" href="pacientes.html">
+        <a class="nav-item active" href="pacientes.html" aria-current="page">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 19a4 4 0 0 0-8 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm7 8a3 3 0 0 0-3-3m-8 3a3 3 0 0 1 3-3"/></svg>
           Pacientes
         </a>
@@ -30,64 +37,69 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8l4 4v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4Zm8 0v4h4M9 13h6M9 17h4"/></svg>
           Relatórios
         </a>
-        <a class="nav-item active" href="#" aria-current="page">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-          Histórico
-        </a>
         <p class="nav-label nav-label-spaced">CONTA</p>
         <a class="nav-item" href="../perfil.html">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7 8a7 7 0 0 0-14 0"/></svg>
           Meu perfil
         </a>
       </nav>
-      <div class="sidebar-footer"><a class="nav-item logout" id="logoutLink" href="../login.html">Sair da conta</a></div>
+      <div class="sidebar-footer"><a class="nav-item nav-logout" id="logoutLink" href="../login.html">Sair da conta</a></div>
     </aside>
 
     <main class="main-content">
+      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+
       <header class="topbar">
-        <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
-        <div class="page-heading"><p class="eyebrow">ACOMPANHAMENTO</p><h1>Histórico do paciente</h1></div>
-        <a class="account-summary" href="../perfil.html" aria-label="Abrir meu perfil"><div class="mini-avatar" id="psychologistAvatar" aria-hidden="true">PS</div><div><strong id="psychologistName">Psicólogo</strong><span>Psicólogo · Editar perfil</span></div></a>
+        <div class="page-heading"><p class="eyebrow">Histórico clínico</p><h1 id="introTitle">Histórico do paciente</h1></div>
+        <div class="topbar-actions">
+          <a class="account-chip" href="../perfil.html" aria-label="Abrir meu perfil">
+            <span class="account-avatar" id="psychologistAvatar" aria-hidden="true">PS</span>
+            <span class="account-copy"><strong id="psychologistName">Psicólogo</strong><span>Psicólogo</span></span>
+          </a>
+        </div>
       </header>
 
-      <section class="agenda-intro" aria-labelledby="introTitle">
-        <div>
-          <h2 id="introTitle">Paciente</h2>
-          <p>Linha do tempo com consultas, notas rápidas, relatórios e documentos deste paciente.</p>
+      <section class="summary-grid" aria-label="Resumo do acompanhamento">
+        <div class="summary-card">
+          <span class="summary-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"/></svg></span>
+          <div><span class="summary-label">Consultas</span><strong id="statConsultas">0</strong></div>
         </div>
-        <div class="action-row">
-          <a class="button button-secondary" href="agenda.html">Voltar para a agenda</a>
+        <div class="summary-card">
+          <span class="summary-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8l4 4v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4Zm8 0v4h4M9 13h6M9 17h4"/></svg></span>
+          <div><span class="summary-label">Relatórios</span><strong id="statRelatorios">0</strong></div>
+        </div>
+        <div class="summary-card">
+          <span class="summary-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span>
+          <div><span class="summary-label">Notas rápidas</span><strong id="statNotas">0</strong></div>
+        </div>
+        <div class="summary-card">
+          <span class="summary-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 7h-4a2 2 0 0 0-2 2v11M4 7h7v13H4zM15 13h5"/></svg></span>
+          <div><span class="summary-label">Documentos</span><strong id="statDocs">0</strong></div>
         </div>
       </section>
 
-      <section class="summary-strip summary-strip-four" aria-label="Resumo do paciente">
-        <div class="summary-item"><span class="summary-label">Consultas confirmadas</span><strong id="statConsultas">0</strong></div>
-        <div class="summary-item"><span class="summary-label">Relatórios</span><strong id="statRelatorios">0</strong></div>
-        <div class="summary-item"><span class="summary-label">Notas registradas</span><strong id="statNotas">0</strong></div>
-        <div class="summary-item"><span class="summary-label">Documentos</span><strong id="statDocs">0</strong></div>
-      </section>
-
-      <section class="content-card" aria-labelledby="timelineTitle">
+      <section class="panel" aria-labelledby="linhaTitle">
         <div class="card-heading">
           <div>
-            <p class="eyebrow">LINHA DO TEMPO</p>
-            <h2 id="timelineTitle">Tudo sobre este paciente</h2>
-            <p>Mais recente primeiro.</p>
+            <p class="eyebrow">Linha do tempo</p>
+            <h2 id="linhaTitle">Acontecimentos mais recentes</h2>
+            <p>Consultas, relatórios e notas, do mais novo para o mais antigo.</p>
           </div>
         </div>
         <div class="timeline" id="timeline"></div>
-        <div class="request-empty" id="emptyTimeline" hidden><strong>Nada registrado ainda</strong><p>Quando houver consultas, notas ou relatórios, eles aparecem aqui.</p></div>
+        <div class="notice-item notice-info" id="emptyTimeline" hidden>Nada registrado para esse paciente ainda. Escolha um paciente na lista para começar.</div>
       </section>
 
-      <section class="content-card" aria-labelledby="docsTitle">
+      <section class="panel" aria-labelledby="docsTitle">
         <div class="card-heading">
           <div>
-            <p class="eyebrow">DOCUMENTOS</p>
-            <h2 id="docsTitle">Laudos e receitas anexados</h2>
+            <p class="eyebrow">Documentos</p>
+            <h2 id="docsTitle">Laudos e receitas</h2>
+            <p>Os documentos anexados nas consultas desse paciente.</p>
           </div>
         </div>
         <div class="doc-list" id="docList"></div>
-        <p class="compact-empty" id="emptyDocs" hidden>Nenhum documento para este paciente.</p>
+        <div class="notice-item notice-info" id="emptyDocs" hidden>Nenhum documento emitido para esse paciente.</div>
       </section>
     </main>
   </div>

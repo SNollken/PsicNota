@@ -3,17 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Lista de pacientes do PsicNota com acesso ao histórico" />
+  <meta name="description" content="Lista de pacientes do PsicNota" />
   <title>PsicNota | Pacientes</title>
-  <link rel="stylesheet" href="../assets/css/agenda.css" />
-  <link rel="stylesheet" href="../assets/css/app.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/css/base.css" />
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Navegação principal">
-      <a class="brand" href="home.html"><span class="brand-mark" aria-hidden="true">Ψ</span><span>PsicNota</span></a>
+      <a class="brand" href="home.html" aria-label="PsicNota - página inicial">
+        <img src="../assets/img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />
+        <span class="brand-text">PsicNota</span>
+      </a>
       <nav class="main-nav">
-        <p class="nav-label">ATENDIMENTO</p>
+        <p class="nav-label">MENU</p>
         <a class="nav-item" href="home.html">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 12 4l8 7v9h-5v-6h-6v6H4v-9Z"/></svg>
           Início
@@ -36,39 +43,38 @@
           Meu perfil
         </a>
       </nav>
-      <div class="sidebar-footer"><a class="nav-item logout" id="logoutLink" href="../login.html">Sair da conta</a></div>
+      <div class="sidebar-footer"><a class="nav-item nav-logout" id="logoutLink" href="../login.html">Sair da conta</a></div>
     </aside>
 
     <main class="main-content">
+      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+
       <header class="topbar">
-        <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
-        <div class="page-heading"><p class="eyebrow">ACOMPANHAMENTO</p><h1>Pacientes</h1></div>
-        <a class="account-summary" href="../perfil.html" aria-label="Abrir meu perfil"><div class="mini-avatar" id="psychologistAvatar" aria-hidden="true">PS</div><div><strong id="psychologistName">Psicólogo</strong><span>Psicólogo · Editar perfil</span></div></a>
+        <div class="page-heading"><p class="eyebrow">Acompanhamento</p><h1 id="introTitle">Pacientes</h1></div>
+        <div class="topbar-actions">
+          <label class="patient-search">
+            <span class="sr-only" for="patientSearch">Buscar paciente</span>
+            <input id="patientSearch" type="search" placeholder="Buscar paciente..." />
+          </label>
+          <a class="account-chip" href="../perfil.html" aria-label="Abrir meu perfil">
+            <span class="account-avatar" id="psychologistAvatar" aria-hidden="true">PS</span>
+            <span class="account-copy"><strong id="psychologistName">Psicólogo</strong><span>Psicólogo</span></span>
+          </a>
+        </div>
       </header>
 
-      <section class="agenda-intro" aria-labelledby="introTitle">
-        <div>
-          <h2 id="introTitle">Seus pacientes</h2>
-          <p>Pacientes aparecem aqui a partir das consultas cadastradas na agenda. Acesse o histórico completo de cada um.</p>
-        </div>
-        <label class="patient-search">
-          <span class="sr-only" for="patientSearch">Buscar paciente pelo nome</span>
-          <input id="patientSearch" type="search" placeholder="Buscar paciente pelo nome" />
-        </label>
-      </section>
-
-      <section class="content-card" aria-labelledby="listaTitle">
+      <section class="panel" aria-labelledby="listaTitle">
         <div class="card-heading">
           <div>
-            <p class="eyebrow">LISTA</p>
+            <p class="eyebrow">Lista</p>
             <h2 id="listaTitle">Todos os pacientes</h2>
-            <p>Ordenados pelo atendimento mais recente.</p>
+            <p>Derivados dos agendamentos existentes no protótipo.</p>
           </div>
-          <span class="request-total" id="patientTotal">0 pacientes</span>
+          <span class="badge badge-neutral" id="patientTotal">0 pacientes</span>
         </div>
         <div class="patient-list" id="patientList"></div>
-        <div class="request-empty" id="emptyPatients" hidden><strong>Nenhum paciente ainda</strong><p>Quando você cadastrar ou aprovar consultas, os pacientes aparecem aqui.</p></div>
-        <p class="compact-empty" id="noMatch" hidden>Nenhum paciente corresponde à busca.</p>
+        <div class="notice-item notice-info" id="emptyPatients" hidden>Nenhum paciente encontrado nos agendamentos ainda.</div>
+        <div class="notice-item notice-info" id="noMatch" hidden>Nenhum paciente corresponde à busca.</div>
       </section>
     </main>
   </div>

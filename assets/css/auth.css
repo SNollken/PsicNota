@@ -96,6 +96,22 @@ a {
   font-weight: 700;
 }
 
+/* marca nova: logo PNG + fonte Laila (padrão do Editar Perfil) */
+.brand .brand-icon {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.brand .brand-text {
+  font-family: "Laila", serif;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--blue-700);
+  letter-spacing: 0;
+}
+
 .brand-content {
   max-width: 560px;
   margin: 72px 0;
