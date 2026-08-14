@@ -939,6 +939,145 @@ input[readonly] {
   font-weight: 600;
 }
 
+/* emoção do dia (design Figma: chips segmentados azul-claros) */
+
+.mood-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mood-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 7px 16px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--blue-100);
+  color: var(--blue-800);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.mood-option:hover {
+  background: var(--blue-150);
+}
+
+.mood-option.selected {
+  background: var(--blue-200);
+  border-color: var(--blue-700);
+  box-shadow: 0 0 0 3px rgba(31, 99, 122, 0.14);
+  font-weight: 800;
+}
+
+.mood-emoji {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* anexos do relatório */
+
+.attach-area {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-width: 0;
+}
+
+.attach-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.attach-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: 280px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #24343b;
+}
+
+.attach-chip strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attach-chip small {
+  color: #6d858e;
+  font-weight: 600;
+}
+
+.attach-chip-icon {
+  flex: 0 0 auto;
+}
+
+.attach-chip-remove {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #6d858e;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.attach-chip-remove:hover {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.attach-chip-static {
+  margin: 0 8px 8px 0;
+}
+
+.attach-note {
+  width: 100%;
+  margin: 0;
+  color: #6d858e;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.report-draft-badge {
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.report-document-mood {
+  margin: 0 0 6px;
+  color: var(--blue-800);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.report-document-attachments {
+  margin-bottom: 18px;
+}
+
+.report-document-attachments .report-block-label {
+  display: block;
+  margin-bottom: 8px;
+}
+
 /* relatório renderizado (visualização) */
 
 .report-document {
