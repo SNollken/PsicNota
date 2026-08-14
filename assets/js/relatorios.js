@@ -13,15 +13,23 @@ const elements = {
   emptyReports: document.querySelector('#emptyReports'),
   reportTotal: document.querySelector('#reportTotal'),
   newReportButton: document.querySelector('#newReportButton'),
+  backToListButton: document.querySelector('#backToListButton'),
   reportForm: document.querySelector('#reportForm'),
   editorContext: document.querySelector('#editorContext'),
   reportPatient: document.querySelector('#reportPatient'),
   reportAppointment: document.querySelector('#reportAppointment'),
+  appointmentInfoGrid: document.querySelector('#appointmentInfoGrid'),
+  reportInfoPatient: document.querySelector('#reportInfoPatient'),
+  reportInfoDate: document.querySelector('#reportInfoDate'),
+  reportInfoTime: document.querySelector('#reportInfoTime'),
+  reportInfoDuration: document.querySelector('#reportInfoDuration'),
+  reportInfoMode: document.querySelector('#reportInfoMode'),
   blockQueixa: document.querySelector('#blockQueixa'),
   blockIntervencao: document.querySelector('#blockIntervencao'),
   blockEvolucao: document.querySelector('#blockEvolucao'),
   blockProxima: document.querySelector('#blockProxima'),
   freeText: document.querySelector('#freeText'),
+  draftStatus: document.querySelector('#draftStatus'),
   toast: document.querySelector('#toast'),
   toastMessage: document.querySelector('#toastMessage'),
   psychologistName: document.querySelector('#psychologistName'),
@@ -35,11 +43,14 @@ const shortDateFormatter = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', mo
 const fullDateFormatter = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
 
 const BLOCKS = [
-  { key: 'queixa', label: 'Queixa / demanda da sessão', el: () => elements.blockQueixa },
-  { key: 'intervencao', label: 'Intervenção', el: () => elements.blockIntervencao },
-  { key: 'evolucao', label: 'Evolução', el: () => elements.blockEvolucao },
-  { key: 'proxima', label: 'Próxima sessão', el: () => elements.blockProxima }
+  { key: 'queixa', label: 'Queixa principal', el: () => elements.blockQueixa },
+  { key: 'intervencao', label: 'Intervenções realizadas', el: () => elements.blockIntervencao },
+  { key: 'evolucao', label: 'Evolução do paciente', el: () => elements.blockEvolucao },
+  { key: 'proxima', label: 'Encaminhamentos', el: () => elements.blockProxima }
 ];
+
+const DRAFT_KEY = 'psinote.reportDraft';
+let draftTimer = null;
 
 let toastTimeout = null;
 
@@ -69,6 +80,84 @@ function findAppointment(appointmentId) {
 function appointmentLabel(appointment) {
   if (!appointment) return 'Sem consulta vinculada';
   return `${fullDateFormatter.format(data.fromDateKey(appointment.date))} às ${appointment.time} · ${appointment.patient}`;
+}
+
+function formatDuration(duration) {
+  const value = Number(duration);
+  if (value === 60) return '1 hora';
+  return `${value} minutos`;
+}
+
+function renderAppointmentInfo(appointment) {
+  if (!appointment) {
+    elements.appointmentInfoGrid.hidden = true;
+    return;
+  }
+  elements.appointmentInfoGrid.hidden = false;
+  elements.reportInfoPatient.value = appointment.patient;
+  elements.reportInfoDate.value = shortDateFormatter.format(data.fromDateKey(appointment.date));
+  elements.reportInfoTime.value = appointment.time;
+  elements.reportInfoDuration.value = formatDuration(appointment.duration);
+  elements.reportInfoMode.value = appointment.mode;
+}
+
+function draftContextId() {
+  return editReportId || elements.reportAppointment.value || 'novo';
+}
+
+function saveDraft() {
+  const draft = {
+    contextId: draftContextId(),
+    patient: elements.reportPatient.value,
+    appointmentId: elements.reportAppointment.value,
+    blocks: {
+      queixa: elements.blockQueixa.value,
+      intervencao: elements.blockIntervencao.value,
+      evolucao: elements.blockEvolucao.value,
+      proxima: elements.blockProxima.value
+    },
+    freeText: elements.freeText.value,
+    savedAt: new Date().toISOString()
+  };
+  try {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    const time = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' }).format(new Date());
+    elements.draftStatus.textContent = `Rascunho salvo automaticamente às ${time}`;
+  } catch {
+    elements.draftStatus.textContent = '';
+  }
+}
+
+function scheduleDraftSave() {
+  window.clearTimeout(draftTimer);
+  draftTimer = window.setTimeout(saveDraft, 800);
+}
+
+function clearDraft() {
+  window.clearTimeout(draftTimer);
+  localStorage.removeItem(DRAFT_KEY);
+  elements.draftStatus.textContent = '';
+}
+
+function loadDraftIfMatches() {
+  let draft = null;
+  try {
+    draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
+  } catch {
+    draft = null;
+  }
+  if (!draft || draft.contextId !== draftContextId()) return false;
+  elements.reportPatient.value = draft.patient || elements.reportPatient.value;
+  if (draft.blocks) {
+    elements.blockQueixa.value = draft.blocks.queixa || '';
+    elements.blockIntervencao.value = draft.blocks.intervencao || '';
+    elements.blockEvolucao.value = draft.blocks.evolucao || '';
+    elements.blockProxima.value = draft.blocks.proxima || '';
+  }
+  elements.freeText.value = draft.freeText || '';
+  const time = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' }).format(new Date(draft.savedAt));
+  elements.draftStatus.textContent = `Rascunho recuperado (salvo às ${time})`;
+  return true;
 }
 
 function buildAppointmentOptions(selectedAppointmentId) {
@@ -118,6 +207,10 @@ function renderList() {
 
     const actions = document.createElement('div');
     actions.className = 'action-row';
+    const viewButton = document.createElement('a');
+    viewButton.className = 'button button-secondary button-compact';
+    viewButton.href = `relatorio-view.html?id=${encodeURIComponent(report.id)}`;
+    viewButton.textContent = 'Ver';
     const editButton = document.createElement('button');
     editButton.type = 'button';
     editButton.className = 'button button-secondary button-compact';
@@ -135,7 +228,7 @@ function renderList() {
       renderList();
       showToast('Relatório excluído.');
     });
-    actions.append(editButton, deleteButton);
+    actions.append(viewButton, editButton, deleteButton);
     top.append(titleWrap, actions);
 
     const filledBlocks = BLOCKS.filter((block) => (report.blocks?.[block.key] || '').trim());
@@ -168,10 +261,12 @@ function renderList() {
 function openEditor(report, appointmentId) {
   elements.listView.hidden = true;
   elements.editorView.hidden = false;
-  elements.pageTitle.textContent = report ? 'Editar relatório' : 'Novo relatório';
+  elements.pageTitle.textContent = 'Relatório de Consulta';
   elements.newReportButton.hidden = true;
+  elements.backToListButton.hidden = false;
 
-  buildAppointmentOptions(report?.appointmentId || appointmentId || '');
+  const targetAppointmentId = report?.appointmentId || appointmentId || '';
+  buildAppointmentOptions(targetAppointmentId);
 
   elements.reportPatient.value = report?.patient || '';
   elements.blockQueixa.value = report?.blocks?.queixa || '';
@@ -179,6 +274,9 @@ function openEditor(report, appointmentId) {
   elements.blockEvolucao.value = report?.blocks?.evolucao || '';
   elements.blockProxima.value = report?.blocks?.proxima || '';
   elements.freeText.value = report?.freeText || '';
+
+  const appointment = targetAppointmentId ? findAppointment(targetAppointmentId) : null;
+  renderAppointmentInfo(appointment);
 
   if (usarNotas && appointmentId) {
     const note = data.getAppointmentNote(appointmentId);
@@ -188,13 +286,16 @@ function openEditor(report, appointmentId) {
     }
   }
 
-  const appointment = (report?.appointmentId || appointmentId) ? findAppointment(report?.appointmentId || appointmentId) : null;
   elements.editorContext.textContent = appointment
     ? `Consulta de ${appointment.patient} em ${fullDateFormatter.format(data.fromDateKey(appointment.date))} às ${appointment.time}.`
     : 'Nenhuma consulta vinculada ainda.';
 
   if (!elements.reportPatient.value && appointment) {
     elements.reportPatient.value = appointment.patient;
+  }
+
+  if (!report) {
+    loadDraftIfMatches();
   }
 }
 
@@ -235,6 +336,7 @@ function handleReportSubmit(event) {
   }
 
   data.saveReports(reports);
+  clearDraft();
   showToast('Relatório salvo. Ele já aparece no histórico do paciente.');
   window.location.href = 'relatorios.html';
 }
@@ -247,6 +349,25 @@ function init() {
     window.location.href = 'relatorios.html';
   });
   elements.newReportButton.addEventListener('click', () => openEditor(null, null));
+  elements.backToListButton.addEventListener('click', () => {
+    window.location.href = 'relatorios.html';
+  });
+
+  elements.reportAppointment.addEventListener('change', () => {
+    const appointment = elements.reportAppointment.value ? findAppointment(elements.reportAppointment.value) : null;
+    renderAppointmentInfo(appointment);
+    elements.editorContext.textContent = appointment
+      ? `Consulta de ${appointment.patient} em ${fullDateFormatter.format(data.fromDateKey(appointment.date))} às ${appointment.time}.`
+      : 'Nenhuma consulta vinculada ainda.';
+    if (appointment && !elements.reportPatient.value.trim()) {
+      elements.reportPatient.value = appointment.patient;
+    }
+    scheduleDraftSave();
+  });
+
+  [elements.reportPatient, elements.blockQueixa, elements.blockIntervencao, elements.blockEvolucao, elements.blockProxima, elements.freeText].forEach((control) => {
+    control.addEventListener('input', scheduleDraftSave);
+  });
 
   if (editReportId) {
     const report = data.getReports().find((item) => item.id === editReportId);

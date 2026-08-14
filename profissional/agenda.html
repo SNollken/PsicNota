@@ -3,17 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Agenda profissional e solicitações de consulta do PsiNote" />
+  <meta name="description" content="Agenda profissional e solicitações de consulta do PsicNota" />
   <title>PsicNota | Agenda do psicólogo</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="../assets/css/agenda.css" />
-  <link rel="stylesheet" href="../assets/css/app.css" />
+  <link rel="stylesheet" href="../assets/css/base.css" />
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Navegação principal">
-      <a class="brand" href="agenda.html"><span class="brand-mark" aria-hidden="true">Ψ</span><span>PsiNote</span></a>
+      <a class="brand" href="home.html" aria-label="PsicNota - página inicial">
+        <img src="../assets/img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />
+        <span class="brand-text">PsicNota</span>
+      </a>
       <nav class="main-nav">
-        <p class="nav-label">ATENDIMENTO</p>
+        <p class="nav-label">MENU</p>
         <a class="nav-item" href="home.html">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 12 4l8 7v9h-5v-6h-6v6H4v-9Z"/></svg>
           Início
@@ -41,14 +49,20 @@
           Meu perfil
         </a>
       </nav>
-      <div class="sidebar-footer"><a class="nav-item logout" id="logoutLink" href="../login.html">Sair da conta</a></div>
+      <div class="sidebar-footer"><a class="nav-item nav-logout" id="logoutLink" href="../login.html">Sair da conta</a></div>
     </aside>
 
     <main class="main-content">
+      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+
       <header class="topbar">
-        <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
-        <div class="page-heading"><p class="eyebrow">ORGANIZAÇÃO DE ATENDIMENTOS</p><h1>Agenda do psicólogo</h1></div>
-        <a class="account-summary" href="../perfil.html" aria-label="Abrir meu perfil"><div class="mini-avatar" id="psychologistAvatar" aria-hidden="true">PS</div><div><strong id="psychologistName">Psicólogo</strong><span>Psicólogo · Editar perfil</span></div></a>
+        <div class="page-heading"><p class="eyebrow">Organização de atendimentos</p><h1>Agenda do psicólogo</h1></div>
+        <div class="topbar-actions">
+          <a class="account-chip" href="../perfil.html" aria-label="Abrir meu perfil">
+            <span class="account-avatar" id="psychologistAvatar" aria-hidden="true">PS</span>
+            <span class="account-copy"><strong id="psychologistName">Psicólogo</strong><span>Psicólogo · Editar perfil</span></span>
+          </a>
+        </div>
       </header>
 
       <section class="agenda-intro" aria-labelledby="agendaIntroTitle">
@@ -59,16 +73,16 @@
         </button>
       </section>
 
-      <section class="summary-strip summary-strip-four" aria-label="Resumo da agenda">
-        <div class="summary-item"><span class="summary-label">Pendentes</span><strong id="pendingCount">0 solicitações</strong></div>
-        <div class="summary-item"><span class="summary-label">Hoje</span><strong id="todayCount">0 consultas</strong></div>
-        <div class="summary-item"><span class="summary-label">Esta semana</span><strong id="weekCount">0 consultas</strong></div>
-        <div class="summary-item"><span class="summary-label">Próximo atendimento</span><strong id="nextAppointment">Nenhum agendamento</strong></div>
+      <section class="summary-grid" aria-label="Resumo da agenda">
+        <div class="summary-card"><div><span class="summary-label">Pendentes</span><strong id="pendingCount">0 solicitações</strong></div></div>
+        <div class="summary-card"><div><span class="summary-label">Hoje</span><strong id="todayCount">0 consultas</strong></div></div>
+        <div class="summary-card"><div><span class="summary-label">Esta semana</span><strong id="weekCount">0 consultas</strong></div></div>
+        <div class="summary-card"><div><span class="summary-label">Próximo atendimento</span><strong id="nextAppointment">Nenhum agendamento</strong></div></div>
       </section>
 
       <section class="request-board" id="solicitacoes" aria-labelledby="requestBoardTitle">
         <header class="request-board-header">
-          <div><p class="eyebrow">FILA DE APROVAÇÃO</p><h2 id="requestBoardTitle">Solicitações dos pacientes</h2><p>O número da fila considera o instante em que cada pedido foi enviado. Os mais antigos aparecem primeiro.</p></div>
+          <div><p class="eyebrow">Fila de aprovação</p><h2 id="requestBoardTitle">Solicitações dos pacientes</h2><p>O número da fila considera o instante em que cada pedido foi enviado. Os mais antigos aparecem primeiro.</p></div>
           <span class="request-total" id="requestTotal">0 pendentes</span>
         </header>
         <div class="request-list" id="requestList"></div>
@@ -94,7 +108,7 @@
 
         <aside class="day-panel" aria-labelledby="selectedDateTitle">
           <header class="day-panel-header">
-            <div><p class="eyebrow">DETALHES DO DIA</p><h2 id="selectedDateTitle"></h2><p id="selectedDateWeekday"></p></div>
+            <div><p class="eyebrow">Detalhes do dia</p><h2 id="selectedDateTitle"></h2><p id="selectedDateWeekday"></p></div>
             <button class="icon-button" id="addAppointmentForDayButton" type="button" aria-label="Adicionar consulta neste dia"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
           </header>
 
@@ -123,7 +137,7 @@
 
   <div class="modal-backdrop" id="appointmentModal" hidden>
     <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <header class="modal-header"><div><p class="eyebrow">NOVO AGENDAMENTO</p><h2 id="modalTitle">Cadastrar consulta manualmente</h2></div><button class="icon-button" id="closeModalButton" type="button" aria-label="Fechar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></header>
+      <header class="modal-header"><div><p class="eyebrow">Novo agendamento</p><h2 id="modalTitle">Cadastrar consulta manualmente</h2></div><button class="icon-button" id="closeModalButton" type="button" aria-label="Fechar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></header>
       <form id="appointmentForm" novalidate>
         <div class="form-grid">
           <label class="field field-wide"><span>Paciente</span><input id="appointmentPatient" name="patient" required placeholder="Nome do paciente" /></label>

@@ -3,28 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Consulta: notas rápidas, relatório e documentos do paciente" />
-  <title>PsicNota | Consulta</title>
-  <link rel="stylesheet" href="../assets/css/agenda.css" />
-  <link rel="stylesheet" href="../assets/css/app.css" />
+  <meta name="description" content="Notas rápidas de consulta do PsicNota" />
+  <title>PsicNota | Notas da consulta</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/css/base.css" />
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Navegação principal">
-      <a class="brand" href="agenda.html"><span class="brand-mark" aria-hidden="true">Ψ</span><span>PsicNota</span></a>
+      <a class="brand" href="home.html" aria-label="PsicNota - página inicial">
+        <img src="../assets/img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />
+        <span class="brand-text">PsicNota</span>
+      </a>
       <nav class="main-nav">
-        <p class="nav-label">ATENDIMENTO</p>
+        <p class="nav-label">MENU</p>
         <a class="nav-item" href="home.html">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 12 4l8 7v9h-5v-6h-6v6H4v-9Z"/></svg>
           Início
         </a>
-        <a class="nav-item" href="agenda.html">
+        <a class="nav-item active" href="agenda.html" aria-current="page">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18M7 13h2m3 0h2m3 0h2M7 17h2m3 0h2"/></svg>
           Agenda
-        </a>
-        <a class="nav-item active" href="#" aria-current="page">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm2 5h8M8 12h8M8 16h5"/></svg>
-          Consulta
         </a>
         <a class="nav-item" href="pacientes.html">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 19a4 4 0 0 0-8 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm7 8a3 3 0 0 0-3-3m-8 3a3 3 0 0 1 3-3"/></svg>
@@ -40,32 +43,42 @@
           Meu perfil
         </a>
       </nav>
-      <div class="sidebar-footer"><a class="nav-item logout" id="logoutLink" href="../login.html">Sair da conta</a></div>
+      <div class="sidebar-footer"><a class="nav-item nav-logout" id="logoutLink" href="../login.html">Sair da conta</a></div>
     </aside>
 
     <main class="main-content">
-      <header class="topbar">
-        <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
-        <div class="page-heading"><p class="eyebrow">ATENDIMENTO</p><h1>Consulta</h1></div>
-        <a class="account-summary" href="../perfil.html" aria-label="Abrir meu perfil"><div class="mini-avatar" id="psychologistAvatar" aria-hidden="true">PS</div><div><strong id="psychologistName">Psicólogo</strong><span>Psicólogo · Editar perfil</span></div></a>
-      </header>
+      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
 
-      <div id="notFound" class="content-card" hidden>
-        <div class="card-heading"><div><h2>Consulta não encontrada</h2><p>O link pode estar desatualizado. Volte para a agenda e escolha uma consulta.</p></div></div>
-        <div class="action-row"><a class="button button-primary" href="agenda.html">Voltar para a agenda</a></div>
+      <div id="notFound" class="panel" hidden>
+        <div class="card-heading">
+          <div>
+            <h2>Consulta não encontrada</h2>
+            <p>O link pode estar desatualizado. Volte para a agenda e escolha uma consulta.</p>
+          </div>
+        </div>
+        <div class="action-row"><a class="button button-primary" href="agenda.html">Abrir agenda</a></div>
       </div>
 
       <div id="consultaContent" hidden>
-        <section class="content-card" aria-labelledby="consultaTitle">
+        <header class="topbar">
+          <div class="page-heading"><p class="eyebrow">Consulta</p><h1 id="consultaTitle">Notas rápidas</h1></div>
+          <div class="topbar-actions">
+            <a class="account-chip" href="../perfil.html" aria-label="Abrir meu perfil">
+              <span class="account-avatar" id="psychologistAvatar" aria-hidden="true">PS</span>
+              <span class="account-copy"><strong id="psychologistName">Psicólogo</strong><span>Psicólogo</span></span>
+            </a>
+          </div>
+        </header>
+
+        <section class="panel" aria-label="Resumo da consulta">
           <div class="card-heading">
             <div>
-              <p class="eyebrow">DADOS DA CONSULTA</p>
-              <h2 id="consultaTitle">Paciente</h2>
-              <p id="consultaSub"></p>
+              <p class="eyebrow">Resumo</p>
+              <h2 id="consultaSub"></h2>
             </div>
             <div class="action-row">
-              <a class="button button-secondary" id="historicoLink" href="historico.html">Histórico do paciente</a>
-              <a class="button button-primary" id="relatorioLink" href="relatorios.html">Relatório da consulta</a>
+              <a class="button button-secondary button-compact" id="historicoLink" href="#">Ver histórico</a>
+              <a class="button button-primary button-compact" id="relatorioLink" href="#">Criar relatório</a>
             </div>
           </div>
           <div class="info-grid">
@@ -73,52 +86,52 @@
             <div class="info-item"><span>Horário</span><strong id="infoTime"></strong></div>
             <div class="info-item"><span>Duração</span><strong id="infoDuration"></strong></div>
             <div class="info-item"><span>Modalidade</span><strong id="infoMode"></strong></div>
-            <div class="info-item"><span>Situação</span><strong id="infoStatus"></strong></div>
+            <div class="info-item"><span>Status</span><strong id="infoStatus"></strong></div>
           </div>
         </section>
 
-        <section class="content-card" aria-labelledby="notasTitle">
+        <section class="panel" aria-labelledby="notasTitle">
           <div class="card-heading">
             <div>
-              <p class="eyebrow">DURANTE A SESSÃO</p>
-              <h2 id="notasTitle">Notas rápidas</h2>
-              <p>Texto livre para anotar durante a consulta. Salve sempre que precisar. O paciente não vê essas notas.</p>
+              <p class="eyebrow">Anotação</p>
+              <h2 id="notasTitle">Notas rápidas da sessão</h2>
+              <p>Escreva durante a consulta sem se preocupar com formatação. Depois você transforma em relatório.</p>
             </div>
-            <span class="save-status" id="noteSaveStatus"></span>
           </div>
-          <label class="sr-only" for="sessionNote">Notas rápidas da consulta</label>
-          <textarea class="note-area" id="sessionNote" rows="8" placeholder="Ex.: paciente chegou ansioso, retomamos o tema da última sessão..."></textarea>
+          <label class="sr-only" for="sessionNote">Notas rápidas da sessão</label>
+          <textarea class="note-area" id="sessionNote" rows="8" placeholder="Escreva suas observações da sessão aqui..."></textarea>
           <div class="note-toolbar">
-            <span id="noteUpdatedAt"></span>
+            <span id="noteSaveStatus"></span>
             <div class="action-row">
-              <button class="button button-secondary" id="useInReportButton" type="button">Usar no relatório</button>
-              <button class="button button-primary" id="saveNoteButton" type="button">Salvar notas</button>
+              <button class="button button-secondary" id="saveNoteButton" type="button">Salvar nota</button>
+              <a class="button button-primary" id="useInReportButton" href="#">Usar no relatório</a>
             </div>
           </div>
+          <p class="compact-empty" id="noteUpdatedAt" hidden></p>
         </section>
 
-        <section class="content-card" aria-labelledby="docsTitle">
+        <section class="panel" aria-labelledby="anexosTitle">
           <div class="card-heading">
             <div>
-              <p class="eyebrow">PARA O PACIENTE</p>
-              <h2 id="docsTitle">Laudos e receitas</h2>
-              <p>Anexe um documento para este paciente. Ele aparece na área do paciente para download.</p>
+              <p class="eyebrow">Documentos</p>
+              <h2 id="anexosTitle">Documentos da sessão</h2>
+              <p>Anexe laudos ou receitas gerados nesta consulta. Eles também aparecem na área do paciente.</p>
             </div>
           </div>
-          <form id="attachDocForm" class="form-row-inline" novalidate>
+          <form id="attachDocForm" class="form-row-inline">
             <label class="field"><span>Tipo</span>
               <select id="docType">
-                <option value="laudo">Laudo</option>
+                <option value="laudos">Laudos</option>
                 <option value="receita">Receita</option>
               </select>
             </label>
             <label class="field"><span>Nome do documento</span>
-              <input id="docName" type="text" placeholder="Ex.: Laudo de acompanhamento, março de 2026" required />
+              <input id="docName" type="text" required placeholder="Ex.: Laudo de avaliação 07/2026" />
             </label>
             <button class="button button-primary" type="submit">Anexar</button>
           </form>
           <div class="doc-list" id="patientDocs"></div>
-          <p class="compact-empty" id="emptyDocs" hidden>Nenhum documento anexado para este paciente ainda.</p>
+          <div class="notice-item notice-info" id="emptyDocs" hidden>Nenhum documento anexado a este paciente.</div>
         </section>
       </div>
     </main>
