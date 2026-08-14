@@ -29,6 +29,12 @@ const elements = {
   blockEvolucao: document.querySelector('#blockEvolucao'),
   blockProxima: document.querySelector('#blockProxima'),
   freeText: document.querySelector('#freeText'),
+  moodPicker: document.querySelector('#moodPicker'),
+  attachButton: document.querySelector('#attachButton'),
+  attachInput: document.querySelector('#attachInput'),
+  attachChips: document.querySelector('#attachChips'),
+  attachNote: document.querySelector('#attachNote'),
+  saveDraftButton: document.querySelector('#saveDraftButton'),
   draftStatus: document.querySelector('#draftStatus'),
   toast: document.querySelector('#toast'),
   toastMessage: document.querySelector('#toastMessage'),
@@ -48,6 +54,69 @@ const BLOCKS = [
   { key: 'evolucao', label: 'Evolução do paciente', el: () => elements.blockEvolucao },
   { key: 'proxima', label: 'Encaminhamentos', el: () => elements.blockProxima }
 ];
+
+const MOODS = [
+  { key: 'muito-bem', label: 'Muito bem', emoji: '😄' },
+  { key: 'bem', label: 'Bem', emoji: '🙂' },
+  { key: 'neutro', label: 'Neutro', emoji: '😐' },
+  { key: 'mal', label: 'Mal', emoji: '🙁' },
+  { key: 'muito-mal', label: 'Muito mal', emoji: '😞' }
+];
+
+function moodInfo(key) {
+  return MOODS.find((mood) => mood.key === key) || null;
+}
+
+let currentMood = null;
+let currentAttachments = [];
+
+function renderMoodPicker() {
+  elements.moodPicker.querySelectorAll('.mood-option').forEach((option) => {
+    const selected = option.dataset.mood === currentMood;
+    option.classList.toggle('selected', selected);
+    option.setAttribute('aria-checked', String(selected));
+  });
+}
+
+function formatFileSize(bytes) {
+  if (!Number.isFinite(bytes) || bytes <= 0) return '';
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function renderAttachments() {
+  elements.attachChips.replaceChildren();
+  elements.attachNote.hidden = currentAttachments.length > 0;
+  currentAttachments.forEach((file) => {
+    const chip = document.createElement('span');
+    chip.className = 'attach-chip';
+    const icon = document.createElement('span');
+    icon.className = 'attach-chip-icon';
+    icon.setAttribute('aria-hidden', 'true');
+    icon.textContent = '📎';
+    const name = document.createElement('strong');
+    name.textContent = file.name;
+    const size = formatFileSize(file.size);
+    if (size) {
+      const sizeEl = document.createElement('small');
+      sizeEl.textContent = size;
+      name.append(' ', sizeEl);
+    }
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'attach-chip-remove';
+    remove.setAttribute('aria-label', `Remover anexo ${file.name}`);
+    remove.textContent = '×';
+    remove.addEventListener('click', () => {
+      currentAttachments = currentAttachments.filter((item) => item.id !== file.id);
+      renderAttachments();
+      scheduleDraftSave();
+    });
+    chip.append(icon, name, remove);
+    elements.attachChips.append(chip);
+  });
+}
 
 const DRAFT_KEY = 'psinote.reportDraft';
 let draftTimer = null;
@@ -110,6 +179,8 @@ function saveDraft() {
     contextId: draftContextId(),
     patient: elements.reportPatient.value,
     appointmentId: elements.reportAppointment.value,
+    mood: currentMood,
+    attachments: currentAttachments,
     blocks: {
       queixa: elements.blockQueixa.value,
       intervencao: elements.blockIntervencao.value,
@@ -148,6 +219,10 @@ function loadDraftIfMatches() {
   }
   if (!draft || draft.contextId !== draftContextId()) return false;
   elements.reportPatient.value = draft.patient || elements.reportPatient.value;
+  currentMood = draft.mood || null;
+  currentAttachments = Array.isArray(draft.attachments) ? draft.attachments : [];
+  renderMoodPicker();
+  renderAttachments();
   if (draft.blocks) {
     elements.blockQueixa.value = draft.blocks.queixa || '';
     elements.blockIntervencao.value = draft.blocks.intervencao || '';
@@ -197,13 +272,26 @@ function renderList() {
     const titleWrap = document.createElement('div');
     const title = document.createElement('strong');
     title.textContent = report.patient;
+    titleWrap.append(title);
+    if (report.status === 'rascunho') {
+      const draftBadge = document.createElement('span');
+      draftBadge.className = 'badge badge-neutral report-draft-badge';
+      draftBadge.textContent = 'Rascunho';
+      titleWrap.append(draftBadge);
+    }
     const meta = document.createElement('span');
     meta.className = 'report-card-meta';
     const appointment = report.appointmentId ? findAppointment(report.appointmentId) : null;
-    meta.textContent = appointment
+    let metaText = appointment
       ? `Consulta de ${shortDateFormatter.format(data.fromDateKey(appointment.date))} às ${appointment.time}`
       : 'Sem consulta vinculada';
-    titleWrap.append(title, meta);
+    const mood = moodInfo(report.mood);
+    if (mood) metaText += ` · ${mood.emoji} ${mood.label}`;
+    const attachmentCount = Array.isArray(report.attachments) ? report.attachments.length : 0;
+    if (attachmentCount === 1) metaText += ' · 1 anexo';
+    if (attachmentCount > 1) metaText += ` · ${attachmentCount} anexos`;
+    meta.textContent = metaText;
+    titleWrap.append(meta);
 
     const actions = document.createElement('div');
     actions.className = 'action-row';
@@ -261,7 +349,7 @@ function renderList() {
 function openEditor(report, appointmentId) {
   elements.listView.hidden = true;
   elements.editorView.hidden = false;
-  elements.pageTitle.textContent = 'Relatório de Consulta';
+  elements.pageTitle.textContent = report ? 'Editar relatório da consulta' : 'Novo relatório da consulta';
   elements.newReportButton.hidden = true;
   elements.backToListButton.hidden = false;
 
@@ -269,6 +357,12 @@ function openEditor(report, appointmentId) {
   buildAppointmentOptions(targetAppointmentId);
 
   elements.reportPatient.value = report?.patient || '';
+  currentMood = report?.mood || null;
+  currentAttachments = Array.isArray(report?.attachments)
+    ? report.attachments.map((item) => ({ ...item }))
+    : [];
+  renderMoodPicker();
+  renderAttachments();
   elements.blockQueixa.value = report?.blocks?.queixa || '';
   elements.blockIntervencao.value = report?.blocks?.intervencao || '';
   elements.blockEvolucao.value = report?.blocks?.evolucao || '';
@@ -299,13 +393,12 @@ function openEditor(report, appointmentId) {
   }
 }
 
-function handleReportSubmit(event) {
-  event.preventDefault();
+function persistReport(status) {
   const patient = elements.reportPatient.value.trim();
   if (!patient) {
     showToast('Informe o nome do paciente antes de salvar.', true);
     elements.reportPatient.focus();
-    return;
+    return false;
   }
 
   const blocks = {};
@@ -316,28 +409,42 @@ function handleReportSubmit(event) {
   const reports = data.getReports();
   const existing = editReportId ? reports.find((item) => item.id === editReportId) : null;
   const appointmentId = elements.reportAppointment.value || null;
+  const payload = {
+    patient,
+    appointmentId,
+    mood: currentMood,
+    attachments: currentAttachments.map((item) => ({ ...item })),
+    blocks,
+    freeText: elements.freeText.value.trim(),
+    status,
+    updatedAt: new Date().toISOString()
+  };
 
   if (existing) {
-    existing.patient = patient;
-    existing.appointmentId = appointmentId;
-    existing.blocks = blocks;
-    existing.freeText = elements.freeText.value.trim();
-    existing.updatedAt = new Date().toISOString();
+    Object.assign(existing, payload);
   } else {
     reports.push({
       id: data.createId('report'),
-      patient,
-      appointmentId,
-      blocks,
-      freeText: elements.freeText.value.trim(),
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      ...payload
     });
   }
 
   data.saveReports(reports);
   clearDraft();
+  return true;
+}
+
+function handleReportSubmit(event) {
+  event.preventDefault();
+  if (!persistReport('final')) return;
   showToast('Relatório salvo. Ele já aparece no histórico do paciente.');
+  window.location.href = 'relatorios.html';
+}
+
+function handleSaveDraft() {
+  if (!persistReport('rascunho')) return;
+  showToast('Rascunho salvo. Você pode retomá-lo quando quiser.');
   window.location.href = 'relatorios.html';
 }
 
@@ -345,6 +452,31 @@ function init() {
   renderHeader();
 
   elements.reportForm.addEventListener('submit', handleReportSubmit);
+  elements.saveDraftButton.addEventListener('click', handleSaveDraft);
+
+  elements.moodPicker.querySelectorAll('.mood-option').forEach((option) => {
+    option.addEventListener('click', () => {
+      currentMood = currentMood === option.dataset.mood ? null : option.dataset.mood;
+      renderMoodPicker();
+      scheduleDraftSave();
+    });
+  });
+
+  elements.attachButton.addEventListener('click', () => elements.attachInput.click());
+  elements.attachInput.addEventListener('change', () => {
+    Array.from(elements.attachInput.files || []).forEach((file) => {
+      currentAttachments.push({
+        id: data.createId('anexo'),
+        name: file.name,
+        size: file.size,
+        addedAt: new Date().toISOString()
+      });
+    });
+    elements.attachInput.value = '';
+    renderAttachments();
+    scheduleDraftSave();
+  });
+
   document.querySelector('#cancelEditButton').addEventListener('click', () => {
     window.location.href = 'relatorios.html';
   });
