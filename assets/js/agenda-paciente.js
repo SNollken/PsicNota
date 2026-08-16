@@ -33,15 +33,58 @@ const weekdayFormatter = new Intl.DateTimeFormat('pt-BR', { weekday: 'long' });
 const fullDateFormatter = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
 
 const session = patientData.getSession();
-const currentPatient = session && ['paciente', 'patient'].includes(session.role)
-  ? {
-      ...session,
-      name: session.fullName || session.name,
-      role: 'paciente'
-    }
-  : { id: 'demo-paciente', name: 'Paciente PsiNote', role: 'paciente', email: 'paciente@exemplo.com' };
+const profiles = patientData.getProfiles();
 
-const psychologistProfile = patientData.getProfiles().find((profile) => profile.role === 'psicologo');
+const patientProfile = session
+  ? profiles.find((profile) => {
+      const sameId =
+        session.id &&
+        profile.id === session.id;
+
+      const sameEmail =
+        session.email &&
+        profile.email &&
+        profile.email.toLowerCase() === session.email.toLowerCase();
+
+      return sameId || sameEmail;
+    })
+  : null;
+
+const currentPatient =
+  session && ['paciente', 'patient'].includes(session.role)
+    ? {
+        ...session,
+        ...patientProfile,
+
+        id:
+          patientProfile?.id ||
+          session.id,
+
+        name:
+          patientProfile?.socialName ||
+          patientProfile?.fullName ||
+          session.fullName ||
+          session.name ||
+          'Paciente PsicNota',
+
+        avatarDataUrl:
+          patientProfile?.avatarDataUrl ||
+          session.avatarDataUrl ||
+          '',
+
+        role: 'paciente'
+      }
+    : {
+        id: 'demo-paciente',
+        name: 'Paciente PsicNota',
+        role: 'paciente',
+        email: 'paciente@exemplo.com',
+        avatarDataUrl: ''
+      };
+
+const psychologistProfile = profiles.find(
+  (profile) => profile.role === 'psicologo'
+);
 const responsiblePsychologist = psychologistProfile || {
   fullName: 'Profissional PsiNote',
   professionalData: { serviceFormat: 'ambos', specialty: 'Psicologia clínica' }
