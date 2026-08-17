@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Lista de pacientes do PsicNota" />
+  <meta name="description" content="Lista de pacientes e consultas recentes do PsicNota" />
   <title>PsicNota | Pacientes</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,14 +11,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../assets/css/base.css" />
+  <link rel="stylesheet" href="../assets/css/pacientes.css" />
 </head>
-<body>
+<body class="patients-page">
   <div class="app-shell">
     <aside class="sidebar" aria-label="Navegação principal">
       <a class="brand" href="home.html" aria-label="PsicNota - página inicial">
         <img src="../assets/img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />
         <span class="brand-text">PsicNota</span>
       </a>
+
       <nav class="main-nav">
         <p class="nav-label">MENU</p>
         <a class="nav-item" href="home.html">
@@ -37,49 +39,70 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8l4 4v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4Zm8 0v4h4M9 13h6M9 17h4"/></svg>
           Relatórios
         </a>
-        <p class="nav-label nav-label-spaced">CONTA</p>
-        <a class="nav-item" href="../perfil.html">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7 8a7 7 0 0 0-14 0"/></svg>
-          Meu perfil
-        </a>
       </nav>
-      <div class="sidebar-footer"><a class="nav-item nav-logout" id="logoutLink" href="../login.html">Sair da conta</a></div>
+
+      <a class="sidebar-profile" href="../perfil.html" aria-label="Abrir meu perfil">
+        <span class="sidebar-profile-avatar" id="psychologistAvatar" aria-hidden="true">PS</span>
+        <span class="sidebar-profile-info">
+          <strong id="psychologistName">Psicólogo</strong>
+          <small>Psicólogo</small>
+        </span>
+      </a>
     </aside>
 
     <main class="main-content">
       <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
 
       <header class="topbar">
-        <div class="page-heading"><p class="eyebrow">Acompanhamento</p><h1 id="introTitle">Pacientes</h1></div>
-        <div class="topbar-actions">
-          <label class="patient-search">
-            <span class="sr-only" for="patientSearch">Buscar paciente</span>
-            <input id="patientSearch" type="search" placeholder="Buscar paciente..." />
-          </label>
-          <a class="account-chip" href="../perfil.html" aria-label="Abrir meu perfil">
-            <span class="account-avatar" id="psychologistAvatar" aria-hidden="true">PS</span>
-            <span class="account-copy"><strong id="psychologistName">Psicólogo</strong><span>Psicólogo</span></span>
-          </a>
+        <div class="page-heading">
+          <p class="eyebrow">Acompanhamento</p>
+          <h1>Pacientes</h1>
+          <p class="page-subtitle">Acesse seus pacientes e acompanhe os atendimentos recentes.</p>
         </div>
+
+        <label class="patient-search">
+          <span class="sr-only">Buscar paciente</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+          <input id="patientSearch" type="search" placeholder="Buscar paciente..." autocomplete="off" />
+        </label>
       </header>
 
-      <section class="panel" aria-labelledby="listaTitle">
-        <div class="card-heading">
-          <div>
-            <p class="eyebrow">Lista</p>
-            <h2 id="listaTitle">Todos os pacientes</h2>
-            <p>Derivados dos agendamentos existentes no protótipo.</p>
+      <div class="patients-content-grid">
+        <section class="panel patients-panel" aria-labelledby="listaTitle">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">Lista</p>
+              <h2 id="listaTitle">Seus pacientes</h2>
+              <p>Pacientes vinculados aos seus agendamentos.</p>
+            </div>
+            <span class="badge badge-neutral" id="patientTotal">0 pacientes</span>
           </div>
-          <span class="badge badge-neutral" id="patientTotal">0 pacientes</span>
-        </div>
-        <div class="patient-list" id="patientList"></div>
-        <div class="notice-item notice-info" id="emptyPatients" hidden>Nenhum paciente encontrado nos agendamentos ainda.</div>
-        <div class="notice-item notice-info" id="noMatch" hidden>Nenhum paciente corresponde à busca.</div>
-      </section>
+
+          <div class="patient-list" id="patientList"></div>
+          <div class="patients-empty" id="emptyPatients" hidden>Nenhum paciente encontrado nos agendamentos ainda.</div>
+          <div class="patients-empty" id="noMatch" hidden>Nenhum paciente corresponde à busca.</div>
+        </section>
+
+        <section class="panel patients-panel" aria-labelledby="recentesTitle">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">Histórico recente</p>
+              <h2 id="recentesTitle">Últimas consultas</h2>
+              <p>Atendimentos concluídos mais recentemente.</p>
+            </div>
+          </div>
+
+          <div class="recent-appointments" id="recentAppointments"></div>
+          <div class="patients-empty" id="recentEmpty" hidden>Nenhuma consulta concluída ainda.</div>
+
+          <div class="recent-footer">
+            <a class="button button-secondary button-compact" href="agenda.html">Ver agenda completa</a>
+          </div>
+        </section>
+      </div>
     </main>
   </div>
 
-  <div class="toast" id="toast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span><span id="toastMessage"></span></div>
   <script src="../assets/js/shared-data.js"></script>
   <script src="../assets/js/pacientes.js"></script>
 </body>
