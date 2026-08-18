@@ -387,13 +387,15 @@
   width: min(100%, 1010px);
 
   display: grid;
-
   grid-template-columns:
     repeat(3, minmax(0, 1fr));
 
   gap: 36px;
 
-  margin: 48px auto 0;
+  margin:
+    0
+    auto
+    38px;
 }
 
 
@@ -506,6 +508,239 @@
   border-color: #ff5656;
 }
 
+/* =========================================================
+   POPUP DE HORÁRIOS — ESTILO DO DESIGN
+   ========================================================= */
+
+.schedule-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: transparent;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition:
+    opacity 0.18s ease,
+    visibility 0.18s ease;
+}
+
+.schedule-popup.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.schedule-popup-card {
+  position: relative;
+
+  width: min(100%, 556px);
+  min-height: 540px;
+
+  padding: 18px 18px 16px;
+
+  border: 1.5px solid #2f5f74;
+  border-radius: 26px;
+
+  background: #dff1f8;
+  box-shadow: none;
+}
+
+/* topo */
+
+.schedule-popup-back {
+  position: absolute;
+  top: 18px;
+  left: 16px;
+
+  display: grid;
+  place-items: center;
+
+  width: 28px;
+  height: 28px;
+
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+  color: #234f62;
+
+  cursor: pointer;
+}
+
+.schedule-popup-back svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  fill: none;
+}
+
+.schedule-popup-header {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.schedule-popup-eyebrow {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #2d6075;
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.schedule-popup-header strong {
+  display: block;
+
+  color: #1f2530;
+
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+
+/* colunas */
+
+.schedule-popup-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+
+  margin-top: 8px;
+  margin-bottom: 14px;
+}
+.schedule-column {
+  padding: 0 12px 0 12px;
+}
+
+.schedule-column:first-child {
+  border-right: 1px solid #c7dce5;
+}
+
+.schedule-column-pill {
+  width: fit-content;
+
+  margin: 0 auto 12px;
+  padding: 7px 16px;
+
+  border-radius: 999px;
+
+  color: #2d6075;
+  background: #b7dced;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+
+/* horários */
+
+.schedule-times {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 10px;
+}
+
+.schedule-time {
+  min-height: 44px;
+
+  padding: 8px 10px;
+
+  border: 1px solid #d4d7da;
+  border-radius: 8px;
+
+  color: #1f2530;
+  background: #ffffff;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.14s ease,
+    background 0.14s ease,
+    color 0.14s ease,
+    border-color 0.14s ease;
+}
+
+.schedule-time:hover {
+  transform: translateY(-1px);
+}
+
+.schedule-time.selected {
+  border-color: #346f89;
+  color: #ffffff;
+  background: #346f89;
+}
+
+
+/* termos */
+
+.schedule-terms {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  margin: 6px 0 10px;
+
+  color: #26323a;
+
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.schedule-terms input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+
+  accent-color: #346f89;
+}
+
+
+/* botão */
+
+.schedule-submit {
+  display: block;
+
+  width: 190px;
+  min-height: 40px;
+
+  margin: 0 auto;
+
+  border: 0;
+  border-radius: 8px;
+
+  color: #ffffff;
+  background: #346f89;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.schedule-submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 
 /* =========================================================
    RESPONSIVIDADE
@@ -523,16 +758,24 @@
 
   .patient-dashboard {
     width: 100%;
-
     gap: 16px;
   }
 }
 
 
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
 @media (max-width: 760px) {
 
   .patient-view .agenda-patient-page {
+    width: 100%;
+    max-width: none;
+
     padding: 14px 12px 26px;
+
+    zoom: 1;
   }
 
 
@@ -557,6 +800,23 @@
   }
 
 
+  /* CARDS */
+
+  .patient-dashboard {
+    width: 100%;
+
+    grid-template-columns: 1fr;
+
+    gap: 12px;
+
+    margin: 0 auto 24px;
+  }
+
+  .patient-dashboard-card {
+    min-height: 72px;
+  }
+
+
   /* CALENDÁRIO */
 
   .patient-calendar-card {
@@ -576,98 +836,61 @@
   }
 
 
-  /* CARDS */
+  /* POPUP */
 
-  .patient-dashboard {
+  .schedule-popup {
+    padding: 10px;
+
+    align-items: flex-start;
+  }
+
+  .schedule-popup-card {
     width: 100%;
+    min-height: auto;
 
+    padding: 20px 14px 18px;
+
+    border-radius: 22px;
+  }
+
+  .schedule-popup-columns {
     grid-template-columns: 1fr;
 
-    gap: 12px;
-
-    margin-top: 30px;
+    gap: 18px;
   }
 
-  .patient-dashboard-card {
-    min-height: 72px;
-  }
-}
+  .schedule-column:first-child {
+    padding-bottom: 16px;
 
-/* =========================================================
-   ESCALA VISUAL DA AGENDA — 125%
-   =========================================================*/ 
-
- @media (min-width: 761px) {
-  .patient-view .agenda-patient-page {
-    width: 100% !important;
-    max-width: none !important;
-    zoom: 1.25;
+    border-right: 0;
+    border-bottom: 1px solid #c7dce5;
   }
 
-  .patient-view {
-    overflow-x: hidden;
+  .schedule-times {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .schedule-popup-header strong {
+    font-size: 16px;
   }
 }
 
+
 /* =========================================================
-   ESCALA VISUAL DA AGENDA — 125%
+   ESCALA VISUAL DA AGENDA — 115%
    ========================================================= */
 
 @media (min-width: 761px) {
+
   .patient-view .agenda-patient-page {
     width: 100% !important;
     max-width: none !important;
-    zoom: 1.25;
+
+    zoom: 1.15;
   }
 
   .patient-view {
     overflow-x: hidden;
   }
 }
-
-/* MOBILE */
-@media (max-width: 760px) {
-  .patient-view .agenda-patient-page {
-    width: 100%;
-    max-width: none;
-    zoom: 1;
-  }
-}
-
-/* =========================================================
-   ESCALA VISUAL DA AGENDA — 150%
-   ========================================================= 
-
-@media (min-width: 761px) {
-  .patient-view .agenda-patient-page {
-    width: 100% !important;
-    max-width: none !important;
-    zoom: 1.5;
-  }
-
-  .patient-view {
-    overflow-x: hidden;
-  }
-}*/
-
-/* DESKTOP 
-@media (min-width: 761px) {
-  .patient-view .agenda-patient-page {
-    width: 100% !important;
-    max-width: none !important;
-    zoom: 1.5;
-  }
-
-  .patient-view {
-    overflow-x: hidden;
-  }
-}
-
-/* MOBILE 
-@media (max-width: 760px) {
-  .patient-view .agenda-patient-page {
-    width: 100%;
-    max-width: none;
-    zoom: 1;
-  }
-}*/

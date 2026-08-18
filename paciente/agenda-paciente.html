@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,212 +12,213 @@
   <link href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../assets/css/agenda.css" />
-  <link rel="stylesheet" href="../assets/css/agenda-paciente.css" />
   <link rel="stylesheet" href="../assets/css/base.css" />
+  <link rel="stylesheet" href="../assets/css/agenda-paciente.css" />
 </head>
+
 <body class="patient-view">
   <div class="app-shell">
     <aside class="sidebar" aria-label="Navegação do paciente">
 
-  <a class="brand" href="home.html" aria-label="PsicNota - página inicial">
-    <img
-      src="../assets/img/logo_psicnota.png"
-      alt="Ícone PsicNota"
-      class="brand-icon"
-    />
-    <span class="brand-text">PsicNota</span>
-  </a>
+      <a class="brand" href="home.html" aria-label="PsicNota - página inicial">
+        <img src="../assets/img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />
+        <span class="brand-text">PsicNota</span>
+      </a>
 
-  <nav class="main-nav">
-    <p class="nav-label">MENU</p>
+      <nav class="main-nav">
+        <p class="nav-label">MENU</p>
 
-    <a
-      class="nav-item active"
-      href="agenda-paciente.html"
-      aria-current="page"
-    >
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"></path>
-      </svg>
+        <a class="nav-item active" href="agenda-paciente.html" aria-current="page">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"></path>
+          </svg>
 
-      <span>Agendar consulta</span>
-    </a>
+          <span>Agendar consulta</span>
+        </a>
 
-    <a class="nav-item" href="laudos.html">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M8 4h8l4 4v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4Zm8 0v4h4M9 13h6M9 17h4"></path>
-      </svg>
+        <a class="nav-item" href="laudos.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 4h8l4 4v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4Zm8 0v4h4M9 13h6M9 17h4"></path>
+          </svg>
 
-      <span>Laudos e receitas</span>
-    </a>
-  </nav>
+          <span>Laudos e receitas</span>
+        </a>
+      </nav>
 
-  <a
-    class="sidebar-profile"
-    href="../perfil.html"
-    aria-label="Editar meu perfil"
-  >
-    <span
-      class="sidebar-profile-avatar"
-      id="patientAvatar"
-      aria-hidden="true"
-    >
-      PN
-    </span>
+      <a class="sidebar-profile" href="../perfil.html" aria-label="Editar meu perfil">
+        <span class="sidebar-profile-avatar" id="patientAvatar" aria-hidden="true">
+          PN
+        </span>
 
-    <span class="sidebar-profile-info">
-      <strong id="patientNameTop">Paciente PsicNota</strong>
-      <small>Paciente</small>
-    </span>
-  </a>
+        <span class="sidebar-profile-info">
+          <strong id="patientNameTop">Paciente PsicNota</strong>
+          <small>Paciente</small>
+        </span>
+      </a>
 
-</aside>
+    </aside>
 
-   <main class="main-content agenda-patient-page">
+    <main class="main-content agenda-patient-page">
 
-  <button
-    class="mobile-menu"
-    type="button"
-    aria-label="Abrir menu"
-    aria-expanded="false"
-  >
-    ☰
-  </button>
+      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">
+        ☰
+      </button>
 
-  <header class="topbar agenda-topbar">
-    <h1>Agendar consulta</h1>
-  </header>
+      <header class="topbar agenda-topbar">
+        <h1>Agendar consulta</h1>
+      </header>
 
-  <section class="agenda-content">
+      <section class="agenda-content">
 
-    <h2 class="agenda-subtitle">
-      Escolha um dia e um horário disponível
-    </h2>
-
-    <section
-      class="patient-calendar-card"
-      aria-label="Calendário de disponibilidade"
-    >
-
-      <div class="patient-calendar-header">
-
-        <div></div>
-
-        <h2 id="patientMonthTitle">
-          Agosto de 2026
+        <h2 class="agenda-subtitle">
+          Escolha um dia e um horário disponível
         </h2>
+        <!-- Cards das consultas -->
+        <section class="patient-dashboard" aria-label="Resumo das consultas">
 
-        <div class="patient-calendar-navigation">
+          <button class="patient-dashboard-card dashboard-completed" id="completedAppointmentsCard" type="button">
+            <span class="dashboard-copy">
+              <small>Consultas realizadas 30d</small>
+              <strong id="completedAppointmentsCount">
+                0 atendimentos
+              </strong>
+            </span>
 
-          <button
-            id="patientPreviousMonth"
-            class="calendar-arrow"
-            type="button"
-            aria-label="Mês anterior"
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m15 18-6-6 6-6"></path>
-            </svg>
-          </button>
-
-          <button
-            id="patientNextMonth"
-            class="calendar-arrow"
-            type="button"
-            aria-label="Próximo mês"
-          >
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="m9 18 6-6-6-6"></path>
             </svg>
           </button>
 
+          <button class="patient-dashboard-card dashboard-next" id="nextAppointmentCard" type="button">
+            <span class="dashboard-copy">
+              <small>Próxima consulta</small>
+              <strong id="nextAppointmentSummary">
+                Nenhuma consulta
+              </strong>
+            </span>
+
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
+          </button>
+
+          <button class="patient-dashboard-card dashboard-pending" id="pendingRequestsCard" type="button">
+            <span class="dashboard-copy">
+              <small>Pedidos pendentes</small>
+              <strong id="pendingRequestsCount">
+                0 solicitações
+              </strong>
+            </span>
+
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
+          </button>
+
+        </section>
+
+        <section class="patient-calendar-card" aria-label="Calendário de disponibilidade">
+
+          <div class="patient-calendar-header">
+
+            <div></div>
+
+            <h2 id="patientMonthTitle">
+              Agosto de 2026
+            </h2>
+
+            <div class="patient-calendar-navigation">
+
+              <button id="patientPreviousMonth" class="calendar-arrow" type="button" aria-label="Mês anterior">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m15 18-6-6 6-6"></path>
+                </svg>
+              </button>
+
+              <button id="patientNextMonth" class="calendar-arrow" type="button" aria-label="Próximo mês">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m9 18 6-6-6-6"></path>
+                </svg>
+              </button>
+
+            </div>
+
+          </div>
+
+          <div class="weekdays patient-weekdays" aria-hidden="true">
+            <span>DOM</span>
+            <span>SEG</span>
+            <span>TER</span>
+            <span>QUA</span>
+            <span>QUI</span>
+            <span>SEX</span>
+            <span>SÁB</span>
+          </div>
+
+          <div class="calendar-grid patient-calendar-grid" id="patientCalendarGrid" role="grid"></div>
+
+        </section>
+
+        <!-- =========================================================
+     POPUP DE HORÁRIOS DISPONÍVEIS
+     ========================================================= -->
+
+        <div class="schedule-popup" id="schedulePopup" role="dialog" aria-modal="true" aria-hidden="true"
+          aria-labelledby="schedulePopupDate">
+          <div class="schedule-popup-card">
+
+            <button class="schedule-popup-back" id="schedulePopupClose" type="button" aria-label="Fechar">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m15 18-6-6 6-6"></path>
+              </svg>
+            </button>
+
+            <div class="schedule-popup-header">
+              <span class="schedule-popup-eyebrow">HORÁRIOS DISPONÍVEIS</span>
+              <strong id="schedulePopupDate">Terça-feira, 14 de julho</strong>
+            </div>
+
+            <div class="schedule-popup-columns">
+
+              <section class="schedule-column" id="onlineColumn">
+                <div class="schedule-column-pill">
+                  Online
+                </div>
+
+                <div class="schedule-times" id="onlineTimes"></div>
+              </section>
+
+              <section class="schedule-column" id="presentialColumn">
+                <div class="schedule-column-pill">
+                  Presencial
+                </div>
+
+                <div class="schedule-times" id="presentialTimes"></div>
+              </section>
+
+            </div>
+
+            <label class="schedule-terms">
+              <input type="checkbox" id="scheduleTerms" />
+              <span>Confirmo que li os Termos de Uso</span>
+            </label>
+
+            <button class="schedule-submit" id="scheduleSubmit" type="button" disabled>
+              Solicitar Consulta
+            </button>
+
+          </div>
         </div>
 
-      </div>
+      </section>
 
-      <div class="weekdays patient-weekdays" aria-hidden="true">
-        <span>DOM</span>
-        <span>SEG</span>
-        <span>TER</span>
-        <span>QUA</span>
-        <span>QUI</span>
-        <span>SEX</span>
-        <span>SÁB</span>
-      </div>
-
-      <div
-        class="calendar-grid patient-calendar-grid"
-        id="patientCalendarGrid"
-        role="grid"
-      ></div>
-
-    </section>
-
-    <section
-      class="patient-dashboard"
-      aria-label="Resumo das consultas"
-    >
-
-      <button
-        class="patient-dashboard-card dashboard-completed"
-        id="completedAppointmentsCard"
-        type="button"
-      >
-        <span class="dashboard-copy">
-          <small>Consultas realizadas 30d</small>
-          <strong id="completedAppointmentsCount">
-            0 atendimentos
-          </strong>
-        </span>
-
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m9 18 6-6-6-6"></path>
-        </svg>
-      </button>
-
-      <button
-        class="patient-dashboard-card dashboard-next"
-        id="nextAppointmentCard"
-        type="button"
-      >
-        <span class="dashboard-copy">
-          <small>Próxima consulta</small>
-          <strong id="nextAppointmentSummary">
-            Nenhuma consulta
-          </strong>
-        </span>
-
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m9 18 6-6-6-6"></path>
-        </svg>
-      </button>
-
-      <button
-        class="patient-dashboard-card dashboard-pending"
-        id="pendingRequestsCard"
-        type="button"
-      >
-        <span class="dashboard-copy">
-          <small>Pedidos pendentes</small>
-          <strong id="pendingRequestsCount">
-            0 solicitações
-          </strong>
-        </span>
-
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m9 18 6-6-6-6"></path>
-        </svg>
-      </button>
-
-    </section>
-
-  </section>
-
-</main>
+    </main>
   </div>
 
-  <div class="toast" id="patientToast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span><span id="patientToastMessage"></span></div>
+  <div class="toast" id="patientToast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span><span
+      id="patientToastMessage"></span></div>
   <script src="../assets/js/shared-data.js"></script>
   <script src="../assets/js/agenda-paciente.js"></script>
 </body>
+
 </html>
