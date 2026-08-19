@@ -98,9 +98,7 @@
   display: grid;
 
   grid-template-columns:
-    1fr
-    auto
-    1fr;
+    1fr auto 1fr;
 
   align-items: center;
 
@@ -109,7 +107,7 @@
   margin-bottom: 10px;
 }
 
-.patient-calendar-header > h2 {
+.patient-calendar-header>h2 {
   margin: 0;
 
   color: #17212a;
@@ -370,12 +368,7 @@
   z-index: 3;
 
   box-shadow:
-    inset
-    0
-    0
-    0
-    1px
-    #1f637a;
+    inset 0 0 0 1px #1f637a;
 }
 
 
@@ -393,9 +386,7 @@
   gap: 36px;
 
   margin:
-    0
-    auto
-    38px;
+    0 auto 38px;
 }
 
 
@@ -407,18 +398,14 @@
   display: grid;
 
   grid-template-columns:
-    minmax(0, 1fr)
-    42px;
+    minmax(0, 1fr) 42px;
 
   align-items: center;
 
   min-height: 88px;
 
   padding:
-    11px
-    15px
-    11px
-    24px;
+    11px 15px 11px 24px;
 
   border: 1px solid;
   border-radius: 18px;
@@ -443,7 +430,7 @@
    SETA DOS CARDS
    ========================================================= */
 
-.patient-dashboard-card > svg {
+.patient-dashboard-card>svg {
   width: 26px;
   height: 26px;
 
@@ -623,6 +610,7 @@
   margin-top: 8px;
   margin-bottom: 14px;
 }
+
 .schedule-column {
   padding: 0 12px 0 12px;
 }
@@ -741,6 +729,586 @@
   cursor: not-allowed;
 }
 
+/* =========================================================
+   POPUP DE PEDIDOS PENDENTES
+   ========================================================= */
+
+.requests-popup {
+  position: fixed;
+  inset: 0;
+
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: transparent;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition:
+    opacity 0.18s ease,
+    visibility 0.18s ease;
+}
+
+.requests-popup.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.requests-popup-card {
+  position: relative;
+
+  width: min(100%, 500px);
+  min-height: 360px;
+  max-height: 620px;
+
+  padding: 22px 20px 20px;
+
+  overflow-y: auto;
+
+  border: 1.5px solid #d65a5a;
+  border-radius: 24px;
+
+  background: #f8fdff;
+}
+
+
+/* =========================================================
+   TOPO
+   ========================================================= */
+
+.requests-popup-back {
+  position: absolute;
+
+  top: 18px;
+  left: 16px;
+
+  display: grid;
+  place-items: center;
+
+  width: 28px;
+  height: 28px;
+
+  padding: 0;
+
+  border: 0;
+
+  color: #a83d3d;
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.requests-popup-back svg {
+  width: 24px;
+  height: 24px;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+}
+
+.requests-popup-header {
+  margin-bottom: 22px;
+
+  text-align: center;
+}
+
+.requests-popup-header span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #d34b4b;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.requests-popup-header strong {
+  display: block;
+
+  color: #17212a;
+
+  font-size: 19px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   LISTA
+   ========================================================= */
+
+.requests-popup-list {
+  display: grid;
+
+  gap: 12px;
+}
+
+.pending-request-item {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr) auto;
+
+  align-items: center;
+
+  gap: 14px;
+
+  min-height: 76px;
+
+  padding: 13px 14px;
+
+  border: 1px solid #f08b8b;
+  border-radius: 14px;
+
+  background: #ffffff;
+}
+
+.pending-request-info {
+  min-width: 0;
+}
+
+.pending-request-date {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #17212a;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.pending-request-details {
+  display: block;
+
+  color: #60717a;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.pending-request-cancel {
+  padding: 8px 12px;
+
+  border: 1px solid #e05a5a;
+  border-radius: 9px;
+
+  color: #d13e3e;
+  background: #ffffff;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.pending-request-cancel:hover {
+  color: #ffffff;
+  background: #d64b4b;
+}
+
+
+/* =========================================================
+   LISTA VAZIA
+   ========================================================= */
+
+.requests-empty {
+  margin: 70px 0;
+
+  color: #71828a;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  text-align: center;
+}
+
+/* =========================================================
+   POPUP DE PRÓXIMAS CONSULTAS
+   ========================================================= */
+
+.appointments-popup {
+  position: fixed;
+  inset: 0;
+
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: transparent;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition:
+    opacity 0.18s ease,
+    visibility 0.18s ease;
+}
+
+.appointments-popup.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.appointments-popup-card {
+  position: relative;
+
+  width: min(100%, 500px);
+  min-height: 360px;
+  max-height: 620px;
+
+  padding: 22px 20px 20px;
+
+  overflow-y: auto;
+
+  border: 1.5px solid #5b9db8;
+  border-radius: 24px;
+
+  background: #f1fafd;
+}
+
+
+/* =========================================================
+   TOPO
+   ========================================================= */
+
+.appointments-popup-back {
+  position: absolute;
+
+  top: 18px;
+  left: 16px;
+
+  display: grid;
+  place-items: center;
+
+  width: 28px;
+  height: 28px;
+
+  padding: 0;
+
+  border: 0;
+
+  color: #1f637a;
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.appointments-popup-back svg {
+  width: 24px;
+  height: 24px;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+}
+
+.appointments-popup-header {
+  margin-bottom: 22px;
+
+  text-align: center;
+}
+
+.appointments-popup-header span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #34758d;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.appointments-popup-header strong {
+  display: block;
+
+  color: #17212a;
+
+  font-size: 19px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   LISTA DE CONSULTAS
+   ========================================================= */
+
+.appointments-popup-list {
+  display: grid;
+
+  gap: 12px;
+}
+
+.upcoming-appointment-item {
+  min-height: 78px;
+
+  padding: 14px 16px;
+
+  border: 1px solid #8ab7c9;
+  border-radius: 14px;
+
+  background: #ffffff;
+}
+
+.upcoming-appointment-date {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #17212a;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.upcoming-appointment-details {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+  color: #58717c;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.upcoming-appointment-mode {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 4px 9px;
+
+  border-radius: 999px;
+
+  color: #1f637a;
+  background: #d9eef5;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   LISTA VAZIA
+   ========================================================= */
+
+.appointments-empty {
+  margin: 70px 0;
+
+  color: #71828a;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  text-align: center;
+}
+
+/* =========================================================
+   POPUP DE CONSULTAS REALIZADAS
+   ========================================================= */
+
+.completed-popup {
+  position: fixed;
+  inset: 0;
+
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: transparent;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition:
+    opacity 0.18s ease,
+    visibility 0.18s ease;
+}
+
+.completed-popup.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.completed-popup-card {
+  position: relative;
+
+  width: min(100%, 500px);
+  min-height: 360px;
+  max-height: 620px;
+
+  padding: 22px 20px 20px;
+
+  overflow-y: auto;
+
+  border: 1.5px solid #55c662;
+  border-radius: 24px;
+
+  background: #f8fff9;
+}
+
+
+/* =========================================================
+   TOPO
+   ========================================================= */
+
+.completed-popup-back {
+  position: absolute;
+
+  top: 18px;
+  left: 16px;
+
+  display: grid;
+  place-items: center;
+
+  width: 28px;
+  height: 28px;
+
+  padding: 0;
+
+  border: 0;
+
+  color: #2e8d3b;
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.completed-popup-back svg {
+  width: 24px;
+  height: 24px;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+}
+
+.completed-popup-header {
+  margin-bottom: 22px;
+
+  text-align: center;
+}
+
+.completed-popup-header span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #349343;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.completed-popup-header strong {
+  display: block;
+
+  color: #17212a;
+
+  font-size: 19px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   LISTA
+   ========================================================= */
+
+.completed-popup-list {
+  display: grid;
+
+  gap: 12px;
+}
+
+.completed-appointment-item {
+  min-height: 78px;
+
+  padding: 14px 16px;
+
+  border: 1px solid #8dd498;
+  border-radius: 14px;
+
+  background: #ffffff;
+}
+
+.completed-appointment-date {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #17212a;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.completed-appointment-details {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 7px;
+
+  color: #5f7464;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.completed-appointment-mode {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 4px 9px;
+
+  border-radius: 999px;
+
+  color: #278438;
+  background: #e4f6e7;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   LISTA VAZIA
+   ========================================================= */
+
+.completed-empty {
+  margin: 70px 0;
+
+  color: #71828a;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  text-align: center;
+}
 
 /* =========================================================
    RESPONSIVIDADE
@@ -874,6 +1442,56 @@
   .schedule-popup-header strong {
     font-size: 16px;
   }
+
+  .requests-popup {
+    padding: 10px;
+  }
+
+  .requests-popup-card {
+    width: 100%;
+    min-height: 320px;
+    max-height: calc(100vh - 20px);
+
+    padding: 20px 14px;
+
+    border-radius: 20px;
+  }
+
+  .pending-request-item {
+    grid-template-columns: 1fr;
+  }
+
+  .pending-request-cancel {
+    width: 100%;
+  }
+
+  .appointments-popup {
+    padding: 10px;
+  }
+
+  .appointments-popup-card {
+    width: 100%;
+    min-height: 320px;
+    max-height: calc(100vh - 20px);
+
+    padding: 20px 14px;
+
+    border-radius: 20px;
+  }
+
+  .completed-popup {
+    padding: 10px;
+  }
+
+  .completed-popup-card {
+    width: 100%;
+    min-height: 320px;
+    max-height: calc(100vh - 20px);
+
+    padding: 20px 14px;
+
+    border-radius: 20px;
+  }
 }
 
 
@@ -893,4 +1511,48 @@
   .patient-view {
     overflow-x: hidden;
   }
+}
+
+/* =========================================================
+   TOAST DA AGENDA
+   ========================================================= */
+
+#patientToast {
+  position: fixed;
+
+  top: 24px;
+  bottom: auto;
+
+  left: 50%;
+  right: auto;
+
+  width: auto;
+  height: auto;
+  min-height: 0;
+
+  max-width: min(390px, calc(100vw - 40px));
+
+  z-index: 2000;
+
+  transform: translateX(-50%);
+
+  padding: 12px 18px;
+
+  border-radius: 10px;
+
+  white-space: normal;
+}
+
+#patientToast[hidden] {
+  display: none;
+}
+
+.sidebar-profile-avatar {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.sidebar-profile-avatar.has-photo {
+  color: transparent;
 }
