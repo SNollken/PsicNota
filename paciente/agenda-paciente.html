@@ -210,6 +210,87 @@
           </div>
         </div>
 
+        <!-- =========================================================
+     POPUP DE PEDIDOS PENDENTES
+     ========================================================= -->
+
+        <div class="requests-popup" id="requestsPopup" aria-hidden="true" role="dialog" aria-modal="true"
+          aria-labelledby="requestsPopupTitle">
+          <div class="requests-popup-card">
+
+            <button class="requests-popup-back" id="requestsPopupClose" type="button" aria-label="Fechar">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m15 18-6-6 6-6"></path>
+              </svg>
+            </button>
+
+            <header class="requests-popup-header">
+              <span>PEDIDOS PENDENTES</span>
+
+              <strong id="requestsPopupTitle">
+                Solicitações de consulta
+              </strong>
+            </header>
+
+            <div class="requests-popup-list" id="requestsPopupList"></div>
+
+          </div>
+        </div>
+
+        <!-- =========================================================
+     POPUP DE PRÓXIMAS CONSULTAS
+     ========================================================= -->
+
+        <div class="appointments-popup" id="appointmentsPopup" aria-hidden="true" role="dialog" aria-modal="true"
+          aria-labelledby="appointmentsPopupTitle">
+          <div class="appointments-popup-card">
+
+            <button class="appointments-popup-back" id="appointmentsPopupClose" type="button" aria-label="Fechar">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m15 18-6-6 6-6"></path>
+              </svg>
+            </button>
+
+            <header class="appointments-popup-header">
+              <span>PRÓXIMAS CONSULTAS</span>
+
+              <strong id="appointmentsPopupTitle">
+                Consultas agendadas
+              </strong>
+            </header>
+
+            <div class="appointments-popup-list" id="appointmentsPopupList"></div>
+
+          </div>
+        </div>
+
+        <!-- =========================================================
+     POPUP DE CONSULTAS REALIZADAS
+     ========================================================= -->
+
+        <div class="completed-popup" id="completedPopup" aria-hidden="true" role="dialog" aria-modal="true"
+          aria-labelledby="completedPopupTitle">
+          <div class="completed-popup-card">
+
+            <button class="completed-popup-back" id="completedPopupClose" type="button" aria-label="Fechar">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m15 18-6-6 6-6"></path>
+              </svg>
+            </button>
+
+            <header class="completed-popup-header">
+              <span>CONSULTAS REALIZADAS 30D</span>
+
+              <strong id="completedPopupTitle">
+                Histórico recente
+              </strong>
+            </header>
+
+            <div class="completed-popup-list" id="completedPopupList"></div>
+
+          </div>
+        </div>
+
       </section>
 
     </main>
