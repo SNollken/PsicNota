@@ -1,0 +1,505 @@
+/* Landing page do PsicNota.
+   Mesma identidade do app: paleta teal do Figma, Laila na marca e nos
+   títulos, Inter no corpo. Arquivo próprio pra não depender do auth.css
+   nem do base.css (páginas internas). */
+
+:root {
+  --blue-50: #f4fbfe;
+  --blue-100: #e4f6fc;
+  --blue-200: #bfe7f5;
+  --blue-300: #98d8ed;
+  --blue-700: #1f637a;
+  --blue-800: #174e61;
+  --ink: #111827;
+  --muted: #64727c;
+  --line: #dce6ea;
+  --line-strong: #c7d7dd;
+  --white: #ffffff;
+  --radius: 8px;
+  --shadow-focus: 0 0 0 4px rgba(31, 99, 122, 0.12);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--ink);
+  background: var(--white);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  color: var(--ink);
+  background: var(--white);
+}
+
+a {
+  color: inherit;
+}
+
+/* =========================
+   ANIMAÇÃO DE ENTRADA
+========================= */
+
+@keyframes landing-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  animation: landing-rise 640ms ease both;
+}
+
+.reveal-1 { animation-delay: 60ms; }
+.reveal-2 { animation-delay: 160ms; }
+.reveal-3 { animation-delay: 260ms; }
+.reveal-4 { animation-delay: 360ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    animation: none;
+  }
+}
+
+/* =========================
+   CABEÇALHO
+========================= */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px clamp(20px, 5vw, 72px);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.brand .brand-icon {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.brand .brand-text {
+  font-family: "Laila", serif;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--blue-700);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.link-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 8px 18px;
+  border-radius: var(--radius);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
+}
+
+.link-button.ghost {
+  color: var(--blue-800);
+  border: 1px solid transparent;
+}
+
+.link-button.ghost:hover {
+  background: var(--blue-100);
+}
+
+.link-button.solid {
+  color: var(--white);
+  background: var(--blue-700);
+  border: 1px solid var(--blue-700);
+}
+
+.link-button.solid:hover {
+  background: var(--blue-800);
+  border-color: var(--blue-800);
+}
+
+.link-button:active {
+  transform: translateY(1px);
+}
+
+.link-button:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(64px, 10vw, 128px) clamp(20px, 5vw, 72px);
+  text-align: center;
+  background:
+    linear-gradient(rgba(244, 251, 254, 0.9), rgba(228, 246, 252, 0.96)),
+    radial-gradient(circle at 15% 18%, var(--blue-300) 0 1px, transparent 2px),
+    radial-gradient(circle at 82% 72%, var(--blue-200) 0 1px, transparent 2px);
+  background-size: auto, 28px 28px, 34px 34px;
+  border-bottom: 1px solid var(--line);
+}
+
+.hero-inner {
+  max-width: 840px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  margin: 0 0 14px;
+  color: var(--blue-700);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.hero h1 {
+  margin: 0;
+  font-family: "Laila", serif;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.hero-subtitle {
+  max-width: 620px;
+  margin: 22px auto 0;
+  color: #4c5f69;
+  font-size: 1.08rem;
+  line-height: 1.75;
+}
+
+.hero-actions {
+  margin-top: 36px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.hero-actions .link-button {
+  min-height: 50px;
+  padding: 12px 28px;
+  font-size: 0.98rem;
+}
+
+.hero-note {
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+/* =========================
+   SEÇÕES
+========================= */
+
+.section {
+  padding: clamp(56px, 8vw, 96px) clamp(20px, 5vw, 72px);
+}
+
+.section-head {
+  max-width: 720px;
+  margin: 0 auto 42px;
+  text-align: center;
+}
+
+.section-head h2 {
+  margin: 0;
+  font-family: "Laila", serif;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.section-head p {
+  margin: 12px 0 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* Benefícios */
+
+.benefits-grid {
+  max-width: 1040px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.benefit-card {
+  padding: 26px 24px;
+  background: var(--blue-50);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+
+.benefit-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--blue-200);
+  box-shadow: 0 14px 30px rgba(23, 78, 97, 0.1);
+}
+
+.benefit-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  color: var(--blue-800);
+  background: var(--white);
+  border: 1px solid var(--blue-200);
+}
+
+.benefit-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.benefit-card h3 {
+  margin: 0 0 8px;
+  font-size: 1.02rem;
+  font-weight: 750;
+}
+
+.benefit-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+/* Perfis */
+
+.profiles-section {
+  background: var(--blue-50);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.profiles-grid {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.profile-card {
+  padding: 30px 28px;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  background: var(--white);
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  text-decoration: none;
+  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.profile-card:hover,
+.profile-card:focus-visible {
+  transform: translateY(-4px);
+  border-color: var(--blue-700);
+  box-shadow: 0 14px 30px rgba(23, 78, 97, 0.12);
+  outline: none;
+}
+
+.profile-card .profile-tag {
+  width: fit-content;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--blue-100);
+  color: var(--blue-800);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.profile-card h3 {
+  margin: 6px 0 0;
+  font-family: "Laila", serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.profile-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.65;
+}
+
+.profile-card .profile-link {
+  margin-top: 8px;
+  color: var(--blue-700);
+  font-size: 0.88rem;
+  font-weight: 750;
+}
+
+.profile-card:hover .profile-link {
+  text-decoration: underline;
+}
+
+/* CTA final */
+
+.cta-band {
+  text-align: center;
+}
+
+.cta-band .cta-box {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(36px, 6vw, 60px) clamp(24px, 5vw, 64px);
+  background:
+    linear-gradient(rgba(23, 78, 97, 0.94), rgba(31, 99, 122, 0.94)),
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.16) 0 1px, transparent 2px);
+  background-size: auto, 26px 26px;
+  border-radius: 16px;
+  color: var(--white);
+}
+
+.cta-box h2 {
+  margin: 0;
+  font-family: "Laila", serif;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 600;
+}
+
+.cta-box p {
+  margin: 14px auto 0;
+  max-width: 520px;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.7;
+}
+
+.cta-box .hero-actions {
+  margin-top: 28px;
+}
+
+.cta-box .link-button.solid {
+  background: var(--white);
+  border-color: var(--white);
+  color: var(--blue-800);
+}
+
+.cta-box .link-button.solid:hover {
+  background: var(--blue-100);
+  border-color: var(--blue-100);
+}
+
+.cta-box .link-button.ghost {
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+}
+
+.cta-box .link-button.ghost:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Rodapé */
+
+.site-footer {
+  padding: 28px clamp(20px, 5vw, 72px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.site-footer .footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--blue-800);
+  font-family: "Laila", serif;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.site-footer .footer-brand img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media (max-width: 860px) {
+  .benefits-grid {
+    grid-template-columns: 1fr;
+    max-width: 560px;
+  }
+
+  .profiles-grid {
+    grid-template-columns: 1fr;
+    max-width: 560px;
+  }
+}
+
+@media (max-width: 560px) {
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

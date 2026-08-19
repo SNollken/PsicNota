@@ -2,7 +2,6 @@
 
 const loginForm = document.querySelector("#loginForm");
 const loginMessage = document.querySelector("#loginMessage");
-const forgotPasswordLink = document.querySelector("#forgotPassword");
 
 function setFieldError(input, message) {
   const errorElement = document.querySelector(`#${input.id}Error`);
@@ -128,7 +127,7 @@ function enterWithProfile(profile, remember) {
   submitButton.textContent = "Entrando...";
 
   window.setTimeout(() => {
-    window.location.href = profile.role === "psicologo" ? "profissional/home.html" : "paciente/home.html";
+    window.location.href = profile.role === "psicologo" ? "profissional/agenda.html" : "paciente/agenda-paciente.html";
   }, 700);
 }
 
