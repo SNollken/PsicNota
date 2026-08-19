@@ -54,7 +54,7 @@ function render() {
   const MOODS = {
     'muito-bem': { label: 'Muito bem', emoji: '😄' },
     bem: { label: 'Bem', emoji: '🙂' },
-    neutro: { label: 'Neutro', emoji: '😐' },
+    neutro: { label: 'Estável', emoji: '😐' },
     mal: { label: 'Mal', emoji: '🙁' },
     'muito-mal': { label: 'Muito mal', emoji: '😞' }
   };

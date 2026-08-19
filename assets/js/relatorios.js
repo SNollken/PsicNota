@@ -58,7 +58,7 @@ const BLOCKS = [
 const MOODS = [
   { key: 'muito-bem', label: 'Muito bem', emoji: '😄' },
   { key: 'bem', label: 'Bem', emoji: '🙂' },
-  { key: 'neutro', label: 'Neutro', emoji: '😐' },
+  { key: 'neutro', label: 'Estável', emoji: '😐' },
   { key: 'mal', label: 'Mal', emoji: '🙁' },
   { key: 'muito-mal', label: 'Muito mal', emoji: '😞' }
 ];
@@ -357,7 +357,9 @@ function openEditor(report, appointmentId) {
   buildAppointmentOptions(targetAppointmentId);
 
   elements.reportPatient.value = report?.patient || '';
-  currentMood = report?.mood || null;
+  currentMood = report?.mood
+    || (targetAppointmentId ? data.getAppointmentMood(targetAppointmentId) || null : null)
+    || null;
   currentAttachments = Array.isArray(report?.attachments)
     ? report.attachments.map((item) => ({ ...item }))
     : [];

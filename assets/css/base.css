@@ -1205,6 +1205,10 @@ input[readonly] {
   min-height: 140px;
 }
 
+.note-mood-field {
+  margin: 14px 0 4px;
+}
+
 .note-toolbar {
   display: flex;
   align-items: center;

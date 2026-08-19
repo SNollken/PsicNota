@@ -156,10 +156,27 @@ a {
 
 .benefits li {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   color: #314751;
   font-weight: 650;
+}
+
+.benefits .benefit-copy {
+  display: grid;
+  gap: 2px;
+  text-align: left;
+}
+
+.benefits .benefit-copy strong {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.benefits .benefit-copy small {
+  font-size: 13px;
+  font-weight: 400;
+  color: #5d707a;
 }
 
 .benefits span {

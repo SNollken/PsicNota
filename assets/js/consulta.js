@@ -18,7 +18,8 @@ const elements = {
   sessionNote: document.querySelector('#sessionNote'),
   noteSaveStatus: document.querySelector('#noteSaveStatus'),
   noteUpdatedAt: document.querySelector('#noteUpdatedAt'),
-  useInReportButton: document.querySelector('#useInReportButton'),
+  noteMoodPicker: document.querySelector('#noteMoodPicker'),
+  finishAppointmentButton: document.querySelector('#finishAppointmentButton'),
   saveNoteButton: document.querySelector('#saveNoteButton'),
   attachDocForm: document.querySelector('#attachDocForm'),
   docType: document.querySelector('#docType'),
@@ -39,6 +40,7 @@ const shortDateFormatter = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', mo
 
 let toastTimeout = null;
 let appointment = null;
+let currentMood = null;
 
 function showToast(message, isError = false) {
   window.clearTimeout(toastTimeout);
@@ -66,8 +68,7 @@ function renderHeader() {
 }
 
 function renderAppointmentInfo() {
-  elements.consultaTitle.textContent = appointment.patient;
-  elements.consultaSub.textContent = appointment.observation || 'Consulta agendada';
+  elements.consultaSub.textContent = `${appointment.patient} - ${shortDateFormatter.format(data.fromDateKey(appointment.date))} às ${appointment.time}`;
   elements.infoDate.textContent = fullDateFormatter.format(data.fromDateKey(appointment.date));
   elements.infoTime.textContent = appointment.time;
   elements.infoDuration.textContent = formatDuration(appointment.duration);
@@ -79,17 +80,30 @@ function renderAppointmentInfo() {
   elements.relatorioLink.href = `relatorios.html?consulta=${appointment.id}`;
 }
 
+function renderMoodPicker() {
+  elements.noteMoodPicker.querySelectorAll('.mood-option').forEach((option) => {
+    const selected = option.dataset.mood === currentMood;
+    option.classList.toggle('selected', selected);
+    option.setAttribute('aria-checked', String(selected));
+  });
+}
+
 function renderNotes() {
   const note = data.getAppointmentNote(appointment.id);
   elements.sessionNote.value = note;
-  elements.noteUpdatedAt.textContent = note ? 'Notas salvas' : '';
+  currentMood = data.getAppointmentMood(appointment.id) || null;
+  renderMoodPicker();
+  elements.noteUpdatedAt.textContent = note || currentMood ? 'Anotações salvas' : '';
+  elements.noteUpdatedAt.hidden = !(note || currentMood);
 }
 
 function saveNotes() {
   const text = elements.sessionNote.value;
   data.setAppointmentNote(appointment.id, text);
+  data.setAppointmentMood(appointment.id, currentMood || '');
   elements.noteSaveStatus.textContent = 'Salvo';
-  elements.noteUpdatedAt.textContent = 'Notas salvas';
+  elements.noteUpdatedAt.textContent = 'Anotações salvas';
+  elements.noteUpdatedAt.hidden = false;
   window.setTimeout(() => { elements.noteSaveStatus.textContent = ''; }, 1800);
 }
 
@@ -165,9 +179,15 @@ function init() {
   renderDocuments();
 
   elements.saveNoteButton.addEventListener('click', saveNotes);
-  elements.useInReportButton.addEventListener('click', () => {
+  elements.finishAppointmentButton.addEventListener('click', () => {
     saveNotes();
     window.location.href = `relatorios.html?consulta=${appointment.id}&usarNotas=1`;
+  });
+  elements.noteMoodPicker.querySelectorAll('.mood-option').forEach((option) => {
+    option.addEventListener('click', () => {
+      currentMood = currentMood === option.dataset.mood ? null : option.dataset.mood;
+      renderMoodPicker();
+    });
   });
   elements.attachDocForm.addEventListener('submit', handleAttachDoc);
 }

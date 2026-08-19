@@ -153,6 +153,23 @@
     return Boolean(getAppointmentNote(appointmentId).trim());
   }
 
+  function appointmentMoodKey(appointmentId) {
+    return `appt:${appointmentId}:mood`;
+  }
+
+  function getAppointmentMood(appointmentId) {
+    return getNotes()[appointmentMoodKey(appointmentId)] || "";
+  }
+
+  function setAppointmentMood(appointmentId, moodKey) {
+    const allNotes = getNotes();
+    const key = appointmentMoodKey(appointmentId);
+    const value = String(moodKey || "").trim();
+    if (value) allNotes[key] = value;
+    else delete allNotes[key];
+    saveNotes(allNotes);
+  }
+
   function getOpenSlots(dateKey) {
     const occupied = new Set(
       getAppointments()
@@ -218,6 +235,8 @@
     getAppointmentNote,
     setAppointmentNote,
     hasAppointmentNote,
+    getAppointmentMood,
+    setAppointmentMood,
     getProfiles,
     saveProfiles,
     getSession,
