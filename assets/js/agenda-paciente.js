@@ -9,7 +9,7 @@ const patientData = window.PsiNoteData;
 
 if (!patientData) {
   throw new Error(
-    "PsiNoteData não foi carregado. Verifique se o arquivo de dados é carregado antes de agenda-paciente.js."
+    "PsiNoteData não foi carregado. Verifique se shared-data.js é carregado antes de agenda-paciente.js."
   );
 }
 
@@ -19,111 +19,553 @@ if (!patientData) {
    ========================================================= */
 
 const ui = {
-  grid:
-    document.querySelector(
-      "#patientCalendarGrid"
-    ),
+  grid: document.querySelector("#patientCalendarGrid"),
+  monthTitle: document.querySelector("#patientMonthTitle"),
+  previousMonth: document.querySelector("#patientPreviousMonth"),
+  nextMonth: document.querySelector("#patientNextMonth"),
 
-  monthTitle:
-    document.querySelector(
-      "#patientMonthTitle"
-    ),
+  completedCount: document.querySelector("#completedAppointmentsCount"),
+  nextAppointment: document.querySelector("#nextAppointmentSummary"),
+  pendingCount: document.querySelector("#pendingRequestsCount"),
 
-  previousMonth:
-    document.querySelector(
-      "#patientPreviousMonth"
-    ),
+  toast: document.querySelector("#patientToast"),
+  toastMessage: document.querySelector("#patientToastMessage"),
 
-  nextMonth:
-    document.querySelector(
-      "#patientNextMonth"
-    ),
+  name: document.querySelector("#patientNameTop"),
+  avatar: document.querySelector("#patientAvatar"),
 
-  completedCount:
-    document.querySelector(
-      "#completedAppointmentsCount"
-    ),
-
-  nextAppointment:
-    document.querySelector(
-      "#nextAppointmentSummary"
-    ),
-
-  pendingCount:
-    document.querySelector(
-      "#pendingRequestsCount"
-    ),
-
-  name:
-    document.querySelector(
-      "#patientNameTop"
-    ),
-
-  avatar:
-    document.querySelector(
-      "#patientAvatar"
-    ),
-
-  sidebar:
-    document.querySelector(
-      ".sidebar"
-    ),
-
-  mobileMenu:
-    document.querySelector(
-      ".mobile-menu"
-    )
+  sidebar: document.querySelector(".sidebar"),
+  mobileMenu: document.querySelector(".mobile-menu")
 };
 
 
 /* =========================================================
-   ELEMENTOS DO POPUP
+   ELEMENTOS DO POPUP DE HORÁRIOS
    ========================================================= */
 
 const schedulePopup =
-  document.getElementById(
-    "schedulePopup"
-  );
+  document.getElementById("schedulePopup");
 
 const schedulePopupClose =
-  document.getElementById(
-    "schedulePopupClose"
-  );
+  document.getElementById("schedulePopupClose");
 
 const schedulePopupDate =
-  document.getElementById(
-    "schedulePopupDate"
-  );
+  document.getElementById("schedulePopupDate");
 
 const onlineTimes =
-  document.getElementById(
-    "onlineTimes"
-  );
+  document.getElementById("onlineTimes");
 
 const presentialTimes =
-  document.getElementById(
-    "presentialTimes"
-  );
+  document.getElementById("presentialTimes");
 
 const onlineColumn =
-  document.getElementById(
-    "onlineColumn"
-  );
+  document.getElementById("onlineColumn");
 
 const presentialColumn =
-  document.getElementById(
-    "presentialColumn"
-  );
+  document.getElementById("presentialColumn");
 
 const scheduleTerms =
-  document.getElementById(
-    "scheduleTerms"
-  );
+  document.getElementById("scheduleTerms");
 
 const scheduleSubmit =
+  document.getElementById("scheduleSubmit");
+
+  /* =========================================================
+   ELEMENTOS DO POPUP DE PEDIDOS
+   ========================================================= */
+
+const pendingRequestsCard =
   document.getElementById(
-    "scheduleSubmit"
+    "pendingRequestsCard"
   );
+
+const requestsPopup =
+  document.getElementById(
+    "requestsPopup"
+  );
+
+const requestsPopupClose =
+  document.getElementById(
+    "requestsPopupClose"
+  );
+
+const requestsPopupList =
+  document.getElementById(
+    "requestsPopupList"
+  );
+
+  /* =========================================================
+   ELEMENTOS DO POPUP DE PRÓXIMAS CONSULTAS
+   ========================================================= */
+
+const nextAppointmentCard =
+  document.getElementById(
+    "nextAppointmentCard"
+  );
+
+const appointmentsPopup =
+  document.getElementById(
+    "appointmentsPopup"
+  );
+
+const appointmentsPopupClose =
+  document.getElementById(
+    "appointmentsPopupClose"
+  );
+
+const appointmentsPopupList =
+  document.getElementById(
+    "appointmentsPopupList"
+  );
+
+  /* =========================================================
+   ELEMENTOS DO POPUP DE CONSULTAS REALIZADAS
+   ========================================================= */
+
+const completedAppointmentsCard =
+  document.getElementById(
+    "completedAppointmentsCard"
+  );
+
+const completedPopup =
+  document.getElementById(
+    "completedPopup"
+  );
+
+const completedPopupClose =
+  document.getElementById(
+    "completedPopupClose"
+  );
+
+const completedPopupList =
+  document.getElementById(
+    "completedPopupList"
+  );
+
+  /* =========================================================
+   RENDERIZA CONSULTAS REALIZADAS
+   ========================================================= */
+
+function renderCompletedAppointmentsPopup() {
+  if (!completedPopupList) {
+    return;
+  }
+
+
+  completedPopupList.replaceChildren();
+
+
+  const now =
+    new Date();
+
+
+  const thirtyDaysAgo =
+    new Date(now);
+
+
+  thirtyDaysAgo.setDate(
+    thirtyDaysAgo.getDate() -
+    30
+  );
+
+
+  const completed =
+    getMyAppointments()
+      .map(
+        (appointment) => ({
+          ...appointment,
+
+          dateTime:
+            dateTimeFromItem(
+              appointment
+            )
+        })
+      )
+      .filter(
+        (appointment) =>
+          appointment.dateTime < now &&
+          appointment.dateTime >=
+            thirtyDaysAgo
+      )
+      .sort(
+        (a, b) =>
+          b.dateTime -
+          a.dateTime
+      );
+
+
+  if (!completed.length) {
+    const empty =
+      document.createElement(
+        "p"
+      );
+
+
+    empty.className =
+      "completed-empty";
+
+
+    empty.textContent =
+      "Nenhuma consulta realizada nos últimos 30 dias.";
+
+
+    completedPopupList.append(
+      empty
+    );
+
+
+    return;
+  }
+
+
+  completed.forEach(
+    (appointment) => {
+
+      const item =
+        document.createElement(
+          "article"
+        );
+
+
+      item.className =
+        "completed-appointment-item";
+
+
+      const date =
+        document.createElement(
+          "strong"
+        );
+
+
+      date.className =
+        "completed-appointment-date";
+
+
+      date.textContent =
+        `${formatRequestDate(
+          appointment.date
+        )} · ${appointment.time}`;
+
+
+      const details =
+        document.createElement(
+          "div"
+        );
+
+
+      details.className =
+        "completed-appointment-details";
+
+
+      const duration =
+        document.createElement(
+          "span"
+        );
+
+
+      duration.textContent =
+        `${appointment.duration || 50} min`;
+
+
+      const mode =
+        document.createElement(
+          "span"
+        );
+
+
+      mode.className =
+        "completed-appointment-mode";
+
+
+      mode.textContent =
+        appointment.mode ||
+        "Modalidade não informada";
+
+
+      details.append(
+        duration,
+        mode
+      );
+
+
+      item.append(
+        date,
+        details
+      );
+
+
+      completedPopupList.append(
+        item
+      );
+    }
+  );
+}
+
+
+/* =========================================================
+   ABRIR POPUP
+   ========================================================= */
+
+function openCompletedPopup() {
+  if (!completedPopup) {
+    return;
+  }
+
+
+  renderCompletedAppointmentsPopup();
+
+
+  completedPopup.classList.add(
+    "open"
+  );
+
+
+  completedPopup.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+}
+
+
+/* =========================================================
+   FECHAR POPUP
+   ========================================================= */
+
+function closeCompletedPopup() {
+  if (!completedPopup) {
+    return;
+  }
+
+
+  completedPopup.classList.remove(
+    "open"
+  );
+
+
+  completedPopup.setAttribute(
+    "aria-hidden",
+    "true"
+  );
+}
+
+  /* =========================================================
+   RENDERIZA PRÓXIMAS CONSULTAS
+   ========================================================= */
+
+function renderUpcomingAppointmentsPopup() {
+  if (!appointmentsPopupList) {
+    return;
+  }
+
+
+  appointmentsPopupList.replaceChildren();
+
+
+  const now =
+    new Date();
+
+
+  const upcoming =
+    getMyAppointments()
+      .map(
+        (appointment) => ({
+          ...appointment,
+
+          dateTime:
+            dateTimeFromItem(
+              appointment
+            )
+        })
+      )
+      .filter(
+        (appointment) =>
+          appointment.dateTime >= now
+      )
+      .sort(
+        (a, b) =>
+          a.dateTime -
+          b.dateTime
+      );
+
+
+  if (!upcoming.length) {
+    const empty =
+      document.createElement(
+        "p"
+      );
+
+    empty.className =
+      "appointments-empty";
+
+    empty.textContent =
+      "Nenhuma consulta agendada.";
+
+    appointmentsPopupList.append(
+      empty
+    );
+
+    return;
+  }
+
+
+  upcoming.forEach(
+    (appointment) => {
+
+      const item =
+        document.createElement(
+          "article"
+        );
+
+      item.className =
+        "upcoming-appointment-item";
+
+
+      const date =
+        document.createElement(
+          "strong"
+        );
+
+      date.className =
+        "upcoming-appointment-date";
+
+      date.textContent =
+        `${formatRequestDate(
+          appointment.date
+        )} · ${appointment.time}`;
+
+
+      const details =
+        document.createElement(
+          "div"
+        );
+
+      details.className =
+        "upcoming-appointment-details";
+
+
+      const duration =
+        document.createElement(
+          "span"
+        );
+
+      duration.textContent =
+        `${appointment.duration || 50} min`;
+
+
+      const mode =
+        document.createElement(
+          "span"
+        );
+
+      mode.className =
+        "upcoming-appointment-mode";
+
+      mode.textContent =
+        appointment.mode ||
+        "Modalidade não informada";
+
+
+      details.append(
+        duration,
+        mode
+      );
+
+
+      item.append(
+        date,
+        details
+      );
+
+
+      appointmentsPopupList.append(
+        item
+      );
+    }
+  );
+}
+
+
+/* =========================================================
+   ABRIR POPUP
+   ========================================================= */
+
+function openAppointmentsPopup() {
+  if (!appointmentsPopup) {
+    return;
+  }
+
+
+  renderUpcomingAppointmentsPopup();
+
+
+  appointmentsPopup.classList.add(
+    "open"
+  );
+
+
+  appointmentsPopup.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+}
+
+
+/* =========================================================
+   FECHAR POPUP
+   ========================================================= */
+
+function closeAppointmentsPopup() {
+  if (!appointmentsPopup) {
+    return;
+  }
+
+
+  appointmentsPopup.classList.remove(
+    "open"
+  );
+
+
+  appointmentsPopup.setAttribute(
+    "aria-hidden",
+    "true"
+  );
+}
+
+/* =========================================================
+   EVENTOS DO POPUP DE PRÓXIMAS CONSULTAS
+   ========================================================= */
+
+if (nextAppointmentCard) {
+  nextAppointmentCard.addEventListener(
+    "click",
+    openAppointmentsPopup
+  );
+}
+
+
+if (appointmentsPopupClose) {
+  appointmentsPopupClose.addEventListener(
+    "click",
+    closeAppointmentsPopup
+  );
+}
+
+
+if (appointmentsPopup) {
+  appointmentsPopup.addEventListener(
+    "click",
+    (event) => {
+
+      if (
+        event.target ===
+        appointmentsPopup
+      ) {
+        closeAppointmentsPopup();
+      }
+
+    }
+  );
+}
 
 
 /* =========================================================
@@ -137,30 +579,64 @@ const profiles =
   patientData.getProfiles();
 
 
+/* =========================================================
+   LOCALIZA O PERFIL DO PACIENTE
+   ========================================================= */
+
+function resolvePatientProfile() {
+
+  const byId =
+    session?.id &&
+    profiles.find(
+      (profile) =>
+        profile.id === session.id
+    );
+
+
+  const byEmail =
+    session?.email &&
+    profiles.find(
+      (profile) =>
+        profile.email &&
+        profile.email.toLowerCase() ===
+          session.email.toLowerCase()
+    );
+
+
+  let latestProfile = null;
+
+  try {
+    latestProfile =
+      JSON.parse(
+        localStorage.getItem(
+          "psinoteProfileDemo"
+        ) || "null"
+      );
+  } catch {
+    latestProfile = null;
+  }
+
+
+  const patientFromProfiles =
+    profiles.find(
+      (profile) =>
+        profile.role === "paciente" ||
+        profile.role === "patient"
+    );
+
+
+  return (
+    byId ||
+    byEmail ||
+    latestProfile ||
+    patientFromProfiles ||
+    null
+  );
+}
+
+
 const patientProfile =
-  session
-    ? profiles.find(
-        (profile) => {
-
-          const sameId =
-            session.id &&
-            profile.id === session.id;
-
-          const sameEmail =
-            session.email &&
-            profile.email &&
-            profile.email
-              .toLowerCase() ===
-              session.email
-                .toLowerCase();
-
-          return (
-            sameId ||
-            sameEmail
-          );
-        }
-      )
-    : null;
+  resolvePatientProfile();
 
 
 const currentPatient = {
@@ -186,7 +662,6 @@ const currentPatient = {
 
   role: "paciente"
 };
-
 
 /* =========================================================
    DADOS DA AGENDA
@@ -218,22 +693,18 @@ let visibleMonth =
   );
 
 
-let selectedDateKey =
-  "";
+let selectedDateKey = "";
 
 
 /* =========================================================
    DADOS DO POPUP
    ========================================================= */
 
-let popupSelectedDate =
-  null;
+let popupSelectedDate = null;
+let popupSelectedTime = "";
+let popupSelectedMode = "";
 
-let popupSelectedTime =
-  "";
-
-let popupSelectedMode =
-  "";
+let toastTimer = null;
 
 
 /* =========================================================
@@ -266,40 +737,30 @@ const popupDateFormatter =
    ========================================================= */
 
 function capitalizeFirst(value) {
-
   if (!value) {
     return "";
   }
 
   return (
-    value
-      .charAt(0)
-      .toLocaleUpperCase("pt-BR") +
+    value.charAt(0).toLocaleUpperCase("pt-BR") +
     value.slice(1)
   );
 }
 
 
 function getInitials(name) {
-
-  return String(
-    name || "PN"
-  )
+  return String(name || "PN")
     .trim()
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
-    .map(
-      (part) =>
-        part[0]
-    )
+    .map((part) => part[0])
     .join("")
     .toUpperCase();
 }
 
 
 function getCalendarStart(month) {
-
   const firstDay =
     new Date(
       month.getFullYear(),
@@ -307,25 +768,19 @@ function getCalendarStart(month) {
       1
     );
 
-
   const start =
-    new Date(
-      firstDay
-    );
-
+    new Date(firstDay);
 
   start.setDate(
     firstDay.getDate() -
     firstDay.getDay()
   );
 
-
   return start;
 }
 
 
 function dateTimeFromItem(item) {
-
   return new Date(
     `${item.date}T${item.time}:00`
   );
@@ -333,7 +788,6 @@ function dateTimeFromItem(item) {
 
 
 function isSamePatient(item) {
-
   return (
     item.patientId ===
     currentPatient.id
@@ -342,18 +796,15 @@ function isSamePatient(item) {
 
 
 function getMyAppointments() {
-
   return appointments.filter(
     (item) =>
       isSamePatient(item) &&
-      item.status !==
-        "cancelled"
+      item.status !== "cancelled"
   );
 }
 
 
 function getMyRequests() {
-
   return requests.filter(
     (item) =>
       isSamePatient(item)
@@ -365,12 +816,10 @@ function formatCompactDate(
   dateKey,
   time
 ) {
-
   const date =
     patientData.fromDateKey(
       dateKey
     );
-
 
   const day =
     String(
@@ -379,7 +828,6 @@ function formatCompactDate(
       2,
       "0"
     );
-
 
   const months = [
     "jan",
@@ -396,12 +844,73 @@ function formatCompactDate(
     "dez"
   ];
 
-
   return (
     `${day} ` +
     `${months[date.getMonth()]} · ` +
     `${time}`
   );
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+function showToast(
+  message,
+  isError = false
+) {
+  if (
+    !ui.toast ||
+    !ui.toastMessage
+  ) {
+    return;
+  }
+
+  window.clearTimeout(
+    toastTimer
+  );
+
+  ui.toastMessage.textContent =
+    message;
+
+  ui.toast.classList.toggle(
+    "toast-error",
+    isError
+  );
+
+  /*
+   * Troca o símbolo do toast.
+   * Sucesso = ✓
+   * Erro = !
+   */
+  const icon =
+    ui.toast.querySelector(
+      "[aria-hidden='true']"
+    );
+
+  if (icon) {
+    icon.textContent =
+      isError
+        ? "!"
+        : "✓";
+  }
+
+  ui.toast.hidden =
+    false;
+
+  toastTimer =
+    window.setTimeout(
+      () => {
+        ui.toast.hidden =
+          true;
+
+        ui.toast.classList.remove(
+          "toast-error"
+        );
+      },
+      3500
+    );
 }
 
 
@@ -412,18 +921,15 @@ function formatCompactDate(
 function getSelectableSlots(
   dateKey
 ) {
-
   const slots =
     patientData.getOpenSlots(
       dateKey
     ) || [];
 
-
   const selectedDate =
     patientData.fromDateKey(
       dateKey
     );
-
 
   const selectedDay =
     new Date(
@@ -431,7 +937,6 @@ function getSelectableSlots(
       selectedDate.getMonth(),
       selectedDate.getDate()
     );
-
 
   const currentDay =
     new Date();
@@ -445,7 +950,8 @@ function getSelectableSlots(
 
 
   /*
-   * Dia no passado.
+   * Não permite selecionar
+   * dias que já passaram.
    */
 
   if (
@@ -457,9 +963,8 @@ function getSelectableSlots(
 
 
   /*
-   * Se não for hoje,
-   * todos os horários livres
-   * continuam disponíveis.
+   * Se for um dia futuro,
+   * retorna todos os horários livres.
    */
 
   if (
@@ -472,8 +977,7 @@ function getSelectableSlots(
 
   /*
    * Se for hoje,
-   * remove horários que
-   * já passaram.
+   * remove horários que já passaram.
    */
 
   const now =
@@ -482,7 +986,6 @@ function getSelectableSlots(
 
   return slots.filter(
     (time) => {
-
       const [
         hour,
         minute
@@ -518,9 +1021,7 @@ function getSelectableSlots(
    ========================================================= */
 
 function renderPatientProfile() {
-
   if (ui.name) {
-
     ui.name.textContent =
       currentPatient.name;
   }
@@ -539,8 +1040,7 @@ function renderPatientProfile() {
 
   const hasPhoto =
     Boolean(
-      currentPatient
-        .avatarDataUrl
+      currentPatient.avatarDataUrl
     );
 
 
@@ -562,7 +1062,6 @@ function renderPatientProfile() {
    ========================================================= */
 
 function renderCalendar() {
-
   if (
     !ui.grid ||
     !ui.monthTitle
@@ -607,11 +1106,8 @@ function renderCalendar() {
     index < 42;
     index += 1
   ) {
-
     const date =
-      new Date(
-        start
-      );
+      new Date(start);
 
 
     date.setDate(
@@ -720,7 +1216,6 @@ function renderCalendar() {
 
 
     if (isOtherMonth) {
-
       button.classList.add(
         "other-month"
       );
@@ -731,7 +1226,6 @@ function renderCalendar() {
       dateKey ===
       selectedDateKey
     ) {
-
       button.classList.add(
         "selected"
       );
@@ -782,15 +1276,13 @@ function renderCalendar() {
       !isOtherMonth &&
       pendingRequests.length
     ) {
-
       button.classList.add(
         "has-pending"
       );
 
 
       info.textContent =
-        pendingRequests[0]
-          .time;
+        pendingRequests[0].time;
 
 
       button.append(
@@ -801,15 +1293,13 @@ function renderCalendar() {
       !isOtherMonth &&
       futureAppointment
     ) {
-
       button.classList.add(
         "has-approved"
       );
 
 
       info.textContent =
-        futureAppointment
-          .time;
+        futureAppointment.time;
 
 
       button.append(
@@ -820,7 +1310,6 @@ function renderCalendar() {
       dateKey ===
       todayKey
     ) {
-
       button.classList.add(
         "today"
       );
@@ -838,7 +1327,6 @@ function renderCalendar() {
       !isOtherMonth &&
       openSlots.length
     ) {
-
       button.classList.add(
         "has-available"
       );
@@ -855,9 +1343,8 @@ function renderCalendar() {
 
 
     /*
-     * Só permite clicar
-     * se existir pelo menos
-     * um horário realmente livre.
+     * Um dia só abre o popup
+     * se possuir horário livre.
      */
 
     const selectable =
@@ -871,17 +1358,13 @@ function renderCalendar() {
 
 
     if (selectable) {
-
       button.addEventListener(
         "click",
         () => {
-
           selectedDateKey =
             dateKey;
 
-
           renderCalendar();
-
 
           openSchedulePopup(
             date
@@ -903,15 +1386,12 @@ function renderCalendar() {
    ========================================================= */
 
 function renderSummary() {
-
   const now =
     new Date();
 
 
   const thirtyDaysAgo =
-    new Date(
-      now
-    );
+    new Date(now);
 
 
   thirtyDaysAgo.setDate(
@@ -927,7 +1407,6 @@ function renderSummary() {
   const completed =
     myAppointments.filter(
       (item) => {
-
         const date =
           dateTimeFromItem(
             item
@@ -944,7 +1423,6 @@ function renderSummary() {
 
 
   if (ui.completedCount) {
-
     ui.completedCount.textContent =
       `${completed.length} ` +
       `${
@@ -980,7 +1458,6 @@ function renderSummary() {
 
 
   if (ui.nextAppointment) {
-
     ui.nextAppointment.textContent =
       next
         ? formatCompactDate(
@@ -1000,7 +1477,6 @@ function renderSummary() {
 
 
   if (ui.pendingCount) {
-
     ui.pendingCount.textContent =
       `${pending.length} ` +
       `${
@@ -1017,7 +1493,6 @@ function renderSummary() {
    ========================================================= */
 
 function updateScheduleSubmit() {
-
   if (!scheduleSubmit) {
     return;
   }
@@ -1038,7 +1513,6 @@ function createScheduleTimeButton(
   time,
   mode
 ) {
-
   const button =
     document.createElement(
       "button"
@@ -1074,16 +1548,13 @@ function createScheduleTimeButton(
   button.addEventListener(
     "click",
     () => {
-
       if (schedulePopup) {
-
         schedulePopup
           .querySelectorAll(
             ".schedule-time"
           )
           .forEach(
             (item) => {
-
               item.classList.remove(
                 "selected"
               );
@@ -1131,7 +1602,6 @@ function createScheduleTimeButton(
    ========================================================= */
 
 function createNoSlotsMessage() {
-
   const message =
     document.createElement(
       "p"
@@ -1157,7 +1627,6 @@ function createNoSlotsMessage() {
 function renderScheduleTimes(
   date
 ) {
-
   if (
     !onlineTimes ||
     !presentialTimes
@@ -1184,38 +1653,26 @@ function renderScheduleTimes(
 
 
   /*
-   * Atualmente PsiNoteData fornece
-   * os horários livres do dia,
-   * mas não separa disponibilidade
-   * por modalidade.
-   *
-   * Portanto os horários realmente
-   * livres aparecem nas duas colunas.
+   * Por enquanto, os horários livres
+   * aparecem nas duas modalidades.
    *
    * A modalidade escolhida é salva
-   * junto da solicitação.
+   * junto com a solicitação.
    */
 
-  if (
-    onlineColumn
-  ) {
-
+  if (onlineColumn) {
     onlineColumn.hidden =
       false;
   }
 
 
-  if (
-    presentialColumn
-  ) {
-
+  if (presentialColumn) {
     presentialColumn.hidden =
       false;
   }
 
 
   if (!slots.length) {
-
     onlineTimes.append(
       createNoSlotsMessage()
     );
@@ -1232,7 +1689,6 @@ function renderScheduleTimes(
 
   slots.forEach(
     (time) => {
-
       onlineTimes.append(
         createScheduleTimeButton(
           time,
@@ -1259,7 +1715,6 @@ function renderScheduleTimes(
 function openSchedulePopup(
   date
 ) {
-
   if (
     !schedulePopup ||
     !schedulePopupDate ||
@@ -1326,7 +1781,6 @@ function openSchedulePopup(
    ========================================================= */
 
 function closeSchedulePopup() {
-
   if (!schedulePopup) {
     return;
   }
@@ -1356,14 +1810,12 @@ function closeSchedulePopup() {
 
 
   if (scheduleTerms) {
-
     scheduleTerms.checked =
       false;
   }
 
 
   if (scheduleSubmit) {
-
     scheduleSubmit.disabled =
       true;
   }
@@ -1375,7 +1827,6 @@ function closeSchedulePopup() {
     )
     .forEach(
       (button) => {
-
         button.classList.remove(
           "selected"
         );
@@ -1395,7 +1846,6 @@ function closeSchedulePopup() {
    ========================================================= */
 
 function submitScheduleRequest() {
-
   if (
     !popupSelectedDate ||
     !popupSelectedTime ||
@@ -1413,7 +1863,7 @@ function submitScheduleRequest() {
 
 
   /*
-   * Busca os dados novamente
+   * Busca novamente os dados
    * antes de salvar.
    */
 
@@ -1426,8 +1876,7 @@ function submitScheduleRequest() {
 
 
   /*
-   * Verifica se o paciente já
-   * possui pedido nesse horário.
+   * Verifica pedidos duplicados.
    */
 
   const duplicateRequest =
@@ -1453,8 +1902,7 @@ function submitScheduleRequest() {
 
 
   /*
-   * Verifica se o paciente já
-   * possui consulta nesse horário.
+   * Verifica consultas duplicadas.
    */
 
   const duplicateAppointment =
@@ -1478,9 +1926,9 @@ function submitScheduleRequest() {
     duplicateRequest ||
     duplicateAppointment
   ) {
-
-    alert(
-      "Você já possui uma solicitação ou consulta nesse horário."
+    showToast(
+      "Você já possui uma solicitação ou consulta nesse horário.",
+      true
     );
 
     return;
@@ -1488,8 +1936,8 @@ function submitScheduleRequest() {
 
 
   /*
-   * Confere novamente se o horário
-   * ainda está livre antes de salvar.
+   * Confere mais uma vez se o
+   * horário continua disponível.
    */
 
   const availableSlots =
@@ -1503,9 +1951,9 @@ function submitScheduleRequest() {
       popupSelectedTime
     )
   ) {
-
-    alert(
-      "Esse horário não está mais disponível. Escolha outro."
+    showToast(
+      "Esse horário não está mais disponível. Escolha outro.",
+      true
     );
 
 
@@ -1534,7 +1982,6 @@ function submitScheduleRequest() {
    */
 
   const request = {
-
     id:
       patientData.createId(
         "request"
@@ -1581,8 +2028,7 @@ function submitScheduleRequest() {
 
 
   /*
-   * Mantém os dados locais
-   * atualizados.
+   * Atualiza os dados locais.
    */
 
   requests =
@@ -1593,6 +2039,10 @@ function submitScheduleRequest() {
     currentAppointments;
 
 
+  /*
+   * Fecha o popup.
+   */
+
   closeSchedulePopup();
 
 
@@ -1600,25 +2050,294 @@ function submitScheduleRequest() {
     "";
 
 
+  /*
+   * Atualiza calendário e cards.
+   */
+
   renderCalendar();
 
   renderSummary();
 
 
-  alert(
+  /*
+   * Confirmação visual.
+   */
+
+  showToast(
     "Solicitação enviada com sucesso."
+  );
+}
+
+/* =========================================================
+   FORMATA DATA DO PEDIDO
+   ========================================================= */
+
+function formatRequestDate(
+  dateKey
+) {
+  const date =
+    patientData.fromDateKey(
+      dateKey
+    );
+
+  return capitalizeFirst(
+    new Intl.DateTimeFormat(
+      "pt-BR",
+      {
+        weekday: "long",
+        day: "numeric",
+        month: "long"
+      }
+    ).format(date)
   );
 }
 
 
 /* =========================================================
+   RENDERIZA PEDIDOS PENDENTES
+   ========================================================= */
+
+function renderPendingRequestsPopup() {
+  if (!requestsPopupList) {
+    return;
+  }
+
+  requestsPopupList.replaceChildren();
+
+
+  const pending =
+    patientData
+      .getRequests()
+      .filter(
+        (request) =>
+          request.patientId ===
+            currentPatient.id &&
+
+          request.status ===
+            "pending"
+      )
+      .sort(
+        (a, b) =>
+          dateTimeFromItem(a) -
+          dateTimeFromItem(b)
+      );
+
+
+  if (!pending.length) {
+    const empty =
+      document.createElement(
+        "p"
+      );
+
+    empty.className =
+      "requests-empty";
+
+    empty.textContent =
+      "Nenhuma solicitação pendente.";
+
+    requestsPopupList.append(
+      empty
+    );
+
+    return;
+  }
+
+
+  pending.forEach(
+    (request) => {
+
+      const item =
+        document.createElement(
+          "article"
+        );
+
+      item.className =
+        "pending-request-item";
+
+
+      const info =
+        document.createElement(
+          "div"
+        );
+
+      info.className =
+        "pending-request-info";
+
+
+      const date =
+        document.createElement(
+          "strong"
+        );
+
+      date.className =
+        "pending-request-date";
+
+      date.textContent =
+        formatRequestDate(
+          request.date
+        );
+
+
+      const details =
+        document.createElement(
+          "span"
+        );
+
+      details.className =
+        "pending-request-details";
+
+      details.textContent =
+        `${request.time} · ${request.mode || "Modalidade não informada"}`;
+
+
+      const cancel =
+        document.createElement(
+          "button"
+        );
+
+      cancel.type =
+        "button";
+
+      cancel.className =
+        "pending-request-cancel";
+
+      cancel.textContent =
+        "Cancelar";
+
+
+      cancel.addEventListener(
+        "click",
+        () => {
+          cancelPendingRequest(
+            request.id
+          );
+        }
+      );
+
+
+      info.append(
+        date,
+        details
+      );
+
+      item.append(
+        info,
+        cancel
+      );
+
+      requestsPopupList.append(
+        item
+      );
+    }
+  );
+}
+
+
+/* =========================================================
+   ABRIR POPUP DE PEDIDOS
+   ========================================================= */
+
+function openRequestsPopup() {
+  if (!requestsPopup) {
+    return;
+  }
+
+  renderPendingRequestsPopup();
+
+  requestsPopup.classList.add(
+    "open"
+  );
+
+  requestsPopup.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+}
+
+
+/* =========================================================
+   FECHAR POPUP DE PEDIDOS
+   ========================================================= */
+
+function closeRequestsPopup() {
+  if (!requestsPopup) {
+    return;
+  }
+
+  requestsPopup.classList.remove(
+    "open"
+  );
+
+  requestsPopup.setAttribute(
+    "aria-hidden",
+    "true"
+  );
+}
+
+
+/* =========================================================
+   CANCELAR PEDIDO
+   ========================================================= */
+
+function cancelPendingRequest(
+  requestId
+) {
+  const currentRequests =
+    patientData.getRequests();
+
+
+  const updatedRequests =
+    currentRequests.map(
+      (request) => {
+
+        if (
+          request.id !==
+          requestId
+        ) {
+          return request;
+        }
+
+
+        return {
+          ...request,
+
+          status:
+            "cancelled",
+
+          cancelledAt:
+            new Date()
+              .toISOString()
+        };
+      }
+    );
+
+
+  patientData.saveRequests(
+    updatedRequests
+  );
+
+
+  requests =
+    updatedRequests;
+
+
+  renderCalendar();
+
+  renderSummary();
+
+  renderPendingRequestsPopup();
+
+
+  showToast(
+    "Solicitação cancelada."
+  );
+}
+
+/* =========================================================
    EVENTOS DO POPUP
    ========================================================= */
 
-if (
-  scheduleTerms
-) {
-
+if (scheduleTerms) {
   scheduleTerms.addEventListener(
     "change",
     updateScheduleSubmit
@@ -1626,10 +2345,7 @@ if (
 }
 
 
-if (
-  schedulePopupClose
-) {
-
+if (schedulePopupClose) {
   schedulePopupClose.addEventListener(
     "click",
     closeSchedulePopup
@@ -1637,19 +2353,14 @@ if (
 }
 
 
-if (
-  schedulePopup
-) {
-
+if (schedulePopup) {
   schedulePopup.addEventListener(
     "click",
     (event) => {
-
       if (
         event.target ===
         schedulePopup
       ) {
-
         closeSchedulePopup();
       }
     }
@@ -1657,29 +2368,93 @@ if (
 }
 
 
-if (
-  scheduleSubmit
-) {
-
+if (scheduleSubmit) {
   scheduleSubmit.addEventListener(
     "click",
     submitScheduleRequest
   );
 }
 
+/* =========================================================
+   EVENTOS DO POPUP DE PEDIDOS
+   ========================================================= */
+
+if (pendingRequestsCard) {
+  pendingRequestsCard.addEventListener(
+    "click",
+    openRequestsPopup
+  );
+}
+
+
+if (requestsPopupClose) {
+  requestsPopupClose.addEventListener(
+    "click",
+    closeRequestsPopup
+  );
+}
+
+
+if (requestsPopup) {
+  requestsPopup.addEventListener(
+    "click",
+    (event) => {
+
+      if (
+        event.target ===
+        requestsPopup
+      ) {
+        closeRequestsPopup();
+      }
+
+    }
+  );
+}
+
+/* =========================================================
+   EVENTOS DO POPUP DE CONSULTAS REALIZADAS
+   ========================================================= */
+
+if (completedAppointmentsCard) {
+  completedAppointmentsCard.addEventListener(
+    "click",
+    openCompletedPopup
+  );
+}
+
+
+if (completedPopupClose) {
+  completedPopupClose.addEventListener(
+    "click",
+    closeCompletedPopup
+  );
+}
+
+
+if (completedPopup) {
+  completedPopup.addEventListener(
+    "click",
+    (event) => {
+
+      if (
+        event.target ===
+        completedPopup
+      ) {
+        closeCompletedPopup();
+      }
+
+    }
+  );
+}
 
 /* =========================================================
    NAVEGAÇÃO DOS MESES
    ========================================================= */
 
-if (
-  ui.previousMonth
-) {
-
+if (ui.previousMonth) {
   ui.previousMonth.addEventListener(
     "click",
     () => {
-
       visibleMonth =
         new Date(
           visibleMonth.getFullYear(),
@@ -1698,14 +2473,10 @@ if (
 }
 
 
-if (
-  ui.nextMonth
-) {
-
+if (ui.nextMonth) {
   ui.nextMonth.addEventListener(
     "click",
     () => {
-
       visibleMonth =
         new Date(
           visibleMonth.getFullYear(),
@@ -1732,11 +2503,9 @@ if (
   ui.mobileMenu &&
   ui.sidebar
 ) {
-
   ui.mobileMenu.addEventListener(
     "click",
     () => {
-
       const isOpen =
         ui.sidebar.classList.toggle(
           "open"
@@ -1745,9 +2514,7 @@ if (
 
       ui.mobileMenu.setAttribute(
         "aria-expanded",
-        String(
-          isOpen
-        )
+        String(isOpen)
       );
     }
   );
@@ -1756,7 +2523,6 @@ if (
   document.addEventListener(
     "click",
     (event) => {
-
       if (
         window.innerWidth >
         720
@@ -1796,7 +2562,6 @@ if (
    ========================================================= */
 
 function refreshData() {
-
   appointments =
     patientData.getAppointments();
 
