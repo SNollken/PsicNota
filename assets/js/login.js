@@ -127,7 +127,7 @@ function enterWithProfile(profile, remember) {
   submitButton.textContent = "Entrando...";
 
   window.setTimeout(() => {
-    window.location.href = profile.role === "psicologo" ? "profissional/agenda.html" : "paciente/agenda-paciente.html";
+    window.location.href = profile.role === "psicologo" ? "profissional/home.html" : "paciente/home.html";
   }, 700);
 }
 
@@ -195,11 +195,6 @@ loginForm.addEventListener("input", (event) => {
     setFieldError(event.target, "");
     clearMessage();
   }
-});
-
-forgotPasswordLink.addEventListener("click", (event) => {
-  event.preventDefault();
-  showMessage("A recuperação de senha será conectada ao backend posteriormente.", "success");
 });
 
 setupPasswordToggles();
