@@ -1,17 +1,17 @@
 :root {
-  --blue-25: #f8fdff;
-  --blue-50: #f1f9fc;
-  --blue-75: #edf8fc;
-  --blue-100: #e1f4fb;
-  --blue-150: #d3eef8;
-  --blue-200: #c2e8f5;
+  --blue-25: #F8FAFB;
+  --blue-50: #E4F6FC;
+  --blue-75: #E4F6FC;
+  --blue-100: #E4F6FC;
+  --blue-150: #E4F6FC;
+  --blue-200: #E4F6FC;
 
   --blue-700: #1f637a;
   --blue-800: #174e61;
 
-  --ink: #101820;
-  --muted: #5f6e75;
-  --line: #c8dde5;
+  --ink: #111827;
+  --muted: #64727C;
+  --line: #E4F6FC;
   --white: #ffffff;
 
   --sidebar-width: 280px;
@@ -95,9 +95,9 @@ svg {
 
   padding: 28px 10px 18px;
 
-  border-right: 1px solid #d4e7ed;
+  border-right: 1px solid #DCE6EA;
 
-  background: #f4fbfd;
+  background: #E4F6FC;
 
   z-index: 20;
 }
@@ -142,7 +142,7 @@ svg {
 
   padding: 0 10px;
 
-  color: #52636b;
+  color: #64727C;
 
   font-size: 11px;
   font-weight: 700;
@@ -158,11 +158,11 @@ svg {
 
   padding: 0 16px;
 
-  border: 1px solid #c8e1ea;
+  border: 1px solid #E4F6FC;
   border-radius: 13px;
 
-  color: #24343b;
-  background: #eef8fb;
+  color: #111827;
+  background: #E4F6FC;
 
   text-decoration: none;
 
@@ -183,17 +183,17 @@ svg {
 
 .nav-item:hover,
 .settings-link:hover {
-  background: #e8f6fb;
-  border-color: #acd8e8;
+  background: #E4F6FC;
+  border-color: #DCE6EA;
 
   color: var(--blue-800);
 }
 
 .nav-item.active {
-  background: #bfe8f6;
-  border-color: #bfe8f6;
+  background: #E4F6FC;
+  border-color: #E4F6FC;
 
-  color: #153f50;
+  color: #174E61;
 }
 
 
@@ -258,14 +258,14 @@ svg {
   background:
     linear-gradient(
       145deg,
-      #a8d4ff,
-      #75a2eb
+      #1F637A,
+      #1F637A
     );
 
   background-position: center;
   background-size: cover;
 
-  color: #163e50;
+  color: #174E61;
 
   font-size: 24px;
   font-weight: 800;
@@ -286,7 +286,7 @@ svg {
 
   margin-bottom: 0;
 
-  color: #123b4a;
+  color: #174E61;
 
   font-size: 11px;
   font-weight: 800;
@@ -295,7 +295,7 @@ svg {
 h1 {
   margin: 0;
 
-  color: #151a1f;
+  color: #111827;
 
   font-size: 26px;
   line-height: 1.05;
@@ -355,10 +355,10 @@ h1 {
 .button-photo {
   min-width: 150px;
 
-  border: 2px solid #2d6f89;
+  border: 2px solid #174E61;
 
   background: #ffffff;
-  color: #1e5e77;
+  color: #174E61;
 }
 
 .button-photo:hover {
@@ -373,7 +373,7 @@ h1 {
 .button-save {
   border: 1px solid #1f637a;
 
-  background: #225f76;
+  background: #174E61;
   color: #ffffff;
 }
 
@@ -383,10 +383,10 @@ h1 {
 }
 
 .button-cancel {
-  border: 2px solid #aac8d3;
+  border: 2px solid #DCE6EA;
 
   background: #ffffff;
-  color: #365661;
+  color: #64727C;
 }
 
 .editing-actions {
@@ -397,14 +397,14 @@ h1 {
 .button-remove-photo {
   min-width: 130px;
 
-  border: 2px solid #9f3f3f;
+  border: 2px solid #D90307;
 
   background: #ffffff;
-  color: #9f3f3f;
+  color: #D90307;
 }
 
 .button-remove-photo:hover {
-  background: #fff5f5;
+  background: #D90307;
 }
 /* =========================
    LINHA
@@ -413,7 +413,7 @@ h1 {
 .header-divider {
   height: 1.5px;
 
-  background: #b7d3dd;
+  background: #DCE6EA;
 }
 
 /* =========================
@@ -425,23 +425,23 @@ h1 {
 
   padding: 10px 14px;
 
-  border: 1px solid #b9dec9;
+  border: 1px solid #3BAE24;
   border-radius: 8px;
 
-  background: #f2fbf6;
+  background: #3BAE24;
 
-  color: #236342;
+  color: #174E61;
 
   font-size: 12px;
   font-weight: 650;
 }
 
 .feedback.is-error {
-  border-color: #efc5c5;
+  border-color: #D90307;
 
-  background: #fff5f5;
+  background: #D90307;
 
-  color: #9d3232;
+  color: #D90307;
 }
 
 /* =========================
@@ -469,10 +469,10 @@ h1 {
 
   padding: 17px 15px;
 
-  border: 1px solid #cbdfe6;
+  border: 1px solid #E4F6FC;
   border-radius: 20px;
 
-  background: #f1f9fc;
+  background: #E4F6FC;
 }
 
 .summary-icon,
@@ -484,9 +484,9 @@ h1 {
 
   border-radius: 50%;
 
-  color: #1b5d74;
+  color: #174E61;
 
-  background: #c5e9f5;
+  background: #E4F6FC;
 }
 
 .summary-icon {
@@ -508,7 +508,7 @@ h1 {
 
   margin-bottom: 3px;
 
-  color: #15242b;
+  color: #111827;
 
   font-size: 12px;
   font-weight: 790;
@@ -519,7 +519,7 @@ h1 {
 
   overflow: hidden;
 
-  color: #11191d;
+  color: #111827;
 
   font-size: 15px;
   line-height: 1.2;
@@ -539,10 +539,10 @@ h1 {
 
   padding: 24px 16px 30px;
 
-  border: 1px solid #cae4ed;
+  border: 1px solid #E4F6FC;
   border-radius: var(--radius-lg);
 
-  background: #e3f5fb;
+  background: #E4F6FC;
 }
 
 /* =========================
@@ -561,10 +561,10 @@ h1 {
 
   padding: 29px 28px;
 
-  border: 1px solid #c8e1ea;
+  border: 1px solid #E4F6FC;
   border-radius: 24px;
 
-  background: #f3fafd;
+  background: #E4F6FC;
 }
 
 .section-heading {
@@ -591,7 +591,7 @@ h1 {
 
   margin: 9px 0 0;
 
-  color: #141d21;
+  color: #111827;
 
   font-size: 13px;
   line-height: 1.25;
@@ -621,7 +621,7 @@ h1 {
 }
 
 .field > span {
-  color: #111b20;
+  color: #111827;
 
   font-size: 11px;
   font-weight: 800;
@@ -642,7 +642,7 @@ select {
   outline: none;
 
   background: #ffffff;
-  color: #18516a;
+  color: #174E61;
 
   font-size: 14px;
   font-weight: 700;
@@ -668,13 +668,13 @@ select:disabled {
   cursor: default;
 
   background: #ffffff;
-  color: #18516a;
+  color: #174E61;
 
-  -webkit-text-fill-color: #18516a;
+  -webkit-text-fill-color: #174E61;
 }
 
 input::placeholder {
-  color: #6d858e;
+  color: #64727C;
 
   font-weight: 600;
 
@@ -748,7 +748,7 @@ input::placeholder {
   border: 0;
   border-radius: 999px;
 
-  background: #7d898e;
+  background: #64727C;
 
   cursor: pointer;
 
@@ -772,13 +772,13 @@ input::placeholder {
 
   box-shadow:
     0 1px 3px
-    rgba(0, 0, 0, 0.25);
+    rgba(17, 24, 39, 0.25);
 
   transition: transform 0.15s;
 }
 
 .switch-input:checked {
-  background: #34464e;
+  background: #111827;
 }
 
 .switch-input:checked::after {
@@ -920,7 +920,7 @@ input::placeholder {
 
     margin-bottom: 8px;
 
-    border: 1px solid #c8dde5;
+    border: 1px solid #E4F6FC;
     border-radius: 8px;
 
     background: #ffffff;

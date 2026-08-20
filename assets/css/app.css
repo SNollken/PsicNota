@@ -216,7 +216,7 @@
 }
 
 .block-field > span {
-  color: #37464e;
+  color: #111827;
   font-size: 12px;
   font-weight: 750;
 }
@@ -357,13 +357,13 @@
 }
 
 .notice-warning {
-  background: #fdf6e7;
-  border-color: #ecd9ae;
+  background: #E4F6FC;
+  border-color: #E4F6FC;
 }
 
 .notice-success {
   background: var(--success-bg);
-  border-color: #bfe3cf;
+  border-color: #3BAE24;
 }
 
 /* === Listas compactas (dashboards) === */

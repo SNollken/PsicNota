@@ -4,16 +4,16 @@
    nem do base.css (páginas internas). */
 
 :root {
-  --blue-50: #f4fbfe;
+  --blue-50: #E4F6FC;
   --blue-100: #e4f6fc;
   --blue-200: #bfe7f5;
-  --blue-300: #98d8ed;
+  --blue-300: #E4F6FC;
   --blue-700: #1f637a;
   --blue-800: #174e61;
   --ink: #111827;
   --muted: #64727c;
   --line: #dce6ea;
-  --line-strong: #c7d7dd;
+  --line-strong: #DCE6EA;
   --white: #ffffff;
   --radius: 8px;
   --shadow-focus: 0 0 0 4px rgba(31, 99, 122, 0.12);
@@ -172,7 +172,7 @@ a {
   padding: clamp(64px, 10vw, 128px) clamp(20px, 5vw, 72px);
   text-align: center;
   background:
-    linear-gradient(rgba(244, 251, 254, 0.9), rgba(228, 246, 252, 0.96)),
+    linear-gradient(rgba(243, 251, 254, 0.9), rgba(228, 246, 252, 0.96)),
     radial-gradient(circle at 15% 18%, var(--blue-300) 0 1px, transparent 2px),
     radial-gradient(circle at 82% 72%, var(--blue-200) 0 1px, transparent 2px);
   background-size: auto, 28px 28px, 34px 34px;
@@ -205,7 +205,7 @@ a {
 .hero-subtitle {
   max-width: 620px;
   margin: 22px auto 0;
-  color: #4c5f69;
+  color: #64727C;
   font-size: 1.08rem;
   line-height: 1.75;
 }
