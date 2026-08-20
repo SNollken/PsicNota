@@ -15,9 +15,9 @@ const avatarInput = document.querySelector("#avatarInput");
 const changePhotoButton = document.querySelector("#changePhotoButton");
 const removePhotoButton = document.querySelector("#removePhotoButton");
 
-const agendaLink = document.querySelector("#agendaLink");
-const agendaLinkText = document.querySelector("#agendaLinkText");
 const brandLink = document.querySelector("#brandLink");
+const navPaciente = document.querySelector("#navPaciente");
+const navPsicologo = document.querySelector("#navPsicologo");
 
 const sidebar = document.querySelector(".sidebar");
 const mobileMenu = document.querySelector(".mobile-menu");
@@ -595,27 +595,45 @@ function applyProfile() {
       ? "Atualize suas informações profissionais."
       : "Atualize seus dados e preferências de atendimento.";
 
-  agendaLink.href =
-    agendaHref;
+  if (brandLink) {
+    brandLink.href =
+      agendaHref;
+  }
 
-  brandLink.href =
-    agendaHref;
-
-  agendaLinkText.textContent =
-    "Agendar consulta";
-
-  const laudosLink =
-    document.querySelector("#laudosLink");
-
-  if (laudosLink) {
-    laudosLink.hidden =
+  if (navPaciente) {
+    navPaciente.hidden =
       currentRole !== "paciente";
   }
 
-
-  if (relatoriosLink) {
-    relatoriosLink.hidden =
+  if (navPsicologo) {
+    navPsicologo.hidden =
       currentRole !== "psicologo";
+  }
+
+  const sidebarName =
+    document.querySelector("[data-sidebar-name]");
+
+  if (sidebarName) {
+    sidebarName.textContent =
+      currentProfile.fullName ||
+      "Usuário PsicNota";
+  }
+
+  const sidebarRole =
+    document.querySelector("[data-sidebar-role]");
+
+  if (sidebarRole) {
+    sidebarRole.textContent = roleLabel;
+  }
+
+  const sidebarAvatar =
+    document.querySelector("[data-sidebar-avatar]");
+
+  if (sidebarAvatar && currentProfile.avatarDataUrl) {
+    sidebarAvatar.classList.add("has-photo");
+    sidebarAvatar.style.backgroundImage =
+      "url('" + currentProfile.avatarDataUrl + "')";
+    sidebarAvatar.textContent = "";
   }
 
   pendingAvatar =

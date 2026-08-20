@@ -14,36 +14,47 @@
 </head>
 <body>
   <div class="app-shell">
-    <aside class="sidebar" aria-label="Navegação principal">
-      <a class="brand" id="brandLink" href="paciente/agenda-paciente.html" aria-label="PsicNota - página inicial">
+        <aside class="sidebar" aria-label="Navegação principal">
+      <a class="brand" id="brandLink" href="paciente/agenda-paciente.html" aria-label="PsicNota - pág...cial">
         <img src="assets/img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />
         <span class="brand-text">PsicNota</span>
       </a>
 
-      <nav class="main-nav">
+      <nav class="main-nav" id="navPaciente">
         <p class="nav-label">MENU</p>
 
-        <a class="nav-item active" id="agendaLink" href="paciente/agenda-paciente.html">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"></path>
-          </svg>
-          <span id="agendaLinkText">Agendar consulta</span>
+        <a class="nav-item active" href="paciente/agenda-paciente.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"></path></svg>
+          <span>Agendar consulta</span>
         </a>
 
-        <a class="nav-item" id="relatoriosLink" href="profissional/relatorios.html">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m8.5 15.5 7-7a3 3 0 0 1 4.2 4.2l-7 7a5 5 0 0 1-7.1-7.1l7.4-7.4"></path>
-          </svg>
-          <span>Relatórios</span>
-        </a>
-
-        <a class="nav-item" id="laudosLink" href="paciente/laudos.html" hidden>
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M8 4h8l4 4v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4Zm8 0v4h4M9 13h6M9 17h4"></path>
-          </svg>
+        <a class="nav-item" href="paciente/laudos.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
           <span>Receitas e Laudos</span>
         </a>
       </nav>
+
+      <nav class="main-nav" id="navPsicologo" hidden>
+        <p class="nav-label">MENU</p>
+
+        <a class="nav-item active" href="profissional/agenda.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"></path></svg>
+          <span>Agendar consulta</span>
+        </a>
+
+        <a class="nav-item" href="profissional/relatorios.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+          <span>Relatórios</span>
+        </a>
+      </nav>
+
+      <a class="sidebar-profile" href="perfil.html" aria-current="page" aria-label="Meu perfil">
+        <span class="sidebar-profile-avatar" data-sidebar-avatar aria-hidden="true">PN</span>
+        <span class="sidebar-profile-info">
+          <strong data-sidebar-name>Usuário PsicNota</strong>
+          <small data-sidebar-role>Paciente</small>
+        </span>
+      </a>
     </aside>
 
     <main class="main-content">
