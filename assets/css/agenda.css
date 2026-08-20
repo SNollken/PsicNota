@@ -84,7 +84,7 @@ h1 { font-size: 27px; line-height: 1.15; margin: 0; letter-spacing: -.02em; }
 .summary-item { min-width: 0; padding: 19px 24px 20px 0; }
 .summary-item + .summary-item { border-left: 1px solid var(--line); padding-left: 24px; }
 .summary-label { display: block; margin-bottom: 5px; color: var(--muted); font-size: 11px; font-weight: 700; }
-.summary-item strong { display: block; overflow: hidden; color: #263740; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+.summary-item strong { display: block; overflow: hidden; color: #111827; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
 
 .agenda-workspace { display: grid; grid-template-columns: minmax(640px, 1fr) minmax(300px, 370px); min-height: 690px; border-bottom: 1px solid var(--line); }
 .calendar-area { min-width: 0; padding: 30px 34px 34px 0; }
@@ -337,7 +337,7 @@ body.modal-open { overflow: hidden; }
   margin: 0;
   width: 29px;
   height: 29px;
-  color: #263740;
+  color: #111827;
   background: var(--blue-50);
   font-size: 12px;
 }
