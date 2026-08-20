@@ -34,7 +34,7 @@
 
   padding: 0;
 
-  border-bottom: 1px solid #e7ecef;
+  border-bottom: 1px solid #64727C;
 }
 
 .patient-view .agenda-topbar h1 {
@@ -83,10 +83,10 @@
 
   padding: 20px 22px;
 
-  border: 1px solid #d7eaf0;
+  border: 1px solid #E4F6FC;
   border-radius: 22px;
 
-  background: #f1fafd;
+  background: #E4F6FC;
 }
 
 
@@ -110,7 +110,7 @@
 .patient-calendar-header>h2 {
   margin: 0;
 
-  color: #17212a;
+  color: #111827;
 
   font-size: 25px;
   font-weight: 800;
@@ -139,10 +139,10 @@
 
   padding: 0;
 
-  border: 2px solid #26363d;
+  border: 2px solid #111827;
   border-radius: 50%;
 
-  color: #26363d;
+  color: #111827;
   background: transparent;
 
   transition:
@@ -199,7 +199,7 @@
 
   border: 0;
 
-  color: #24343b;
+  color: #111827;
   background: transparent;
 
   font-size: 9px;
@@ -222,10 +222,10 @@
 
   padding: 12px;
 
-  border: 1px solid #e4ecef;
+  border: 1px solid #64727C;
   border-radius: 7px;
 
-  color: #27383f;
+  color: #111827;
   background: rgba(255, 255, 255, 0.92);
 
   text-align: left;
@@ -241,7 +241,7 @@
 
   transform: translateY(-1px);
 
-  border-color: #8dbccc;
+  border-color: #BFE7F5;
 
   background: #ffffff;
 }
@@ -256,7 +256,7 @@
    ========================================================= */
 
 .patient-day.other-month {
-  color: #89969b;
+  color: #64727C;
 
   background: rgba(255, 255, 255, 0.65);
 }
@@ -308,12 +308,12 @@
    ========================================================= */
 
 .patient-day.has-available {
-  border-color: #96d59e;
+  border-color: #3BAE24;
 }
 
 .patient-day.has-available .patient-day-number,
 .patient-day.has-available .patient-day-info {
-  color: #21a432;
+  color: #3BAE24;
 }
 
 
@@ -322,7 +322,7 @@
    ========================================================= */
 
 .patient-day.has-approved {
-  border-color: #7eafc2;
+  border-color: #BFE7F5;
 }
 
 .patient-day.has-approved .patient-day-number,
@@ -336,12 +336,12 @@
    ========================================================= */
 
 .patient-day.has-pending {
-  border-color: #ff7777;
+  border-color: #D90307;
 }
 
 .patient-day.has-pending .patient-day-number,
 .patient-day.has-pending .patient-day-info {
-  color: #ed1c24;
+  color: #D90307;
 }
 
 
@@ -350,7 +350,7 @@
    ========================================================= */
 
 .patient-day.today:not(.has-approved):not(.has-pending) {
-  border-color: #84b3c4;
+  border-color: #BFE7F5;
 }
 
 .patient-day.today .patient-day-info {
@@ -410,7 +410,7 @@
   border: 1px solid;
   border-radius: 18px;
 
-  background: #f8fdff;
+  background: #F8FAFB;
 
   text-align: left;
 
@@ -484,15 +484,15 @@
    ========================================================= */
 
 .dashboard-completed {
-  border-color: #55c662;
+  border-color: #3BAE24;
 }
 
 .dashboard-next {
-  border-color: #5b9db8;
+  border-color: #1F637A;
 }
 
 .dashboard-pending {
-  border-color: #ff5656;
+  border-color: #D90307;
 }
 
 /* =========================================================
@@ -535,10 +535,10 @@
 
   padding: 18px 18px 16px;
 
-  border: 1.5px solid #2f5f74;
+  border: 1.5px solid #174E61;
   border-radius: 26px;
 
-  background: #dff1f8;
+  background: #E4F6FC;
   box-shadow: none;
 }
 
@@ -559,7 +559,7 @@
 
   border: 0;
   background: transparent;
-  color: #234f62;
+  color: #174E61;
 
   cursor: pointer;
 }
@@ -582,7 +582,7 @@
 
   margin-bottom: 6px;
 
-  color: #2d6075;
+  color: #174E61;
 
   font-size: 10px;
   font-weight: 800;
@@ -592,7 +592,7 @@
 .schedule-popup-header strong {
   display: block;
 
-  color: #1f2530;
+  color: #111827;
 
   font-size: 18px;
   font-weight: 800;
@@ -616,7 +616,7 @@
 }
 
 .schedule-column:first-child {
-  border-right: 1px solid #c7dce5;
+  border-right: 1px solid #E4F6FC;
 }
 
 .schedule-column-pill {
@@ -627,8 +627,8 @@
 
   border-radius: 999px;
 
-  color: #2d6075;
-  background: #b7dced;
+  color: #174E61;
+  background: #E4F6FC;
 
   font-size: 10px;
   font-weight: 700;
@@ -648,10 +648,10 @@
 
   padding: 8px 10px;
 
-  border: 1px solid #d4d7da;
+  border: 1px solid #64727C;
   border-radius: 8px;
 
-  color: #1f2530;
+  color: #111827;
   background: #ffffff;
 
   font-size: 12px;
@@ -671,9 +671,9 @@
 }
 
 .schedule-time.selected {
-  border-color: #346f89;
+  border-color: #1F637A;
   color: #ffffff;
-  background: #346f89;
+  background: #1F637A;
 }
 
 
@@ -687,7 +687,7 @@
 
   margin: 6px 0 10px;
 
-  color: #26323a;
+  color: #111827;
 
   font-size: 11px;
   font-weight: 500;
@@ -698,7 +698,7 @@
   height: 14px;
   margin: 0;
 
-  accent-color: #346f89;
+  accent-color: #1F637A;
 }
 
 
@@ -716,7 +716,7 @@
   border-radius: 8px;
 
   color: #ffffff;
-  background: #346f89;
+  background: #1F637A;
 
   font-size: 12px;
   font-weight: 800;
@@ -773,10 +773,10 @@
 
   overflow-y: auto;
 
-  border: 1.5px solid #d65a5a;
+  border: 1.5px solid #D90307;
   border-radius: 24px;
 
-  background: #f8fdff;
+  background: #F8FAFB;
 }
 
 
@@ -800,7 +800,7 @@
 
   border: 0;
 
-  color: #a83d3d;
+  color: #D90307;
   background: transparent;
 
   cursor: pointer;
@@ -826,7 +826,7 @@
 
   margin-bottom: 5px;
 
-  color: #d34b4b;
+  color: #D90307;
 
   font-size: 10px;
   font-weight: 800;
@@ -835,7 +835,7 @@
 .requests-popup-header strong {
   display: block;
 
-  color: #17212a;
+  color: #111827;
 
   font-size: 19px;
   font-weight: 800;
@@ -866,7 +866,7 @@
 
   padding: 13px 14px;
 
-  border: 1px solid #f08b8b;
+  border: 1px solid #D90307;
   border-radius: 14px;
 
   background: #ffffff;
@@ -881,7 +881,7 @@
 
   margin-bottom: 4px;
 
-  color: #17212a;
+  color: #111827;
 
   font-size: 13px;
   font-weight: 800;
@@ -890,7 +890,7 @@
 .pending-request-details {
   display: block;
 
-  color: #60717a;
+  color: #64727C;
 
   font-size: 11px;
   font-weight: 600;
@@ -899,10 +899,10 @@
 .pending-request-cancel {
   padding: 8px 12px;
 
-  border: 1px solid #e05a5a;
+  border: 1px solid #D90307;
   border-radius: 9px;
 
-  color: #d13e3e;
+  color: #D90307;
   background: #ffffff;
 
   font-size: 10px;
@@ -913,7 +913,7 @@
 
 .pending-request-cancel:hover {
   color: #ffffff;
-  background: #d64b4b;
+  background: #D90307;
 }
 
 
@@ -924,7 +924,7 @@
 .requests-empty {
   margin: 70px 0;
 
-  color: #71828a;
+  color: #64727C;
 
   font-size: 13px;
   font-weight: 700;
@@ -976,10 +976,10 @@
 
   overflow-y: auto;
 
-  border: 1.5px solid #5b9db8;
+  border: 1.5px solid #1F637A;
   border-radius: 24px;
 
-  background: #f1fafd;
+  background: #E4F6FC;
 }
 
 
@@ -1029,7 +1029,7 @@
 
   margin-bottom: 5px;
 
-  color: #34758d;
+  color: #1F637A;
 
   font-size: 10px;
   font-weight: 800;
@@ -1038,7 +1038,7 @@
 .appointments-popup-header strong {
   display: block;
 
-  color: #17212a;
+  color: #111827;
 
   font-size: 19px;
   font-weight: 800;
@@ -1060,7 +1060,7 @@
 
   padding: 14px 16px;
 
-  border: 1px solid #8ab7c9;
+  border: 1px solid #BFE7F5;
   border-radius: 14px;
 
   background: #ffffff;
@@ -1071,7 +1071,7 @@
 
   margin-bottom: 6px;
 
-  color: #17212a;
+  color: #111827;
 
   font-size: 13px;
   font-weight: 800;
@@ -1084,7 +1084,7 @@
 
   gap: 6px;
 
-  color: #58717c;
+  color: #64727C;
 
   font-size: 11px;
   font-weight: 600;
@@ -1099,7 +1099,7 @@
   border-radius: 999px;
 
   color: #1f637a;
-  background: #d9eef5;
+  background: #E4F6FC;
 
   font-size: 10px;
   font-weight: 800;
@@ -1113,7 +1113,7 @@
 .appointments-empty {
   margin: 70px 0;
 
-  color: #71828a;
+  color: #64727C;
 
   font-size: 13px;
   font-weight: 700;
@@ -1165,10 +1165,10 @@
 
   overflow-y: auto;
 
-  border: 1.5px solid #55c662;
+  border: 1.5px solid #3BAE24;
   border-radius: 24px;
 
-  background: #f8fff9;
+  background: #3BAE24;
 }
 
 
@@ -1192,7 +1192,7 @@
 
   border: 0;
 
-  color: #2e8d3b;
+  color: #3BAE24;
   background: transparent;
 
   cursor: pointer;
@@ -1218,7 +1218,7 @@
 
   margin-bottom: 5px;
 
-  color: #349343;
+  color: #3BAE24;
 
   font-size: 10px;
   font-weight: 800;
@@ -1227,7 +1227,7 @@
 .completed-popup-header strong {
   display: block;
 
-  color: #17212a;
+  color: #111827;
 
   font-size: 19px;
   font-weight: 800;
@@ -1249,7 +1249,7 @@
 
   padding: 14px 16px;
 
-  border: 1px solid #8dd498;
+  border: 1px solid #3BAE24;
   border-radius: 14px;
 
   background: #ffffff;
@@ -1260,7 +1260,7 @@
 
   margin-bottom: 6px;
 
-  color: #17212a;
+  color: #111827;
 
   font-size: 13px;
   font-weight: 800;
@@ -1273,7 +1273,7 @@
 
   gap: 7px;
 
-  color: #5f7464;
+  color: #3BAE24;
 
   font-size: 11px;
   font-weight: 600;
@@ -1287,8 +1287,8 @@
 
   border-radius: 999px;
 
-  color: #278438;
-  background: #e4f6e7;
+  color: #3BAE24;
+  background: #3BAE24;
 
   font-size: 10px;
   font-weight: 800;
@@ -1302,7 +1302,7 @@
 .completed-empty {
   margin: 70px 0;
 
-  color: #71828a;
+  color: #64727C;
 
   font-size: 13px;
   font-weight: 700;
@@ -1431,7 +1431,7 @@
     padding-bottom: 16px;
 
     border-right: 0;
-    border-bottom: 1px solid #c7dce5;
+    border-bottom: 1px solid #E4F6FC;
   }
 
   .schedule-times {
