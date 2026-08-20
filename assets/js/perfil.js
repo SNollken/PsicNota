@@ -604,6 +604,14 @@ function applyProfile() {
   agendaLinkText.textContent =
     "Agendar consulta";
 
+  const laudosLink =
+    document.querySelector("#laudosLink");
+
+  if (laudosLink) {
+    laudosLink.hidden =
+      currentRole !== "paciente";
+  }
+
 
   if (relatoriosLink) {
     relatoriosLink.hidden =

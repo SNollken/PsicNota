@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Visualização do relatório de consulta do PsicNota" />
-  <title>PsicNota | Relatório da consulta</title>
+  <meta name="description" content="Página inicial do psicólogo no PsicNota (em construção)" />
+  <title>PsicNota | Início do psicólogo</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,7 +21,7 @@
       </a>
       <nav class="main-nav">
         <p class="nav-label">MENU</p>
-        <a class="nav-item" href="home.html">
+        <a class="nav-item active" href="home.html" aria-current="page">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 12 4l8 7v9h-5v-6h-6v6H4v-9Z"/></svg>
           Início
         </a>
@@ -33,7 +33,7 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 19a4 4 0 0 0-8 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm7 8a3 3 0 0 0-3-3m-8 3a3 3 0 0 1 3-3"/></svg>
           Pacientes
         </a>
-        <a class="nav-item active" href="relatorios.html" aria-current="page">
+        <a class="nav-item" href="relatorios.html">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8l4 4v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4Zm8 0v4h4M9 13h6M9 17h4"/></svg>
           Relatórios
         </a>
@@ -50,37 +50,37 @@
       <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
 
       <header class="topbar">
-        <div class="page-heading"><p class="eyebrow">Relatório</p><h1>Relatório da consulta</h1></div>
-        <div class="topbar-actions">
-          <a class="button button-secondary" href="relatorios.html">Voltar</a>
-          <button class="button button-primary" id="printButton" type="button">Imprimir</button>
-        </div>
+        <div class="page-heading"><p class="eyebrow">Em construção</p><h1>Aqui será a página inicial do psicólogo</h1></div>
       </header>
 
-      <div id="notFound" class="panel" hidden>
-        <div class="card-heading">
-          <div>
-            <h2>Relatório não encontrado</h2>
-            <p>O link pode estar desatualizado. Volte para a lista de relatórios.</p>
-          </div>
-        </div>
-        <div class="action-row"><a class="button button-primary" href="relatorios.html">Ver relatórios</a></div>
-      </div>
-
-      <article class="report-document" id="reportDocument" hidden>
-        <p class="eyebrow">Documento clínico · uso do profissional</p>
-        <h2 class="report-document-title">Relatório de Consulta <span class="badge badge-neutral" id="docDraftBadge" hidden>Rascunho</span></h2>
-        <h3 class="report-document-patient" id="docPatient"></h3>
-        <p class="report-document-meta" id="docMeta"></p>
-        <p class="report-document-mood" id="docMood" hidden></p>
-        <div class="report-document-attachments" id="docAttachments" hidden></div>
-        <div id="docBlocks"></div>
-      </article>
+      <section class="panel">
+        <p>O design desta tela ainda não foi feito no Figma. Assim que estiver pronto, ela será implementada aqui.</p>
+      </section>
     </main>
   </div>
 
-  <div class="toast" id="toast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span><span id="toastMessage"></span></div>
   <script src="../assets/js/shared-data.js"></script>
-  <script src="../assets/js/relatorio-view.js"></script>
+  <script>
+    (function () {
+      const data = window.PsiNoteData;
+      const sidebar = document.querySelector(".sidebar");
+      const mobileMenu = document.querySelector(".mobile-menu");
+      const logoutLink = document.querySelector("#logoutLink");
+
+      logoutLink?.addEventListener("click", () => data && data.clearSession());
+
+      mobileMenu?.addEventListener("click", () => {
+        const isOpen = sidebar.classList.toggle("open");
+        mobileMenu.setAttribute("aria-expanded", String(isOpen));
+      });
+
+      document.addEventListener("click", (event) => {
+        if (window.innerWidth <= 720 && !sidebar.contains(event.target) && !mobileMenu.contains(event.target)) {
+          sidebar.classList.remove("open");
+          mobileMenu.setAttribute("aria-expanded", "false");
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
