@@ -1504,6 +1504,22 @@ document
 
 
 /* =========================
+   LOGOUT
+========================= */
+
+const logoutLink =
+  document.querySelector("#logoutLink");
+
+logoutLink?.addEventListener(
+  "click",
+  () => {
+    data.clearSession();
+    window.location.href = "login.html";
+  }
+);
+
+
+/* =========================
    INICIALIZA
 ========================= */
 
