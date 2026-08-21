@@ -15,7 +15,7 @@
 <body>
   <div class="app-shell">
         <aside class="sidebar" aria-label="Navegação principal">
-      <a class="brand" href="agenda.html" aria-label="PsicNota - pág...cial">
+      <a class="brand" href="agenda.html" aria-label="PsicNota - página inicial">
         <img src="../assets/img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />
         <span class="brand-text">PsicNota</span>
       </a>
@@ -79,16 +79,13 @@
         const session = data.getSession();
         if (session) {
           const displayName = session.fullName || session.name || "Psicólogo";
-          const nameEl = document.querySelector("#profileName");
-          const avatarEl = document.querySelector("#profileAvatar");
+          const nameEl = document.querySelector("#psychologistName");
+          const avatarEl = document.querySelector("#psychologistAvatar");
           if (nameEl) nameEl.textContent = displayName;
-          if (avatarEl) {
-            const initials = displayName.split(" ").filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
-            avatarEl.textContent = initials;
-            if (session.avatarDataUrl) {
-              avatarEl.classList.add("has-photo");
-              avatarEl.style.backgroundImage = 'url("' + session.avatarDataUrl + '")';
-            }
+          if (avatarEl && session.avatarDataUrl) {
+            const img = avatarEl.querySelector("img");
+            if (img) img.src = session.avatarDataUrl;
+            avatarEl.classList.add("has-photo");
           }
         }
       }
