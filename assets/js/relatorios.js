@@ -58,7 +58,7 @@ const BLOCKS = [
 const MOODS = [
   { key: 'muito-bem', label: 'Muito bem', emoji: '😄' },
   { key: 'bem', label: 'Bem', emoji: '🙂' },
-  { key: 'neutro', label: 'Estável', emoji: '😐' },
+  { key: 'neutro', label: 'Neutro', emoji: '😐' },
   { key: 'mal', label: 'Mal', emoji: '🙁' },
   { key: 'muito-mal', label: 'Muito mal', emoji: '😞' }
 ];
