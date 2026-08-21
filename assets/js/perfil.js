@@ -429,6 +429,36 @@ function updateHeaderAndSummary() {
     "[data-summary-preference]"
   ).textContent =
     preference;
+
+  /* Atualiza sidebar-profile (rodapé do menu) */
+  const sidebarName =
+    document.querySelector("[data-sidebar-name]");
+  const sidebarRole =
+    document.querySelector("[data-sidebar-role]");
+  const sidebarAvatar =
+    document.querySelector("[data-sidebar-avatar]");
+
+  if (sidebarName) {
+    sidebarName.textContent = displayName;
+  }
+
+  if (sidebarRole) {
+    sidebarRole.textContent =
+      currentRole === "psicologo" ? "Psicólogo" : "Paciente";
+  }
+
+  if (sidebarAvatar) {
+    const initials = getInitials(displayName);
+    sidebarAvatar.textContent = initials;
+    sidebarAvatar.classList.toggle(
+      "has-photo",
+      Boolean(pendingAvatar)
+    );
+    sidebarAvatar.style.backgroundImage =
+      pendingAvatar
+        ? `url("${pendingAvatar}")`
+        : "";
+  }
 }
 
 
