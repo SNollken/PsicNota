@@ -1,0 +1,266 @@
+/* ==========================================================================
+   menu.css — FONTE ÚNICA do estilo do menu lateral do PsicNota.
+   Usado por todas as páginas (via <psic-menu>) através do assets/css/base.css,
+   que importa este arquivo. Nenhuma outra folha deve estilizar .sidebar/.nav-item.
+   ========================================================================== */
+
+/* =========================
+   ESTRUTURA
+========================= */
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+}
+
+/* =========================
+   MENU LATERAL
+========================= */
+
+.sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: var(--sidebar-width);
+  display: flex;
+  flex-direction: column;
+  padding: 28px 0 12px;
+  border-right: 1px solid #DCE6EA;
+  background: var(--sidebar-bg);
+  z-index: 20;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px 19px 37px;
+  text-decoration: none;
+}
+
+.brand .brand-icon {
+  width: 59px !important;
+  height: 68px !important;
+  min-width: 59px;
+  max-width: none !important;
+  object-fit: contain;
+  flex: 0 0 59px;
+}
+
+.brand-text {
+  font-family: "Laila", serif;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1;
+  color: #111827;
+}
+
+.main-nav {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  padding: 0 18px;
+}
+
+.nav-label {
+  margin: 0 0 28px;
+  padding: 0 0 0 10px;
+  color: #64727C;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+
+.nav-label-spaced { margin-top: 16px; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: 228px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid #DCE6EA;
+  border-radius: 25px;
+  color: #111827;
+  background: #E4F6FC;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 400;
+  transition: background 0.16s, border-color 0.16s, color 0.16s;
+}
+
+.nav-item svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  color: #1E1E1E;
+  stroke-width: 1.6;
+}
+
+.nav-icon-fill {
+  fill: currentColor;
+  stroke: none;
+}
+
+.nav-item:hover {
+  background: #F8FAFB;
+  border-color: #BFE7F5;
+  color: var(--blue-800);
+}
+
+.nav-item:hover svg { color: inherit; }
+
+.nav-item.active {
+  background: #BFE7F5;
+  border-color: #DCE6EA;
+  color: #1F637A;
+  font-weight: 700;
+}
+
+.nav-item.active svg {
+  color: #1F637A;
+  stroke-width: 2;
+}
+
+.nav-item.active:hover { background: #BFE7F5; }
+
+.nav-badge {
+  margin-left: auto;
+  min-width: 22px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--blue-700);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* =========================
+   USUÁRIO NO RODAPÉ DA SIDEBAR
+========================= */
+
+.sidebar-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: auto;
+  padding: 9px 18px 0;
+  border-top: 1px solid #DCE6EA;
+  color: inherit;
+  text-decoration: none;
+  transition:
+    background 0.16s,
+    color 0.16s;
+}
+
+.sidebar-profile:hover {
+  background: #E4F6FC;
+}
+
+.sidebar-profile-avatar {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  flex: 0 0 68px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #E4F6FC;
+  color: #174E61;
+  font-size: 18px;
+  font-weight: 800;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.sidebar-profile-avatar.has-photo {
+  color: transparent;
+}
+
+.sidebar-profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.sidebar-profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sidebar-profile-info strong {
+  overflow: hidden;
+  color: #111827;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-profile-info small {
+  color: #64727C;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+/* =========================
+   RESPONSIVIDADE DO MENU
+========================= */
+
+@media (max-width: 1180px) {
+  :root { --sidebar-width: 230px; }
+
+  .brand { padding: 0 8px 19px 20px; }
+
+  .brand .brand-icon {
+    width: 46px !important;
+    height: 53px !important;
+    min-width: 46px;
+    flex-basis: 46px;
+  }
+
+  .brand-text { font-size: 25px; }
+
+  .main-nav { padding: 0 12px; }
+
+  .nav-item { width: auto; }
+}
+
+@media (max-width: 720px) {
+  .app-shell { display: block; }
+
+  .sidebar {
+    width: 260px;
+    transform: translateX(-100%);
+    transition: transform 0.2s;
+    box-shadow: 8px 0 28px rgba(17, 24, 39, 0.14);
+  }
+
+  .sidebar.open { transform: translateX(0); }
+
+  .main-nav { padding: 0 14px; }
+
+  .nav-item { width: auto; }
+
+  .mobile-menu {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    margin-bottom: 8px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--blue-800);
+  }
+}

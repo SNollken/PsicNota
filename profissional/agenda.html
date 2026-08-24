@@ -12,38 +12,11 @@
 
   <link rel="stylesheet" href="../assets/css/agenda.css" />
   <link rel="stylesheet" href="../assets/css/base.css" />
+  <script src="../assets/menu/menu.js"></script>
 </head>
 <body>
   <div class="app-shell">
-        <aside class="sidebar" aria-label="Navegação principal">
-      <a class="brand" href="agenda.html" aria-label="PsicNota - página inicial">
-        <img src="../assets/img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />
-        <span class="brand-text">PsicNota</span>
-      </a>
-      <nav class="main-nav">
-        <p class="nav-label">MENU</p>
-        <a class="nav-item active" href="agenda.html" aria-current="page">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"/></svg>
-          Agendar consulta
-        </a>
-        <a class="nav-item" href="relatorios.html">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-          Relatórios
-        </a>
-        <a class="nav-item" href="pacientes.html">
-          <svg class="nav-icon-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11.5a4.25 4.25 0 1 0-4.25-4.25A4.26 4.26 0 0 0 12 11.5Zm0 2.1c-3.88 0-8.05 1.95-8.05 5.4v1.6h16.1v-1.6c0-3.45-4.17-5.4-8.05-5.4Z"/></svg>
-          Meus pacientes
-        </a>
-      </nav>
-
-      <a class="sidebar-profile" href="../perfil.html" aria-label="Editar meu perfil">
-        <span class="sidebar-profile-avatar" id="psychologistAvatar" aria-hidden="true"><img src="../assets/img/avatar-psicologo.png" alt="" /></span>
-        <span class="sidebar-profile-info">
-          <strong id="psychologistName">Psicólogo</strong>
-          <small>Psicólogo</small>
-        </span>
-      </a>
-    </aside>
+<psic-menu tipo="psicologo" ativo="agenda"></psic-menu>
 
     <main class="main-content">
       <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
@@ -142,7 +115,6 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span><span id="toastMessage"></span></div>
   <script src="../assets/js/shared-data.js"></script>
-  <script src="../assets/js/sidebar.js"></script>
   <script src="../assets/js/agenda.js"></script>
 </body>
 </html>

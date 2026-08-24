@@ -5,6 +5,9 @@
    marca com logo PNG + fonte Laila.
    ========================================================================== */
 
+/* Menu lateral: fonte única em assets/menu/menu.css (componente <psic-menu>). */
+@import url("../menu/menu.css");
+
 :root {
   --blue-25: #F8FAFB;
   --blue-50: #E4F6FC;
@@ -93,136 +96,10 @@ svg {
 }
 
 /* =========================
-   ESTRUTURA
-========================= */
-
-.app-shell {
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
-}
-
-/* =========================
    MENU LATERAL
+   Os estilos do menu (.sidebar, .brand, .nav-item, .sidebar-profile...)
+   moram em assets/menu/menu.css — fonte única, importada no topo deste arquivo.
 ========================= */
-
-.sidebar {
-  position: fixed;
-  inset: 0 auto 0 0;
-  width: var(--sidebar-width);
-  display: flex;
-  flex-direction: column;
-  padding: 28px 0 12px;
-  border-right: 1px solid #DCE6EA;
-  background: var(--sidebar-bg);
-  z-index: 20;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 10px 19px 37px;
-  text-decoration: none;
-}
-
-.brand .brand-icon {
-  width: 59px !important;
-  height: 68px !important;
-  min-width: 59px;
-  max-width: none !important;
-  object-fit: contain;
-  flex: 0 0 59px;
-}
-
-.brand-text {
-  font-family: "Laila", serif;
-  font-size: 32px;
-  font-weight: 400;
-  line-height: 1;
-  color: #111827;
-}
-
-.main-nav {
-  display: grid;
-  justify-items: start;
-  gap: 8px;
-  padding: 0 18px;
-}
-
-.nav-label {
-  margin: 0 0 28px;
-  padding: 0 0 0 10px;
-  color: #64727C;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.nav-label-spaced { margin-top: 16px; }
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  width: 228px;
-  min-height: 44px;
-  padding: 0 18px;
-  border: 1px solid #DCE6EA;
-  border-radius: 25px;
-  color: #111827;
-  background: #E4F6FC;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 400;
-  transition: background 0.16s, border-color 0.16s, color 0.16s;
-}
-
-.nav-item svg {
-  width: 18px;
-  height: 18px;
-  flex: 0 0 auto;
-  color: #1E1E1E;
-  stroke-width: 1.6;
-}
-
-.nav-icon-fill {
-  fill: currentColor;
-  stroke: none;
-}
-
-.nav-item:hover {
-  background: #F8FAFB;
-  border-color: #BFE7F5;
-  color: var(--blue-800);
-}
-
-.nav-item:hover svg { color: inherit; }
-
-.nav-item.active {
-  background: #BFE7F5;
-  border-color: #DCE6EA;
-  color: #1F637A;
-  font-weight: 700;
-}
-
-.nav-item.active svg {
-  color: #1F637A;
-  stroke-width: 2;
-}
-
-.nav-item.active:hover { background: #BFE7F5; }
-
-.nav-badge {
-  margin-left: auto;
-  min-width: 22px;
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: var(--blue-700);
-  color: var(--white);
-  font-size: 11px;
-  font-weight: 700;
-  text-align: center;
-}
 
 /* =========================
    CONTEÚDO
