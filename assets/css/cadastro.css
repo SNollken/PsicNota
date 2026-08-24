@@ -1,0 +1,1079 @@
+/* =========================================================
+   PSICONOTA - CADASTRO
+   Layout fiel ao Figma
+========================================================= */
+
+:root {
+  --left-bg: #f4fbfe;
+  --white: #ffffff;
+
+  --ink: #111827;
+  --text: #3f5262;
+  --muted: #7e8d96;
+
+  --blue: #2d6279;
+  --blue-border: #34758c;
+  --blue-hover: #275f74;
+
+  --input-bg: #f4fbfe;
+  --line: #d9e7ec;
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: #ffffff;
+}
+
+body {
+  min-height: 100vh;
+
+  margin: 0;
+
+  font-family: "Inter", Arial, sans-serif;
+
+  color: var(--ink);
+
+  background: #ffffff;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+}
+
+fieldset {
+  min-width: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+
+/* =========================================================
+   ESTRUTURA PRINCIPAL
+========================================================= */
+
+.auth-layout,
+.register-layout {
+  display: grid;
+
+  grid-template-columns: 36.9% 63.1%;
+
+  width: 100%;
+  min-height: 100vh;
+
+  margin: 0;
+}
+
+
+/* =========================================================
+   LADO ESQUERDO
+========================================================= */
+
+.auth-brand,
+.register-brand {
+  position: relative;
+
+  width: 100%;
+  min-height: 100vh;
+
+  margin: 0;
+  padding: 0;
+
+  background: var(--left-bg);
+
+  border-right: 1px solid #e3edf1;
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.register-brand .brand {
+  position: absolute;
+
+  top: 4.2vh;
+  left: 4.4%;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin: 0;
+
+  color: #111827;
+
+  text-decoration: none !important;
+}
+
+.register-brand .brand:hover,
+.register-brand .brand:visited,
+.register-brand .brand:active {
+  color: #111827;
+
+  text-decoration: none !important;
+}
+
+.register-brand .brand-icon {
+  display: block;
+
+  width: clamp(44px, 5.8vh, 56px);
+  height: clamp(44px, 5.8vh, 56px);
+
+  flex-shrink: 0;
+
+  object-fit: contain;
+}
+
+.register-brand .brand-text {
+  margin: 0;
+
+  font-family: "Laila", serif;
+
+  font-size: clamp(22px, 2.8vh, 27px);
+
+  font-weight: 500;
+
+  line-height: 1;
+
+  color: #111827;
+
+  text-decoration: none !important;
+}
+
+
+/* =========================================================
+   TEXTO DO PAINEL ESQUERDO
+========================================================= */
+
+.register-brand .brand-content {
+  position: absolute;
+
+  /*
+    No Figma o bloco começa aproximadamente
+    em 25% da altura da tela.
+  */
+  top: 24.8vh;
+  left: 12.4%;
+
+  width: 72%;
+
+  max-width: none;
+
+  margin: 0;
+
+  transform: none;
+}
+
+.register-brand .brand-content h1 {
+
+  max-width: 290px;
+
+  margin: 0 0 28px;
+
+  font-family: "Laila", serif;
+
+  font-size: 39px;
+
+  font-weight: 600;
+
+  line-height: 1.08;
+
+  letter-spacing: -0.3px;
+
+  color: #162033;
+
+}
+.register-brand .brand-content p {
+
+  width: 285px;
+
+  max-width: 100%;
+
+  margin: 0;
+
+  font-family: "Inter", Arial, sans-serif;
+
+  font-size: 14px;
+
+  font-weight: 400;
+
+  line-height: 1.55;
+
+  color: #405365;
+
+}
+
+
+/* =========================================================
+   PAINEL DIREITO
+========================================================= */
+
+.auth-panel,
+.register-panel {
+  min-width: 0;
+
+  margin: 0;
+
+  background: #ffffff;
+}
+
+.auth-panel-inner,
+.register-inner {
+  width: 85.5%;
+
+  max-width: none;
+
+  margin: 0 0 0 7.5%;
+
+  /*
+    No Figma o título fica aproximadamente
+    a 8% da altura da tela.
+  */
+  padding: 8.1vh 0 5vh;
+}
+
+
+/* =========================================================
+   CABEÇALHO
+========================================================= */
+
+.register-top {
+  display: block;
+
+  width: 100%;
+
+  margin: 0 0 4.5vh;
+}
+
+.register-top h2 {
+  margin: 0;
+
+  font-family: "Inter", Arial, sans-serif;
+
+  font-size: clamp(26px, 3.25vh, 32px);
+
+  font-weight: 700;
+
+  line-height: 1.1;
+
+  letter-spacing: -0.7px;
+
+  color: #111827;
+}
+
+
+/* Este texto NÃO existe no topo no Figma */
+
+.top-account-text {
+  display: none !important;
+}
+
+
+/* =========================================================
+   FORMULÁRIO
+========================================================= */
+
+.auth-form {
+  display: block;
+
+  width: 100%;
+
+  margin: 0;
+}
+
+
+/* =========================================================
+   SELEÇÃO DO PERFIL
+========================================================= */
+
+.role-fieldset {
+  width: 100%;
+
+  margin: 0 0 4vh;
+  padding: 0;
+
+  border: 0;
+}
+
+.role-fieldset legend {
+  margin: 0 0 1.5vh;
+  padding: 0;
+
+  font-family: "Inter", Arial, sans-serif;
+
+  font-size: clamp(9px, 1.1vh, 11px);
+
+  font-weight: 700;
+
+  line-height: 1.2;
+
+  color: #111827;
+}
+
+.role-options {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 13px;
+
+  width: 100%;
+}
+
+.role-option {
+  position: relative;
+
+  display: block;
+
+  min-width: 0;
+
+  cursor: pointer;
+}
+
+.role-option > input {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+.role-option-body {
+  display: flex;
+
+  align-items: center;
+
+  width: 100%;
+  height: clamp(58px, 7.2vh, 70px);
+
+  gap: 13px;
+
+  padding: 0 16px;
+
+  border: 1px solid #d8e4e9;
+
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+
+/* Perfil selecionado */
+
+.role-option > input:checked + .role-option-body {
+  border: 1.5px solid #2d7089;
+
+  background: #f1f9fc;
+}
+
+
+/* =========================================================
+   ÍCONE DO PERFIL
+========================================================= */
+
+.role-icon {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: clamp(30px, 3.7vh, 36px);
+  height: clamp(30px, 3.7vh, 36px);
+
+  flex: 0 0 clamp(30px, 3.7vh, 36px);
+
+  border-radius: 50%;
+
+  background: #eff8fb;
+
+  color: #36778e;
+}
+
+.role-icon svg {
+  width: clamp(16px, 1.9vh, 19px);
+  height: clamp(16px, 1.9vh, 19px);
+
+  fill: none;
+
+  stroke: currentColor;
+
+  stroke-width: 1.6;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* =========================================================
+   TEXTO DOS PERFIS
+========================================================= */
+
+.role-text {
+  display: flex;
+
+  min-width: 0;
+
+  flex-direction: column;
+
+  gap: 0.45vh;
+}
+
+.role-text strong {
+  font-family: "Inter", Arial, sans-serif;
+
+  font-size: clamp(10px, 1.2vh, 12px);
+
+  font-weight: 700;
+
+  line-height: 1.15;
+
+  color: #18212d;
+}
+
+.role-text small {
+  font-family: "Inter", Arial, sans-serif;
+
+  font-size: clamp(8px, 0.95vh, 10px);
+
+  font-weight: 400;
+
+  line-height: 1.2;
+
+  color: #657680;
+}
+
+
+/* =========================================================
+   SEÇÕES
+========================================================= */
+
+.form-section {
+  width: 100%;
+
+  margin: 0 0 4vh;
+}
+
+.section-heading {
+  display: flex;
+
+  align-items: center;
+
+  width: 100%;
+
+  gap: 18px;
+
+  margin: 0 0 2.5vh;
+}
+
+.section-heading h3 {
+  flex-shrink: 0;
+
+  margin: 0;
+
+  font-family: "Inter", Arial, sans-serif;
+
+  font-size: clamp(8px, 0.95vh, 10px);
+
+  font-weight: 700;
+
+  line-height: 1;
+
+  text-transform: uppercase;
+
+  color: #34758c;
+}
+
+.section-heading span {
+  flex: 1;
+
+  height: 1px;
+
+  background: var(--line);
+}
+
+
+/* =========================================================
+   GRID DOS CAMPOS
+========================================================= */
+
+.form-grid {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  column-gap: 13px;
+
+  row-gap: 2.4vh;
+
+  width: 100%;
+}
+
+.form-group {
+  min-width: 0;
+
+  margin: 0;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   LABELS
+========================================================= */
+
+.form-group label {
+  display: block;
+
+  margin: 0 0 0.9vh 3px;
+
+  font-family: "Inter", Arial, sans-serif;
+
+  font-size: clamp(9px, 1.05vh, 11px);
+
+  font-weight: 700;
+
+  line-height: 1.1;
+
+  color: #111827;
+}
+
+
+/* =========================================================
+   INPUTS E SELECTS
+========================================================= */
+
+.form-group input,
+.form-group select {
+  display: block;
+
+  width: 100%;
+
+  height: clamp(35px, 4.3vh, 42px);
+
+  margin: 0;
+
+  padding: 0 14px;
+
+  border: 1px solid #d5e4ea;
+
+  border-radius: 999px;
+
+  outline: none;
+
+  background: var(--input-bg);
+
+  box-shadow: none;
+
+  font-family: "Inter", Arial, sans-serif;
+
+  font-size: clamp(9px, 1.05vh, 11px);
+
+  font-weight: 400;
+
+  color: #354650;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.form-group input::placeholder {
+  color: #84949d;
+
+  opacity: 1;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #7fafc0;
+
+  background: #ffffff;
+
+  box-shadow: 0 0 0 3px rgba(46, 111, 135, 0.07);
+}
+
+
+/* =========================================================
+   SELECT
+========================================================= */
+
+.form-group select {
+  padding-right: 35px;
+
+  cursor: pointer;
+
+  color: #778892;
+}
+
+
+/* =========================================================
+   SENHA
+========================================================= */
+
+.password-field {
+  position: relative;
+
+  width: 100%;
+}
+
+.password-field input {
+  padding-right: 42px;
+}
+
+.password-toggle {
+  position: absolute;
+
+  top: 50%;
+  right: 11px;
+
+  transform: translateY(-50%);
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 25px;
+  height: 25px;
+
+  margin: 0;
+  padding: 0;
+
+  border: 0;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #111827;
+
+  cursor: pointer;
+}
+
+.password-toggle svg {
+  width: clamp(14px, 1.7vh, 16px);
+  height: clamp(14px, 1.7vh, 16px);
+
+  fill: none;
+
+  stroke: currentColor;
+
+  stroke-width: 1.6;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* =========================================================
+   TEXTO AUXILIAR DA SENHA
+========================================================= */
+
+.field-help {
+  display: block;
+
+  margin: 0.8vh 0 0 4px;
+
+  font-family: "Inter", Arial, sans-serif;
+
+  font-size: clamp(8px, 0.9vh, 9px);
+
+  line-height: 1.3;
+
+  color: #89979f;
+}
+
+
+/* =========================================================
+   DADOS PROFISSIONAIS
+========================================================= */
+
+.psychologist-fields {
+  /*
+    Aproxima a seção da senha como no Figma.
+  */
+  margin-top: -1.4vh;
+
+  margin-bottom: 2.1vh;
+}
+
+.psychologist-fields .section-heading {
+  margin-bottom: 2vh;
+}
+
+.psychologist-fields .section-heading h3 {
+  text-transform: none;
+}
+
+
+/* =========================================================
+   ERROS
+========================================================= */
+
+.field-error {
+  display: block;
+
+  margin: 0.5vh 0 0 4px;
+
+  font-family: "Inter", Arial, sans-serif;
+
+  font-size: 8px;
+
+  color: #b42318;
+}
+
+.field-error:empty {
+  display: none;
+}
+
+
+/* =========================================================
+   TERMOS
+========================================================= */
+
+.terms-row {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  width: 100%;
+
+  margin: 0 0 2.4vh 3px;
+
+  font-family: "Inter", Arial, sans-serif;
+
+  font-size: clamp(10px, 1.2vh, 12px);
+
+  font-weight: 400;
+
+  line-height: 1.3;
+
+  color: #292f34;
+
+  cursor: pointer;
+}
+
+.terms-row input {
+  appearance: auto;
+
+  width: clamp(12px, 1.45vh, 14px);
+  height: clamp(12px, 1.45vh, 14px);
+
+  flex: 0 0 auto;
+
+  margin: 0;
+
+  accent-color: #333333;
+
+  cursor: pointer;
+}
+
+.terms-row a {
+  color: inherit;
+
+  text-decoration: none;
+}
+
+
+/* =========================================================
+   BOTÃO
+========================================================= */
+
+.primary-button {
+  display: block;
+
+  width: 100%;
+
+  height: clamp(36px, 4.45vh, 43px);
+
+  margin: 0;
+  padding: 0;
+
+  border: 0;
+
+  border-radius: 5px;
+
+  background: #2d6279;
+
+  color: #ffffff;
+
+  font-family: "Inter", Arial, sans-serif;
+
+  font-size: clamp(9px, 1.05vh, 11px);
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.primary-button:hover {
+  background: #275f74;
+}
+
+
+/* =========================================================
+   LOGIN ABAIXO DO BOTÃO
+========================================================= */
+
+.auth-switch {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 2.25vh;
+
+  width: 100%;
+
+  margin: 2.8vh 0 0;
+
+  text-align: center;
+}
+
+.auth-switch span {
+  font-family: "Inter", Arial, sans-serif;
+
+  font-size: clamp(9px, 1.05vh, 11px);
+
+  font-weight: 400;
+
+  color: #828c92;
+}
+
+.auth-switch a {
+  font-family: "Inter", Arial, sans-serif;
+
+  font-size: clamp(9px, 1.05vh, 11px);
+
+  font-weight: 700;
+
+  color: #27677e;
+
+  text-decoration: none;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+
+
+/* =========================================================
+   MENSAGENS
+========================================================= */
+
+.form-message {
+  display: none;
+}
+
+.form-message:not(:empty) {
+  display: block;
+
+  margin-bottom: 1.2vh;
+
+  font-family: "Inter", Arial, sans-serif;
+
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   TELA DO PSICÓLOGO
+========================================================= */
+
+#psychologistFields:not([hidden]) {
+  display: block;
+}
+
+
+/* =========================================================
+   NOTEBOOK
+========================================================= */
+
+@media (max-width: 1100px) {
+
+  .register-layout {
+    grid-template-columns: 36.9% 63.1%;
+  }
+
+  .register-brand .brand-content h1 {
+    font-size: clamp(34px, 4.6vh, 44px);
+  }
+
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 720px) {
+
+  .auth-layout,
+  .register-layout {
+    display: block;
+  }
+
+  .auth-brand,
+  .register-brand {
+    min-height: auto;
+
+    padding: 24px 22px 32px;
+
+    border-right: 0;
+    border-bottom: 1px solid #e3edf1;
+  }
+
+  .register-brand .brand {
+    position: static;
+  }
+
+  .register-brand .brand-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .register-brand .brand-text {
+    font-size: 22px;
+  }
+
+  .register-brand .brand-content {
+    position: static;
+
+    width: 100%;
+
+    margin-top: 40px;
+  }
+
+  .register-brand .brand-content h1 {
+    max-width: 340px;
+
+    margin-bottom: 20px;
+
+    font-size: 34px;
+  }
+
+  .register-brand .brand-content p {
+    width: 100%;
+    max-width: 340px;
+
+    font-size: 14px;
+  }
+
+  .auth-panel-inner,
+  .register-inner {
+    width: calc(100% - 44px);
+
+    margin: 0 auto;
+
+    padding: 38px 0;
+  }
+
+  .register-top {
+    margin-bottom: 32px;
+  }
+
+  .role-fieldset {
+    margin-bottom: 32px;
+  }
+
+  .form-section {
+    margin-bottom: 32px;
+  }
+
+  .section-heading {
+    margin-bottom: 18px;
+  }
+
+  .form-grid {
+    row-gap: 18px;
+  }
+
+}
+
+
+/* =========================================================
+   CELULAR
+========================================================= */
+
+@media (max-width: 520px) {
+
+  .role-options {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-group.full-width {
+    grid-column: auto;
+  }
+
+  .role-option-body {
+    height: 61px;
+  }
+
+  .form-group input,
+  .form-group select {
+    height: 42px;
+
+    font-size: 11px;
+  }
+
+  .form-group label {
+    font-size: 10px;
+  }
+
+  .terms-row {
+    align-items: flex-start;
+
+    font-size: 10px;
+  }
+
+  .primary-button {
+    height: 42px;
+  }
+
+}

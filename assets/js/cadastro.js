@@ -5,6 +5,7 @@ const registerMessage = document.querySelector("#registerMessage");
 const psychologistFields = document.querySelector("#psychologistFields");
 const roleInputs = document.querySelectorAll('input[name="role"]');
 const phoneInput = document.querySelector("#phone");
+const birthDateInput = document.querySelector("#birthDate");
 
 function setFieldError(input, message) {
   const errorElement = document.querySelector(`#${input.id}Error`);
@@ -33,10 +34,27 @@ function isStrongPassword(password) {
   return password.length >= 8 && /[a-z]/.test(password) && /[A-Z]/.test(password) && /\d/.test(password);
 }
 
-function isAdult(dateValue) {
-  if (!dateValue) return false;
+function parseBirthDate(value) {
+  const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value);
+  if (!match) return null;
 
-  const birthDate = new Date(`${dateValue}T00:00:00`);
+  const day = Number(match[1]);
+  const month = Number(match[2]);
+  const year = Number(match[3]);
+  const date = new Date(year, month - 1, day);
+
+  const isValid =
+    date.getFullYear() === year &&
+    date.getMonth() === month - 1 &&
+    date.getDate() === day;
+
+  return isValid ? date : null;
+}
+
+function isAdult(dateValue) {
+  const birthDate = parseBirthDate(dateValue);
+  if (!birthDate) return false;
+
   const today = new Date();
   let age = today.getFullYear() - birthDate.getFullYear();
   const monthDifference = today.getMonth() - birthDate.getMonth();
@@ -55,6 +73,14 @@ function formatPhone(value) {
   if (digits.length <= 6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
   if (digits.length <= 10) return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
   return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+}
+
+function formatBirthDate(value) {
+  const digits = value.replace(/\D/g, "").slice(0, 8);
+
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+  return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
 }
 
 function updateRoleFields() {
@@ -76,14 +102,18 @@ function updateRoleFields() {
 
 function setupPasswordToggles() {
   document.querySelectorAll("[data-password-toggle]").forEach((button) => {
+    const baseLabel = button.getAttribute("aria-label") || "Mostrar senha";
+
     button.addEventListener("click", () => {
       const input = document.querySelector(`#${button.dataset.passwordToggle}`);
       const isVisible = input.type === "text";
 
       input.type = isVisible ? "password" : "text";
-      button.textContent = isVisible ? "Mostrar" : "Ocultar";
       button.setAttribute("aria-pressed", String(!isVisible));
-      button.setAttribute("aria-label", isVisible ? "Mostrar senha" : "Ocultar senha");
+      button.setAttribute(
+        "aria-label",
+        baseLabel.replace(/^Mostrar/, isVisible ? "Mostrar" : "Ocultar")
+      );
     });
   });
 }
@@ -92,6 +122,10 @@ roleInputs.forEach((input) => input.addEventListener("change", updateRoleFields)
 
 phoneInput.addEventListener("input", () => {
   phoneInput.value = formatPhone(phoneInput.value);
+});
+
+birthDateInput.addEventListener("input", () => {
+  birthDateInput.value = formatBirthDate(birthDateInput.value);
 });
 
 registerForm.addEventListener("input", (event) => {
@@ -107,7 +141,6 @@ registerForm.addEventListener("submit", (event) => {
 
   const selectedRole = document.querySelector('input[name="role"]:checked').value;
   const fullNameInput = document.querySelector("#fullName");
-  const birthDateInput = document.querySelector("#birthDate");
   const emailInput = document.querySelector("#registerEmail");
   const passwordInput = document.querySelector("#registerPassword");
   const confirmPasswordInput = document.querySelector("#confirmPassword");
