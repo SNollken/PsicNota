@@ -4,6 +4,14 @@
    que importa este arquivo. Nenhuma outra folha deve estilizar .sidebar/.nav-item.
    ========================================================================== */
 
+/* Tokens do menu. Definidos aqui para o menu.css ser autossuficiente:
+   funciona até em página que não carrega o base.css (ex.: perfil.html).
+   Nas páginas que carregam o base.css, o :root de lá (idêntico) prevalece. */
+:root {
+  --sidebar-width: 294px;
+  --sidebar-bg: #F3FBFE;
+}
+
 /* =========================
    ESTRUTURA
 ========================= */

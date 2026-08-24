@@ -1,76 +1,35 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Histórico clínico do paciente no PsicNota" />
-  <title>PsicNota | Histórico do paciente</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="../assets/css/base.css" />
-  <script src="../assets/menu/menu.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PsicNota · Página em construção</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: #F8FAFB;
+      color: #111827;
+    }
+    .box { text-align: center; padding: 40px 24px; max-width: 420px; }
+    .box img { width: 72px; height: 72px; object-fit: contain; }
+    h1 { font-size: 1.3rem; margin: 20px 0 8px; color: #1F637A; letter-spacing: -0.02em; }
+    p { color: #64727C; margin: 0 0 28px; line-height: 1.6; }
+    a { color: #1F637A; font-weight: 600; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
 </head>
 <body>
-  <div class="app-shell">
-<psic-menu tipo="psicologo" ativo=""></psic-menu>
-
-    <main class="main-content">
-      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
-
-      <header class="topbar">
-        <div class="page-heading"><p class="eyebrow">Histórico clínico</p><h1 id="introTitle">Histórico do paciente</h1></div>
-      </header>
-
-      <section class="summary-grid" aria-label="Resumo do acompanhamento">
-        <div class="summary-card">
-          <span class="summary-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"/></svg></span>
-          <div><span class="summary-label">Consultas</span><strong id="statConsultas">0</strong></div>
-        </div>
-        <div class="summary-card">
-          <span class="summary-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8l4 4v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4Zm8 0v4h4M9 13h6M9 17h4"/></svg></span>
-          <div><span class="summary-label">Relatórios</span><strong id="statRelatorios">0</strong></div>
-        </div>
-        <div class="summary-card">
-          <span class="summary-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span>
-          <div><span class="summary-label">Notas rápidas</span><strong id="statNotas">0</strong></div>
-        </div>
-        <div class="summary-card">
-          <span class="summary-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 7h-4a2 2 0 0 0-2 2v11M4 7h7v13H4zM15 13h5"/></svg></span>
-          <div><span class="summary-label">Documentos</span><strong id="statDocs">0</strong></div>
-        </div>
-      </section>
-
-      <section class="panel" aria-labelledby="linhaTitle">
-        <div class="card-heading">
-          <div>
-            <p class="eyebrow">Linha do tempo</p>
-            <h2 id="linhaTitle">Acontecimentos mais recentes</h2>
-            <p>Consultas, relatórios e notas, do mais novo para o mais antigo.</p>
-          </div>
-        </div>
-        <div class="timeline" id="timeline"></div>
-        <div class="notice-item notice-info" id="emptyTimeline" hidden>Nada registrado para esse paciente ainda. Escolha um paciente na lista para começar.</div>
-      </section>
-
-      <section class="panel" aria-labelledby="docsTitle">
-        <div class="card-heading">
-          <div>
-            <p class="eyebrow">Documentos</p>
-            <h2 id="docsTitle">Receitas e Laudos</h2>
-            <p>Os documentos anexados nas consultas desse paciente.</p>
-          </div>
-        </div>
-        <div class="doc-list" id="docList"></div>
-        <div class="notice-item notice-info" id="emptyDocs" hidden>Nenhum documento emitido para esse paciente.</div>
-      </section>
-    </main>
+  <div class="box">
+    <img src="../assets/img/logo_psicnota.png" alt="PsicNota">
+    <h1>Página em construção</h1>
+    <p>Esta área ainda não possui design definido no Figma e está em construção.</p>
+    <a href="../login.html">← Voltar para o login</a>
   </div>
-
-  <div class="toast" id="toast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span><span id="toastMessage"></span></div>
-  <script src="../assets/js/shared-data.js"></script>
-  <script src="../assets/js/historico.js"></script>
 </body>
 </html>

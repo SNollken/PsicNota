@@ -1,119 +1,35 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Notas rápidas de consulta do PsicNota" />
-  <title>PsicNota | Notas da consulta</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="../assets/css/base.css" />
-  <script src="../assets/menu/menu.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PsicNota · Página em construção</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: #F8FAFB;
+      color: #111827;
+    }
+    .box { text-align: center; padding: 40px 24px; max-width: 420px; }
+    .box img { width: 72px; height: 72px; object-fit: contain; }
+    h1 { font-size: 1.3rem; margin: 20px 0 8px; color: #1F637A; letter-spacing: -0.02em; }
+    p { color: #64727C; margin: 0 0 28px; line-height: 1.6; }
+    a { color: #1F637A; font-weight: 600; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
 </head>
 <body>
-  <div class="app-shell">
-<psic-menu tipo="psicologo" ativo="agenda"></psic-menu>
-
-    <main class="main-content">
-      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
-
-      <div id="notFound" class="panel" hidden>
-        <div class="card-heading">
-          <div>
-            <h2>Consulta não encontrada</h2>
-            <p>O link pode estar desatualizado. Volte para a agenda e escolha uma consulta.</p>
-          </div>
-        </div>
-        <div class="action-row"><a class="button button-primary" href="agenda.html">Abrir agenda</a></div>
-      </div>
-
-      <div id="consultaContent" hidden>
-        <header class="topbar">
-          <div class="page-heading"><p class="eyebrow">Consulta</p><h1 id="consultaTitle">Notas rápidas</h1></div>
-        </header>
-
-        <section class="panel" aria-label="Resumo da consulta">
-          <div class="card-heading">
-            <div>
-              <p class="eyebrow">Resumo</p>
-              <h2 id="consultaSub"></h2>
-            </div>
-            <div class="action-row">
-              <a class="button button-secondary button-compact" id="historicoLink" href="#">Ver histórico</a>
-              <a class="button button-primary button-compact" id="relatorioLink" href="#">Criar relatório</a>
-            </div>
-          </div>
-          <div class="info-grid">
-            <div class="info-item"><span>Data</span><strong id="infoDate"></strong></div>
-            <div class="info-item"><span>Horário</span><strong id="infoTime"></strong></div>
-            <div class="info-item"><span>Duração</span><strong id="infoDuration"></strong></div>
-            <div class="info-item"><span>Modalidade</span><strong id="infoMode"></strong></div>
-            <div class="info-item"><span>Status</span><strong id="infoStatus"></strong></div>
-          </div>
-        </section>
-
-        <section class="panel" aria-labelledby="notasTitle">
-          <div class="card-heading">
-            <div>
-              <p class="eyebrow">Anotação</p>
-              <h2 id="notasTitle">Notas rápidas da sessão</h2>
-              <p>Escreva durante a consulta sem se preocupar com formatação. Depois você transforma em relatório.</p>
-            </div>
-          </div>
-          <label class="sr-only" for="sessionNote">Notas rápidas da sessão</label>
-          <textarea class="note-area" id="sessionNote" rows="8" placeholder="Escreva suas observações da sessão aqui..."></textarea>
-          <div class="field note-mood-field">
-            <span>Emoção do dia <small>como o paciente saiu da sessão</small></span>
-            <div class="mood-picker" id="noteMoodPicker" role="radiogroup" aria-label="Emoção do dia">
-              <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="muito-bem"><span class="mood-emoji" aria-hidden="true">😄</span> Muito bem</button>
-              <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="bem"><span class="mood-emoji" aria-hidden="true">🙂</span> Bem</button>
-              <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="neutro"><span class="mood-emoji" aria-hidden="true">😐</span> Estável</button>
-              <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="mal"><span class="mood-emoji" aria-hidden="true">🙁</span> Mal</button>
-              <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="muito-mal"><span class="mood-emoji" aria-hidden="true">😞</span> Muito mal</button>
-            </div>
-          </div>
-          <div class="note-toolbar">
-            <span id="noteSaveStatus"></span>
-            <div class="action-row">
-              <button class="button button-secondary" id="saveNoteButton" type="button">Salvar</button>
-              <button class="button button-primary" id="finishAppointmentButton" type="button">Finalizar Consulta</button>
-            </div>
-          </div>
-          <p class="compact-empty" id="noteUpdatedAt" hidden></p>
-        </section>
-
-        <section class="panel" aria-labelledby="anexosTitle">
-          <div class="card-heading">
-            <div>
-              <p class="eyebrow">Documentos</p>
-              <h2 id="anexosTitle">Documentos da sessão</h2>
-              <p>Anexe laudos ou receitas gerados nesta consulta. Eles também aparecem na área do paciente.</p>
-            </div>
-          </div>
-          <form id="attachDocForm" class="form-row-inline">
-            <label class="field"><span>Tipo</span>
-              <select id="docType">
-                <option value="laudos">Laudos</option>
-                <option value="receita">Receita</option>
-              </select>
-            </label>
-            <label class="field"><span>Nome do documento</span>
-              <input id="docName" type="text" required placeholder="Ex.: Laudo de avaliação 07/2026" />
-            </label>
-            <button class="button button-primary" type="submit">Anexar</button>
-          </form>
-          <div class="doc-list" id="patientDocs"></div>
-          <div class="notice-item notice-info" id="emptyDocs" hidden>Nenhum documento anexado a este paciente.</div>
-        </section>
-      </div>
-    </main>
+  <div class="box">
+    <img src="../assets/img/logo_psicnota.png" alt="PsicNota">
+    <h1>Página em construção</h1>
+    <p>Esta área ainda não possui design definido no Figma e está em construção.</p>
+    <a href="../login.html">← Voltar para o login</a>
   </div>
-
-  <div class="toast" id="toast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span><span id="toastMessage"></span></div>
-  <script src="../assets/js/shared-data.js"></script>
-  <script src="../assets/js/consulta.js"></script>
 </body>
 </html>

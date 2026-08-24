@@ -1,144 +1,35 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Relatórios pós-consulta do PsicNota" />
-  <title>PsicNota | Relatórios</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="../assets/css/base.css" />
-  <script src="../assets/menu/menu.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PsicNota · Página em construção</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: #F8FAFB;
+      color: #111827;
+    }
+    .box { text-align: center; padding: 40px 24px; max-width: 420px; }
+    .box img { width: 72px; height: 72px; object-fit: contain; }
+    h1 { font-size: 1.3rem; margin: 20px 0 8px; color: #1F637A; letter-spacing: -0.02em; }
+    p { color: #64727C; margin: 0 0 28px; line-height: 1.6; }
+    a { color: #1F637A; font-weight: 600; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
 </head>
 <body>
-  <div class="app-shell">
-<psic-menu tipo="psicologo" ativo="relatorios"></psic-menu>
-
-    <main class="main-content">
-      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
-
-      <header class="topbar">
-        <div class="page-heading"><p class="eyebrow">Relatório</p><h1 id="pageTitle">Relatórios</h1></div>
-      </header>
-
-      <div id="listView">
-        <section class="panel" aria-labelledby="historyTitle">
-          <div class="card-heading">
-            <div>
-              <p class="eyebrow">Histórico</p>
-              <h2 id="historyTitle">Todos os relatórios</h2>
-              <p>Mais recentes primeiro.</p>
-            </div>
-            <div class="action-row">
-              <span class="badge badge-neutral" id="reportTotal">0 relatórios</span>
-              <button class="button button-primary" id="newReportButton" type="button">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-                Novo relatório
-              </button>
-            </div>
-          </div>
-          <div class="report-list" id="reportList"></div>
-          <div class="notice-item notice-info" id="emptyReports" hidden><strong>Nenhum relatório ainda.</strong> Crie um relatório a partir de uma consulta na agenda ou pelo botão acima.</div>
-        </section>
-      </div>
-
-      <div id="editorView" hidden>
-        <form id="reportForm" novalidate>
-          <section class="panel" aria-labelledby="infoHeading">
-            <div class="section-heading">
-              <span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18M8 14h2m4 0h2M8 18h2"/></svg></span>
-              <div class="section-heading-copy">
-                <p class="eyebrow">Informações</p>
-                <h2 id="infoHeading">Dados da consulta</h2>
-                <p id="editorContext">Nenhuma consulta vinculada ainda.</p>
-              </div>
-            </div>
-
-            <div class="fields-grid">
-              <label class="field"><span>Consulta vinculada <small>opcional</small></span>
-                <select id="reportAppointment"></select>
-              </label>
-              <label class="field"><span>Paciente</span>
-                <input id="reportPatient" type="text" required placeholder="Nome do paciente" />
-              </label>
-            </div>
-
-            <div class="fields-grid cols-5" id="appointmentInfoGrid" hidden>
-              <div class="field"><span>Paciente</span><input id="reportInfoPatient" type="text" readonly tabindex="-1" /></div>
-              <div class="field"><span>Data da consulta</span><input id="reportInfoDate" type="text" readonly tabindex="-1" /></div>
-              <div class="field"><span>Horário</span><input id="reportInfoTime" type="text" readonly tabindex="-1" /></div>
-              <div class="field"><span>Duração</span><input id="reportInfoDuration" type="text" readonly tabindex="-1" /></div>
-              <div class="field"><span>Modalidade</span><input id="reportInfoMode" type="text" readonly tabindex="-1" /></div>
-            </div>
-
-            <div class="field field-wide">
-              <span>Emoção do dia <small>como o paciente saiu da sessão</small></span>
-              <div class="mood-picker" id="moodPicker" role="radiogroup" aria-label="Emoção do dia">
-                <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="muito-bem"><span class="mood-emoji" aria-hidden="true">😄</span> Muito bem</button>
-                <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="bem"><span class="mood-emoji" aria-hidden="true">🙂</span> Bem</button>
-                <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="neutro"><span class="mood-emoji" aria-hidden="true">😐</span> Neutro</button>
-                <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="mal"><span class="mood-emoji" aria-hidden="true">🙁</span> Mal</button>
-                <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="muito-mal"><span class="mood-emoji" aria-hidden="true">😞</span> Muito mal</button>
-              </div>
-            </div>
-          </section>
-
-          <section class="panel" aria-labelledby="contentHeading">
-            <div class="section-heading">
-              <span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span>
-              <div class="section-heading-copy">
-                <p class="eyebrow">Conteúdo</p>
-                <h2 id="contentHeading">Texto do relatório</h2>
-                <p>Todos os blocos são opcionais. Use os que forem relevantes para esta sessão.</p>
-              </div>
-            </div>
-
-            <div class="fields-grid">
-              <label class="field field-wide" for="blockQueixa"><span>Queixa principal</span>
-                <textarea id="blockQueixa" rows="3" placeholder="O que o paciente trouxe para esta sessão"></textarea>
-              </label>
-              <label class="field field-wide" for="blockIntervencao"><span>Intervenções realizadas</span>
-                <textarea id="blockIntervencao" rows="3" placeholder="Técnicas e conduzimentos utilizados"></textarea>
-              </label>
-              <label class="field field-wide" for="blockEvolucao"><span>Evolução do paciente</span>
-                <textarea id="blockEvolucao" rows="3" placeholder="Progressos, mudanças e observações clínicas"></textarea>
-              </label>
-              <label class="field field-wide" for="blockProxima"><span>Encaminhamentos</span>
-                <textarea id="blockProxima" rows="3" placeholder="Encaminhamentos e combinados para o próximo encontro"></textarea>
-              </label>
-              <label class="field field-wide" for="freeText"><span>Texto livre</span>
-                <textarea id="freeText" rows="5" placeholder="Qualquer registro adicional que não se encaixe nos blocos"></textarea>
-              </label>
-            </div>
-
-            <div class="report-footer-bar">
-              <div class="attach-area">
-                <button class="button button-secondary button-compact" id="attachButton" type="button">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l8.57-8.57a4 4 0 1 1 5.66 5.66l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-                  Anexar arquivo
-                </button>
-                <input type="file" id="attachInput" multiple hidden />
-                <div class="attach-chips" id="attachChips"></div>
-                <p class="attach-note" id="attachNote">No protótipo só o nome do arquivo é guardado; o upload real vem com o backend.</p>
-              </div>
-              <span class="draft-status" id="draftStatus"></span>
-              <div class="action-row">
-                <button class="button button-secondary" id="cancelEditButton" type="button">Cancelar</button>
-                <button class="button button-secondary" id="saveDraftButton" type="button">Salvar como rascunho</button>
-                <button class="button button-primary" type="submit">Salvar relatório</button>
-              </div>
-            </div>
-          </section>
-        </form>
-      </div>
-    </main>
+  <div class="box">
+    <img src="../assets/img/logo_psicnota.png" alt="PsicNota">
+    <h1>Página em construção</h1>
+    <p>Esta área ainda não possui design definido no Figma e está em construção.</p>
+    <a href="../login.html">← Voltar para o login</a>
   </div>
-
-  <div class="toast" id="toast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span><span id="toastMessage"></span></div>
-  <script src="../assets/js/shared-data.js"></script>
-  <script src="../assets/js/relatorios.js"></script>
 </body>
 </html>

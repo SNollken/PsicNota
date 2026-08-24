@@ -1,56 +1,35 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Receitas e Laudos disponíveis para o paciente no PsicNota" />
-  <title>PsicNota | Receitas e Laudos</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="../assets/css/agenda.css" />
-  <link rel="stylesheet" href="../assets/css/agenda-paciente.css" />
-  <link rel="stylesheet" href="../assets/css/base.css" />
-  <script src="../assets/menu/menu.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PsicNota · Página em construção</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: #F8FAFB;
+      color: #111827;
+    }
+    .box { text-align: center; padding: 40px 24px; max-width: 420px; }
+    .box img { width: 72px; height: 72px; object-fit: contain; }
+    h1 { font-size: 1.3rem; margin: 20px 0 8px; color: #1F637A; letter-spacing: -0.02em; }
+    p { color: #64727C; margin: 0 0 28px; line-height: 1.6; }
+    a { color: #1F637A; font-weight: 600; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
 </head>
-<body class="patient-view">
-  <div class="app-shell">
-<psic-menu tipo="paciente" ativo="laudos"></psic-menu>
-
-    <main class="main-content">
-      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
-
-      <header class="topbar">
-        <div class="page-heading"><p class="eyebrow">Área do paciente</p><h1>Receitas e Laudos</h1></div>
-      </header>
-
-      <section class="patient-hero">
-        <div>
-          <span class="patient-kicker">Documentos liberados pelo seu psicólogo</span>
-          <h2>Seus laudos e receitas em um só lugar</h2>
-          <p>Os documentos que o seu psicólogo anexar aparecem aqui para download. Se você precisa de um documento novo, peça na sua próxima consulta.</p>
-        </div>
-      </section>
-
-      <section class="panel" aria-labelledby="docsTitle">
-        <div class="card-heading">
-          <div>
-            <p class="eyebrow">Disponíveis para download</p>
-            <h2 id="docsTitle">Meus documentos</h2>
-            <p>Mais recentes primeiro.</p>
-          </div>
-          <span class="badge badge-neutral" id="docTotal">0 documentos</span>
-        </div>
-        <div class="doc-list" id="docList"></div>
-        <div class="request-empty" id="emptyDocs" hidden><strong>Nenhum documento ainda</strong><p>Quando o seu psicólogo anexar um laudo ou receita, ele aparecerá aqui.</p></div>
-      </section>
-    </main>
+<body>
+  <div class="box">
+    <img src="../assets/img/logo_psicnota.png" alt="PsicNota">
+    <h1>Página em construção</h1>
+    <p>Esta área ainda não possui design definido no Figma e está em construção.</p>
+    <a href="../login.html">← Voltar para o login</a>
   </div>
-
-  <div class="toast" id="toast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span><span id="toastMessage"></span></div>
-  <script src="../assets/js/shared-data.js"></script>
-  <script src="../assets/js/laudos.js"></script>
 </body>
 </html>

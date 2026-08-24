@@ -1,57 +1,35 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Visualização do relatório de consulta do PsicNota" />
-  <title>PsicNota | Relatório da consulta</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="../assets/css/base.css" />
-  <script src="../assets/menu/menu.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PsicNota · Página em construção</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: #F8FAFB;
+      color: #111827;
+    }
+    .box { text-align: center; padding: 40px 24px; max-width: 420px; }
+    .box img { width: 72px; height: 72px; object-fit: contain; }
+    h1 { font-size: 1.3rem; margin: 20px 0 8px; color: #1F637A; letter-spacing: -0.02em; }
+    p { color: #64727C; margin: 0 0 28px; line-height: 1.6; }
+    a { color: #1F637A; font-weight: 600; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
 </head>
 <body>
-  <div class="app-shell">
-<psic-menu tipo="psicologo" ativo="relatorios"></psic-menu>
-
-    <main class="main-content">
-      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
-
-      <header class="topbar">
-        <div class="page-heading"><p class="eyebrow">Relatório</p><h1>Relatório da consulta</h1></div>
-        <div class="topbar-actions">
-          <a class="button button-secondary" href="relatorios.html">Voltar</a>
-          <button class="button button-primary" id="printButton" type="button">Imprimir</button>
-        </div>
-      </header>
-
-      <div id="notFound" class="panel" hidden>
-        <div class="card-heading">
-          <div>
-            <h2>Relatório não encontrado</h2>
-            <p>O link pode estar desatualizado. Volte para a lista de relatórios.</p>
-          </div>
-        </div>
-        <div class="action-row"><a class="button button-primary" href="relatorios.html">Ver relatórios</a></div>
-      </div>
-
-      <article class="report-document" id="reportDocument" hidden>
-        <p class="eyebrow">Documento clínico · uso do profissional</p>
-        <h2 class="report-document-title">Relatório de Consulta <span class="badge badge-neutral" id="docDraftBadge" hidden>Rascunho</span></h2>
-        <h3 class="report-document-patient" id="docPatient"></h3>
-        <p class="report-document-meta" id="docMeta"></p>
-        <p class="report-document-mood" id="docMood" hidden></p>
-        <div class="report-document-attachments" id="docAttachments" hidden></div>
-        <div id="docBlocks"></div>
-      </article>
-    </main>
+  <div class="box">
+    <img src="../assets/img/logo_psicnota.png" alt="PsicNota">
+    <h1>Página em construção</h1>
+    <p>Esta área ainda não possui design definido no Figma e está em construção.</p>
+    <a href="../login.html">← Voltar para o login</a>
   </div>
-
-  <div class="toast" id="toast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span><span id="toastMessage"></span></div>
-  <script src="../assets/js/shared-data.js"></script>
-  <script src="../assets/js/relatorio-view.js"></script>
 </body>
 </html>

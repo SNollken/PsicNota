@@ -1,76 +1,35 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Lista de pacientes e consultas recentes do PsicNota" />
-  <title>PsicNota | Pacientes</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="../assets/css/base.css" />
-  <link rel="stylesheet" href="../assets/css/pacientes.css" />
-  <script src="../assets/menu/menu.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PsicNota · Página em construção</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: #F8FAFB;
+      color: #111827;
+    }
+    .box { text-align: center; padding: 40px 24px; max-width: 420px; }
+    .box img { width: 72px; height: 72px; object-fit: contain; }
+    h1 { font-size: 1.3rem; margin: 20px 0 8px; color: #1F637A; letter-spacing: -0.02em; }
+    p { color: #64727C; margin: 0 0 28px; line-height: 1.6; }
+    a { color: #1F637A; font-weight: 600; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
 </head>
-<body class="patients-page">
-  <div class="app-shell">
-<psic-menu tipo="psicologo" ativo="pacientes"></psic-menu>
-
-    <main class="main-content">
-      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
-
-      <header class="topbar">
-        <div class="page-heading">
-          <p class="eyebrow">Acompanhamento</p>
-          <h1>Pacientes</h1>
-          <p class="page-subtitle">Acesse seus pacientes e acompanhe os atendimentos recentes.</p>
-        </div>
-
-        <label class="patient-search">
-          <span class="sr-only">Buscar paciente</span>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
-          <input id="patientSearch" type="search" placeholder="Buscar paciente..." autocomplete="off" />
-        </label>
-      </header>
-
-      <div class="patients-content-grid">
-        <section class="panel patients-panel" aria-labelledby="listaTitle">
-          <div class="card-heading">
-            <div>
-              <p class="eyebrow">Lista</p>
-              <h2 id="listaTitle">Seus pacientes</h2>
-              <p>Pacientes vinculados aos seus agendamentos.</p>
-            </div>
-            <span class="badge badge-neutral" id="patientTotal">0 pacientes</span>
-          </div>
-
-          <div class="patient-list" id="patientList"></div>
-          <div class="patients-empty" id="emptyPatients" hidden>Nenhum paciente encontrado nos agendamentos ainda.</div>
-          <div class="patients-empty" id="noMatch" hidden>Nenhum paciente corresponde à busca.</div>
-        </section>
-
-        <section class="panel patients-panel" aria-labelledby="recentesTitle">
-          <div class="card-heading">
-            <div>
-              <p class="eyebrow">Histórico recente</p>
-              <h2 id="recentesTitle">Últimas consultas</h2>
-              <p>Atendimentos concluídos mais recentemente.</p>
-            </div>
-          </div>
-
-          <div class="recent-appointments" id="recentAppointments"></div>
-          <div class="patients-empty" id="recentEmpty" hidden>Nenhuma consulta concluída ainda.</div>
-
-          <div class="recent-footer">
-            <a class="button button-secondary button-compact" href="agenda.html">Ver agenda completa</a>
-          </div>
-        </section>
-      </div>
-    </main>
+<body>
+  <div class="box">
+    <img src="../assets/img/logo_psicnota.png" alt="PsicNota">
+    <h1>Página em construção</h1>
+    <p>Esta área ainda não possui design definido no Figma e está em construção.</p>
+    <a href="../login.html">← Voltar para o login</a>
   </div>
-  <script src="../assets/js/shared-data.js"></script>
-  <script src="../assets/js/pacientes.js"></script>
 </body>
 </html>
