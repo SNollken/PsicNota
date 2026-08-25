@@ -1,124 +1,203 @@
-<!-- ============================================================
-     MENU LATERAL DO PSICNOTA · FONTE ÚNICA
-     ============================================================
-     Este arquivo é a referência visual/estrutural do menu.
-     Quem injeta o menu nas páginas é o menu.js (web component
-     <psic-menu>), usando EXATAMENTE esta mesma marcação.
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PsicNota · Menu lateral (referência)</title>
 
-     Se você mudar a estrutura aqui, repita a mudança no
-     template correspondente dentro do menu.js — ou, mais fácil:
-     mexa só no menu.js, que é o que as páginas realmente usam.
+  <!-- Fonte da marca (a mesma usada nas páginas do app) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600&display=swap" rel="stylesheet" />
 
-     O estilo mora 100% no menu.css.
-     ============================================================ -->
+  <!-- ESTILO ÚNICO DO MENU. É este arquivo que todas as páginas usam. -->
+  <link rel="stylesheet" href="menu.css" />
 
-<!-- ===== VARIAÇÃO: PSICÓLOGO (páginas em /profissional) ===== -->
-<aside class="sidebar" aria-label="Navegação principal">
-  <a class="brand" href="agenda.html" aria-label="PsicNota - página inicial">
-    <img src="../assets/img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />
-    <span class="brand-text">PsicNota</span>
-  </a>
+  <!--
+    ============================================================
+    MENU LATERAL DO PSICNOTA · REFERÊNCIA VISUAL
+    ============================================================
+    Esta página mostra as 3 variações do menu lado a lado, como
+    frames do Figma, pra facilitar a conferência.
 
-  <nav class="main-nav">
-    <p class="nav-label">MENU</p>
+    O estilo real mora 100% no menu.css. Nas páginas de verdade o
+    menu é injetado pelo menu.js (web component <psic-menu>), com
+    EXATAMENTE a mesma marcação usada aqui.
 
-    <!-- item ativo ganha class="nav-item active" + aria-current="page" -->
-    <a class="nav-item active" href="agenda.html" aria-current="page">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"/></svg>
-      Agendar consulta
-    </a>
+    O bloco <style> abaixo é SÓ para o preview: ele desliga o
+    position:fixed da .sidebar pra conseguir colocar as variações
+    uma ao lado da outra. Não altera nenhuma cor/espaçamento do menu.
+    ============================================================
+  -->
+  <style>
+    /* ===== SOMENTE PREVIEW (não faz parte do menu.css) ===== */
+    body {
+      margin: 0;
+      background: #EEF3F6;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    }
+    .preview-header {
+      padding: 22px 32px 6px;
+    }
+    .preview-header h1 {
+      margin: 0;
+      font-size: 18px;
+      color: #174E61;
+    }
+    .preview-header p {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: #64727C;
+    }
+    .preview-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      padding: 20px 32px 40px;
+      align-items: flex-start;
+    }
+    .menu-frame {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .menu-frame > span {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #64727C;
+    }
+    /* Deixa a sidebar "em pé" dentro do frame, sem o position:fixed */
+    .menu-frame .sidebar {
+      position: static;
+      inset: auto;
+      height: 620px;
+      box-shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <header class="preview-header">
+    <h1>Menu lateral · referência</h1>
+    <p>Estilo vem do <code>menu.css</code>. Marcação idêntica à usada pelo <code>menu.js</code> nas páginas.</p>
+  </header>
 
-    <a class="nav-item" href="relatorios.html">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-      Relatórios
-    </a>
+  <div class="preview-row">
 
-    <a class="nav-item" href="pacientes.html">
-      <svg class="nav-icon-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11.5a4.25 4.25 0 1 0-4.25-4.25A4.26 4.26 0 0 0 12 11.5Zm0 2.1c-3.88 0-8.05 1.95-8.05 5.4v1.6h16.1v-1.6c0-3.45-4.17-5.4-8.05-5.4Z"/></svg>
-      Meus pacientes
-    </a>
-  </nav>
+    <!-- ===== VARIAÇÃO 1 · PSICÓLOGO (páginas em /profissional) ===== -->
+    <div class="menu-frame">
+      <span>Psicólogo</span>
+      <aside class="sidebar" aria-label="Navegação principal">
+        <a class="brand" href="agenda.html" aria-label="PsicNota - página inicial">
+          <img src="../img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />
+          <span class="brand-text">PsicNota</span>
+        </a>
 
-  <a class="sidebar-profile" href="../perfil.html" aria-label="Editar meu perfil">
-    <span class="sidebar-profile-avatar" id="psychologistAvatar" aria-hidden="true"><img src="../assets/img/avatar-psicologo.png" alt="" /></span>
-    <span class="sidebar-profile-info">
-      <strong id="psychologistName">Psicólogo</strong>
-      <small>Psicólogo</small>
-    </span>
-  </a>
-</aside>
+        <nav class="main-nav">
+          <p class="nav-label">MENU</p>
 
-<!-- ===== VARIAÇÃO: PACIENTE (páginas em /paciente) ===== -->
-<aside class="sidebar" aria-label="Navegação do paciente">
-  <a class="brand" href="agenda-paciente.html" aria-label="PsicNota - página inicial">
-    <img src="../assets/img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />
-    <span class="brand-text">PsicNota</span>
-  </a>
+          <!-- item ativo ganha class="nav-item active" + aria-current="page" -->
+          <a class="nav-item active" href="agenda.html" aria-current="page">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"/></svg>
+            Agendar consulta
+          </a>
 
-  <nav class="main-nav">
-    <p class="nav-label">MENU</p>
+          <a class="nav-item" href="relatorios.html">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+            Relatórios
+          </a>
 
-    <a class="nav-item active" href="agenda-paciente.html" aria-current="page">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"/></svg>
-      <span>Agendar consulta</span>
-    </a>
+          <a class="nav-item" href="pacientes.html">
+            <svg class="nav-icon-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11.5a4.25 4.25 0 1 0-4.25-4.25A4.26 4.26 0 0 0 12 11.5Zm0 2.1c-3.88 0-8.05 1.95-8.05 5.4v1.6h16.1v-1.6c0-3.45-4.17-5.4-8.05-5.4Z"/></svg>
+            Meus pacientes
+          </a>
+        </nav>
 
-    <a class="nav-item" href="laudos.html">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-      <span>Receitas e Laudos</span>
-    </a>
-  </nav>
+        <a class="sidebar-profile" href="../perfil.html" aria-label="Editar meu perfil">
+          <span class="sidebar-profile-avatar" aria-hidden="true"><img src="../img/avatar-psicologo.png" alt="" /></span>
+          <span class="sidebar-profile-info">
+            <strong>Psicólogo</strong>
+            <small>Psicólogo</small>
+          </span>
+        </a>
+      </aside>
+    </div>
 
-  <a class="sidebar-profile" href="../perfil.html" aria-label="Editar meu perfil">
-    <span class="sidebar-profile-avatar" id="patientAvatar" aria-hidden="true"><img src="../assets/img/avatar-paciente.png" alt="" /></span>
-    <span class="sidebar-profile-info">
-      <strong id="patientNameTop">Paciente PsicNota</strong>
-      <small>Paciente</small>
-    </span>
-  </a>
-</aside>
+    <!-- ===== VARIAÇÃO 2 · PACIENTE (páginas em /paciente) ===== -->
+    <div class="menu-frame">
+      <span>Paciente</span>
+      <aside class="sidebar" aria-label="Navegação do paciente">
+        <a class="brand" href="agenda-paciente.html" aria-label="PsicNota - página inicial">
+          <img src="../img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />
+          <span class="brand-text">PsicNota</span>
+        </a>
 
-<!-- ===== VARIAÇÃO: PERFIL (perfil.html, raiz) =====
-     Tem os DOIS navs; o perfil.js mostra/esconde conforme o papel logado. -->
-<aside class="sidebar" aria-label="Navegação principal">
-  <a class="brand" id="brandLink" href="paciente/agenda-paciente.html" aria-label="PsicNota - página inicial">
-    <img src="assets/img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />
-    <span class="brand-text">PsicNota</span>
-  </a>
+        <nav class="main-nav">
+          <p class="nav-label">MENU</p>
 
-  <nav class="main-nav" id="navPaciente">
-    <p class="nav-label">MENU</p>
-    <a class="nav-item" href="paciente/agenda-paciente.html">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"/></svg>
-      <span>Agendar consulta</span>
-    </a>
-    <a class="nav-item" href="paciente/laudos.html">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-      <span>Receitas e Laudos</span>
-    </a>
-  </nav>
+          <a class="nav-item active" href="agenda-paciente.html" aria-current="page">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"/></svg>
+            <span>Agendar consulta</span>
+          </a>
 
-  <nav class="main-nav" id="navPsicologo" hidden>
-    <p class="nav-label">MENU</p>
-    <a class="nav-item" href="profissional/agenda.html">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"/></svg>
-      <span>Agendar consulta</span>
-    </a>
-    <a class="nav-item" href="profissional/relatorios.html">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-      <span>Relatórios</span>
-    </a>
-    <a class="nav-item" href="profissional/pacientes.html">
-      <svg class="nav-icon-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11.5a4.25 4.25 0 1 0-4.25-4.25A4.26 4.26 0 0 0 12 11.5Zm0 2.1c-3.88 0-8.05 1.95-8.05 5.4v1.6h16.1v-1.6c0-3.45-4.17-5.4-8.05-5.4Z"/></svg>
-      <span>Meus pacientes</span>
-    </a>
-  </nav>
+          <a class="nav-item" href="laudos.html">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+            <span>Receitas e Laudos</span>
+          </a>
+        </nav>
 
-  <a class="sidebar-profile" href="perfil.html" aria-current="page" aria-label="Meu perfil">
-    <span class="sidebar-profile-avatar" data-sidebar-avatar aria-hidden="true">PN</span>
-    <span class="sidebar-profile-info">
-      <strong data-sidebar-name>Usuário PsicNota</strong>
-      <small data-sidebar-role>Paciente</small>
-    </span>
-  </a>
-</aside>
+        <a class="sidebar-profile" href="../perfil.html" aria-label="Editar meu perfil">
+          <span class="sidebar-profile-avatar" aria-hidden="true"><img src="../img/avatar-paciente.png" alt="" /></span>
+          <span class="sidebar-profile-info">
+            <strong>Paciente PsicNota</strong>
+            <small>Paciente</small>
+          </span>
+        </a>
+      </aside>
+    </div>
+
+    <!-- ===== VARIAÇÃO 3 · PERFIL (perfil.html, raiz) =====
+         No app, o perfil.js mostra/esconde cada nav conforme o papel logado. -->
+    <div class="menu-frame">
+      <span>Perfil (psicólogo logado)</span>
+      <aside class="sidebar" aria-label="Navegação principal">
+        <a class="brand" href="paciente/agenda-paciente.html" aria-label="PsicNota - página inicial">
+          <img src="../img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />
+          <span class="brand-text">PsicNota</span>
+        </a>
+
+        <nav class="main-nav">
+          <p class="nav-label">MENU</p>
+
+          <a class="nav-item" href="profissional/agenda.html">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"/></svg>
+            <span>Agendar consulta</span>
+          </a>
+
+          <a class="nav-item" href="profissional/relatorios.html">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+            <span>Relatórios</span>
+          </a>
+
+          <a class="nav-item" href="profissional/pacientes.html">
+            <svg class="nav-icon-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11.5a4.25 4.25 0 1 0-4.25-4.25A4.26 4.26 0 0 0 12 11.5Zm0 2.1c-3.88 0-8.05 1.95-8.05 5.4v1.6h16.1v-1.6c0-3.45-4.17-5.4-8.05-5.4Z"/></svg>
+            <span>Meus pacientes</span>
+          </a>
+        </nav>
+
+        <a class="sidebar-profile" href="perfil.html" aria-current="page" aria-label="Meu perfil">
+          <span class="sidebar-profile-avatar" aria-hidden="true">PN</span>
+          <span class="sidebar-profile-info">
+            <strong>Usuário PsicNota</strong>
+            <small>Paciente</small>
+          </span>
+        </a>
+      </aside>
+    </div>
+
+  </div>
+</body>
+</html>

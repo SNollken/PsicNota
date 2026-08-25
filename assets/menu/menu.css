@@ -10,6 +10,15 @@
 :root {
   --sidebar-width: 294px;
   --sidebar-bg: #F3FBFE;
+
+  /* Tokens que o menu usa. Definidos aqui pra folha ser autossuficiente
+     (o menu.html abre sozinho sem precisar do base.css). Nas páginas que
+     carregam o base.css, o :root de lá define os mesmos valores. */
+  --blue-700: #1f637a;
+  --blue-800: #174e61;
+  --ink: #111827;
+  --white: #ffffff;
+  --line: #DCE6EA;
 }
 
 /* =========================
@@ -104,6 +113,16 @@
   flex: 0 0 auto;
   color: var(--ink, #111827);
   stroke-width: 1.6;
+}
+
+/* Baseline dos ícones do menu (nas páginas do app isso vem do base.css;
+   aqui garante que o menu.css seja autossuficiente). O :not() deixa o ícone
+   de usuário (.nav-icon-fill) preenchido, como no Figma. */
+.sidebar svg:not(.nav-icon-fill) {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .nav-icon-fill {
