@@ -36,7 +36,7 @@
 
   function item(href, icone, rotulo, ativo) {
     return (
-      '<a class="nav-item' + (ativo ? ' active" aria-current="page' : '"') + ' href="' + href + '">' +
+      '<a class="nav-item' + (ativo ? ' active" aria-current="page"' : '"') + ' href="' + href + '">' +
         icone + '\n        ' + rotulo + '\n      </a>'
     );
   }
