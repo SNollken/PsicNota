@@ -1,0 +1,1111 @@
+/* =========================================================
+   AGENDA DO PSICÓLOGO — agenda-psicologo.css
+   Redesign fiel ao Figma: calendário central + cards +
+   popups de listas (CONCLUÍDAS 7D / PRÓX. CONSULTAS /
+   SOLICITAÇÕES / HORÁRIOS DISPONÍVEIS).
+   ========================================================= */
+
+/* =========================================================
+   ESCOPO / LAYOUT
+   ========================================================= */
+
+.psic-view {
+  background: #ffffff;
+}
+
+.psic-view .agenda-psic-page {
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+
+  margin: 0;
+  padding: 0 18px 30px;
+}
+
+
+/* =========================================================
+   CABEÇALHO
+   ========================================================= */
+
+.psic-view .agenda-topbar {
+  min-height: 95px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border-bottom: 1px solid #64727C;
+}
+
+.psic-view .agenda-topbar h1 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+
+/* =========================================================
+   CONTEÚDO CENTRAL
+   ========================================================= */
+
+.psic-view .agenda-content {
+  width: min(100%, 1180px);
+
+  margin: 0 auto;
+
+  padding-top: 18px;
+}
+
+.psic-view .agenda-subtitle {
+  margin: 6px 0 26px;
+
+  color: #111827;
+
+  font-size: 28px;
+  font-weight: 800;
+
+  text-align: center;
+}
+
+
+/* =========================================================
+   CARDS DE RESUMO (3 cards)
+   ========================================================= */
+
+.psic-dashboard {
+  width: min(100%, 1010px);
+
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 36px;
+
+  margin: 0 auto 38px;
+}
+
+.psic-dashboard-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 42px;
+
+  align-items: center;
+
+  min-height: 88px;
+
+  padding: 11px 15px 11px 24px;
+
+  border: 1px solid;
+  border-radius: 18px;
+
+  background: #F8FAFB;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.psic-dashboard-card:hover {
+  background: #ffffff;
+  transform: translateY(-1px);
+}
+
+.psic-dashboard-card > svg {
+  width: 26px;
+  height: 26px;
+
+  justify-self: center;
+
+  color: #1f637a;
+
+  stroke-width: 3;
+  fill: none;
+  stroke: currentColor;
+}
+
+.psic-dashboard-card .dashboard-copy {
+  display: block;
+  min-width: 0;
+}
+
+.psic-dashboard-card .dashboard-copy small,
+.psic-dashboard-card .dashboard-copy strong {
+  display: block;
+}
+
+.psic-dashboard-card .dashboard-copy small {
+  margin-bottom: 6px;
+
+  color: #111827;
+
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.psic-dashboard-card .dashboard-copy strong {
+  overflow: hidden;
+
+  color: #174e61;
+
+  font-size: 15px;
+  font-weight: 800;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-week {
+  border-color: #3BAE24;
+}
+
+.dashboard-next {
+  border-color: #1F637A;
+}
+
+.dashboard-pending {
+  border-color: #D90307;
+}
+
+
+/* =========================================================
+   CALENDÁRIO CENTRAL (card)
+   ========================================================= */
+
+.psic-calendar-card {
+  width: min(100%, 1080px);
+
+  margin: 0 auto;
+
+  padding: 20px 22px;
+
+  border: 1px solid #E4F6FC;
+  border-radius: 22px;
+
+  background: #E4F6FC;
+}
+
+.psic-calendar-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+
+  align-items: center;
+
+  min-height: 58px;
+
+  margin-bottom: 10px;
+}
+
+.psic-calendar-header > h2 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 25px;
+  font-weight: 800;
+
+  text-align: center;
+}
+
+.psic-calendar-navigation {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  justify-self: end;
+}
+
+.calendar-arrow {
+  display: grid;
+  place-items: center;
+
+  width: 36px;
+  height: 36px;
+
+  padding: 0;
+
+  border: 1px solid #1f637a;
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  cursor: pointer;
+
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.calendar-arrow svg {
+  width: 18px;
+  height: 18px;
+
+  fill: none;
+  stroke: #1f637a;
+  stroke-width: 2.4;
+}
+
+.calendar-arrow:hover {
+  color: #ffffff;
+  background: #1f637a;
+}
+
+.calendar-arrow:hover svg {
+  stroke: #ffffff;
+}
+
+
+/* =========================================================
+   DIAS DA SEMANA
+   ========================================================= */
+
+.psic-view .psic-weekdays,
+.psic-view .psic-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+
+  min-width: 0;
+
+  gap: 5px;
+
+  border: 0;
+}
+
+.psic-view .psic-weekdays {
+  margin-bottom: 5px;
+}
+
+.psic-view .psic-weekdays span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 35px;
+
+  padding: 0;
+
+  border: 0;
+
+  color: #111827;
+  background: transparent;
+
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+
+/* =========================================================
+   CÉLULAS DO DIA
+   ========================================================= */
+
+.psic-day {
+  position: relative;
+
+  display: block;
+
+  min-width: 0;
+  min-height: 105px;
+
+  padding: 12px;
+
+  border: 1px solid #64727C;
+  border-radius: 7px;
+
+  color: #111827;
+  background: rgba(255, 255, 255, 0.92);
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+
+.psic-day:hover:not(:disabled) {
+  z-index: 2;
+  transform: translateY(-1px);
+
+  border-color: #BFE7F5;
+  background: #ffffff;
+}
+
+.psic-day:disabled {
+  cursor: default;
+}
+
+.psic-day.other-month {
+  color: #64727C;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.psic-day-number {
+  display: block;
+
+  margin: 0;
+
+  color: inherit;
+
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.psic-day-info {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  display: block;
+
+  max-width: calc(100% - 12px);
+
+  transform: translate(-50%, -28%);
+
+  font-size: 11px;
+  font-weight: 800;
+
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Horário disponível (futuro livre) */
+.psic-day.has-available {
+  border-color: #3BAE24;
+}
+
+.psic-day.has-available .psic-day-number,
+.psic-day.has-available .psic-day-info {
+  color: #3BAE24;
+}
+
+/* Consulta confirmada */
+.psic-day.has-confirmed {
+  border-color: #BFE7F5;
+}
+
+.psic-day.has-confirmed .psic-day-number,
+.psic-day.has-confirmed .psic-day-info {
+  color: #1f637a;
+}
+
+/* Solicitação pendente */
+.psic-day.has-pending {
+  border-color: #D90307;
+}
+
+.psic-day.has-pending .psic-day-number,
+.psic-day.has-pending .psic-day-info {
+  color: #D90307;
+}
+
+/* HOJE */
+.psic-day.today:not(.has-confirmed):not(.has-pending) {
+  border-color: #BFE7F5;
+}
+
+.psic-day.today .psic-day-info {
+  color: #1f637a;
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   POPUPS (base compartilhada)
+   ========================================================= */
+
+.psic-schedule-popup,
+.psic-requests-popup,
+.psic-appointments-popup,
+.psic-completed-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: transparent;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition: opacity 0.18s ease, visibility 0.18s ease;
+}
+
+.psic-schedule-popup.open,
+.psic-requests-popup.open,
+.psic-appointments-popup.open,
+.psic-completed-popup.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Card base */
+.psic-schedule-popup-card,
+.psic-requests-popup-card,
+.psic-appointments-popup-card,
+.psic-completed-popup-card {
+  position: relative;
+
+  width: min(100%, 556px);
+  min-height: 360px;
+  max-height: 700px;
+
+  padding: 22px 20px 20px;
+
+  overflow-y: auto;
+
+  border: 1.5px solid #1f637a;
+  border-radius: 24px;
+
+  background: #E4F6FC;
+}
+
+.psic-requests-popup-card {
+  border-color: #D90307;
+}
+
+.psic-completed-popup-card {
+  border-color: #3BAE24;
+}
+
+/* Botão de voltar */
+.psic-schedule-popup-back,
+.psic-requests-popup-back,
+.psic-appointments-popup-back,
+.psic-completed-popup-back {
+  position: absolute;
+
+  top: 18px;
+  left: 16px;
+
+  display: grid;
+  place-items: center;
+
+  width: 28px;
+  height: 28px;
+
+  padding: 0;
+
+  border: 0;
+
+  color: #174E61;
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.psic-requests-popup-back { color: #D90307; }
+.psic-completed-popup-back { color: #3BAE24; }
+
+.psic-schedule-popup-back svg,
+.psic-requests-popup-back svg,
+.psic-appointments-popup-back svg,
+.psic-completed-popup-back svg {
+  width: 24px;
+  height: 24px;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+}
+
+
+/* =========================================================
+   POPUP DE HORÁRIOS DISPONÍVEIS
+   ========================================================= */
+
+.psic-schedule-popup-header {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.psic-schedule-popup-eyebrow {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #174E61;
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.psic-schedule-popup-header strong {
+  display: block;
+
+  color: #111827;
+
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+/* Seletor de paciente */
+.psic-patient-field {
+  display: block;
+  margin: 12px auto;
+  max-width: 380px;
+}
+
+.psic-patient-select {
+  width: 100%;
+
+  padding: 10px 12px;
+
+  border: 1px solid #D9E7EC;
+  border-radius: 10px;
+
+  color: #111827;
+  background: #ffffff;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+/* Colunas de modalidade */
+.psic-schedule-popup-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+
+  margin-top: 8px;
+  margin-bottom: 14px;
+}
+
+.psic-schedule-column {
+  padding: 0 12px;
+}
+
+.psic-schedule-column:first-child {
+  border-right: 1px solid #E4F6FC;
+}
+
+.psic-schedule-column-pill {
+  width: fit-content;
+
+  margin: 0 auto 12px;
+  padding: 7px 16px;
+
+  border-radius: 999px;
+
+  color: #174E61;
+  background: #E4F6FC;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.psic-schedule-times {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.psic-schedule-time {
+  min-height: 44px;
+
+  padding: 8px 10px;
+
+  border: 1px solid #64727C;
+  border-radius: 8px;
+
+  color: #111827;
+  background: #ffffff;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition: transform 0.14s ease, background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+
+.psic-schedule-time:hover {
+  transform: translateY(-1px);
+}
+
+.psic-schedule-time.selected {
+  border-color: #1F637A;
+  color: #ffffff;
+  background: #1F637A;
+}
+
+.psic-schedule-no-slots {
+  grid-column: 1 / -1;
+
+  color: #64727C;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  text-align: center;
+
+  padding: 12px 0;
+}
+
+.psic-schedule-terms {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  margin: 6px 0 10px;
+
+  color: #111827;
+
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.psic-schedule-terms input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: #1F637A;
+}
+
+.psic-schedule-submit {
+  display: block;
+
+  width: 190px;
+  min-height: 40px;
+
+  margin: 0 auto;
+
+  border: 0;
+  border-radius: 8px;
+
+  color: #ffffff;
+  background: #1F637A;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.psic-schedule-submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   POPUP DE SOLICITAÇÕES
+   ========================================================= */
+
+.psic-requests-popup-header {
+  margin-bottom: 22px;
+  text-align: center;
+}
+
+.psic-requests-popup-header span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #D90307;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.psic-requests-popup-header strong {
+  display: block;
+
+  color: #111827;
+
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.psic-requests-popup-list {
+  display: grid;
+  gap: 12px;
+}
+
+.psic-request-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+
+  align-items: center;
+  gap: 14px;
+
+  min-height: 88px;
+
+  padding: 13px 14px;
+
+  border: 1px solid #D90307;
+  border-radius: 14px;
+
+  background: #ffffff;
+}
+
+.psic-request-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.psic-request-mode {
+  color: #1f637a;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.psic-request-info strong {
+  color: #111827;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.psic-request-datetime {
+  color: #111827;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.psic-request-info small {
+  color: #64727C;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.psic-request-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.psic-request-approve,
+.psic-request-reject {
+  display: grid;
+  place-items: center;
+
+  width: 32px;
+  height: 32px;
+
+  padding: 0;
+
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  transition: transform 0.14s ease;
+}
+
+.psic-request-approve {
+  border: 1px solid #3BAE24;
+  background: #ffffff;
+  color: #3BAE24;
+}
+
+.psic-request-approve:hover {
+  color: #ffffff;
+  background: #3BAE24;
+}
+
+.psic-request-reject {
+  border: 1px solid #D90307;
+  background: #ffffff;
+  color: #D90307;
+}
+
+.psic-request-reject:hover {
+  color: #ffffff;
+  background: #D90307;
+}
+
+.psic-request-approve svg,
+.psic-request-reject svg {
+  width: 16px;
+  height: 16px;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+}
+
+
+/* =========================================================
+   POPUP DE PRÓXIMAS CONSULTAS
+   ========================================================= */
+
+.psic-appointments-popup-header {
+  margin-bottom: 22px;
+  text-align: center;
+}
+
+.psic-appointments-popup-header span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #1F637A;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.psic-appointments-popup-header strong {
+  display: block;
+
+  color: #111827;
+
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.psic-appointments-popup-list {
+  display: grid;
+  gap: 12px;
+}
+
+
+/* =========================================================
+   POPUP DE CONSULTAS CONCLUÍDAS
+   ========================================================= */
+
+.psic-completed-popup-header {
+  margin-bottom: 22px;
+  text-align: center;
+}
+
+.psic-completed-popup-header span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #3BAE24;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.psic-completed-popup-header strong {
+  display: block;
+
+  color: #111827;
+
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.psic-completed-popup-list {
+  display: grid;
+  gap: 12px;
+}
+
+
+/* =========================================================
+   CARD DE CONSULTA (próximas + concluídas)
+   ========================================================= */
+
+.psic-appointment-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+
+  align-items: center;
+  gap: 14px;
+
+  min-height: 78px;
+
+  padding: 14px 16px;
+
+  border: 1px solid #BFE7F5;
+  border-radius: 14px;
+
+  background: #ffffff;
+}
+
+.psic-appointment-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.psic-appointment-mode {
+  display: inline-flex;
+  align-self: flex-start;
+
+  padding: 3px 8px;
+
+  border-radius: 999px;
+
+  color: #1f637a;
+  background: #E4F6FC;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.psic-appointment-info strong {
+  color: #111827;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.psic-appointment-datetime {
+  color: #111827;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.psic-appointment-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.psic-appointment-open,
+.psic-appointment-cancel {
+  display: grid;
+  place-items: center;
+
+  width: 32px;
+  height: 32px;
+
+  padding: 0;
+
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  transition: transform 0.14s ease;
+}
+
+.psic-appointment-open {
+  border: 1px solid #1f637a;
+  background: #ffffff;
+  color: #1f637a;
+  text-decoration: none;
+}
+
+.psic-appointment-open:hover {
+  color: #ffffff;
+  background: #1f637a;
+}
+
+.psic-appointment-cancel {
+  border: 1px solid #D90307;
+  background: #ffffff;
+  color: #D90307;
+}
+
+.psic-appointment-cancel:hover {
+  color: #ffffff;
+  background: #D90307;
+}
+
+.psic-appointment-open svg,
+.psic-appointment-cancel svg {
+  width: 16px;
+  height: 16px;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+
+/* =========================================================
+   MENSAGEM DE LISTA VAZIA
+   ========================================================= */
+
+.psic-popup-empty {
+  margin: 70px 0;
+
+  color: #64727C;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  text-align: center;
+}
+
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .psic-dashboard {
+    gap: 20px;
+  }
+
+  .psic-calendar-card {
+    padding: 18px 16px;
+  }
+}
+
+@media (max-width: 720px) {
+  .psic-view .agenda-psic-page {
+    padding: 0 14px 24px;
+  }
+
+  .psic-view .agenda-topbar {
+    min-height: 70px;
+  }
+
+  .psic-view .agenda-topbar h1 {
+    font-size: 24px;
+  }
+
+  .psic-view .agenda-subtitle {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .psic-dashboard {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .psic-calendar-card {
+    padding: 14px 10px;
+    border-radius: 18px;
+  }
+
+  .psic-view .psic-weekdays,
+  .psic-view .psic-calendar-grid {
+    gap: 4px;
+  }
+
+  .psic-day {
+    min-height: 90px;
+    padding: 8px;
+  }
+
+  .psic-schedule-popup-card,
+  .psic-requests-popup-card,
+  .psic-appointments-popup-card,
+  .psic-completed-popup-card {
+    width: 100%;
+    border-radius: 18px;
+  }
+
+  .psic-schedule-popup-columns {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .psic-schedule-column:first-child {
+    border-right: 0;
+    border-bottom: 1px solid #E4F6FC;
+    padding-bottom: 12px;
+  }
+}
