@@ -446,7 +446,28 @@
       </form>
     </main>
   </div>
+
+  <div class="modal-overlay" id="confirmModal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+      <h2 id="confirmModalTitle">Salvar alterações</h2>
+      <p>Deseja salvar as alterações feitas no seu perfil?</p>
+      <div class="modal-actions">
+        <button class="btn-secondary" type="button" id="confirmCancelBtn">Cancelar</button>
+        <button class="btn-primary" type="button" id="confirmSaveBtn">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="successModal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="successModalTitle">
+      <h2 id="successModalTitle">Alterações salvas</h2>
+      <p>Seu perfil foi atualizado com sucesso.</p>
+      <div class="modal-actions">
+        <button class="btn-primary" type="button" id="successOkBtn">OK</button>
+      </div>
+    </div>
+  </div>
+
   <script src="assets/js/shared-data.js"></script>
-  <script src="assets/js/perfil.js"></script>
 </body>
 </html>
