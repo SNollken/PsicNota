@@ -3,33 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Página do PsicNota em construção.">
   <title>PsicNota · Página em construção</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <script src="../assets/menu/menu.js"></script>
   <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
+    .construction-wrap {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-      background: #F8FAFB;
-      color: #111827;
+      min-height: calc(100vh - 140px);
     }
-    .box { text-align: center; padding: 40px 24px; max-width: 420px; }
-    .box img { width: 72px; height: 72px; object-fit: contain; }
-    h1 { font-size: 1.3rem; margin: 20px 0 8px; color: #1F637A; letter-spacing: -0.02em; }
-    p { color: #64727C; margin: 0 0 28px; line-height: 1.6; }
-    a { color: #1F637A; font-weight: 600; text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    .construction-box { text-align: center; padding: 40px 24px; max-width: 460px; }
+    .construction-box img { width: 72px; height: 72px; object-fit: contain; }
+    .construction-box h1 { font-size: 21px; margin: 20px 0 8px; color: #1F637A; letter-spacing: -0.02em; }
+    .construction-box p { color: #64727C; margin: 0; line-height: 1.6; }
   </style>
 </head>
 <body>
-  <div class="box">
-    <img src="../assets/img/logo_psicnota.png" alt="PsicNota">
-    <h1>Página em construção</h1>
-    <p>Esta área ainda não possui design definido no Figma e está em construção.</p>
-    <a href="../login.html">← Voltar para o login</a>
+  <div class="app-shell">
+    <psic-menu tipo="psicologo" ativo="relatorios"></psic-menu>
+
+    <main class="main-content">
+      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+      <div class="construction-wrap">
+        <div class="construction-box">
+          <img src="../assets/img/logo_psicnota.png" alt="PsicNota">
+          <h1>Página em construção</h1>
+          <p>Esta área ainda não possui design definido no Figma e está em construção. Use o menu ao lado para navegar.</p>
+        </div>
+      </div>
+    </main>
   </div>
+
+  <script src="../assets/js/shared-data.js"></script>
+  <script src="../assets/js/sidebar.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      var menuButton = document.querySelector(".mobile-menu");
+      var sidebar = document.querySelector(".sidebar");
+      if (!menuButton || !sidebar) return;
+      menuButton.addEventListener("click", function () {
+        var isOpen = sidebar.classList.toggle("open");
+        menuButton.setAttribute("aria-expanded", String(isOpen));
+      });
+      document.addEventListener("click", function (event) {
+        if (window.innerWidth <= 720 && !sidebar.contains(event.target) && !menuButton.contains(event.target)) {
+          sidebar.classList.remove("open");
+          menuButton.setAttribute("aria-expanded", "false");
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

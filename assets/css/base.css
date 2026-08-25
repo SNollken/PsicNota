@@ -101,6 +101,14 @@ svg {
    moram em assets/menu/menu.css — fonte única, importada no topo deste arquivo.
 ========================= */
 
+/* Shell padrão das telas logadas: sidebar + conteúdo.
+   Cada CSS de página pode estender; esta é a base mínima. */
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+}
+
 /* =========================
    CONTEÚDO
 ========================= */
