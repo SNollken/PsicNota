@@ -1,12 +1,303 @@
 /* ==========================================================================
-   base.css — Design system do PsicNota
-   Padroniza todas as telas conforme o design do Editar Perfil (Figma).
-   Tokens: teal #1f637a, painéis azul-claros, bordas 2px, fonte Inter,
-   marca com logo PNG + fonte Laila.
+   profissional/relatorios.css — CSS único e auto-contido da tela de
+   relatórios. Origem: menu.css (embutido) + blocos do ex-base.css usados
+   pela página + conteúdo original deste arquivo, nesta ordem de cascata
+   (a mesma dos <link> antigos).
    ========================================================================== */
 
-/* Menu lateral: fonte única em assets/menu/menu.css (componente <psic-menu>). */
-@import url("../menu/menu.css");
+/* ==========================================================================
+   menu.css — FONTE ÚNICA do estilo do menu lateral do PsicNota.
+   Usado por todas as páginas (via <psic-menu>), seja por @import no CSS próprio
+   da página, seja por <link> direto. Nenhuma outra folha deve estilizar .sidebar/.nav-item.
+   ========================================================================== */
+
+/* Tokens do menu. Definidos aqui para o menu.css ser autossuficiente:
+   funciona até em página que não carrega outro CSS (ex.: perfil.html).
+   Nos CSSs de página que definem o mesmo :root, o valor de lá prevalece. */
+:root {
+  --sidebar-width: 294px;
+  --sidebar-bg: #F3FBFE;
+
+  /* Tokens que o menu usa. Definidos aqui pra folha ser autossuficiente
+     (o menu.html abre sozinho). Nos CSSs de página que definem os mesmos
+     tokens, o valor de lá prevalece. */
+  --blue-700: #1f637a;
+  --blue-800: #174e61;
+  --ink: #111827;
+  --white: #ffffff;
+  --line: #DCE6EA;
+}
+
+/* =========================
+   ESTRUTURA
+========================= */
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+}
+
+/* =========================
+   MENU LATERAL
+========================= */
+
+.sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: var(--sidebar-width);
+  display: flex;
+  flex-direction: column;
+  padding: 28px 0 12px;
+  border-right: 1px solid #DCE6EA;
+  background: var(--sidebar-bg);
+  z-index: 20;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px 19px 37px;
+  text-decoration: none;
+}
+
+.brand .brand-icon {
+  width: 59px !important;
+  height: 68px !important;
+  min-width: 59px;
+  max-width: none !important;
+  object-fit: contain;
+  flex: 0 0 59px;
+}
+
+.brand-text {
+  font-family: "Laila", serif;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1;
+  color: #111827;
+}
+
+.main-nav {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  padding: 0 18px;
+}
+
+.nav-label {
+  margin: 0 0 28px;
+  padding: 0 0 0 10px;
+  color: #64727C;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+
+.nav-label-spaced { margin-top: 16px; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: 228px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid #DCE6EA;
+  border-radius: 25px;
+  color: #111827;
+  background: #E4F6FC;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 400;
+  transition: background 0.16s, border-color 0.16s, color 0.16s;
+}
+
+.nav-item svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  color: var(--ink, #111827);
+  stroke-width: 1.6;
+}
+
+/* Baseline dos ícones do menu (garante que o menu.css seja autossuficiente).
+   O :not() deixa o ícone
+   de usuário (.nav-icon-fill) preenchido, como no Figma. */
+.sidebar svg:not(.nav-icon-fill) {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nav-icon-fill {
+  fill: currentColor;
+  stroke: none;
+}
+
+.nav-item:hover {
+  background: #F8FAFB;
+  border-color: #BFE7F5;
+  color: var(--blue-800);
+}
+
+.nav-item:hover svg { color: inherit; }
+
+.nav-item.active {
+  background: #BFE7F5;
+  border-color: #DCE6EA;
+  color: #1F637A;
+  font-weight: 700;
+}
+
+.nav-item.active svg {
+  color: #1F637A;
+  stroke-width: 2;
+}
+
+.nav-item.active:hover { background: #BFE7F5; }
+
+.nav-badge {
+  margin-left: auto;
+  min-width: 22px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--blue-700);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* =========================
+   USUÁRIO NO RODAPÉ DA SIDEBAR
+========================= */
+
+.sidebar-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: auto;
+  padding: 9px 18px 0;
+  border-top: 1px solid #DCE6EA;
+  color: inherit;
+  text-decoration: none;
+  transition:
+    background 0.16s,
+    color 0.16s;
+}
+
+.sidebar-profile:hover {
+  background: #E4F6FC;
+}
+
+.sidebar-profile-avatar {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  flex: 0 0 68px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #E4F6FC;
+  color: #174E61;
+  font-size: 18px;
+  font-weight: 800;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.sidebar-profile-avatar.has-photo {
+  color: transparent;
+}
+
+.sidebar-profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.sidebar-profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sidebar-profile-info strong {
+  overflow: hidden;
+  color: #111827;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-profile-info small {
+  color: #64727C;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+/* =========================
+   RESPONSIVIDADE DO MENU
+========================= */
+
+@media (max-width: 1180px) {
+  :root { --sidebar-width: 230px; }
+
+  .brand { padding: 0 8px 19px 20px; }
+
+  .brand .brand-icon {
+    width: 46px !important;
+    height: 53px !important;
+    min-width: 46px;
+    flex-basis: 46px;
+  }
+
+  .brand-text { font-size: 25px; }
+
+  .main-nav { padding: 0 12px; }
+
+  .nav-item { width: auto; }
+}
+
+@media (max-width: 720px) {
+  .app-shell { display: block; }
+
+  .sidebar {
+    width: 260px;
+    transform: translateX(-100%);
+    transition: transform 0.2s;
+    box-shadow: 8px 0 28px rgba(17, 24, 39, 0.14);
+  }
+
+  .sidebar.open { transform: translateX(0); }
+
+  .main-nav { padding: 0 14px; }
+
+  .nav-item { width: auto; }
+
+  .mobile-menu {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    margin-bottom: 8px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--blue-800);
+  }
+}
 
 :root {
   --blue-25: #F8FAFB;
@@ -95,12 +386,6 @@ svg {
   border: 0;
 }
 
-/* =========================
-   MENU LATERAL
-   Os estilos do menu (.sidebar, .brand, .nav-item, .sidebar-profile...)
-   moram em assets/menu/menu.css — fonte única, importada no topo deste arquivo.
-========================= */
-
 /* Shell padrão das telas logadas: sidebar + conteúdo.
    Cada CSS de página pode estender; esta é a base mínima. */
 .app-shell {
@@ -122,7 +407,6 @@ svg {
 }
 
 .mobile-menu { display: none; }
-
 /* =========================
    TOPO DA PÁGINA
 ========================= */
@@ -604,17 +888,6 @@ input[readonly] {
   color: var(--success);
 }
 
-.home-reminder {
-  margin: 0;
-  padding: 14px 16px;
-  border: 1px solid #E4F6FC;
-  border-radius: 13px;
-  background: var(--white);
-  font-size: 14px;
-  line-height: 1.6;
-  white-space: pre-line;
-}
-
 /* =========================
    DUAS COLUNAS
 ========================= */
@@ -663,100 +936,6 @@ input[readonly] {
   color: var(--success);
   font-size: 12px;
   font-weight: 700;
-}
-
-/* =========================
-   DOCUMENTOS
-========================= */
-
-.doc-list {
-  display: grid;
-  gap: 10px;
-}
-
-.doc-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 14px 18px;
-  border: 1px solid #E4F6FC;
-  border-radius: 13px;
-  background: var(--white);
-}
-
-.doc-item-info {
-  display: grid;
-  gap: 3px;
-  min-width: 0;
-}
-
-.doc-item-info strong {
-  overflow: hidden;
-  font-size: 14px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.doc-item-info span {
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.form-row-inline {
-  display: flex;
-  align-items: flex-end;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.form-row-inline .field { flex: 1; min-width: 180px; }
-
-/* =========================
-   PACIENTES
-========================= */
-
-.patient-search { flex-shrink: 0; }
-
-.patient-search input {
-  width: 280px;
-  max-width: 100%;
-  text-align: left;
-}
-
-.patient-list {
-  display: grid;
-  gap: 12px;
-}
-
-.patient-card {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 18px;
-  border: 1px solid #E4F6FC;
-  border-radius: 13px;
-  background: var(--white);
-}
-
-.patient-avatar {
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
-}
-
-.patient-info {
-  display: grid;
-  gap: 3px;
-  min-width: 0;
-  flex: 1;
-}
-
-.patient-info strong { font-size: 14.5px; }
-
-.patient-info span {
-  color: var(--muted);
-  font-size: 12px;
 }
 
 /* =========================
@@ -1022,124 +1201,6 @@ input[readonly] {
 }
 
 /* =========================
-   TIMELINE (HISTÓRICO)
-========================= */
-
-.timeline {
-  position: relative;
-  display: grid;
-  gap: 4px;
-  padding-left: 24px;
-}
-
-.timeline::before {
-  content: "";
-  position: absolute;
-  left: 8px;
-  top: 8px;
-  bottom: 8px;
-  width: 2px;
-  border-radius: 1px;
-  background: #DCE6EA;
-}
-
-.timeline-item {
-  position: relative;
-  padding: 12px 0 16px;
-}
-
-.timeline-item::before {
-  content: "";
-  position: absolute;
-  left: -20px;
-  top: 17px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--blue-700);
-  border: 2px solid var(--white);
-  box-shadow: 0 0 0 2px var(--blue-200);
-}
-
-.timeline-report::before { background: #1F637A; }
-
-.timeline-cancelled::before { background: var(--danger); }
-
-.timeline-title {
-  margin: 0 0 2px;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.timeline-when {
-  margin: 0 0 6px;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.timeline-body {
-  margin: 0;
-  padding: 12px 14px;
-  border: 1px solid #E4F6FC;
-  border-radius: 13px;
-  background: var(--white);
-  font-size: 13px;
-  line-height: 1.6;
-  white-space: pre-line;
-}
-
-/* =========================
-   NOTAS
-========================= */
-
-.note-area {
-  min-height: 140px;
-}
-
-.note-mood-field {
-  margin: 14px 0 4px;
-}
-
-.note-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.note-toolbar > span {
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 14px;
-}
-
-.info-item { display: grid; gap: 4px; }
-
-.info-item span {
-  color: #64727C;
-  font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.info-item strong {
-  padding: 9px 12px;
-  border: 2px solid var(--blue-700);
-  border-radius: 6px;
-  background: #E4F6FC;
-  color: #174E61;
-  font-size: 14px;
-  text-align: center;
-}
-
-/* =========================
    TOAST
 ========================= */
 
@@ -1162,44 +1223,6 @@ input[readonly] {
 }
 
 .toast.toast-error { background: var(--danger); }
-
-/* =========================
-   FUNDO DO PACIENTE
-========================= */
-
-.patient-view {
-  background:
-    linear-gradient(180deg, var(--white) 0%, var(--white) 45%, var(--blue-50) 100%);
-}
-
-/* =========================
-   IMPRESSÃO (relatório)
-========================= */
-
-@media print {
-  .sidebar,
-  .topbar,
-  .topbar-actions,
-  .mobile-menu,
-  .form-actions,
-  .toast { display: none !important; }
-
-  .app-shell { display: block; }
-
-  .main-content {
-    max-width: none;
-    padding: 0;
-  }
-
-  .report-document {
-    border: 0;
-    border-radius: 0;
-  }
-}
-
-/* =========================
-   USUÁRIO NO RODAPÉ DA SIDEBAR
-========================= */
 
 /* =========================
    RESPONSIVIDADE
@@ -1259,9 +1282,7 @@ input[readonly] {
 
   h1 { font-size: 20px; }
 
-  .patient-search input { width: 100%; }
 
-  .patient-card { flex-wrap: wrap; }
 }
 
 @media (max-width: 560px) {
@@ -1275,4 +1296,491 @@ input[readonly] {
 
   .section,
   .content-card .inner-section { padding: 18px 16px; }
+}
+
+/* ==========================================================================
+   relatorios.css — Estilos da tela de Relatórios do PsicNota
+   Editor de relatório pós-consulta: header com consulta + humor,
+   área de escrita, anexos, ações de salvar.
+   ========================================================================== */
+
+.report-editor-page {
+  --report-bg: #ffffff;
+  --report-soft: #f4fbfd;
+  --report-soft-2: #e8f6fb;
+  --report-line: #d9e9ee;
+  --report-blue: #2b667b;
+  --report-blue-dark: #174e61;
+  --report-text: #17212b;
+  --report-muted: #65747e;
+}
+
+.report-editor-page .main-content {
+  padding: 0 35px 25px;
+  max-width: none;
+  background: var(--report-bg);
+}
+
+.report-editor-page .report-editor-topbar {
+  min-height: 58px;
+  height: 58px;
+  margin: 0 -35px;
+  padding: 0 35px;
+  border-bottom: 1px solid #e5edf0;
+  justify-content: center;
+}
+
+.report-editor-page .report-editor-topbar .page-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.report-editor-page .report-editor-topbar .eyebrow {
+  display: none;
+}
+
+.report-editor-page .report-editor-topbar h1 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--report-text);
+}
+
+.report-editor-page #editorView {
+  min-height: calc(100vh - 58px);
+  display: flex;
+  flex-direction: column;
+}
+
+.report-editor-page #editorView > form {
+  min-height: calc(100vh - 58px);
+  display: flex;
+  flex-direction: column;
+}
+
+.report-editor-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 260px;
+  width: min(100%, 1380px);
+  margin: 0 auto;
+  padding: 28px 0 18px;
+}
+
+.report-consultation,
+.report-mood-section {
+  display: grid;
+  gap: 6px;
+}
+
+.report-editor-label {
+  color: var(--report-text);
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.report-consultation-select {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 330px;
+  height: 40px;
+  padding: 0 28px 0 12px;
+  border: 1px solid var(--report-line);
+  border-radius: 999px;
+  background: var(--report-soft);
+}
+
+.report-patient-avatar {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  overflow: hidden;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: var(--report-soft-2);
+  color: var(--report-blue-dark);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.report-patient-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.report-consultation-select select {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--report-text);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+  text-align-last: left;
+  appearance: none;
+}
+
+.report-consultation-select select:focus {
+  box-shadow: none;
+}
+
+.report-select-arrow {
+  position: absolute;
+  right: 9px;
+  top: 50%;
+  transform: translateY(-55%);
+  color: var(--report-blue-dark);
+  font-size: 11px;
+  font-weight: 800;
+  pointer-events: none;
+}
+
+.report-context-note {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--report-muted);
+}
+
+.report-editor-page .mood-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.report-editor-page .mood-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 92px;
+  height: 45px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--report-soft-2);
+  color: var(--report-blue-dark);
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.report-editor-page .mood-option:hover {
+  background: #dff1f7;
+}
+
+.report-editor-page .mood-option.selected {
+  background: #c4e7f2;
+  border-color: #a9d8e5;
+  box-shadow: none;
+  font-weight: 800;
+}
+
+.report-editor-page .mood-emoji {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.report-writing-area {
+  flex: 1;
+  width: min(100%, 1380px);
+  min-height: 620px;
+  margin: 0 auto 13px;
+  border: 1px solid #dcebef;
+  border-radius: 20px;
+  background: #f8fcfd;
+  overflow: hidden;
+}
+
+.report-writing-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 620px;
+}
+
+.report-main-textarea {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 620px;
+  margin: 0;
+  padding: 35px 80px 35px 35px;
+  border: 0;
+  outline: 0;
+  border-radius: 20px;
+  background: transparent;
+  color: var(--report-text);
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.7;
+  resize: none;
+  text-align: left;
+}
+
+.report-main-textarea:focus {
+  box-shadow: none;
+}
+
+.report-main-textarea::placeholder {
+  color: #91a3ad;
+  font-weight: 500;
+}
+
+.report-microphone {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--report-text);
+  cursor: pointer;
+}
+
+.report-microphone:hover {
+  background: var(--report-soft-2);
+}
+
+.report-microphone svg {
+  width: 30px;
+  height: 30px;
+}
+
+.report-legacy-fields {
+  display: none !important;
+}
+
+.report-editor-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: min(100%, 1380px);
+  margin: 0 auto;
+  padding: 0 0 25px;
+}
+
+.report-attachments-area {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+.report-attach-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 154px;
+  height: 70px;
+  flex: 0 0 154px;
+  border: 1px dashed var(--report-blue);
+  border-radius: 14px;
+  background: #f5f9fb;
+  color: var(--report-blue-dark);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.report-attach-button:hover {
+  background: var(--report-soft-2);
+}
+
+.report-attach-button svg {
+  width: 15px;
+  height: 15px;
+}
+
+.report-editor-footer .attach-chips {
+  display: grid;
+  grid-template-columns: repeat(3, 125px);
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  margin-left: 10px;
+}
+
+.report-editor-footer .attach-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 125px;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid #dce8ec;
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--report-muted);
+  font-size: 10px;
+  overflow: hidden;
+}
+
+.report-editor-footer .attach-chip strong {
+  max-width: 85px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.report-editor-footer .attach-chip-icon {
+  font-size: 8px;
+}
+
+.report-editor-footer .attach-chip-remove {
+  width: 13px;
+  height: 13px;
+  font-size: 11px;
+}
+
+.report-editor-footer .attach-note {
+  display: none;
+}
+
+.report-editor-footer .draft-status {
+  position: absolute;
+  left: -9999px;
+}
+
+.report-save-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+
+.report-editor-footer .button {
+  min-height: 45px;
+  height: 45px;
+  padding: 0 25px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.report-editor-footer .report-cancel-button {
+  display: none;
+}
+
+.report-editor-footer .report-draft-button {
+  background: #ffffff;
+  border: 1px solid var(--report-blue);
+  color: var(--report-blue-dark);
+}
+
+.report-editor-footer .report-save-button {
+  min-width: 190px;
+  background: #2d6a80;
+  border-color: #2d6a80;
+  color: #ffffff;
+}
+
+.report-editor-footer .report-save-button:hover {
+  background: #22566a;
+}
+
+.report-editor-page #listView {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .report-editor-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .report-mood-section {
+    width: 100%;
+  }
+
+  .report-editor-page .mood-picker {
+    flex-wrap: wrap;
+  }
+
+  .report-writing-area {
+    min-height: 560px;
+  }
+
+  .report-writing-inner,
+  .report-main-textarea {
+    min-height: 560px;
+  }
+
+  .report-editor-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .report-save-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 720px) {
+  .report-editor-page .main-content {
+    padding: 0 16px 18px;
+  }
+
+  .report-editor-page .report-editor-topbar {
+    margin: 0 -16px;
+    padding: 0 16px;
+  }
+
+  .report-editor-header {
+    width: 100%;
+  }
+
+  .report-consultation-select {
+    width: min(100%, 280px);
+  }
+
+  .report-writing-area {
+    width: 100%;
+    min-height: 420px;
+  }
+
+  .report-writing-inner,
+  .report-main-textarea {
+    min-height: 420px;
+  }
+
+  .report-editor-footer {
+    width: 100%;
+  }
+
+  .report-attachments-area {
+    width: 100%;
+  }
+
+  .report-save-actions {
+    width: 100%;
+  }
+
+  .report-save-actions .button {
+    flex: 1;
+  }
 }

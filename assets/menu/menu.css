@@ -1,19 +1,19 @@
 /* ==========================================================================
    menu.css — FONTE ÚNICA do estilo do menu lateral do PsicNota.
-   Usado por todas as páginas (via <psic-menu>) através do assets/css/base.css,
-   que importa este arquivo. Nenhuma outra folha deve estilizar .sidebar/.nav-item.
+   Usado por todas as páginas (via <psic-menu>), seja por @import no CSS próprio
+   da página, seja por <link> direto. Nenhuma outra folha deve estilizar .sidebar/.nav-item.
    ========================================================================== */
 
 /* Tokens do menu. Definidos aqui para o menu.css ser autossuficiente:
-   funciona até em página que não carrega o base.css (ex.: perfil.html).
-   Nas páginas que carregam o base.css, o :root de lá (idêntico) prevalece. */
+   funciona até em página que não carrega outro CSS (ex.: perfil.html).
+   Nos CSSs de página que definem o mesmo :root, o valor de lá prevalece. */
 :root {
   --sidebar-width: 294px;
   --sidebar-bg: #F3FBFE;
 
   /* Tokens que o menu usa. Definidos aqui pra folha ser autossuficiente
-     (o menu.html abre sozinho sem precisar do base.css). Nas páginas que
-     carregam o base.css, o :root de lá define os mesmos valores. */
+     (o menu.html abre sozinho). Nos CSSs de página que definem os mesmos
+     tokens, o valor de lá prevalece. */
   --blue-700: #1f637a;
   --blue-800: #174e61;
   --ink: #111827;
@@ -115,8 +115,8 @@
   stroke-width: 1.6;
 }
 
-/* Baseline dos ícones do menu (nas páginas do app isso vem do base.css;
-   aqui garante que o menu.css seja autossuficiente). O :not() deixa o ícone
+/* Baseline dos ícones do menu (garante que o menu.css seja autossuficiente).
+   O :not() deixa o ícone
    de usuário (.nav-icon-fill) preenchido, como no Figma. */
 .sidebar svg:not(.nav-icon-fill) {
   fill: none;

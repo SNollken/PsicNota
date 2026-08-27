@@ -1,135 +1,124 @@
-# Plano: separação do CSS por página (PsicNota)
+# Plano: CSS por página (PsicNota) — VERSÃO 2
 
-Status: PLANO (nada executado). Produzido pelo Wrench em 26/08/2026.
+Status: APROVADO pela Sofia (autorização total, TASK 8). Substitui a versão 1
+(plano de núcleo compartilhado, nunca executado). Execução pelo Wrench em 27/08/2026.
 
-## Diagnóstico
+## Regra central (decisão da Sofia)
 
-base.css: 1278 linhas / 22,9KB, mistura design system + estilos de 8+ páginas.
+1 HTML = 1 CSS próprio. O nome do CSS é IDÊNTICO ao do HTML, só com `.css` no
+final. `assets/css/base.css` DEIXA DE EXISTIR. Duplicação entre os CSS é
+aceitável; compartilhamento não.
 
-Páginas REAIS (conteúdo de verdade):
-- login.html, home.html (raiz, seleção) -> auth.css (auto-contido)
-- cadastro.html -> cadastro.css (auto-contido)
-- esqueci-senha.html -> estilo inline (placeholder "em construção")
-- perfil.html -> perfil.css + menu.css (auto-contido, NÃO usa base.css)
-- profissional/agenda.html -> agenda.css + base.css
-- profissional/relatorios.html -> base.css + relatorios.css (novo, untracked)
-- paciente/agenda-paciente.html -> agenda.css + base.css + agenda-paciente.css
-- index.html -> redirect puro para login.html
+## Estrutura final
 
-Páginas PLACEHOLDER (63 linhas, "em construção", usam .construction-box):
-paciente/home, paciente/laudos, paciente/psicologo, profissional/home,
-profissional/consulta, profissional/historico, profissional/pacientes,
-profissional/relatorio-view.
-Todas linkam só base.css.
+A estrutura dentro de `assets/css/` espelha a estrutura dos HTMLs (resolve a
+colisão de nomes: existe home.html na raiz, em paciente/ e em profissional/).
 
-Arquivos ÓRFÃOS (nenhum HTML referencia):
-- CSS: app.css, landing.css, pacientes.css, agenda-psicologo.css
-- JS: laudos.js, historico.js, consulta.js, pacientes.js, relatorio-view.js, agenda-psicologo.js
-
-Problemas encontrados:
-1. Tokens :root duplicados em 5 lugares (base, auth, cadastro, perfil 2x, agenda),
-   com valores levemente diferentes (ex.: --blue-50: #f4fbfe no agenda vs #E4F6FC no base).
-2. auth.css já define .auth-shell/.auth-frame/.auth-panel -> o bloco .auth-* do
-   base.css (linhas 740-841) é código morto (login/home nem linkam base.css).
-3. BUG: .construction-box/.construction-wrap NÃO estão definidas em CSS nenhum ->
-   as 8 páginas placeholder renderizam sem estilo.
-4. app.css duplica componentes que já estão no base.css (.content-card, .card-heading).
-
-## Mapeamento base.css -> destino
-
-FICA NO NÚCLEO (core/base.css, compartilhado por 2+ páginas):
-- reset, svg, [hidden], .sr-only
-- .app-shell, .main-content, .mobile-menu
-- .topbar, .page-heading, .eyebrow, h1, .topbar-actions,
-  .account-chip, .account-avatar, .mini-avatar, .account-copy
-- .panel, .content-card, .section, .card-heading,
-  .section-heading, .section-icon, .section-heading-copy
-- .fields-grid, .form-grid, .field, input/select/textarea, .field-error-msg
-- .button*, .form-actions, .action-row
-- .badge*
-- .two-columns
-- .summary-* (perfil + agenda usam)
-- .toast
-- media queries responsivas globais
-- NOVO: .construction-box/.construction-wrap (correção do bug)
-
-VAI PARA CSS DE PÁGINA:
-- .patient-search, .patient-card, .patient-photo, .patient-initials,
-  .patient-meta, .patient-view -> dashboard/pacientes.css
-- .modal-*, .empty-state -> dashboard/agenda.css (só agenda usa hoje)
-- .report-document, .report-head, .report-logo, .report-title,
-  .report-meta, .report-block*, @media print -> relatorios/relatorio-view.css (novo)
-- .timeline-* -> dashboard/historico.css (novo; historico.js órfão já usa)
-- .note-area, .note-mood-field, .note-toolbar, .info-grid, .info-item
-  -> dashboard/consulta.css (novo; futura consulta.html)
-
-SAI DO base.css (código morto, histórico preserva):
-- bloco .auth-* (740-841): duplicado do auth.css
-- bloco .landing-* (843-883): nada usa
-- bloco .home-grid/.home-card/.home-icon/.home-badge (885-963): nada usa
-- bloco .data-table/.table-scroll/.data-table-empty (523-591): nada usa
-
-## Estrutura final proposta
-
+```
 assets/css/
-  core/
-    tokens.css          NOVO — única fonte das variáveis
-    base.css            MOVIDO+ENXUTO — design system compartilhado,
-                        mantém @import ../menu/menu.css
-  auth/
-    auth.css            MOVIDO (login.html + home.html raiz)
-    cadastro.css        MOVIDO (cadastro.html)
-  dashboard/
-    agenda.css          MOVIDO (recebe .modal-* e .empty-state)
-    agenda-paciente.css MOVIDO
-    agenda-psicologo.css MOVIDO (órfão, em desenvolvimento)
-    pacientes.css       MOVIDO (recebe .patient-*; referenciado por
-                        agenda-paciente.html e futura pacientes.html)
-    perfil.css          MOVIDO (auto-contido + tokens.css)
-    historico.css       NOVO (.timeline-*)
-    consulta.css        NOVO (.note-*, .info-*)
-  relatorios/
-    relatorios.css      MOVIDO (editor; commitar antes, está untracked)
-    relatorio-view.css  NOVO (.report-* + @media print)
-  landing.css           fica na raiz (futura landing pública)
+  index.css                 NOVO  (index.html, redirect — só estiliza o fallback)
+  login.css                 NOVO  (vem do auth.css, sem a seção Home/landing)
+  home.css                  NOVO  (cópia do auth.css, inclui .home-actions/.secondary-button)
+  cadastro.css              MANTIDO (já era auto-contido, já tinha nome/lugar certo)
+  esqueci-senha.css         NOVO  (extraído do <style> inline do HTML)
+  perfil.css                MANTIDO (já era auto-contido, já tinha nome/lugar certo)
+  paciente/
+    home.css                NOVO  (placeholder "em construção")
+    laudos.css              NOVO  (placeholder)
+    psicologo.css           NOVO  (placeholder)
+    agenda-paciente.css     MOVIDO+MESCLADO (agenda.css + menu.css + blocos do
+                            ex-base.css + conteúdo original, nesta ordem de cascata)
+  profissional/
+    home.css                NOVO  (placeholder)
+    consulta.css            NOVO  (placeholder)
+    historico.css           NOVO  (placeholder)
+    pacientes.css           NOVO  (placeholder)
+    relatorio-view.css      NOVO  (placeholder)
+    agenda.css              MOVIDO+MESCLADO (agenda.css + menu.css + blocos do
+                            ex-base.css usados pela página, nesta ordem de cascata)
+    relatorios.css          MOVIDO+MESCLADO (menu.css + blocos do ex-base.css
+                            + conteúdo original do relatorios.css)
 
-EXCLUIR: app.css (conteúdo duplicado do core, zero referências).
+EXCLUÍDOS: assets/css/base.css, assets/css/auth.css, assets/css/agenda.css,
+assets/css/agenda-paciente.css (raiz), assets/css/relatorios.css (raiz).
+```
 
-## HTMLs a atualizar (href dos links)
+Login/cadastro/esqueci-senha ainda estão na raiz do site, então ficam na raiz
+do assets/css/ também (a pasta auth/ é tarefa do Scout depois).
 
-- login.html            -> assets/css/auth/auth.css
-- home.html             -> assets/css/auth/auth.css
-- cadastro.html         -> assets/css/auth/cadastro.css
-- perfil.html           -> core/tokens.css + dashboard/perfil.css (mantém menu.css)
-- profissional/agenda.html       -> core/tokens + core/base + dashboard/agenda.css
-- profissional/relatorios.html   -> core/tokens + core/base + relatorios/relatorios.css
-- profissional/consulta.html     -> core/* + dashboard/consulta.css
-- profissional/historico.html    -> core/* + dashboard/historico.css
-- profissional/pacientes.html    -> core/* + dashboard/pacientes.css
-- profissional/home.html         -> core/*
-- profissional/relatorio-view.html -> core/* + relatorios/relatorio-view.css
-- paciente/home.html, paciente/laudos.html, paciente/psicologo.html -> core/*
-- paciente/agenda-paciente.html  -> core/* + dashboard/agenda.css +
-                                    dashboard/agenda-paciente.css + dashboard/pacientes.css
-- index.html, esqueci-senha.html -> nada muda
+## Estratégia das mesclagens (preservar o rendering atual)
 
-## Ordem de execução (quando aprovado)
+As 3 páginas que linkavam vários CSS tinham cascata real nesta ordem:
 
-1. Commitar o estado atual (git status sujo: agenda em andamento + relatorios.css untracked).
-2. Criar core/tokens.css; trocar os :root duplicados por <link> do tokens.
-3. Criar pastas auth/, dashboard/, relatorios/ e git mv os CSS existentes.
-4. Extrair blocos de página do base.css para os novos arquivos
-   (historico.css, consulta.css, relatorio-view.css; pacientes.css += .patient-*;
-   agenda.css += .modal/.empty-state).
-5. Remover blocos mortos do base.css (.auth-*, .landing-*, .home-*, .data-table).
-6. Adicionar .construction-box ao core/base.css.
-7. Atualizar os <link> em todos os HTMLs da lista acima.
-8. Verificação visual página por página (antes/depois).
+- profissional/agenda.html: agenda.css → menu.css (via @import do base) → base.css
+- paciente/agenda-paciente.html: agenda.css → menu.css → base.css → agenda-paciente.css
+- profissional/relatorios.html: menu.css → base.css → relatorios.css
 
-## Riscos
+Os CSS únicos novos concatenam exatamente esses conteúdos nessa ordem, para o
+resultado visual não mudar. Do ex-base.css entram só os blocos que a página usa:
 
-- Consolidar tokens pode mudar levemente a aparência da agenda
-  (--blue-50 difere entre agenda.css e base.css). Teste visual obrigatório.
-- O @import do menu.css no base.css precisa sobreviver até todos os HTMLs
-  linkarem menu.css explicitamente (ou manter o @import no core de vez).
-- relatorios.css é trabalho em andamento não commitado: commitar antes de mover.
+- CORE: :root, reset, .app-shell/.main-content/.mobile-menu, topbar/.eyebrow/h1/
+  .account-chip, .summary-*, .panel/.section/.card-heading, .fields-grid/.field/
+  input/select/textarea, .button*/.form-actions, .mini-*, .notice-*, .two-columns,
+  .badge*/.save-status
+- agenda do psicólogo: CORE + .toast + media queries globais
+- agenda do paciente: CORE + .toast + .patient-view + media queries globais
+- relatórios: CORE + seção RELATÓRIOS (.report-list/.report-card, .mood-*,
+  .attach-*, .report-document/.report-block* — o relatorios.js injeta essas
+  classes dinamicamente) + .toast + media queries globais
+
+Blocos do ex-base.css que NENHUMA página real usa (.doc-*, .patient-search/
+.patient-card, .timeline-*, .note-area/.info-*, @media print) saem de
+circulação junto com o base.css. Ficam preservados no histórico do git.
+
+## Correções incluídas
+
+1. BUG dos placeholders: os estilos `.construction-wrap`/`.construction-box`
+   existiam inline em <style> nos 8 HTMLs placeholder (o diagnóstico da v1 dizia
+   que não existiam em lugar nenhum; na prática existiam inline). Agora moram no
+   CSS próprio de cada placeholder e os <style> inline foram removidos.
+2. esqueci-senha.html: <style> inline extraído para esqueci-senha.css.
+3. Código morto da v1 (.landing-*, .home-grid, .data-table): verificado que já
+   NÃO existiam mais no base.css (foram removidos antes). Nada a propagar.
+4. Cabeçalhos de comentário que citavam o base.css foram atualizados nos
+   arquivos mesclados e no próprio menu.css.
+
+## Páginas e seus CSS (17 páginas)
+
+| HTML | CSS próprio |
+|---|---|
+| index.html | assets/css/index.css |
+| login.html | assets/css/login.css |
+| home.html | assets/css/home.css |
+| cadastro.html | assets/css/cadastro.css |
+| esqueci-senha.html | assets/css/esqueci-senha.css |
+| perfil.html | assets/css/perfil.css (+ link do menu.css) |
+| paciente/home.html | assets/css/paciente/home.css |
+| paciente/laudos.html | assets/css/paciente/laudos.css |
+| paciente/psicologo.html | assets/css/paciente/psicologo.css |
+| paciente/agenda-paciente.html | assets/css/paciente/agenda-paciente.css |
+| profissional/home.html | assets/css/profissional/home.css |
+| profissional/consulta.html | assets/css/profissional/consulta.css |
+| profissional/historico.html | assets/css/profissional/historico.css |
+| profissional/pacientes.html | assets/css/paciente… profissional/pacientes.css |
+| profissional/agenda.html | assets/css/profissional/agenda.css |
+| profissional/relatorios.html | assets/css/profissional/relatorios.css |
+| profissional/relatorio-view.html | assets/css/profissional/relatorio-view.css |
+
+Os 8 placeholders e o esqueci-senha usam `@import "../../menu/menu.css"` (ou
+link direto, no perfil) porque usam o componente `<psic-menu>`/sidebar do
+menu.css.
+
+## Verificação executada
+
+- Script de resolução de <link>: todos os hrefs de stylesheet resolvem para
+  arquivo existente, página por página.
+- Nenhum HTML/JS/CSS restante referencia base.css ou auth.css.
+- Nenhum <style> inline restante nos placeholders/esqueci-senha.
+- Servidor HTTP local: todas as páginas e CSS respondem 200 (sem 404).
+- Inspeção visual das páginas principais no navegador.
+
+## Fora do escopo (outras tasks)
+
+- Pasta auth/ (Scout), commit (Hawk), arquivos órfãos app.css/landing.css/
+  pacientes.css/agenda-psicologo.css e JS órfãos (decisão futura).

@@ -1,0 +1,24 @@
+/* ==========================================================================
+   esqueci-senha.css — CSS auto-contido da página "esqueci minha senha"
+   (placeholder em construção). Estilo extraído do <style> inline do HTML.
+   ========================================================================== */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: #F8FAFB;
+  color: #111827;
+}
+
+.box { text-align: center; padding: 40px 24px; max-width: 420px; }
+.box img { width: 72px; height: 72px; object-fit: contain; }
+h1 { font-size: 1.3rem; margin: 20px 0 8px; color: #1F637A; letter-spacing: -0.02em; }
+p { color: #64727C; margin: 0 0 28px; line-height: 1.6; }
+a { color: #1F637A; font-weight: 600; text-decoration: none; }
+a:hover { text-decoration: underline; }

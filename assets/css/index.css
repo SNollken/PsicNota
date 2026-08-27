@@ -1,0 +1,21 @@
+/* ==========================================================================
+   index.css — CSS do index.html (página de redirect para o login).
+   Estiliza apenas o fallback visível antes do redirecionamento.
+   ========================================================================== */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: #F8FAFB;
+  color: #111827;
+}
+
+p { margin: 0; font-size: 14px; }
+a { color: #1F637A; font-weight: 600; text-decoration: none; }
+a:hover { text-decoration: underline; }

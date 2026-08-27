@@ -24,7 +24,7 @@
    continuam achando .sidebar, .nav-item, #psychologistAvatar etc. normalmente.
 
    A marcação é a mesma do menu.html (referência). O estilo mora no menu.css,
-   carregado pelo assets/css/base.css.
+   carregado pelo CSS próprio de cada página (via @import ou <link>).
    ========================================================================== */
 
 (function () {

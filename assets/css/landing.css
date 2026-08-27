@@ -1,7 +1,6 @@
 /* Landing page do PsicNota.
    Mesma identidade do app: paleta teal do Figma, Laila na marca e nos
-   títulos, Inter no corpo. Arquivo próprio pra não depender do auth.css
-   nem do base.css (páginas internas). */
+   títulos, Inter no corpo. Arquivo próprio e auto-contido. */
 
 :root {
   --blue-50: #E4F6FC;
