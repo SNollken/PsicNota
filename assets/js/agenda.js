@@ -287,9 +287,7 @@ function renderRequestQueue() {
   elements.requestList.replaceChildren();
   elements.requestEmpty.hidden = pending.length > 0;
   elements.requestTotal.textContent = pending.length === 1 ? '1 pendente' : `${pending.length} pendentes`;
-  if (elements.sidebarRequestCount) {
-    elements.sidebarRequestCount.textContent = String(pending.length);
-  }
+  elements.sidebarRequestCount.textContent = String(pending.length);
 
   pending.forEach((request, index) => {
     const card = document.createElement('article');
