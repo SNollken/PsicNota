@@ -5,7 +5,6 @@
 
      1) No <head> (ANTES do </head>, junto com os estilos):
           <script src="../assets/menu/menu.js"></script>
-        (no perfil.html, que fica na raiz: <script src="assets/menu/menu.js"></script>)
         Tem que ser no <head>: assim o componente já está definido quando o
         parser chega na tag, e a sidebar existe antes dos scripts de página rodarem.
 
@@ -15,7 +14,6 @@
    Atributos:
      tipo  = "psicologo" | "paciente"
              Se omitido, usa o tipo salvo na sessão.
-     raiz  = use em páginas na raiz do projeto (como perfil.html).
      ativo = qual item aparece destacado:
              psicologo: "agenda" | "relatorios" | "pacientes" | "perfil" | ""
              paciente : "agendar" | "laudos" | "perfil" | ""
@@ -42,10 +40,10 @@
     );
   }
 
-  function menuPsicologo(ativo, naRaiz) {
-    var prefixoPagina = naRaiz ? 'profissional/' : '';
-    var prefixoAsset = naRaiz ? 'assets/' : '../assets/';
-    var perfilHref = naRaiz ? 'perfil.html' : '../perfil.html';
+  function menuPsicologo(ativo) {
+    var prefixoPagina = '';
+    var prefixoAsset = '../assets/';
+    var perfilHref = 'perfil.html';
 
     return (
       '<aside class="sidebar" aria-label="Navegação principal">\n' +
@@ -70,10 +68,10 @@
     );
   }
 
-  function menuPaciente(ativo, naRaiz) {
-    var prefixoPagina = naRaiz ? 'paciente/' : '';
-    var prefixoAsset = naRaiz ? 'assets/' : '../assets/';
-    var perfilHref = naRaiz ? 'perfil.html' : '../perfil.html';
+  function menuPaciente(ativo) {
+    var prefixoPagina = '';
+    var prefixoAsset = '../assets/';
+    var perfilHref = 'perfil.html';
 
     return (
       '<aside class="sidebar" aria-label="Navegação do paciente">\n' +
@@ -125,12 +123,10 @@
   PsicMenu.prototype.connectedCallback = function () {
     var tipo = (this.getAttribute('tipo') || tipoDaSessao()).toLowerCase();
     var ativo = (this.getAttribute('ativo') || '').toLowerCase();
-    var naRaiz = this.hasAttribute('raiz');
-
     if (tipo === 'paciente') {
-      this.innerHTML = menuPaciente(ativo, naRaiz);
+      this.innerHTML = menuPaciente(ativo);
     } else {
-      this.innerHTML = menuPsicologo(ativo, naRaiz);
+      this.innerHTML = menuPsicologo(ativo);
     }
   };
 
