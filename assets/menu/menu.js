@@ -13,11 +13,12 @@
           <psic-menu tipo="psicologo" ativo="agenda"></psic-menu>
 
    Atributos:
-     tipo  = "psicologo" | "paciente" | "perfil"
+     tipo  = "psicologo" | "paciente"
+             Se omitido, usa o tipo salvo na sessão.
+     raiz  = use em páginas na raiz do projeto (como perfil.html).
      ativo = qual item aparece destacado:
-             psicologo: "agenda" | "relatorios" | "pacientes" | "" (nenhum)
-             paciente : "agendar" | "laudos" | "" (nenhum)
-             perfil   : não usa (o perfil.js controla os dois navs)
+             psicologo: "agenda" | "relatorios" | "pacientes" | "perfil" | ""
+             paciente : "agendar" | "laudos" | "perfil" | ""
 
    O componente renderiza em LIGHT DOM de forma SÍNCRONA durante o parse,
    então os scripts de cada página (agenda.js, pacientes.js, perfil.js...)
@@ -41,21 +42,25 @@
     );
   }
 
-  function menuPsicologo(ativo) {
+  function menuPsicologo(ativo, naRaiz) {
+    var prefixoPagina = naRaiz ? 'profissional/' : '';
+    var prefixoAsset = naRaiz ? 'assets/' : '../assets/';
+    var perfilHref = naRaiz ? 'perfil.html' : '../perfil.html';
+
     return (
       '<aside class="sidebar" aria-label="Navegação principal">\n' +
-      '      <a class="brand" href="agenda.html" aria-label="PsicNota - página inicial">\n' +
-      '        <img src="../assets/img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />\n' +
+      '      <a class="brand" href="' + prefixoPagina + 'agenda.html" aria-label="PsicNota - página inicial">\n' +
+      '        <img src="' + prefixoAsset + 'img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />\n' +
       '        <span class="brand-text">PsicNota</span>\n' +
       '      </a>\n' +
       '      <nav class="main-nav">\n' +
       '        <p class="nav-label">MENU</p>\n' +
-      '        ' + item('agenda.html', ICON_AGENDA, 'Agendar consulta', ativo === 'agenda') + '\n' +
-      '        ' + item('relatorios.html', ICON_CLIP, 'Relatórios', ativo === 'relatorios') + '\n' +
-      '        ' + item('pacientes.html', ICON_PESSOA, 'Meus pacientes', ativo === 'pacientes') + '\n' +
+      '        ' + item(prefixoPagina + 'agenda.html', ICON_AGENDA, 'Agendar consulta', ativo === 'agenda') + '\n' +
+      '        ' + item(prefixoPagina + 'relatorios.html', ICON_CLIP, 'Relatórios', ativo === 'relatorios') + '\n' +
+      '        ' + item(prefixoPagina + 'pacientes.html', ICON_PESSOA, 'Meus pacientes', ativo === 'pacientes') + '\n' +
       '      </nav>\n\n' +
-      '      <a class="sidebar-profile" href="../perfil.html" aria-label="Editar meu perfil">\n' +
-      '        <span class="sidebar-profile-avatar" id="psychologistAvatar" aria-hidden="true"><img src="../assets/img/avatar-psicologo.png" alt="" /></span>\n' +
+      '      <a class="sidebar-profile" href="' + perfilHref + '"' + (ativo === 'perfil' ? ' aria-current="page"' : '') + ' aria-label="Editar meu perfil">\n' +
+      '        <span class="sidebar-profile-avatar" id="psychologistAvatar" aria-hidden="true"><img src="' + prefixoAsset + 'img/avatar-psicologo.png" alt="" /></span>\n' +
       '        <span class="sidebar-profile-info">\n' +
       '          <strong id="psychologistName">Psicólogo</strong>\n' +
       '          <small>Psicólogo</small>\n' +
@@ -65,20 +70,24 @@
     );
   }
 
-  function menuPaciente(ativo) {
+  function menuPaciente(ativo, naRaiz) {
+    var prefixoPagina = naRaiz ? 'paciente/' : '';
+    var prefixoAsset = naRaiz ? 'assets/' : '../assets/';
+    var perfilHref = naRaiz ? 'perfil.html' : '../perfil.html';
+
     return (
       '<aside class="sidebar" aria-label="Navegação do paciente">\n' +
-      '      <a class="brand" href="agenda-paciente.html" aria-label="PsicNota - página inicial">\n' +
-      '        <img src="../assets/img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />\n' +
+      '      <a class="brand" href="' + prefixoPagina + 'agenda-paciente.html" aria-label="PsicNota - página inicial">\n' +
+      '        <img src="' + prefixoAsset + 'img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />\n' +
       '        <span class="brand-text">PsicNota</span>\n' +
       '      </a>\n' +
       '      <nav class="main-nav">\n' +
       '        <p class="nav-label">MENU</p>\n' +
-      '        ' + item('agenda-paciente.html', ICON_AGENDA, '<span>Agendar consulta</span>', ativo === 'agendar') + '\n' +
-      '        ' + item('laudos.html', ICON_CLIP, '<span>Receitas e Laudos</span>', ativo === 'laudos') + '\n' +
+      '        ' + item(prefixoPagina + 'agenda-paciente.html', ICON_AGENDA, '<span>Agendar consulta</span>', ativo === 'agendar') + '\n' +
+      '        ' + item(prefixoPagina + 'laudos.html', ICON_CLIP, '<span>Receitas e Laudos</span>', ativo === 'laudos') + '\n' +
       '      </nav>\n\n' +
-      '      <a class="sidebar-profile" href="../perfil.html" aria-label="Editar meu perfil">\n' +
-      '        <span class="sidebar-profile-avatar" id="patientAvatar" aria-hidden="true"><img src="../assets/img/avatar-paciente.png" alt="" /></span>\n' +
+      '      <a class="sidebar-profile" href="' + perfilHref + '"' + (ativo === 'perfil' ? ' aria-current="page"' : '') + ' aria-label="Editar meu perfil">\n' +
+      '        <span class="sidebar-profile-avatar" id="patientAvatar" aria-hidden="true"><img src="' + prefixoAsset + 'img/avatar-paciente.png" alt="" /></span>\n' +
       '        <span class="sidebar-profile-info">\n' +
       '          <strong id="patientNameTop">Paciente PsicNota</strong>\n' +
       '          <small>Paciente</small>\n' +
@@ -88,34 +97,23 @@
     );
   }
 
-  /* perfil.html: os dois navs existem; o perfil.js mostra/esconde pelo papel logado. */
-  function menuPerfil() {
-    return (
-      '<aside class="sidebar" aria-label="Navegação principal">\n' +
-      '      <a class="brand" id="brandLink" href="paciente/agenda-paciente.html" aria-label="PsicNota - página inicial">\n' +
-      '        <img src="assets/img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />\n' +
-      '        <span class="brand-text">PsicNota</span>\n' +
-      '      </a>\n\n' +
-      '      <nav class="main-nav" id="navPaciente">\n' +
-      '        <p class="nav-label">MENU</p>\n' +
-      '        ' + item('paciente/agenda-paciente.html', ICON_AGENDA, '<span>Agendar consulta</span>', false) + '\n' +
-      '        ' + item('paciente/laudos.html', ICON_CLIP, '<span>Receitas e Laudos</span>', false) + '\n' +
-      '      </nav>\n\n' +
-      '      <nav class="main-nav" id="navPsicologo" hidden>\n' +
-      '        <p class="nav-label">MENU</p>\n' +
-      '        ' + item('profissional/agenda.html', ICON_AGENDA, '<span>Agendar consulta</span>', false) + '\n' +
-      '        ' + item('profissional/relatorios.html', ICON_CLIP, '<span>Relatórios</span>', false) + '\n' +
-      '        ' + item('profissional/pacientes.html', ICON_PESSOA, '<span>Meus pacientes</span>', false) + '\n' +
-      '      </nav>\n\n' +
-      '      <a class="sidebar-profile" href="perfil.html" aria-current="page" aria-label="Meu perfil">\n' +
-      '        <span class="sidebar-profile-avatar" data-sidebar-avatar aria-hidden="true">PN</span>\n' +
-      '        <span class="sidebar-profile-info">\n' +
-      '          <strong data-sidebar-name>Usuário PsicNota</strong>\n' +
-      '          <small data-sidebar-role>Paciente</small>\n' +
-      '        </span>\n' +
-      '      </a>\n' +
-      '    </aside>'
-    );
+  function tipoDaSessao() {
+    var storages = [window.sessionStorage, window.localStorage];
+    var chaves = ['psinote.auth.session', 'psinoteSession'];
+
+    for (var i = 0; i < storages.length; i += 1) {
+      for (var j = 0; j < chaves.length; j += 1) {
+        try {
+          var sessao = JSON.parse(storages[i].getItem(chaves[j]) || 'null');
+          if (sessao && sessao.role === 'paciente') return 'paciente';
+          if (sessao && sessao.role === 'psicologo') return 'psicologo';
+        } catch (error) {
+          /* Ignora dados inválidos e tenta a próxima chave. */
+        }
+      }
+    }
+
+    return 'psicologo';
   }
 
   var PsicMenu = function () {
@@ -125,15 +123,14 @@
   PsicMenu.prototype.constructor = PsicMenu;
 
   PsicMenu.prototype.connectedCallback = function () {
-    var tipo = (this.getAttribute('tipo') || 'psicologo').toLowerCase();
+    var tipo = (this.getAttribute('tipo') || tipoDaSessao()).toLowerCase();
     var ativo = (this.getAttribute('ativo') || '').toLowerCase();
+    var naRaiz = this.hasAttribute('raiz');
 
     if (tipo === 'paciente') {
-      this.innerHTML = menuPaciente(ativo);
-    } else if (tipo === 'perfil') {
-      this.innerHTML = menuPerfil();
+      this.innerHTML = menuPaciente(ativo, naRaiz);
     } else {
-      this.innerHTML = menuPsicologo(ativo);
+      this.innerHTML = menuPsicologo(ativo, naRaiz);
     }
   };
 
