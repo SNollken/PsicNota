@@ -2,7 +2,7 @@
 
 
 /* =========================================================
-   1. DADOS GLOBAIS
+   DADOS GLOBAIS
    ========================================================= */
 
 const patientData = window.PsiNoteData;
@@ -15,13 +15,12 @@ if (!patientData) {
 
 
 /* =========================================================
-   2. ELEMENTOS DA INTERFACE
+   ELEMENTOS DA INTERFACE
    ========================================================= */
 
 const ui = {
   grid: document.querySelector("#patientCalendarGrid"),
   monthTitle: document.querySelector("#patientMonthTitle"),
-
   previousMonth: document.querySelector("#patientPreviousMonth"),
   nextMonth: document.querySelector("#patientNextMonth"),
 
@@ -41,7 +40,7 @@ const ui = {
 
 
 /* =========================================================
-   3. ELEMENTOS — POPUP DE HORÁRIOS
+   ELEMENTOS DO POPUP DE HORÁRIOS
    ========================================================= */
 
 const schedulePopup =
@@ -71,60 +70,506 @@ const scheduleTerms =
 const scheduleSubmit =
   document.getElementById("scheduleSubmit");
 
-
-/* =========================================================
-   4. ELEMENTOS — POPUP DE PEDIDOS PENDENTES
+  /* =========================================================
+   ELEMENTOS DO POPUP DE PEDIDOS
    ========================================================= */
 
 const pendingRequestsCard =
-  document.getElementById("pendingRequestsCard");
+  document.getElementById(
+    "pendingRequestsCard"
+  );
 
 const requestsPopup =
-  document.getElementById("requestsPopup");
+  document.getElementById(
+    "requestsPopup"
+  );
 
 const requestsPopupClose =
-  document.getElementById("requestsPopupClose");
+  document.getElementById(
+    "requestsPopupClose"
+  );
 
 const requestsPopupList =
-  document.getElementById("requestsPopupList");
+  document.getElementById(
+    "requestsPopupList"
+  );
 
-
-/* =========================================================
-   5. ELEMENTOS — POPUP DE PRÓXIMAS CONSULTAS
+  /* =========================================================
+   ELEMENTOS DO POPUP DE PRÓXIMAS CONSULTAS
    ========================================================= */
 
 const nextAppointmentCard =
-  document.getElementById("nextAppointmentCard");
+  document.getElementById(
+    "nextAppointmentCard"
+  );
 
 const appointmentsPopup =
-  document.getElementById("appointmentsPopup");
+  document.getElementById(
+    "appointmentsPopup"
+  );
 
 const appointmentsPopupClose =
-  document.getElementById("appointmentsPopupClose");
+  document.getElementById(
+    "appointmentsPopupClose"
+  );
 
 const appointmentsPopupList =
-  document.getElementById("appointmentsPopupList");
+  document.getElementById(
+    "appointmentsPopupList"
+  );
 
-
-/* =========================================================
-   6. ELEMENTOS — POPUP DE CONSULTAS REALIZADAS
+  /* =========================================================
+   ELEMENTOS DO POPUP DE CONSULTAS REALIZADAS
    ========================================================= */
 
 const completedAppointmentsCard =
-  document.getElementById("completedAppointmentsCard");
+  document.getElementById(
+    "completedAppointmentsCard"
+  );
 
 const completedPopup =
-  document.getElementById("completedPopup");
+  document.getElementById(
+    "completedPopup"
+  );
 
 const completedPopupClose =
-  document.getElementById("completedPopupClose");
+  document.getElementById(
+    "completedPopupClose"
+  );
 
 const completedPopupList =
-  document.getElementById("completedPopupList");
+  document.getElementById(
+    "completedPopupList"
+  );
+
+  /* =========================================================
+   RENDERIZA CONSULTAS REALIZADAS
+   ========================================================= */
+
+function renderCompletedAppointmentsPopup() {
+  if (!completedPopupList) {
+    return;
+  }
+
+
+  completedPopupList.replaceChildren();
+
+
+  const now =
+    new Date();
+
+
+  const thirtyDaysAgo =
+    new Date(now);
+
+
+  thirtyDaysAgo.setDate(
+    thirtyDaysAgo.getDate() -
+    30
+  );
+
+
+  const completed =
+    getMyAppointments()
+      .map(
+        (appointment) => ({
+          ...appointment,
+
+          dateTime:
+            dateTimeFromItem(
+              appointment
+            )
+        })
+      )
+      .filter(
+        (appointment) =>
+          appointment.dateTime < now &&
+          appointment.dateTime >=
+            thirtyDaysAgo
+      )
+      .sort(
+        (a, b) =>
+          b.dateTime -
+          a.dateTime
+      );
+
+
+  if (!completed.length) {
+    const empty =
+      document.createElement(
+        "p"
+      );
+
+
+    empty.className =
+      "completed-empty";
+
+
+    empty.textContent =
+      "Nenhuma consulta realizada nos últimos 30 dias.";
+
+
+    completedPopupList.append(
+      empty
+    );
+
+
+    return;
+  }
+
+
+  completed.forEach(
+    (appointment) => {
+
+      const item =
+        document.createElement(
+          "article"
+        );
+
+
+      item.className =
+        "completed-appointment-item";
+
+
+      const date =
+        document.createElement(
+          "strong"
+        );
+
+
+      date.className =
+        "completed-appointment-date";
+
+
+      date.textContent =
+        `${formatRequestDate(
+          appointment.date
+        )} · ${appointment.time}`;
+
+
+      const details =
+        document.createElement(
+          "div"
+        );
+
+
+      details.className =
+        "completed-appointment-details";
+
+
+      const duration =
+        document.createElement(
+          "span"
+        );
+
+
+      duration.textContent =
+        `${appointment.duration || 50} min`;
+
+
+      const mode =
+        document.createElement(
+          "span"
+        );
+
+
+      mode.className =
+        "completed-appointment-mode";
+
+
+      mode.textContent =
+        appointment.mode ||
+        "Modalidade não informada";
+
+
+      details.append(
+        duration,
+        mode
+      );
+
+
+      item.append(
+        date,
+        details
+      );
+
+
+      completedPopupList.append(
+        item
+      );
+    }
+  );
+}
 
 
 /* =========================================================
-   7. USUÁRIO ATUAL
+   ABRIR POPUP
+   ========================================================= */
+
+function openCompletedPopup() {
+  if (!completedPopup) {
+    return;
+  }
+
+
+  renderCompletedAppointmentsPopup();
+
+
+  completedPopup.classList.add(
+    "open"
+  );
+
+
+  completedPopup.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+}
+
+
+/* =========================================================
+   FECHAR POPUP
+   ========================================================= */
+
+function closeCompletedPopup() {
+  if (!completedPopup) {
+    return;
+  }
+
+
+  completedPopup.classList.remove(
+    "open"
+  );
+
+
+  completedPopup.setAttribute(
+    "aria-hidden",
+    "true"
+  );
+}
+
+  /* =========================================================
+   RENDERIZA PRÓXIMAS CONSULTAS
+   ========================================================= */
+
+function renderUpcomingAppointmentsPopup() {
+  if (!appointmentsPopupList) {
+    return;
+  }
+
+
+  appointmentsPopupList.replaceChildren();
+
+
+  const now =
+    new Date();
+
+
+  const upcoming =
+    getMyAppointments()
+      .map(
+        (appointment) => ({
+          ...appointment,
+
+          dateTime:
+            dateTimeFromItem(
+              appointment
+            )
+        })
+      )
+      .filter(
+        (appointment) =>
+          appointment.dateTime >= now
+      )
+      .sort(
+        (a, b) =>
+          a.dateTime -
+          b.dateTime
+      );
+
+
+  if (!upcoming.length) {
+    const empty =
+      document.createElement(
+        "p"
+      );
+
+    empty.className =
+      "appointments-empty";
+
+    empty.textContent =
+      "Nenhuma consulta agendada.";
+
+    appointmentsPopupList.append(
+      empty
+    );
+
+    return;
+  }
+
+
+  upcoming.forEach(
+    (appointment) => {
+
+      const item =
+        document.createElement(
+          "article"
+        );
+
+      item.className =
+        "upcoming-appointment-item";
+
+
+      const date =
+        document.createElement(
+          "strong"
+        );
+
+      date.className =
+        "upcoming-appointment-date";
+
+      date.textContent =
+        `${formatRequestDate(
+          appointment.date
+        )} · ${appointment.time}`;
+
+
+      const details =
+        document.createElement(
+          "div"
+        );
+
+      details.className =
+        "upcoming-appointment-details";
+
+
+      const duration =
+        document.createElement(
+          "span"
+        );
+
+      duration.textContent =
+        `${appointment.duration || 50} min`;
+
+
+      const mode =
+        document.createElement(
+          "span"
+        );
+
+      mode.className =
+        "upcoming-appointment-mode";
+
+      mode.textContent =
+        appointment.mode ||
+        "Modalidade não informada";
+
+
+      details.append(
+        duration,
+        mode
+      );
+
+
+      item.append(
+        date,
+        details
+      );
+
+
+      appointmentsPopupList.append(
+        item
+      );
+    }
+  );
+}
+
+
+/* =========================================================
+   ABRIR POPUP
+   ========================================================= */
+
+function openAppointmentsPopup() {
+  if (!appointmentsPopup) {
+    return;
+  }
+
+
+  renderUpcomingAppointmentsPopup();
+
+
+  appointmentsPopup.classList.add(
+    "open"
+  );
+
+
+  appointmentsPopup.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+}
+
+
+/* =========================================================
+   FECHAR POPUP
+   ========================================================= */
+
+function closeAppointmentsPopup() {
+  if (!appointmentsPopup) {
+    return;
+  }
+
+
+  appointmentsPopup.classList.remove(
+    "open"
+  );
+
+
+  appointmentsPopup.setAttribute(
+    "aria-hidden",
+    "true"
+  );
+}
+
+/* =========================================================
+   EVENTOS DO POPUP DE PRÓXIMAS CONSULTAS
+   ========================================================= */
+
+if (nextAppointmentCard) {
+  nextAppointmentCard.addEventListener(
+    "click",
+    openAppointmentsPopup
+  );
+}
+
+
+if (appointmentsPopupClose) {
+  appointmentsPopupClose.addEventListener(
+    "click",
+    closeAppointmentsPopup
+  );
+}
+
+
+if (appointmentsPopup) {
+  appointmentsPopup.addEventListener(
+    "click",
+    (event) => {
+
+      if (
+        event.target ===
+        appointmentsPopup
+      ) {
+        closeAppointmentsPopup();
+      }
+
+    }
+  );
+}
+
+
+/* =========================================================
+   USUÁRIO ATUAL
    ========================================================= */
 
 const session =
@@ -134,7 +579,12 @@ const profiles =
   patientData.getProfiles();
 
 
+/* =========================================================
+   LOCALIZA O PERFIL DO PACIENTE
+   ========================================================= */
+
 function resolvePatientProfile() {
+
   const byId =
     session?.id &&
     profiles.find(
@@ -142,26 +592,30 @@ function resolvePatientProfile() {
         profile.id === session.id
     );
 
+
   const byEmail =
     session?.email &&
     profiles.find(
       (profile) =>
         profile.email &&
         profile.email.toLowerCase() ===
-        session.email.toLowerCase()
+          session.email.toLowerCase()
     );
+
 
   let latestProfile = null;
 
   try {
     latestProfile =
       JSON.parse(
-        localStorage.getItem("psinoteProfileDemo") ||
-        "null"
+        localStorage.getItem(
+          "psinoteProfileDemo"
+        ) || "null"
       );
   } catch {
     latestProfile = null;
   }
+
 
   const patientFromProfiles =
     profiles.find(
@@ -169,6 +623,7 @@ function resolvePatientProfile() {
         profile.role === "paciente" ||
         profile.role === "patient"
     );
+
 
   return (
     byId ||
@@ -208,9 +663,8 @@ const currentPatient = {
   role: "paciente"
 };
 
-
 /* =========================================================
-   8. ESTADO DA AGENDA
+   DADOS DA AGENDA
    ========================================================= */
 
 let appointments =
@@ -223,7 +677,12 @@ let requests =
 const today =
   new Date();
 
-today.setHours(0, 0, 0, 0);
+today.setHours(
+  0,
+  0,
+  0,
+  0
+);
 
 
 let visibleMonth =
@@ -238,7 +697,7 @@ let selectedDateKey = "";
 
 
 /* =========================================================
-   9. ESTADO DO POPUP DE HORÁRIOS
+   DADOS DO POPUP
    ========================================================= */
 
 let popupSelectedDate = null;
@@ -249,7 +708,7 @@ let toastTimer = null;
 
 
 /* =========================================================
-   10. FORMATADORES
+   FORMATADORES
    ========================================================= */
 
 const monthFormatter =
@@ -262,7 +721,7 @@ const monthFormatter =
   );
 
 
-const longDateFormatter =
+const popupDateFormatter =
   new Intl.DateTimeFormat(
     "pt-BR",
     {
@@ -274,7 +733,7 @@ const longDateFormatter =
 
 
 /* =========================================================
-   11. FUNÇÕES AUXILIARES
+   FUNÇÕES AUXILIARES
    ========================================================= */
 
 function capitalizeFirst(value) {
@@ -283,9 +742,7 @@ function capitalizeFirst(value) {
   }
 
   return (
-    value
-      .charAt(0)
-      .toLocaleUpperCase("pt-BR") +
+    value.charAt(0).toLocaleUpperCase("pt-BR") +
     value.slice(1)
   );
 }
@@ -360,12 +817,17 @@ function formatCompactDate(
   time
 ) {
   const date =
-    patientData.fromDateKey(dateKey);
+    patientData.fromDateKey(
+      dateKey
+    );
 
   const day =
     String(
       date.getDate()
-    ).padStart(2, "0");
+    ).padStart(
+      2,
+      "0"
+    );
 
   const months = [
     "jan",
@@ -390,118 +852,8 @@ function formatCompactDate(
 }
 
 
-function formatRequestDate(dateKey) {
-  const date =
-    patientData.fromDateKey(dateKey);
-
-  return capitalizeFirst(
-    longDateFormatter.format(date)
-  );
-}
-
-
 /* =========================================================
-   12. HORÁRIOS DISPONÍVEIS
-   ========================================================= */
-
-function getSelectableSlots(dateKey) {
-  const slots =
-    patientData.getOpenSlots(dateKey) ||
-    [];
-
-  const selectedDate =
-    patientData.fromDateKey(dateKey);
-
-  const selectedDay =
-    new Date(
-      selectedDate.getFullYear(),
-      selectedDate.getMonth(),
-      selectedDate.getDate()
-    );
-
-  const currentDay =
-    new Date();
-
-  currentDay.setHours(0, 0, 0, 0);
-
-
-  if (selectedDay < currentDay) {
-    return [];
-  }
-
-
-  if (
-    selectedDay.getTime() !==
-    currentDay.getTime()
-  ) {
-    return slots;
-  }
-
-
-  const now =
-    new Date();
-
-
-  return slots.filter((time) => {
-    const [hour, minute] =
-      time
-        .split(":")
-        .map(Number);
-
-    const slotDate =
-      new Date(
-        selectedDate.getFullYear(),
-        selectedDate.getMonth(),
-        selectedDate.getDate(),
-        hour,
-        minute,
-        0,
-        0
-      );
-
-    return slotDate > now;
-  });
-}
-
-
-/* =========================================================
-   13. PERFIL NA SIDEBAR
-   ========================================================= */
-
-function renderPatientProfile() {
-  if (ui.name) {
-    ui.name.textContent =
-      currentPatient.name;
-  }
-
-  if (!ui.avatar) {
-    return;
-  }
-
-  ui.avatar.textContent =
-    getInitials(
-      currentPatient.name
-    );
-
-  const hasPhoto =
-    Boolean(
-      currentPatient.avatarDataUrl
-    );
-
-  ui.avatar.classList.toggle(
-    "has-photo",
-    hasPhoto
-  );
-
-  ui.avatar.style.backgroundImage =
-    hasPhoto
-      ? `url("${currentPatient.avatarDataUrl}")`
-      : "";
-}
-
-
-/* =========================================================
-   14. TOAST
+   TOAST
    ========================================================= */
 
 function showToast(
@@ -527,6 +879,11 @@ function showToast(
     isError
   );
 
+  /*
+   * Troca o símbolo do toast.
+   * Sucesso = ✓
+   * Erro = !
+   */
   const icon =
     ui.toast.querySelector(
       "[aria-hidden='true']"
@@ -558,7 +915,150 @@ function showToast(
 
 
 /* =========================================================
-   15. CALENDÁRIO
+   HORÁRIOS DISPONÍVEIS
+   ========================================================= */
+
+function getSelectableSlots(
+  dateKey
+) {
+  const slots =
+    patientData.getOpenSlots(
+      dateKey
+    ) || [];
+
+  const selectedDate =
+    patientData.fromDateKey(
+      dateKey
+    );
+
+  const selectedDay =
+    new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      selectedDate.getDate()
+    );
+
+  const currentDay =
+    new Date();
+
+  currentDay.setHours(
+    0,
+    0,
+    0,
+    0
+  );
+
+
+  /*
+   * Não permite selecionar
+   * dias que já passaram.
+   */
+
+  if (
+    selectedDay <
+    currentDay
+  ) {
+    return [];
+  }
+
+
+  /*
+   * Se for um dia futuro,
+   * retorna todos os horários livres.
+   */
+
+  if (
+    selectedDay.getTime() !==
+    currentDay.getTime()
+  ) {
+    return slots;
+  }
+
+
+  /*
+   * Se for hoje,
+   * remove horários que já passaram.
+   */
+
+  const now =
+    new Date();
+
+
+  return slots.filter(
+    (time) => {
+      const [
+        hour,
+        minute
+      ] =
+        time
+          .split(":")
+          .map(Number);
+
+
+      const slotDate =
+        new Date(
+          selectedDate.getFullYear(),
+          selectedDate.getMonth(),
+          selectedDate.getDate(),
+          hour,
+          minute,
+          0,
+          0
+        );
+
+
+      return (
+        slotDate >
+        now
+      );
+    }
+  );
+}
+
+
+/* =========================================================
+   PERFIL NA SIDEBAR
+   ========================================================= */
+
+function renderPatientProfile() {
+  if (ui.name) {
+    ui.name.textContent =
+      currentPatient.name;
+  }
+
+
+  if (!ui.avatar) {
+    return;
+  }
+
+
+  ui.avatar.textContent =
+    getInitials(
+      currentPatient.name
+    );
+
+
+  const hasPhoto =
+    Boolean(
+      currentPatient.avatarDataUrl
+    );
+
+
+  ui.avatar.classList.toggle(
+    "has-photo",
+    hasPhoto
+  );
+
+
+  ui.avatar.style.backgroundImage =
+    hasPhoto
+      ? `url("${currentPatient.avatarDataUrl}")`
+      : "";
+}
+
+
+/* =========================================================
+   CALENDÁRIO
    ========================================================= */
 
 function renderCalendar() {
@@ -586,13 +1086,16 @@ function renderCalendar() {
       visibleMonth
     );
 
+
   const todayKey =
     patientData.toDateKey(
       today
     );
 
+
   const myAppointments =
     getMyAppointments();
+
 
   const myRequests =
     getMyRequests();
@@ -606,19 +1109,23 @@ function renderCalendar() {
     const date =
       new Date(start);
 
+
     date.setDate(
       start.getDate() +
       index
     );
+
 
     const dateKey =
       patientData.toDateKey(
         date
       );
 
+
     const isOtherMonth =
       date.getMonth() !==
       visibleMonth.getMonth();
+
 
     const dayOnly =
       new Date(
@@ -627,15 +1134,18 @@ function renderCalendar() {
         date.getDate()
       );
 
+
     const isPast =
-      dayOnly < today;
+      dayOnly <
+      today;
 
 
     const dayAppointments =
       myAppointments
         .filter(
           (item) =>
-            item.date === dateKey
+            item.date ===
+            dateKey
         )
         .sort(
           (a, b) =>
@@ -649,8 +1159,10 @@ function renderCalendar() {
       myRequests
         .filter(
           (item) =>
-            item.date === dateKey &&
-            item.status === "pending"
+            item.date ===
+              dateKey &&
+            item.status ===
+              "pending"
         )
         .sort(
           (a, b) =>
@@ -663,28 +1175,19 @@ function renderCalendar() {
     const futureAppointment =
       dayAppointments.find(
         (item) =>
-          dateTimeFromItem(item) >=
+          dateTimeFromItem(
+            item
+          ) >=
           new Date()
       );
-
-    const completedAppointment =
-      [...dayAppointments]
-        .filter(
-          (item) =>
-            dateTimeFromItem(item) <
-            new Date()
-        )
-        .sort(
-          (a, b) =>
-            dateTimeFromItem(b) -
-            dateTimeFromItem(a)
-        )[0];
 
 
     const openSlots =
       !isPast &&
-        !isOtherMonth
-        ? getSelectableSlots(dateKey)
+      !isOtherMonth
+        ? getSelectableSlots(
+            dateKey
+          )
         : [];
 
 
@@ -693,16 +1196,20 @@ function renderCalendar() {
         "button"
       );
 
+
     button.type =
       "button";
 
+
     button.className =
       "patient-day";
+
 
     button.setAttribute(
       "role",
       "gridcell"
     );
+
 
     button.dataset.date =
       dateKey;
@@ -730,21 +1237,27 @@ function renderCalendar() {
         "span"
       );
 
+
     number.className =
       "patient-day-number";
+
 
     number.textContent =
       String(
         date.getDate()
       );
 
-    button.append(number);
+
+    button.append(
+      number
+    );
 
 
     const info =
       document.createElement(
         "span"
       );
+
 
     info.className =
       "patient-day-info";
@@ -767,10 +1280,14 @@ function renderCalendar() {
         "has-pending"
       );
 
+
       info.textContent =
         pendingRequests[0].time;
 
-      button.append(info);
+
+      button.append(
+        info
+      );
 
     } else if (
       !isOtherMonth &&
@@ -780,35 +1297,31 @@ function renderCalendar() {
         "has-approved"
       );
 
+
       info.textContent =
         futureAppointment.time;
 
-      button.append(info);
 
-    } else if (
-      !isOtherMonth &&
-      completedAppointment
-    ) {
-      button.classList.add(
-        "has-completed"
+      button.append(
+        info
       );
 
-      info.textContent =
-        completedAppointment.time;
-
-      button.append(info);
-
     } else if (
-      dateKey === todayKey
+      dateKey ===
+      todayKey
     ) {
       button.classList.add(
         "today"
       );
 
+
       info.textContent =
         "HOJE";
 
-      button.append(info);
+
+      button.append(
+        info
+      );
 
     } else if (
       !isOtherMonth &&
@@ -818,12 +1331,21 @@ function renderCalendar() {
         "has-available"
       );
 
+
       info.textContent =
         openSlots[0];
 
-      button.append(info);
+
+      button.append(
+        info
+      );
     }
 
+
+    /*
+     * Um dia só abre o popup
+     * se possuir horário livre.
+     */
 
     const selectable =
       !isOtherMonth &&
@@ -852,21 +1374,25 @@ function renderCalendar() {
     }
 
 
-    ui.grid.append(button);
+    ui.grid.append(
+      button
+    );
   }
 }
 
 
 /* =========================================================
-   16. CARDS DE RESUMO
+   CARDS DE RESUMO
    ========================================================= */
 
 function renderSummary() {
   const now =
     new Date();
 
+
   const thirtyDaysAgo =
     new Date(now);
+
 
   thirtyDaysAgo.setDate(
     thirtyDaysAgo.getDate() -
@@ -882,11 +1408,15 @@ function renderSummary() {
     myAppointments.filter(
       (item) => {
         const date =
-          dateTimeFromItem(item);
+          dateTimeFromItem(
+            item
+          );
+
 
         return (
           date < now &&
-          date >= thirtyDaysAgo
+          date >=
+            thirtyDaysAgo
         );
       }
     );
@@ -894,9 +1424,11 @@ function renderSummary() {
 
   if (ui.completedCount) {
     ui.completedCount.textContent =
-      `${completed.length} ${completed.length === 1
-        ? "atendimento"
-        : "atendimentos"
+      `${completed.length} ` +
+      `${
+        completed.length === 1
+          ? "atendimento"
+          : "atendimentos"
       }`;
   }
 
@@ -906,13 +1438,17 @@ function renderSummary() {
       .map(
         (item) => ({
           ...item,
+
           dateTime:
-            dateTimeFromItem(item)
+            dateTimeFromItem(
+              item
+            )
         })
       )
       .filter(
         (item) =>
-          item.dateTime >= now
+          item.dateTime >=
+          now
       )
       .sort(
         (a, b) =>
@@ -925,9 +1461,9 @@ function renderSummary() {
     ui.nextAppointment.textContent =
       next
         ? formatCompactDate(
-          next.date,
-          next.time
-        )
+            next.date,
+            next.time
+          )
         : "Nenhuma consulta";
   }
 
@@ -935,22 +1471,25 @@ function renderSummary() {
   const pending =
     getMyRequests().filter(
       (item) =>
-        item.status === "pending"
+        item.status ===
+        "pending"
     );
 
 
   if (ui.pendingCount) {
     ui.pendingCount.textContent =
-      `${pending.length} ${pending.length === 1
-        ? "solicitação"
-        : "solicitações"
+      `${pending.length} ` +
+      `${
+        pending.length === 1
+          ? "solicitação"
+          : "solicitações"
       }`;
   }
 }
 
 
 /* =========================================================
-   17. POPUP DE HORÁRIOS
+   POPUP - ESTADO DO BOTÃO
    ========================================================= */
 
 function updateScheduleSubmit() {
@@ -958,12 +1497,17 @@ function updateScheduleSubmit() {
     return;
   }
 
+
   scheduleSubmit.disabled =
     !popupSelectedTime ||
     !popupSelectedMode ||
     !scheduleTerms?.checked;
 }
 
+
+/* =========================================================
+   CRIA BOTÃO DE HORÁRIO
+   ========================================================= */
 
 function createScheduleTimeButton(
   time,
@@ -974,20 +1518,26 @@ function createScheduleTimeButton(
       "button"
     );
 
+
   button.type =
     "button";
+
 
   button.className =
     "schedule-time";
 
+
   button.textContent =
     time;
+
 
   button.dataset.time =
     time;
 
+
   button.dataset.mode =
     mode;
+
 
   button.setAttribute(
     "aria-pressed",
@@ -998,38 +1548,45 @@ function createScheduleTimeButton(
   button.addEventListener(
     "click",
     () => {
-      schedulePopup
-        ?.querySelectorAll(
-          ".schedule-time"
-        )
-        .forEach(
-          (item) => {
-            item.classList.remove(
-              "selected"
-            );
+      if (schedulePopup) {
+        schedulePopup
+          .querySelectorAll(
+            ".schedule-time"
+          )
+          .forEach(
+            (item) => {
+              item.classList.remove(
+                "selected"
+              );
 
-            item.setAttribute(
-              "aria-pressed",
-              "false"
-            );
-          }
-        );
+
+              item.setAttribute(
+                "aria-pressed",
+                "false"
+              );
+            }
+          );
+      }
 
 
       button.classList.add(
         "selected"
       );
 
+
       button.setAttribute(
         "aria-pressed",
         "true"
       );
 
+
       popupSelectedTime =
         time;
 
+
       popupSelectedMode =
         mode;
+
 
       updateScheduleSubmit();
     }
@@ -1040,23 +1597,36 @@ function createScheduleTimeButton(
 }
 
 
+/* =========================================================
+   MENSAGEM SEM HORÁRIOS
+   ========================================================= */
+
 function createNoSlotsMessage() {
   const message =
     document.createElement(
       "p"
     );
 
+
   message.className =
     "schedule-no-slots";
 
+
   message.textContent =
     "Nenhum horário disponível.";
+
 
   return message;
 }
 
 
-function renderScheduleTimes(date) {
+/* =========================================================
+   PREENCHE HORÁRIOS REAIS
+   ========================================================= */
+
+function renderScheduleTimes(
+  date
+) {
   if (
     !onlineTimes ||
     !presentialTimes
@@ -1066,20 +1636,35 @@ function renderScheduleTimes(date) {
 
 
   const dateKey =
-    patientData.toDateKey(date);
+    patientData.toDateKey(
+      date
+    );
+
 
   const slots =
-    getSelectableSlots(dateKey);
+    getSelectableSlots(
+      dateKey
+    );
 
 
   onlineTimes.replaceChildren();
+
   presentialTimes.replaceChildren();
 
+
+  /*
+   * Por enquanto, os horários livres
+   * aparecem nas duas modalidades.
+   *
+   * A modalidade escolhida é salva
+   * junto com a solicitação.
+   */
 
   if (onlineColumn) {
     onlineColumn.hidden =
       false;
   }
+
 
   if (presentialColumn) {
     presentialColumn.hidden =
@@ -1092,33 +1677,44 @@ function renderScheduleTimes(date) {
       createNoSlotsMessage()
     );
 
+
     presentialTimes.append(
       createNoSlotsMessage()
     );
+
 
     return;
   }
 
 
-  slots.forEach((time) => {
-    onlineTimes.append(
-      createScheduleTimeButton(
-        time,
-        "Online"
-      )
-    );
+  slots.forEach(
+    (time) => {
+      onlineTimes.append(
+        createScheduleTimeButton(
+          time,
+          "Online"
+        )
+      );
 
-    presentialTimes.append(
-      createScheduleTimeButton(
-        time,
-        "Presencial"
-      )
-    );
-  });
+
+      presentialTimes.append(
+        createScheduleTimeButton(
+          time,
+          "Presencial"
+        )
+      );
+    }
+  );
 }
 
 
-function openSchedulePopup(date) {
+/* =========================================================
+   ABRIR POPUP
+   ========================================================= */
+
+function openSchedulePopup(
+  date
+) {
   if (
     !schedulePopup ||
     !schedulePopupDate ||
@@ -1135,20 +1731,31 @@ function openSchedulePopup(date) {
       date.getDate()
     );
 
-  popupSelectedTime = "";
-  popupSelectedMode = "";
+
+  popupSelectedTime =
+    "";
+
+
+  popupSelectedMode =
+    "";
+
 
   scheduleTerms.checked =
     false;
 
+
   updateScheduleSubmit();
+
+
+  const formattedDate =
+    popupDateFormatter.format(
+      popupSelectedDate
+    );
 
 
   schedulePopupDate.textContent =
     capitalizeFirst(
-      longDateFormatter.format(
-        popupSelectedDate
-      )
+      formattedDate
     );
 
 
@@ -1161,12 +1768,17 @@ function openSchedulePopup(date) {
     "open"
   );
 
+
   schedulePopup.setAttribute(
     "aria-hidden",
     "false"
   );
 }
 
+
+/* =========================================================
+   FECHAR POPUP
+   ========================================================= */
 
 function closeSchedulePopup() {
   if (!schedulePopup) {
@@ -1178,15 +1790,23 @@ function closeSchedulePopup() {
     "open"
   );
 
+
   schedulePopup.setAttribute(
     "aria-hidden",
     "true"
   );
 
 
-  popupSelectedDate = null;
-  popupSelectedTime = "";
-  popupSelectedMode = "";
+  popupSelectedDate =
+    null;
+
+
+  popupSelectedTime =
+    "";
+
+
+  popupSelectedMode =
+    "";
 
 
   if (scheduleTerms) {
@@ -1211,6 +1831,7 @@ function closeSchedulePopup() {
           "selected"
         );
 
+
         button.setAttribute(
           "aria-pressed",
           "false"
@@ -1219,6 +1840,10 @@ function closeSchedulePopup() {
     );
 }
 
+
+/* =========================================================
+   SALVAR SOLICITAÇÃO
+   ========================================================= */
 
 function submitScheduleRequest() {
   if (
@@ -1236,40 +1861,64 @@ function submitScheduleRequest() {
       popupSelectedDate
     );
 
+
+  /*
+   * Busca novamente os dados
+   * antes de salvar.
+   */
+
   const currentRequests =
     patientData.getRequests();
+
 
   const currentAppointments =
     patientData.getAppointments();
 
 
+  /*
+   * Verifica pedidos duplicados.
+   */
+
   const duplicateRequest =
     currentRequests.some(
       (request) =>
         request.patientId ===
-        currentPatient.id &&
+          currentPatient.id &&
+
         request.date ===
-        dateKey &&
+          dateKey &&
+
         request.time ===
-        popupSelectedTime &&
+          popupSelectedTime &&
+
         (
-          request.status === "pending" ||
-          request.status === "approved"
+          request.status ===
+            "pending" ||
+
+          request.status ===
+            "approved"
         )
     );
 
+
+  /*
+   * Verifica consultas duplicadas.
+   */
 
   const duplicateAppointment =
     currentAppointments.some(
       (appointment) =>
         appointment.patientId ===
-        currentPatient.id &&
+          currentPatient.id &&
+
         appointment.date ===
-        dateKey &&
+          dateKey &&
+
         appointment.time ===
-        popupSelectedTime &&
+          popupSelectedTime &&
+
         appointment.status !==
-        "cancelled"
+          "cancelled"
     );
 
 
@@ -1286,8 +1935,15 @@ function submitScheduleRequest() {
   }
 
 
+  /*
+   * Confere mais uma vez se o
+   * horário continua disponível.
+   */
+
   const availableSlots =
-    getSelectableSlots(dateKey);
+    getSelectableSlots(
+      dateKey
+    );
 
 
   if (
@@ -1300,18 +1956,30 @@ function submitScheduleRequest() {
       true
     );
 
-    popupSelectedTime = "";
-    popupSelectedMode = "";
+
+    popupSelectedTime =
+      "";
+
+
+    popupSelectedMode =
+      "";
+
 
     renderScheduleTimes(
       popupSelectedDate
     );
 
+
     updateScheduleSubmit();
+
 
     return;
   }
 
+
+  /*
+   * Cria a solicitação.
+   */
 
   const request = {
     id:
@@ -1341,7 +2009,8 @@ function submitScheduleRequest() {
       "",
 
     requestedAt:
-      new Date().toISOString(),
+      new Date()
+        .toISOString(),
 
     status:
       "pending"
@@ -1352,42 +2021,86 @@ function submitScheduleRequest() {
     request
   );
 
+
   patientData.saveRequests(
     currentRequests
   );
 
 
+  /*
+   * Atualiza os dados locais.
+   */
+
   requests =
     currentRequests;
+
 
   appointments =
     currentAppointments;
 
 
+  /*
+   * Fecha o popup.
+   */
+
   closeSchedulePopup();
+
 
   selectedDateKey =
     "";
 
+
+  /*
+   * Atualiza calendário e cards.
+   */
+
   renderCalendar();
+
   renderSummary();
 
+
+  /*
+   * Confirmação visual.
+   */
 
   showToast(
     "Solicitação enviada com sucesso."
   );
 }
 
+/* =========================================================
+   FORMATA DATA DO PEDIDO
+   ========================================================= */
+
+function formatRequestDate(
+  dateKey
+) {
+  const date =
+    patientData.fromDateKey(
+      dateKey
+    );
+
+  return capitalizeFirst(
+    new Intl.DateTimeFormat(
+      "pt-BR",
+      {
+        weekday: "long",
+        day: "numeric",
+        month: "long"
+      }
+    ).format(date)
+  );
+}
+
 
 /* =========================================================
-   18. POPUP DE PEDIDOS PENDENTES
+   RENDERIZA PEDIDOS PENDENTES
    ========================================================= */
 
 function renderPendingRequestsPopup() {
   if (!requestsPopupList) {
     return;
   }
-
 
   requestsPopupList.replaceChildren();
 
@@ -1398,9 +2111,10 @@ function renderPendingRequestsPopup() {
       .filter(
         (request) =>
           request.patientId ===
-          currentPatient.id &&
+            currentPatient.id &&
+
           request.status ===
-          "pending"
+            "pending"
       )
       .sort(
         (a, b) =>
@@ -1429,94 +2143,99 @@ function renderPendingRequestsPopup() {
   }
 
 
-  pending.forEach((request) => {
-    const item =
-      document.createElement(
-        "article"
-      );
+  pending.forEach(
+    (request) => {
 
-    item.className =
-      "pending-request-item";
-
-
-    const info =
-      document.createElement(
-        "div"
-      );
-
-    info.className =
-      "pending-request-info";
-
-
-    const date =
-      document.createElement(
-        "strong"
-      );
-
-    date.className =
-      "pending-request-date";
-
-    date.textContent =
-      formatRequestDate(
-        request.date
-      );
-
-
-    const details =
-      document.createElement(
-        "span"
-      );
-
-    details.className =
-      "pending-request-details";
-
-    details.textContent =
-      `${request.time} · ${request.mode ||
-      "Modalidade não informada"
-      }`;
-
-
-    const cancel =
-      document.createElement(
-        "button"
-      );
-
-    cancel.type =
-      "button";
-
-    cancel.className =
-      "pending-request-cancel";
-
-    cancel.textContent =
-      "Cancelar";
-
-
-    cancel.addEventListener(
-      "click",
-      () => {
-        cancelPendingRequest(
-          request.id
+      const item =
+        document.createElement(
+          "article"
         );
-      }
-    );
+
+      item.className =
+        "pending-request-item";
 
 
-    info.append(
-      date,
-      details
-    );
+      const info =
+        document.createElement(
+          "div"
+        );
 
-    item.append(
-      info,
-      cancel
-    );
+      info.className =
+        "pending-request-info";
 
-    requestsPopupList.append(
-      item
-    );
-  });
+
+      const date =
+        document.createElement(
+          "strong"
+        );
+
+      date.className =
+        "pending-request-date";
+
+      date.textContent =
+        formatRequestDate(
+          request.date
+        );
+
+
+      const details =
+        document.createElement(
+          "span"
+        );
+
+      details.className =
+        "pending-request-details";
+
+      details.textContent =
+        `${request.time} · ${request.mode || "Modalidade não informada"}`;
+
+
+      const cancel =
+        document.createElement(
+          "button"
+        );
+
+      cancel.type =
+        "button";
+
+      cancel.className =
+        "pending-request-cancel";
+
+      cancel.textContent =
+        "Cancelar";
+
+
+      cancel.addEventListener(
+        "click",
+        () => {
+          cancelPendingRequest(
+            request.id
+          );
+        }
+      );
+
+
+      info.append(
+        date,
+        details
+      );
+
+      item.append(
+        info,
+        cancel
+      );
+
+      requestsPopupList.append(
+        item
+      );
+    }
+  );
 }
 
+
+/* =========================================================
+   ABRIR POPUP DE PEDIDOS
+   ========================================================= */
 
 function openRequestsPopup() {
   if (!requestsPopup) {
@@ -1536,6 +2255,10 @@ function openRequestsPopup() {
 }
 
 
+/* =========================================================
+   FECHAR POPUP DE PEDIDOS
+   ========================================================= */
+
 function closeRequestsPopup() {
   if (!requestsPopup) {
     return;
@@ -1552,6 +2275,10 @@ function closeRequestsPopup() {
 }
 
 
+/* =========================================================
+   CANCELAR PEDIDO
+   ========================================================= */
+
 function cancelPendingRequest(
   requestId
 ) {
@@ -1562,11 +2289,14 @@ function cancelPendingRequest(
   const updatedRequests =
     currentRequests.map(
       (request) => {
+
         if (
-          request.id !== requestId
+          request.id !==
+          requestId
         ) {
           return request;
         }
+
 
         return {
           ...request,
@@ -1575,7 +2305,8 @@ function cancelPendingRequest(
             "cancelled",
 
           cancelledAt:
-            new Date().toISOString()
+            new Date()
+              .toISOString()
         };
       }
     );
@@ -1585,12 +2316,15 @@ function cancelPendingRequest(
     updatedRequests
   );
 
+
   requests =
     updatedRequests;
 
 
   renderCalendar();
+
   renderSummary();
+
   renderPendingRequestsPopup();
 
 
@@ -1599,355 +2333,8 @@ function cancelPendingRequest(
   );
 }
 
-
 /* =========================================================
-   19. POPUP DE PRÓXIMAS CONSULTAS
-   ========================================================= */
-
-function renderUpcomingAppointmentsPopup() {
-  if (!appointmentsPopupList) {
-    return;
-  }
-
-
-  appointmentsPopupList.replaceChildren();
-
-
-  const now =
-    new Date();
-
-
-  const upcoming =
-    getMyAppointments()
-      .map(
-        (appointment) => ({
-          ...appointment,
-
-          dateTime:
-            dateTimeFromItem(
-              appointment
-            )
-        })
-      )
-      .filter(
-        (appointment) =>
-          appointment.dateTime >= now
-      )
-      .sort(
-        (a, b) =>
-          a.dateTime -
-          b.dateTime
-      );
-
-
-  if (!upcoming.length) {
-    const empty =
-      document.createElement(
-        "p"
-      );
-
-    empty.className =
-      "appointments-empty";
-
-    empty.textContent =
-      "Nenhuma consulta agendada.";
-
-    appointmentsPopupList.append(
-      empty
-    );
-
-    return;
-  }
-
-
-  upcoming.forEach(
-    (appointment) => {
-      const item =
-        document.createElement(
-          "article"
-        );
-
-      item.className =
-        "upcoming-appointment-item";
-
-
-      const date =
-        document.createElement(
-          "strong"
-        );
-
-      date.className =
-        "upcoming-appointment-date";
-
-      date.textContent =
-        `${formatRequestDate(
-          appointment.date
-        )} · ${appointment.time}`;
-
-
-      const details =
-        document.createElement(
-          "div"
-        );
-
-      details.className =
-        "upcoming-appointment-details";
-
-
-      const duration =
-        document.createElement(
-          "span"
-        );
-
-      duration.textContent =
-        `${appointment.duration || 50} min`;
-
-
-      const mode =
-        document.createElement(
-          "span"
-        );
-
-      mode.className =
-        "upcoming-appointment-mode";
-
-      mode.textContent =
-        appointment.mode ||
-        "Modalidade não informada";
-
-
-      details.append(
-        duration,
-        mode
-      );
-
-      item.append(
-        date,
-        details
-      );
-
-      appointmentsPopupList.append(
-        item
-      );
-    }
-  );
-}
-
-
-function openAppointmentsPopup() {
-  if (!appointmentsPopup) {
-    return;
-  }
-
-  renderUpcomingAppointmentsPopup();
-
-  appointmentsPopup.classList.add(
-    "open"
-  );
-
-  appointmentsPopup.setAttribute(
-    "aria-hidden",
-    "false"
-  );
-}
-
-
-function closeAppointmentsPopup() {
-  if (!appointmentsPopup) {
-    return;
-  }
-
-  appointmentsPopup.classList.remove(
-    "open"
-  );
-
-  appointmentsPopup.setAttribute(
-    "aria-hidden",
-    "true"
-  );
-}
-
-
-/* =========================================================
-   20. POPUP DE CONSULTAS REALIZADAS
-   ========================================================= */
-
-function renderCompletedAppointmentsPopup() {
-  if (!completedPopupList) {
-    return;
-  }
-
-
-  completedPopupList.replaceChildren();
-
-
-  const now =
-    new Date();
-
-  const thirtyDaysAgo =
-    new Date(now);
-
-  thirtyDaysAgo.setDate(
-    thirtyDaysAgo.getDate() -
-    30
-  );
-
-
-  const completed =
-    getMyAppointments()
-      .map(
-        (appointment) => ({
-          ...appointment,
-
-          dateTime:
-            dateTimeFromItem(
-              appointment
-            )
-        })
-      )
-      .filter(
-        (appointment) =>
-          appointment.dateTime < now &&
-          appointment.dateTime >=
-          thirtyDaysAgo
-      )
-      .sort(
-        (a, b) =>
-          b.dateTime -
-          a.dateTime
-      );
-
-
-  if (!completed.length) {
-    const empty =
-      document.createElement(
-        "p"
-      );
-
-    empty.className =
-      "completed-empty";
-
-    empty.textContent =
-      "Nenhuma consulta realizada nos últimos 30 dias.";
-
-    completedPopupList.append(
-      empty
-    );
-
-    return;
-  }
-
-
-  completed.forEach(
-    (appointment) => {
-      const item =
-        document.createElement(
-          "article"
-        );
-
-      item.className =
-        "completed-appointment-item";
-
-
-      const date =
-        document.createElement(
-          "strong"
-        );
-
-      date.className =
-        "completed-appointment-date";
-
-      date.textContent =
-        `${formatRequestDate(
-          appointment.date
-        )} · ${appointment.time}`;
-
-
-      const details =
-        document.createElement(
-          "div"
-        );
-
-      details.className =
-        "completed-appointment-details";
-
-
-      const duration =
-        document.createElement(
-          "span"
-        );
-
-      duration.textContent =
-        `${appointment.duration || 50} min`;
-
-
-      const mode =
-        document.createElement(
-          "span"
-        );
-
-      mode.className =
-        "completed-appointment-mode";
-
-      mode.textContent =
-        appointment.mode ||
-        "Modalidade não informada";
-
-
-      details.append(
-        duration,
-        mode
-      );
-
-      item.append(
-        date,
-        details
-      );
-
-      completedPopupList.append(
-        item
-      );
-    }
-  );
-}
-
-
-function openCompletedPopup() {
-  if (!completedPopup) {
-    return;
-  }
-
-  renderCompletedAppointmentsPopup();
-
-  completedPopup.classList.add(
-    "open"
-  );
-
-  completedPopup.setAttribute(
-    "aria-hidden",
-    "false"
-  );
-}
-
-
-function closeCompletedPopup() {
-  if (!completedPopup) {
-    return;
-  }
-
-  completedPopup.classList.remove(
-    "open"
-  );
-
-  completedPopup.setAttribute(
-    "aria-hidden",
-    "true"
-  );
-}
-
-
-/* =========================================================
-   21. EVENTOS — POPUP DE HORÁRIOS
+   EVENTOS DO POPUP
    ========================================================= */
 
 if (scheduleTerms) {
@@ -1962,14 +2349,6 @@ if (schedulePopupClose) {
   schedulePopupClose.addEventListener(
     "click",
     closeSchedulePopup
-  );
-}
-
-
-if (scheduleSubmit) {
-  scheduleSubmit.addEventListener(
-    "click",
-    submitScheduleRequest
   );
 }
 
@@ -1989,8 +2368,15 @@ if (schedulePopup) {
 }
 
 
+if (scheduleSubmit) {
+  scheduleSubmit.addEventListener(
+    "click",
+    submitScheduleRequest
+  );
+}
+
 /* =========================================================
-   22. EVENTOS — PEDIDOS PENDENTES
+   EVENTOS DO POPUP DE PEDIDOS
    ========================================================= */
 
 if (pendingRequestsCard) {
@@ -2013,54 +2399,20 @@ if (requestsPopup) {
   requestsPopup.addEventListener(
     "click",
     (event) => {
+
       if (
         event.target ===
         requestsPopup
       ) {
         closeRequestsPopup();
       }
+
     }
   );
 }
 
-
 /* =========================================================
-   23. EVENTOS — PRÓXIMAS CONSULTAS
-   ========================================================= */
-
-if (nextAppointmentCard) {
-  nextAppointmentCard.addEventListener(
-    "click",
-    openAppointmentsPopup
-  );
-}
-
-
-if (appointmentsPopupClose) {
-  appointmentsPopupClose.addEventListener(
-    "click",
-    closeAppointmentsPopup
-  );
-}
-
-
-if (appointmentsPopup) {
-  appointmentsPopup.addEventListener(
-    "click",
-    (event) => {
-      if (
-        event.target ===
-        appointmentsPopup
-      ) {
-        closeAppointmentsPopup();
-      }
-    }
-  );
-}
-
-
-/* =========================================================
-   24. EVENTOS — CONSULTAS REALIZADAS
+   EVENTOS DO POPUP DE CONSULTAS REALIZADAS
    ========================================================= */
 
 if (completedAppointmentsCard) {
@@ -2083,19 +2435,20 @@ if (completedPopup) {
   completedPopup.addEventListener(
     "click",
     (event) => {
+
       if (
         event.target ===
         completedPopup
       ) {
         closeCompletedPopup();
       }
+
     }
   );
 }
 
-
 /* =========================================================
-   25. NAVEGAÇÃO DOS MESES
+   NAVEGAÇÃO DOS MESES
    ========================================================= */
 
 if (ui.previousMonth) {
@@ -2109,8 +2462,10 @@ if (ui.previousMonth) {
           1
         );
 
+
       selectedDateKey =
         "";
+
 
       renderCalendar();
     }
@@ -2129,8 +2484,10 @@ if (ui.nextMonth) {
           1
         );
 
+
       selectedDateKey =
         "";
+
 
       renderCalendar();
     }
@@ -2139,7 +2496,7 @@ if (ui.nextMonth) {
 
 
 /* =========================================================
-   26. MENU MOBILE
+   MENU MOBILE
    ========================================================= */
 
 if (
@@ -2154,6 +2511,7 @@ if (
           "open"
         );
 
+
       ui.mobileMenu.setAttribute(
         "aria-expanded",
         String(isOpen)
@@ -2166,10 +2524,12 @@ if (
     "click",
     (event) => {
       if (
-        window.innerWidth > 720
+        window.innerWidth >
+        720
       ) {
         return;
       }
+
 
       if (
         ui.sidebar.contains(
@@ -2182,9 +2542,11 @@ if (
         return;
       }
 
+
       ui.sidebar.classList.remove(
         "open"
       );
+
 
       ui.mobileMenu.setAttribute(
         "aria-expanded",
@@ -2196,63 +2558,21 @@ if (
 
 
 /* =========================================================
-   27. SINCRONIZAÇÃO ENTRE ABAS
+   SINCRONIZAÇÃO ENTRE ABAS
    ========================================================= */
 
 function refreshData() {
   appointments =
     patientData.getAppointments();
 
+
   requests =
     patientData.getRequests();
 
 
   renderCalendar();
+
   renderSummary();
-
-
-  if (
-    requestsPopup?.classList.contains(
-      "open"
-    )
-  ) {
-    renderPendingRequestsPopup();
-  }
-
-
-  if (
-    appointmentsPopup?.classList.contains(
-      "open"
-    )
-  ) {
-    renderUpcomingAppointmentsPopup();
-  }
-
-
-  if (
-    completedPopup?.classList.contains(
-      "open"
-    )
-  ) {
-    renderCompletedAppointmentsPopup();
-  }
-
-
-  if (
-    schedulePopup?.classList.contains(
-      "open"
-    ) &&
-    popupSelectedDate
-  ) {
-    popupSelectedTime = "";
-    popupSelectedMode = "";
-
-    renderScheduleTimes(
-      popupSelectedDate
-    );
-
-    updateScheduleSubmit();
-  }
 }
 
 
@@ -2263,9 +2583,11 @@ window.addEventListener(
 
 
 /* =========================================================
-   28. INICIALIZAÇÃO
+   INICIALIZAÇÃO
    ========================================================= */
 
 renderPatientProfile();
+
 renderCalendar();
+
 renderSummary();

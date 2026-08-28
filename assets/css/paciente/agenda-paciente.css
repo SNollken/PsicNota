@@ -1795,12 +1795,16 @@ input[readonly] {
   .content-card .inner-section { padding: 18px 16px; }
 }
 
+/* Layout restaurado do commit 6e455298 (agenda do paciente).
+   Cores adaptadas aos tokens atuais do PsicNota; menu permanece centralizado
+   em assets/menu/menu.html, menu.js e menu.css. */
+
 /* =========================================================
    AGENDA DO PACIENTE
    ========================================================= */
 
 .patient-view {
-  background: #ffffff;
+  background: var(--white);
 }
 
 
@@ -1831,13 +1835,13 @@ input[readonly] {
 
   padding: 0;
 
-  border-bottom: 1px solid #e7ecef;
+  border-bottom: 1px solid var(--line);
 }
 
 .patient-view .agenda-topbar h1 {
   margin: 0;
 
-  color: #111827;
+  color: var(--ink);
 
   font-size: 34px;
   font-weight: 800;
@@ -1860,7 +1864,7 @@ input[readonly] {
 .agenda-subtitle {
   margin: 6px 0 26px;
 
-  color: #111827;
+  color: var(--ink);
 
   font-size: 28px;
   font-weight: 800;
@@ -1880,10 +1884,10 @@ input[readonly] {
 
   padding: 20px 22px;
 
-  border: 1px solid #d7eaf0;
+  border: 1px solid var(--blue-200);
   border-radius: 22px;
 
-  background: #f1fafd;
+  background: var(--blue-50);
 }
 
 
@@ -1907,7 +1911,7 @@ input[readonly] {
 .patient-calendar-header>h2 {
   margin: 0;
 
-  color: #17212a;
+  color: var(--ink);
 
   font-size: 25px;
   font-weight: 800;
@@ -1936,10 +1940,10 @@ input[readonly] {
 
   padding: 0;
 
-  border: 2px solid #26363d;
+  border: 2px solid var(--ink);
   border-radius: 50%;
 
-  color: #26363d;
+  color: var(--ink);
   background: transparent;
 
   transition:
@@ -1948,7 +1952,7 @@ input[readonly] {
 }
 
 .calendar-arrow:hover {
-  background: #ffffff;
+  background: var(--white);
 }
 
 .calendar-arrow:active {
@@ -1996,7 +2000,7 @@ input[readonly] {
 
   border: 0;
 
-  color: #24343b;
+  color: var(--ink);
   background: transparent;
 
   font-size: 9px;
@@ -2019,10 +2023,10 @@ input[readonly] {
 
   padding: 12px;
 
-  border: 1px solid #e4ecef;
+  border: 1px solid var(--line);
   border-radius: 7px;
 
-  color: #27383f;
+  color: var(--ink);
   background: rgba(255, 255, 255, 0.92);
 
   text-align: left;
@@ -2038,9 +2042,9 @@ input[readonly] {
 
   transform: translateY(-1px);
 
-  border-color: #8dbccc;
+  border-color: var(--blue-300);
 
-  background: #ffffff;
+  background: var(--white);
 }
 
 .patient-day:disabled {
@@ -2053,7 +2057,7 @@ input[readonly] {
    ========================================================= */
 
 .patient-day.other-month {
-  color: #89969b;
+  color: var(--muted);
 
   background: rgba(255, 255, 255, 0.65);
 }
@@ -2101,44 +2105,15 @@ input[readonly] {
 
 
 /* =========================================================
-   DIA DISPONÍVEL PARA AGENDAMENTO
+   HORÁRIO DISPONÍVEL
    ========================================================= */
 
-/*
- * Disponível não possui mais destaque verde.
- * O dia continua branco, apenas clicável.
- */
-
 .patient-day.has-available {
-  border-color: #e4ecef;
-
-  background: rgba(255, 255, 255, 0.92);
+  border-color: #96d59e;
 }
 
 .patient-day.has-available .patient-day-number,
 .patient-day.has-available .patient-day-info {
-  color: #27383f;
-}
-
-
-/* =========================================================
-   CONSULTA CONCLUÍDA
-   ========================================================= */
-
-/*
- * Verde agora significa consulta já realizada.
- * O JS será ajustado depois para adicionar
- * a classe .has-completed.
- */
-
-.patient-day.has-completed {
-  border-color: #74cf7d;
-
-  background: #ffffff;
-}
-
-.patient-day.has-completed .patient-day-number,
-.patient-day.has-completed .patient-day-info {
   color: #21a432;
 }
 
@@ -2148,14 +2123,12 @@ input[readonly] {
    ========================================================= */
 
 .patient-day.has-approved {
-  border-color: #7eafc2;
-
-  background: #ffffff;
+  border-color: var(--blue-300);
 }
 
 .patient-day.has-approved .patient-day-number,
 .patient-day.has-approved .patient-day-info {
-  color: #1f637a;
+  color: var(--blue-700);
 }
 
 
@@ -2165,8 +2138,6 @@ input[readonly] {
 
 .patient-day.has-pending {
   border-color: #ff7777;
-
-  background: #ffffff;
 }
 
 .patient-day.has-pending .patient-day-number,
@@ -2176,48 +2147,15 @@ input[readonly] {
 
 
 /* =========================================================
-   DIA INDISPONÍVEL
-   ========================================================= */
-
-/*
- * Dias sem horário liberado pelo psicólogo
- * ficam cinza.
- *
- * As exceções evitam que consultas,
- * pendências e o dia atual percam suas cores.
- */
-
-.patient-day.is-unavailable,
-.patient-day:disabled:not(.other-month):not(.has-pending):not(.has-approved):not(.has-completed):not(.today) {
-  border-color: #dce5ea;
-
-  background: #dce5ea;
-
-  color: #6f818a;
-
-  cursor: default;
-}
-
-.patient-day.is-unavailable .patient-day-number,
-.patient-day.is-unavailable .patient-day-info,
-.patient-day:disabled:not(.other-month):not(.has-pending):not(.has-approved):not(.has-completed):not(.today) .patient-day-number,
-.patient-day:disabled:not(.other-month):not(.has-pending):not(.has-approved):not(.has-completed):not(.today) .patient-day-info {
-  color: #6f818a;
-}
-
-
-/* =========================================================
    HOJE
    ========================================================= */
 
-.patient-day.today:not(.has-approved):not(.has-pending):not(.has-completed) {
-  border-color: #84b3c4;
-
-  background: #ffffff;
+.patient-day.today:not(.has-approved):not(.has-pending) {
+  border-color: var(--blue-300);
 }
 
 .patient-day.today .patient-day-info {
-  color: #1f637a;
+  color: var(--blue-700);
 
   font-size: 11px;
 }
@@ -2230,15 +2168,13 @@ input[readonly] {
 .patient-day.selected {
   z-index: 3;
 
-  border-color: #1f637a;
-
   box-shadow:
-    inset 0 0 0 1px #1f637a;
+    inset 0 0 0 1px var(--blue-700);
 }
 
 
 /* =========================================================
-   CARDS DE RESUMO
+   CARDS INFERIORES
    ========================================================= */
 
 .patient-dashboard {
@@ -2275,7 +2211,7 @@ input[readonly] {
   border: 1px solid;
   border-radius: 18px;
 
-  background: #f8fdff;
+  background: var(--blue-50);
 
   text-align: left;
 
@@ -2285,7 +2221,7 @@ input[readonly] {
 }
 
 .patient-dashboard-card:hover {
-  background: #ffffff;
+  background: var(--white);
 
   transform: translateY(-1px);
 }
@@ -2301,7 +2237,7 @@ input[readonly] {
 
   justify-self: center;
 
-  color: #1f637a;
+  color: var(--blue-700);
 
   stroke-width: 3;
 }
@@ -2325,7 +2261,7 @@ input[readonly] {
 .dashboard-copy small {
   margin-bottom: 6px;
 
-  color: #17252c;
+  color: var(--ink);
 
   font-size: 9px;
   font-weight: 700;
@@ -2334,7 +2270,7 @@ input[readonly] {
 .dashboard-copy strong {
   overflow: hidden;
 
-  color: #174e61;
+  color: var(--blue-800);
 
   font-size: 15px;
   font-weight: 800;
@@ -2353,7 +2289,7 @@ input[readonly] {
 }
 
 .dashboard-next {
-  border-color: #5b9db8;
+  border-color: var(--blue-700);
 }
 
 .dashboard-pending {
@@ -2400,10 +2336,10 @@ input[readonly] {
 
   padding: 18px 18px 16px;
 
-  border: 1.5px solid #2f5f74;
+  border: 1.5px solid var(--blue-700);
   border-radius: 26px;
 
-  background: #dff1f8;
+  background: var(--blue-100);
   box-shadow: none;
 }
 
@@ -2424,7 +2360,7 @@ input[readonly] {
 
   border: 0;
   background: transparent;
-  color: #234f62;
+  color: var(--blue-800);
 
   cursor: pointer;
 }
@@ -2447,7 +2383,7 @@ input[readonly] {
 
   margin-bottom: 6px;
 
-  color: #2d6075;
+  color: var(--blue-700);
 
   font-size: 10px;
   font-weight: 800;
@@ -2457,7 +2393,7 @@ input[readonly] {
 .schedule-popup-header strong {
   display: block;
 
-  color: #1f2530;
+  color: var(--ink);
 
   font-size: 18px;
   font-weight: 800;
@@ -2481,7 +2417,7 @@ input[readonly] {
 }
 
 .schedule-column:first-child {
-  border-right: 1px solid #c7dce5;
+  border-right: 1px solid var(--line-strong);
 }
 
 .schedule-column-pill {
@@ -2492,8 +2428,8 @@ input[readonly] {
 
   border-radius: 999px;
 
-  color: #2d6075;
-  background: #b7dced;
+  color: var(--blue-700);
+  background: var(--blue-200);
 
   font-size: 10px;
   font-weight: 700;
@@ -2513,11 +2449,11 @@ input[readonly] {
 
   padding: 8px 10px;
 
-  border: 1px solid #d4d7da;
+  border: 1px solid var(--line);
   border-radius: 8px;
 
-  color: #1f2530;
-  background: #ffffff;
+  color: var(--ink);
+  background: var(--white);
 
   font-size: 12px;
   font-weight: 800;
@@ -2536,9 +2472,9 @@ input[readonly] {
 }
 
 .schedule-time.selected {
-  border-color: #346f89;
-  color: #ffffff;
-  background: #346f89;
+  border-color: var(--blue-700);
+  color: var(--white);
+  background: var(--blue-700);
 }
 
 
@@ -2552,7 +2488,7 @@ input[readonly] {
 
   margin: 6px 0 10px;
 
-  color: #26323a;
+  color: var(--ink);
 
   font-size: 11px;
   font-weight: 500;
@@ -2563,7 +2499,7 @@ input[readonly] {
   height: 14px;
   margin: 0;
 
-  accent-color: #346f89;
+  accent-color: var(--blue-700);
 }
 
 
@@ -2580,8 +2516,8 @@ input[readonly] {
   border: 0;
   border-radius: 8px;
 
-  color: #ffffff;
-  background: #346f89;
+  color: var(--white);
+  background: var(--blue-700);
 
   font-size: 12px;
   font-weight: 800;
@@ -2641,7 +2577,7 @@ input[readonly] {
   border: 1.5px solid #d65a5a;
   border-radius: 24px;
 
-  background: #f8fdff;
+  background: var(--blue-50);
 }
 
 
@@ -2700,7 +2636,7 @@ input[readonly] {
 .requests-popup-header strong {
   display: block;
 
-  color: #17212a;
+  color: var(--ink);
 
   font-size: 19px;
   font-weight: 800;
@@ -2734,7 +2670,7 @@ input[readonly] {
   border: 1px solid #f08b8b;
   border-radius: 14px;
 
-  background: #ffffff;
+  background: var(--white);
 }
 
 .pending-request-info {
@@ -2746,7 +2682,7 @@ input[readonly] {
 
   margin-bottom: 4px;
 
-  color: #17212a;
+  color: var(--ink);
 
   font-size: 13px;
   font-weight: 800;
@@ -2755,7 +2691,7 @@ input[readonly] {
 .pending-request-details {
   display: block;
 
-  color: #60717a;
+  color: var(--muted);
 
   font-size: 11px;
   font-weight: 600;
@@ -2768,7 +2704,7 @@ input[readonly] {
   border-radius: 9px;
 
   color: #d13e3e;
-  background: #ffffff;
+  background: var(--white);
 
   font-size: 10px;
   font-weight: 800;
@@ -2777,7 +2713,7 @@ input[readonly] {
 }
 
 .pending-request-cancel:hover {
-  color: #ffffff;
+  color: var(--white);
   background: #d64b4b;
 }
 
@@ -2789,7 +2725,7 @@ input[readonly] {
 .requests-empty {
   margin: 70px 0;
 
-  color: #71828a;
+  color: var(--muted);
 
   font-size: 13px;
   font-weight: 700;
@@ -2841,10 +2777,10 @@ input[readonly] {
 
   overflow-y: auto;
 
-  border: 1.5px solid #5b9db8;
+  border: 1.5px solid var(--blue-700);
   border-radius: 24px;
 
-  background: #f1fafd;
+  background: var(--blue-50);
 }
 
 
@@ -2868,7 +2804,7 @@ input[readonly] {
 
   border: 0;
 
-  color: #1f637a;
+  color: var(--blue-700);
   background: transparent;
 
   cursor: pointer;
@@ -2894,7 +2830,7 @@ input[readonly] {
 
   margin-bottom: 5px;
 
-  color: #34758d;
+  color: var(--blue-700);
 
   font-size: 10px;
   font-weight: 800;
@@ -2903,7 +2839,7 @@ input[readonly] {
 .appointments-popup-header strong {
   display: block;
 
-  color: #17212a;
+  color: var(--ink);
 
   font-size: 19px;
   font-weight: 800;
@@ -2925,10 +2861,10 @@ input[readonly] {
 
   padding: 14px 16px;
 
-  border: 1px solid #8ab7c9;
+  border: 1px solid var(--blue-300);
   border-radius: 14px;
 
-  background: #ffffff;
+  background: var(--white);
 }
 
 .upcoming-appointment-date {
@@ -2936,7 +2872,7 @@ input[readonly] {
 
   margin-bottom: 6px;
 
-  color: #17212a;
+  color: var(--ink);
 
   font-size: 13px;
   font-weight: 800;
@@ -2949,7 +2885,7 @@ input[readonly] {
 
   gap: 6px;
 
-  color: #58717c;
+  color: var(--muted);
 
   font-size: 11px;
   font-weight: 600;
@@ -2963,8 +2899,8 @@ input[readonly] {
 
   border-radius: 999px;
 
-  color: #1f637a;
-  background: #d9eef5;
+  color: var(--blue-700);
+  background: var(--blue-100);
 
   font-size: 10px;
   font-weight: 800;
@@ -2978,7 +2914,7 @@ input[readonly] {
 .appointments-empty {
   margin: 70px 0;
 
-  color: #71828a;
+  color: var(--muted);
 
   font-size: 13px;
   font-weight: 700;
@@ -3092,7 +3028,7 @@ input[readonly] {
 .completed-popup-header strong {
   display: block;
 
-  color: #17212a;
+  color: var(--ink);
 
   font-size: 19px;
   font-weight: 800;
@@ -3117,7 +3053,7 @@ input[readonly] {
   border: 1px solid #8dd498;
   border-radius: 14px;
 
-  background: #ffffff;
+  background: var(--white);
 }
 
 .completed-appointment-date {
@@ -3125,7 +3061,7 @@ input[readonly] {
 
   margin-bottom: 6px;
 
-  color: #17212a;
+  color: var(--ink);
 
   font-size: 13px;
   font-weight: 800;
@@ -3167,26 +3103,9 @@ input[readonly] {
 .completed-empty {
   margin: 70px 0;
 
-  color: #71828a;
+  color: var(--muted);
 
   font-size: 13px;
-  font-weight: 700;
-
-  text-align: center;
-}
-
-/* =========================================================
-   SEM HORÁRIOS DISPONÍVEIS
-   ========================================================= */
-
-.schedule-no-slots {
-  grid-column: 1 / -1;
-
-  margin: 24px 0;
-
-  color: #71828a;
-
-  font-size: 11px;
   font-weight: 700;
 
   text-align: center;
@@ -3297,9 +3216,6 @@ input[readonly] {
   .schedule-popup-card {
     width: 100%;
     min-height: auto;
-    max-height: calc(100vh - 20px);
-
-    overflow-y: auto;
 
     padding: 20px 14px 18px;
 
@@ -3316,7 +3232,7 @@ input[readonly] {
     padding-bottom: 16px;
 
     border-right: 0;
-    border-bottom: 1px solid #c7dce5;
+    border-bottom: 1px solid var(--line-strong);
   }
 
   .schedule-times {
