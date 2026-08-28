@@ -29,23 +29,6 @@
 
   <script src="../assets/js/shared-data.js"></script>
   <script src="../assets/js/sidebar.js"></script>
-  <script>
-    (function () {
-      "use strict";
-      var menuButton = document.querySelector(".mobile-menu");
-      var sidebar = document.querySelector(".sidebar");
-      if (!menuButton || !sidebar) return;
-      menuButton.addEventListener("click", function () {
-        var isOpen = sidebar.classList.toggle("open");
-        menuButton.setAttribute("aria-expanded", String(isOpen));
-      });
-      document.addEventListener("click", function (event) {
-        if (window.innerWidth <= 720 && !sidebar.contains(event.target) && !menuButton.contains(event.target)) {
-          sidebar.classList.remove("open");
-          menuButton.setAttribute("aria-expanded", "false");
-        }
-      });
-    })();
-  </script>
+  <script src="../assets/js/profissional/pacientes.js"></script>
 </body>
 </html>
