@@ -109,7 +109,7 @@
       const data = window.PsiNoteData;
       if (!data) return;
       data.clearSession();
-      window.location.href = "login.html";
+      window.location.href = "auth/login.html";
     });
   }
 

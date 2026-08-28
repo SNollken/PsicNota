@@ -1,6 +1,7 @@
 # Plano: Reorganização dos HTMLs do PsicNota em pastas
 
-Status: PLANO (nada foi executado). Levantamento feito lendo o repo C:\Coding\PsicNota.
+Status: EXECUTADO em 2026-08-28 pelo agente Scout (registro no fim do arquivo).
+Levantamento feito lendo o repo C:\Coding\PsicNota.
 
 ## Decisão (resumo)
 Criar UMA pasta nova, `auth/`, e mover as 3 páginas de autenticação pra dentro dela.
@@ -43,8 +44,12 @@ PsicNota/
 
 ### A. Dentro dos 3 arquivos movidos: caminho de asset (assets/ -> ../assets/)
 
+NOTA (ajuste TASK 8): a TASK 8 ("css por página", commit 12d8dd0) foi executada DEPOIS
+deste plano e ANTES desta execução. O auth.css deixou de existir; cada página de auth
+tem agora css próprio com nome idêntico ao html. Os paths abaixo já refletem isso.
+
 auth/login.html
-- L11  assets/css/auth.css          -> ../assets/css/auth.css
+- L11  assets/css/login.css         -> ../assets/css/login.css
 - L17  assets/img/logo_psicnota.png -> ../assets/img/logo_psicnota.png
 - L135 assets/js/login.js           -> ../assets/js/login.js
 - L16  href="index.html"            -> ../index.html   (logo/brand)
@@ -58,8 +63,9 @@ auth/cadastro.html
 - (L848 login.html NÃO muda: mesma pasta)
 
 auth/esqueci-senha.html
-- L29  assets/img/logo_psicnota.png -> ../assets/img/logo_psicnota.png
-- (L32 login.html NÃO muda: mesma pasta. Página não carrega css/js externo.)
+- L7   assets/css/esqueci-senha.css -> ../assets/css/esqueci-senha.css  (TASK 8: página passou a carregar css próprio, sem style inline)
+- L11  assets/img/logo_psicnota.png -> ../assets/img/logo_psicnota.png
+- (L14 login.html NÃO muda: mesma pasta. Página não carrega js externo.)
 
 ### B. Páginas da raiz que apontam para auth
 
@@ -131,3 +137,24 @@ carregam ../assets/menu/menu.js e ../assets/js/sidebar.js, além de todos os ../
 e ../login.html hardcoded. Seriam dezenas de edits e um nível a mais de aninhamento, sem
 ganho de navegação (paciente e profissional já nomeiam os dois papéis claramente).
 Não vale o risco agora. Se um dia quiser a pasta dashboard/, o custo é esse acima.
+
+## Registro de execução (2026-08-28, agente Scout)
+
+EXECUTADO. Resumo do que foi feito:
+
+1. git mv login.html auth/login.html; git mv cadastro.html auth/cadastro.html;
+   git mv esqueci-senha.html auth/esqueci-senha.html (pasta auth/ criada).
+2. Seção A aplicada com o ajuste da TASK 8 (css por página já existia: login.css,
+   cadastro.css, esqueci-senha.css; o auth.css do plano original não existe mais).
+   O esqueci-senha.html passou a carregar ../assets/css/esqueci-senha.css (a TASK 8
+   removeu o style inline e deu css próprio à página).
+3. Seções B, C e D aplicadas integralmente: index.html (meta refresh, location.replace
+   e âncora -> auth/login.html), home.html (Criar conta/Entrar -> auth/), logout de
+   profissional/agenda.html (../login.html -> ../auth/login.html), login.js (redirects
+   pós-login com ../) e perfil.js (logout -> auth/login.html).
+4. Nada foi alterado em assets/css (trabalho da TASK 8 já commitado). Sem commit
+   nesta etapa (commit é responsabilidade do agente Hawk).
+
+Verificação real executada: servidor HTTP local na raiz do repo, todas as páginas do
+site conferidas (HTTP 200, zero 404 de css/js/img) + fluxo de navegação testado.
+Detalhes no relatório .maestri/relatorio-scout-auth.md.
