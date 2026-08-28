@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Edição do perfil do paciente no PsicNota" />
+  <title>PsicNota | Perfil do paciente</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/css/paciente/perfil.css" />
+  <link rel="stylesheet" href="../assets/menu/menu.css" />
+  <script src="../assets/menu/menu.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <psic-menu tipo="paciente" ativo="perfil"></psic-menu>
+
+    <main class="main-content">
+      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+
+      <form id="profileForm" novalidate>
+        <header class="profile-header" id="perfil">
+          <div class="profile-person">
+            <div class="profile-avatar avatar-frame" data-avatar>PN</div>
+
+            <div class="profile-person-copy">
+              <span class="profile-role" data-role-pill>Paciente</span>
+              <h1 data-profile-name>Usuário PsicNota</h1>
+              <span class="sr-only" data-profile-description>Gerencie seu perfil.</span>
+            </div>
+          </div>
+
+          <div class="profile-actions">
+            <input
+              id="avatarInput"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              hidden
+            />
+
+            <button class="button button-photo" id="changePhotoButton" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 7h3l2-2h6l2 2h3v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              Alterar foto
+            </button>
+
+            <button class="button button-remove-photo" id="removePhotoButton" type="button" hidden>
+              Remover foto
+            </button>
+
+            <button class="button button-edit" id="editButton" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m4 16-1 5 5-1L19 9l-4-4L4 16Zm9-9 4 4"></path>
+              </svg>
+              Editar perfil
+            </button>
+
+            <button class="button button-danger" id="logoutLink" type="button">
+              Sair da conta
+            </button>
+
+            <div class="editing-actions" id="formActions" hidden>
+              <button class="button button-cancel" id="cancelButton" type="button">
+                Cancelar
+              </button>
+
+              <button class="button button-save" type="submit">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 4h12l2 2v14H5V4Zm3 0v6h8V4M8 15h8"></path>
+                </svg>
+                Salvar alterações
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <div class="header-divider"></div>
+
+        <div class="feedback" id="feedback" role="status" aria-live="polite" hidden>
+          <span id="feedbackText">Alterações salvas com sucesso.</span>
+        </div>
+
+        <section class="summary-grid" aria-label="Resumo do perfil">
+
+          <article class="summary-card">
+            <span class="summary-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 6h16v12H4zM4 7l8 6 8-6"></path>
+              </svg>
+            </span>
+
+            <div>
+              <span class="summary-label">E-mail</span>
+              <strong data-summary-email>Não informado</strong>
+            </div>
+          </article>
+
+          <article class="summary-card">
+            <span class="summary-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 4h3l2 5-2 1.5a15 15 0 0 0 5.5 5.5L15 14l5 2v3a2 2 0 0 1-2 2A15 15 0 0 1 3 6a2 2 0 0 1 2-2Z"></path>
+              </svg>
+            </span>
+
+            <div>
+              <span class="summary-label">Telefone</span>
+              <strong data-summary-phone>Não informado</strong>
+            </div>
+          </article>
+
+          <article class="summary-card">
+            <span class="summary-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Zm0-8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"></path>
+              </svg>
+            </span>
+
+            <div>
+              <span class="summary-label">Cidade/Estado</span>
+              <strong data-summary-location>Não informado</strong>
+            </div>
+          </article>
+
+          <article class="summary-card">
+            <span class="summary-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 2v4m10-4v4M4 9h16M5 5h14a2 2 0 0 1 2 2v12H3V7a2 2 0 0 1 2-2Z"></path>
+              </svg>
+            </span>
+
+            <div>
+              <span
+                class="summary-label"
+                data-summary-preference-label
+              >
+                Forma de atendimento
+              </span>
+
+              <strong data-summary-preference>Não informado</strong>
+            </div>
+          </article>
+        </section>
+
+        <section class="profile-panel">
+
+          <section class="profile-section">
+            <div class="section-heading">
+              <span class="section-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7 8a7 7 0 0 0-14 0"></path>
+                </svg>
+              </span>
+
+              <h2>Informações pessoais</h2>
+            </div>
+
+            <div class="fields-grid">
+
+              <label class="field">
+                <span>Nome completo</span>
+                <input
+                  name="fullName"
+                  type="text"
+                  minlength="3"
+                  required
+                  disabled
+                />
+              </label>
+
+              <label class="field">
+                <span>Data de nascimento</span>
+                <input name="birthDate" type="date" disabled />
+              </label>
+
+              <label class="field">
+                <span>Nome social</span>
+                <input
+                  name="socialName"
+                  type="text"
+                  placeholder="Não informado(a)"
+                  disabled
+                />
+              </label>
+
+              <label class="field">
+                <span>Pronome</span>
+
+                <select name="pronoun" disabled>
+                  <option value="">Não informado</option>
+                  <option value="Ela/Dela">Ela/Dela</option>
+                  <option value="Ele/Dele">Ele/Dele</option>
+                  <option value="Elu/Delu">Elu/Delu</option>
+                  <option value="Prefiro não informar">
+                    Prefiro não informar
+                  </option>
+                </select>
+              </label>
+
+            </div>
+          </section>
+
+          <section class="profile-section">
+            <div class="section-heading">
+              <span class="section-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 4h3l2 5-2 1.5a15 15 0 0 0 5.5 5.5L15 14l5 2v3a2 2 0 0 1-2 2A15 15 0 0 1 3 6a2 2 0 0 1 2-2Z"></path>
+                </svg>
+              </span>
+
+              <h2>Contato</h2>
+            </div>
+
+            <div class="fields-grid">
+
+              <label class="field">
+                <span>E-mail</span>
+                <input name="email" type="email" disabled />
+              </label>
+
+              <label class="field">
+                <span>Telefone</span>
+                <input name="phone" type="tel" maxlength="16" disabled />
+              </label>
+
+              <label class="field">
+                <span>Cidade</span>
+                <input
+                  name="city"
+                  type="text"
+                  placeholder="Sua cidade"
+                  disabled
+                />
+              </label>
+
+              <label class="field">
+                <span>Estado</span>
+
+                <select name="state" disabled>
+                  <option value="">Selecione</option>
+                  <option value="AC">AC</option>
+                  <option value="AL">AL</option>
+                  <option value="AP">AP</option>
+                  <option value="AM">AM</option>
+                  <option value="BA">BA</option>
+                  <option value="CE">CE</option>
+                  <option value="DF">DF</option>
+                  <option value="ES">ES</option>
+                  <option value="GO">GO</option>
+                  <option value="MA">MA</option>
+                  <option value="MT">MT</option>
+                  <option value="MS">MS</option>
+                  <option value="MG">MG</option>
+                  <option value="PA">PA</option>
+                  <option value="PB">PB</option>
+                  <option value="PR">PR</option>
+                  <option value="PE">PE</option>
+                  <option value="PI">PI</option>
+                  <option value="RJ">RJ</option>
+                  <option value="RN">RN</option>
+                  <option value="RS">RS</option>
+                  <option value="RO">RO</option>
+                  <option value="RR">RR</option>
+                  <option value="SC">SC</option>
+                  <option value="SP">SP</option>
+                  <option value="SE">SE</option>
+                  <option value="TO">TO</option>
+                </select>
+              </label>
+
+            </div>
+          </section>
+
+          <!-- PACIENTE -->
+          <section
+            class="profile-section conditional-section"
+            data-profile-section="paciente"
+          >
+            <div class="section-heading">
+              <span class="section-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m12 3 2.6 5.3 5.9.8-4.2 4.1 1 5.8-5.3-2.8-5.3 2.8 1-5.8-4.2-4.1 5.9-.8L12 3Z"></path>
+                </svg>
+              </span>
+
+              <h2>Preferências de atendimento</h2>
+            </div>
+
+            <div class="fields-grid">
+
+              <label class="field">
+                <span>Formato preferido</span>
+
+                <select name="preferredFormat" disabled>
+                  <option value="">Não informado</option>
+                  <option value="Online">Online</option>
+                  <option value="Presencial">Presencial</option>
+                  <option value="Online ou presencial">
+                    Online ou presencial
+                  </option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Melhor período</span>
+
+                <select name="preferredPeriod" disabled>
+                  <option value="">Não informado</option>
+                  <option value="Manhã">Manhã</option>
+                  <option value="Tarde">Tarde</option>
+                  <option value="Noite">Noite</option>
+                </select>
+              </label>
+
+            </div>
+          </section>
+
+          <!-- NOTIFICAÇÕES DO PACIENTE -->
+          <section
+            class="profile-section conditional-section notifications-section"
+            data-profile-section="paciente"
+          >
+            <div class="section-heading">
+              <span class="section-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 22a2.5 2.5 0 0 0 2.4-2h-4.8A2.5 2.5 0 0 0 12 22Zm6-6V11a6 6 0 0 0-4-5.6V4a2 2 0 1 0-4 0v1.4A6 6 0 0 0 6 11v5l-2 2h16l-2-2Z"></path>
+                </svg>
+              </span>
+
+              <h2>Notificações</h2>
+            </div>
+
+            <div class="notification-list">
+
+              <label class="notification-row">
+                <span>Lembretes de consulta</span>
+
+                <input
+                  class="switch-input"
+                  name="appointmentReminders"
+                  type="checkbox"
+                  disabled
+                />
+              </label>
+
+              <label class="notification-row">
+                <span>Notificações por e-mail</span>
+
+                <input
+                  class="switch-input"
+                  name="emailNotifications"
+                  type="checkbox"
+                  disabled
+                />
+              </label>
+
+            </div>
+          </section>
+
+        </section>
+
+        <span data-profile-completion hidden>100</span>
+        <span data-profile-completion-message hidden></span>
+        <span data-profile-progress-fill hidden></span>
+        <span data-summary-status hidden></span>
+
+      </form>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="confirmModal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+      <h2 id="confirmModalTitle">Salvar alterações</h2>
+      <p>Deseja salvar as alterações feitas no seu perfil?</p>
+      <div class="modal-actions">
+        <button class="btn-secondary" type="button" id="confirmCancelBtn">Cancelar</button>
+        <button class="btn-primary" type="button" id="confirmSaveBtn">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="successModal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="successModalTitle">
+      <h2 id="successModalTitle">Alterações salvas</h2>
+      <p>Seu perfil foi atualizado com sucesso.</p>
+      <div class="modal-actions">
+        <button class="btn-primary" type="button" id="successOkBtn">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/shared-data.js"></script>
+  <script src="../assets/js/paciente/perfil.js"></script>
+</body>
+</html>
