@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Página do PsicNota em construção.">
-  <title>PsicNota · Página em construção</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Agenda profissional e solicitações de consulta do PsicNota" />
+  <title>PsicNota | Agenda do psicólogo</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/profissional/agenda.css">
+
+  <link rel="stylesheet" href="../assets/css/profissional/agenda.css" />
+  <link rel="stylesheet" href="../assets/menu/menu.css" />
   <script src="../assets/menu/menu.js"></script>
 </head>
 <body>
@@ -17,17 +20,108 @@
 
     <main class="main-content">
       <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
-      <div class="construction-wrap">
-        <div class="construction-box">
-          <img src="../assets/img/logo_psicnota.png" alt="PsicNota">
-          <h1>Página em construção</h1>
-          <p>Esta área ainda não possui design definido no Figma e está em construção. Use o menu ao lado para navegar.</p>
+
+      <header class="topbar">
+        <div class="page-heading"><p class="eyebrow">Organização de atendimentos</p><h1>Agenda do psicólogo</h1></div>
+        <div class="topbar-actions">
+          <a class="account-chip" href="perfil.html" aria-label="Abrir meu perfil">
+            <span class="account-avatar" id="psychologistAvatarTopbar" aria-hidden="true">PS</span>
+            <span class="account-copy"><strong id="psychologistNameTopbar">Psicólogo</strong><span>Psicólogo · Editar perfil</span></span>
+          </a>
         </div>
-      </div>
+      </header>
+
+      <section class="agenda-intro" aria-labelledby="agendaIntroTitle">
+        <div><h2 id="agendaIntroTitle">Consultas confirmadas e pedidos dos pacientes</h2><p>As solicitações são exibidas pela ordem de chegada. O momento exato do pedido fica registrado para facilitar uma aprovação justa.</p></div>
+        <button class="button button-primary" id="newAppointmentButton" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Nova consulta manual
+        </button>
+      </section>
+
+      <section class="summary-grid" aria-label="Resumo da agenda">
+        <div class="summary-card"><div><span class="summary-label">Pendentes</span><strong id="pendingCount">0 solicitações</strong></div></div>
+        <div class="summary-card"><div><span class="summary-label">Hoje</span><strong id="todayCount">0 consultas</strong></div></div>
+        <div class="summary-card"><div><span class="summary-label">Esta semana</span><strong id="weekCount">0 consultas</strong></div></div>
+        <div class="summary-card"><div><span class="summary-label">Próximo atendimento</span><strong id="nextAppointment">Nenhum agendamento</strong></div></div>
+      </section>
+
+      <section class="request-board" id="solicitacoes" aria-labelledby="requestBoardTitle">
+        <header class="request-board-header">
+          <div><p class="eyebrow">Fila de aprovação</p><h2 id="requestBoardTitle">Solicitações dos pacientes</h2><p>O número da fila considera o instante em que cada pedido foi enviado. Os mais antigos aparecem primeiro.</p></div>
+          <span class="request-total" id="requestTotal">0 pendentes</span>
+        </header>
+        <div class="request-list" id="requestList"></div>
+        <div class="request-empty" id="requestEmpty" hidden><strong>Nenhuma solicitação pendente</strong><p>Novos pedidos feitos pelos pacientes aparecerão aqui automaticamente.</p></div>
+      </section>
+
+      <section class="agenda-workspace" aria-label="Calendário e detalhes do dia">
+        <div class="calendar-area">
+          <div class="calendar-toolbar">
+            <div class="month-navigation">
+              <button class="icon-button" id="previousMonthButton" type="button" aria-label="Mês anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+              <div class="month-title" aria-live="polite"><h2 id="monthTitle"></h2><span>Consultas confirmadas e pedidos pendentes</span></div>
+              <button class="icon-button" id="nextMonthButton" type="button" aria-label="Próximo mês"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>
+            </div>
+            <button class="button button-secondary button-compact" id="todayButton" type="button">Hoje</button>
+          </div>
+          <div class="calendar-scroll">
+            <div class="weekdays" aria-hidden="true"><span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span></div>
+            <div class="calendar-grid" id="calendarGrid" role="grid" aria-label="Calendário mensal"></div>
+          </div>
+          <div class="calendar-legend"><span><i class="legend-dot legend-consultation"></i> Confirmada</span><span><i class="legend-dot legend-request"></i> Aguardando aprovação</span><span><i class="legend-dot legend-note"></i> Lembrete</span></div>
+        </div>
+
+        <aside class="day-panel" aria-labelledby="selectedDateTitle">
+          <header class="day-panel-header">
+            <div><p class="eyebrow">Detalhes do dia</p><h2 id="selectedDateTitle"></h2><p id="selectedDateWeekday"></p></div>
+            <button class="icon-button" id="addAppointmentForDayButton" type="button" aria-label="Adicionar consulta neste dia"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+          </header>
+
+          <section class="day-section" aria-labelledby="appointmentsTitle">
+            <div class="day-section-heading"><h3 id="appointmentsTitle">Consultas confirmadas</h3><span id="selectedDayCount">0</span></div>
+            <div class="appointment-list" id="appointmentList"></div>
+            <div class="empty-state" id="emptyAppointments" hidden><strong>Nenhuma consulta confirmada</strong><p>Os horários aprovados aparecerão aqui.</p></div>
+          </section>
+
+          <section class="day-section day-request-section" aria-labelledby="dayRequestsTitle">
+            <div class="day-section-heading"><h3 id="dayRequestsTitle">Pedidos para este dia</h3><span id="selectedRequestCount">0</span></div>
+            <div class="day-request-list" id="dayRequestList"></div>
+            <p class="compact-empty" id="emptyDayRequests" hidden>Nenhuma solicitação pendente para esta data.</p>
+          </section>
+
+          <section class="day-section note-section" aria-labelledby="dayNoteTitle">
+            <div class="day-section-heading"><div><h3 id="dayNoteTitle">Lembrete do dia</h3><p>Uma anotação rápida para sua organização.</p></div><span class="save-status" id="noteSaveStatus"></span></div>
+            <label class="sr-only" for="dayNote">Anotação do dia selecionado</label>
+            <textarea id="dayNote" rows="5" maxlength="280" placeholder="Ex.: confirmar o atendimento das 14h."></textarea>
+            <div class="note-actions"><span id="noteCharacterCount">0/280</span><button class="button button-secondary button-compact" id="clearNoteButton" type="button">Limpar</button><button class="button button-primary button-compact" id="saveNoteButton" type="button">Salvar</button></div>
+          </section>
+        </aside>
+      </section>
     </main>
   </div>
 
+  <div class="modal-backdrop" id="appointmentModal" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <header class="modal-header"><div><p class="eyebrow">Novo agendamento</p><h2 id="modalTitle">Cadastrar consulta manualmente</h2></div><button class="icon-button" id="closeModalButton" type="button" aria-label="Fechar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></header>
+      <form id="appointmentForm" novalidate>
+        <div class="form-grid">
+          <label class="field field-wide"><span>Paciente</span><input id="appointmentPatient" name="patient" required placeholder="Nome do paciente" /></label>
+          <label class="field"><span>Data</span><input id="appointmentDate" name="date" type="date" required /></label>
+          <label class="field"><span>Horário</span><input id="appointmentTime" name="time" type="time" required /></label>
+          <label class="field"><span>Duração</span><select name="duration" id="appointmentDuration"><option value="30">30 minutos</option><option value="50" selected>50 minutos</option><option value="60">1 hora</option></select></label>
+          <label class="field"><span>Modalidade</span><select name="mode"><option>Online</option><option>Presencial</option></select></label>
+          <label class="field field-wide"><span>Observação breve <small>opcional</small></span><textarea name="observation" rows="3" maxlength="160"></textarea></label>
+        </div>
+        <p class="form-error" id="appointmentFormError" role="alert" hidden></p>
+        <footer class="modal-actions"><button class="button button-secondary" id="cancelModalButton" type="button">Cancelar</button><button class="button button-primary" type="submit">Salvar consulta</button></footer>
+      </form>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span><span id="toastMessage"></span></div>
   <script src="../assets/js/shared-data.js"></script>
   <script src="../assets/js/sidebar.js"></script>
+  <script src="../assets/js/profissional/agenda.js"></script>
 </body>
 </html>
