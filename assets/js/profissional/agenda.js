@@ -33,6 +33,8 @@ const elements = {
   mobileMenu: document.querySelector('.mobile-menu'),
   psychologistName: document.querySelector('#psychologistName'),
   psychologistAvatar: document.querySelector('#psychologistAvatar'),
+  psychologistNameTopbar: document.querySelector('#psychologistNameTopbar'),
+  psychologistAvatarTopbar: document.querySelector('#psychologistAvatarTopbar'),
   logoutLink: document.querySelector('#logoutLink')
 };
 
@@ -555,10 +557,15 @@ function escapeHtml(value) {
 
 function renderAll() {
   const displayName = currentPsychologist.fullName || currentPsychologist.name || 'Psicólogo PsiNote';
-  elements.psychologistName.textContent = displayName;
-  elements.psychologistAvatar.textContent = getInitials(displayName);
-  elements.psychologistAvatar.classList.toggle('has-photo', Boolean(currentPsychologist.avatarDataUrl));
-  elements.psychologistAvatar.style.backgroundImage = currentPsychologist.avatarDataUrl ? `url("${currentPsychologist.avatarDataUrl}")` : '';
+  [elements.psychologistName, elements.psychologistNameTopbar].forEach((nameElement) => {
+    if (nameElement) nameElement.textContent = displayName;
+  });
+  [elements.psychologistAvatar, elements.psychologistAvatarTopbar].forEach((avatarElement) => {
+    if (!avatarElement) return;
+    avatarElement.textContent = getInitials(displayName);
+    avatarElement.classList.toggle('has-photo', Boolean(currentPsychologist.avatarDataUrl));
+    avatarElement.style.backgroundImage = currentPsychologist.avatarDataUrl ? `url("${currentPsychologist.avatarDataUrl}")` : '';
+  });
   appointments = data.getAppointments();
   requests = data.getRequests();
   notes = data.getNotes();
