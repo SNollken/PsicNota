@@ -127,7 +127,7 @@ function enterWithProfile(profile, remember) {
   submitButton.textContent = "Entrando...";
 
   window.setTimeout(() => {
-    window.location.href = profile.role === "psicologo" ? "../profissional/home.html" : "../paciente/home.html";
+    window.location.href = profile.role === "psicologo" ? "../psicologo/home.html" : "../paciente/home.html";
   }, 700);
 }
 

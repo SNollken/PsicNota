@@ -5,7 +5,7 @@ Levantamento feito lendo o repo C:\Coding\PsicNota.
 
 ## Decisão (resumo)
 Criar UMA pasta nova, `auth/`, e mover as 3 páginas de autenticação pra dentro dela.
-Todo o resto fica como está: `paciente/` e `profissional/` já são pastas por papel, e
+Todo o resto fica como está: `paciente/` e `psicologo/` já são pastas por papel, e
 `index.html`, `home.html`, `perfil.html` permanecem na raiz. É o plano de menor risco
 que realmente desafoga a raiz (que hoje tem 6 HTMLs soltos).
 
@@ -24,9 +24,9 @@ PsicNota/
 │   ├── agenda-paciente.html
 │   ├── laudos.html
 │   └── psicologo.html
-├── profissional/            (área do profissional)                FICA
+├── psicologo/            (área do psicologo)                FICA
 │   ├── home.html
-│   ├── agenda.html
+│   ├── agenda-psicologo.html
 │   ├── consulta.html
 │   ├── historico.html
 │   ├── pacientes.html
@@ -80,14 +80,14 @@ home.html
 
 ### C. Página de subpasta que aponta para login (logout)
 
-profissional/agenda.html
+psicologo/agenda-psicologo.html
 - L52  href="../login.html"  -> ../auth/login.html
 
 ### D. Navegação feita por JS
 
 assets/js/login.js
-- L130 "profissional/home.html" : "paciente/home.html"
-       -> "../profissional/home.html" : "../paciente/home.html"
+- L130 "psicologo/home.html" : "paciente/home.html"
+       -> "../psicologo/home.html" : "../paciente/home.html"
        (o login.js passa a rodar dentro de auth/login.html; precisa do ../ pra alcançar a raiz)
 
 assets/js/perfil.js
@@ -101,16 +101,16 @@ assets/js/cadastro.js
 - assets/menu/menu.js e menu.html: não referenciam nenhuma página de auth.
   O menu só aponta para agenda/relatorios/pacientes/laudos/perfil. Nada a mudar.
 - assets/js/sidebar.js: usa apenas ../assets/img/. Nada a mudar.
-- Demais JS (relatorios.js, consulta.js, pacientes.js, agenda.js, agenda-psicologo.js):
-  só referenciam páginas DENTRO de profissional/ (consulta, historico, relatorios,
+- Demais JS (relatorios.js, consulta.js, pacientes.js, agenda-psicologo.js, agenda-psicologo.js):
+  só referenciam páginas DENTRO de psicologo/ (consulta, historico, relatorios,
   relatorio-view). Nada a mudar.
-- Todas as páginas de paciente/ e profissional/: seus links para ../perfil.html,
+- Todas as páginas de paciente/ e psicologo/: seus links para ../perfil.html,
   home.html e páginas vizinhas continuam válidos. Nada a mudar
-  (única exceção: o logout de profissional/agenda.html, item C acima).
+  (única exceção: o logout de psicologo/agenda-psicologo.html, item C acima).
 
 ## Esforço total
 - 3 arquivos movidos
-- 6 HTML editados: auth/login, auth/cadastro, auth/esqueci-senha, index, home, profissional/agenda
+- 6 HTML editados: auth/login, auth/cadastro, auth/esqueci-senha, index, home, psicologo/agenda
 - 2 JS editados: login.js, perfil.js
 
 ## Ordem de execução (para quando for executar, NÃO agora)
@@ -124,18 +124,18 @@ assets/js/cadastro.js
 1. abrir index.html          -> redireciona para auth/login.html
 2. na tela de login: "Criar conta" -> auth/cadastro.html ;
    "Esqueci minha senha" -> auth/esqueci-senha.html
-3. logar como psicólogo      -> vai para profissional/home.html ;
+3. logar como psicólogo      -> vai para psicologo/home.html ;
    logar como paciente        -> vai para paciente/home.html
-4. em profissional/agenda.html, "Sair da conta" -> auth/login.html
+4. em psicologo/agenda-psicologo.html, "Sair da conta" -> auth/login.html
 5. no login/cadastro, clicar no logo (brand)   -> index.html (raiz)
 6. console do navegador sem 404 de css/js/img
 
 ## Por que NÃO ir além (pasta dashboard/)
-Enfiar paciente/ e profissional/ dentro de uma pasta dashboard/ obrigaria a editar o
+Enfiar paciente/ e psicologo/ dentro de uma pasta dashboard/ obrigaria a editar o
 menu.js (../perfil.html -> ../../perfil.html), o sidebar.js e as ~11 páginas que
 carregam ../assets/menu/menu.js e ../assets/js/sidebar.js, além de todos os ../perfil.html
 e ../login.html hardcoded. Seriam dezenas de edits e um nível a mais de aninhamento, sem
-ganho de navegação (paciente e profissional já nomeiam os dois papéis claramente).
+ganho de navegação (paciente e psicologo já nomeiam os dois papéis claramente).
 Não vale o risco agora. Se um dia quiser a pasta dashboard/, o custo é esse acima.
 
 ## Registro de execução (2026-08-28, agente Scout)
@@ -150,7 +150,7 @@ EXECUTADO. Resumo do que foi feito:
    removeu o style inline e deu css próprio à página).
 3. Seções B, C e D aplicadas integralmente: index.html (meta refresh, location.replace
    e âncora -> auth/login.html), home.html (Criar conta/Entrar -> auth/), logout de
-   profissional/agenda.html (../login.html -> ../auth/login.html), login.js (redirects
+   psicologo/agenda-psicologo.html (../login.html -> ../auth/login.html), login.js (redirects
    pós-login com ../) e perfil.js (logout -> auth/login.html).
 4. Nada foi alterado em assets/css (trabalho da TASK 8 já commitado). Sem commit
    nesta etapa (commit é responsabilidade do agente Hawk).

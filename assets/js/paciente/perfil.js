@@ -3,7 +3,7 @@
 (function () {
   const ROLE = "paciente";
   const ROLE_LABEL = "Paciente";
-  const OTHER_PROFILE_PATH = "../profissional/perfil.html";
+  const OTHER_PROFILE_PATH = "../psicologo/perfil.html";
   const data = window.PsiNoteData;
   const form = document.getElementById("profileForm");
 

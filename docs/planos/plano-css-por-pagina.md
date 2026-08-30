@@ -12,7 +12,7 @@ aceitável; compartilhamento não.
 ## Estrutura final
 
 A estrutura dentro de `assets/css/` espelha a estrutura dos HTMLs (resolve a
-colisão de nomes: existe home.html na raiz, em paciente/ e em profissional/).
+colisão de nomes: existe home.html na raiz, em paciente/ e em psicologo/).
 
 ```
 assets/css/
@@ -26,20 +26,20 @@ assets/css/
     home.css                NOVO  (placeholder "em construção")
     laudos.css              NOVO  (placeholder)
     psicologo.css           NOVO  (placeholder)
-    agenda-paciente.css     MOVIDO+MESCLADO (agenda.css + menu.css + blocos do
+    agenda-paciente.css     MOVIDO+MESCLADO (agenda-psicologo.css + menu.css + blocos do
                             ex-base.css + conteúdo original, nesta ordem de cascata)
-  profissional/
+  psicologo/
     home.css                NOVO  (placeholder)
     consulta.css            NOVO  (placeholder)
     historico.css           NOVO  (placeholder)
     pacientes.css           NOVO  (placeholder)
     relatorio-view.css      NOVO  (placeholder)
-    agenda.css              MOVIDO+MESCLADO (agenda.css + menu.css + blocos do
+    agenda-psicologo.css              MOVIDO+MESCLADO (agenda-psicologo.css + menu.css + blocos do
                             ex-base.css usados pela página, nesta ordem de cascata)
     relatorios.css          MOVIDO+MESCLADO (menu.css + blocos do ex-base.css
                             + conteúdo original do relatorios.css)
 
-EXCLUÍDOS: assets/css/base.css, assets/css/auth.css, assets/css/agenda.css,
+EXCLUÍDOS: assets/css/base.css, assets/css/auth.css, assets/css/agenda-psicologo.css,
 assets/css/agenda-paciente.css (raiz), assets/css/relatorios.css (raiz).
 ```
 
@@ -50,9 +50,9 @@ do assets/css/ também (a pasta auth/ é tarefa do Scout depois).
 
 As 3 páginas que linkavam vários CSS tinham cascata real nesta ordem:
 
-- profissional/agenda.html: agenda.css → menu.css (via @import do base) → base.css
-- paciente/agenda-paciente.html: agenda.css → menu.css → base.css → agenda-paciente.css
-- profissional/relatorios.html: menu.css → base.css → relatorios.css
+- psicologo/agenda-psicologo.html: agenda-psicologo.css → menu.css (via @import do base) → base.css
+- paciente/agenda-paciente.html: agenda-psicologo.css → menu.css → base.css → agenda-paciente.css
+- psicologo/relatorios.html: menu.css → base.css → relatorios.css
 
 Os CSS únicos novos concatenam exatamente esses conteúdos nessa ordem, para o
 resultado visual não mudar. Do ex-base.css entram só os blocos que a página usa:
@@ -97,13 +97,13 @@ circulação junto com o base.css. Ficam preservados no histórico do git.
 | paciente/laudos.html | assets/css/paciente/laudos.css |
 | paciente/psicologo.html | assets/css/paciente/psicologo.css |
 | paciente/agenda-paciente.html | assets/css/paciente/agenda-paciente.css |
-| profissional/home.html | assets/css/profissional/home.css |
-| profissional/consulta.html | assets/css/profissional/consulta.css |
-| profissional/historico.html | assets/css/profissional/historico.css |
-| profissional/pacientes.html | assets/css/paciente… profissional/pacientes.css |
-| profissional/agenda.html | assets/css/profissional/agenda.css |
-| profissional/relatorios.html | assets/css/profissional/relatorios.css |
-| profissional/relatorio-view.html | assets/css/profissional/relatorio-view.css |
+| psicologo/home.html | assets/css/psicologo/home.css |
+| psicologo/consulta.html | assets/css/psicologo/consulta.css |
+| psicologo/historico.html | assets/css/psicologo/historico.css |
+| psicologo/pacientes.html | assets/css/paciente… psicologo/pacientes.css |
+| psicologo/agenda-psicologo.html | assets/css/psicologo/agenda-psicologo.css |
+| psicologo/relatorios.html | assets/css/psicologo/relatorios.css |
+| psicologo/relatorio-view.html | assets/css/psicologo/relatorio-view.css |
 
 Os 8 placeholders e o esqueci-senha usam `@import "../../menu/menu.css"` (ou
 link direto, no perfil) porque usam o componente `<psic-menu>`/sidebar do

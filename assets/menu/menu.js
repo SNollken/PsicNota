@@ -19,7 +19,7 @@
              paciente : "agendar" | "laudos" | "perfil" | ""
 
    O componente renderiza em LIGHT DOM de forma SÍNCRONA durante o parse,
-   então os scripts de cada página (agenda.js, pacientes.js, perfil.js...)
+   então os scripts de cada página (agenda-psicologo.js, pacientes.js, perfil.js...)
    continuam achando .sidebar, .nav-item, #psychologistAvatar etc. normalmente.
 
    A marcação é a mesma do menu.html (referência). O estilo mora no menu.css,
@@ -47,13 +47,13 @@
 
     return (
       '<aside class="sidebar" aria-label="Navegação principal">\n' +
-      '      <a class="brand" href="' + prefixoPagina + 'agenda.html" aria-label="PsicNota - página inicial">\n' +
+      '      <a class="brand" href="' + prefixoPagina + 'agenda-psicologo.html" aria-label="PsicNota - página inicial">\n' +
       '        <img src="' + prefixoAsset + 'img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />\n' +
       '        <span class="brand-text">PsicNota</span>\n' +
       '      </a>\n' +
       '      <nav class="main-nav">\n' +
       '        <p class="nav-label">MENU</p>\n' +
-      '        ' + item(prefixoPagina + 'agenda.html', ICON_AGENDA, 'Agendar consulta', ativo === 'agenda') + '\n' +
+      '        ' + item(prefixoPagina + 'agenda-psicologo.html', ICON_AGENDA, 'Agendar consulta', ativo === 'agenda') + '\n' +
       '        ' + item(prefixoPagina + 'relatorios.html', ICON_CLIP, 'Relatórios', ativo === 'relatorios') + '\n' +
       '        ' + item(prefixoPagina + 'pacientes.html', ICON_PESSOA, 'Meus pacientes', ativo === 'pacientes') + '\n' +
       '      </nav>\n\n' +
