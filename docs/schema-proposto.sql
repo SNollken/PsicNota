@@ -262,7 +262,7 @@ begin
 
   -- Defensivo: so cria dados_psicologo se o CRP completo veio no cadastro;
   -- senao o psicologo completa depois pelo perfil (evita quebrar o signup
-  -- e nunca fabrica dado de registro profissional).
+  -- e nunca fabrica dado de registro do psicólogo).
   if p_papel = 'psicologo'
      and nullif(trim(new.raw_user_meta_data->>'crp_numero'), '') is not null
      and nullif(trim(new.raw_user_meta_data->>'crp_uf'), '') is not null then

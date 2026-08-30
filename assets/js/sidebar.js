@@ -3,7 +3,7 @@
 /* Preenche o bloco de perfil do menu lateral com os dados da sessão logada.
    Roda no evento "load" para aplicar DEPOIS dos scripts de página (que
    substituem o avatar por iniciais), garantindo o avatar ilustrado do Figma
-   em todas as telas. Vale para as áreas do paciente e do profissional. */
+   em todas as telas. Vale para as áreas do paciente e do psicólogo. */
 (function () {
   const data = window.PsiNoteData;
 
