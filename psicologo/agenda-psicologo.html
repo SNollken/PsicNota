@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Agenda psicologo e solicitações de consulta do PsicNota" />
-  <title>PsicNota | Agenda do psicólogo</title>
+  <meta name="description" content="Agenda de consultas e solicitações do psicólogo no PsicNota" />
+  <title>PsicNota | Agenda das Consultas</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,114 +15,263 @@
   <link rel="stylesheet" href="../assets/menu/menu.css" />
   <script src="../assets/menu/menu.js"></script>
 </head>
-<body>
+
+<body class="psic-view">
   <div class="app-shell">
     <psic-menu tipo="psicologo" ativo="agenda"></psic-menu>
 
-    <main class="main-content">
+    <main class="main-content agenda-psic-page">
+
       <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
 
-      <header class="topbar">
-        <div class="page-heading"><p class="eyebrow">Organização de atendimentos</p><h1>Agenda do psicólogo</h1></div>
-        <div class="topbar-actions">
-          <a class="account-chip" href="perfil.html" aria-label="Abrir meu perfil">
-            <span class="account-avatar" id="psychologistAvatarTopbar" aria-hidden="true">PS</span>
-            <span class="account-copy"><strong id="psychologistNameTopbar">Psicólogo</strong><span>Psicólogo · Editar perfil</span></span>
-          </a>
-        </div>
+      <header class="topbar agenda-topbar">
+        <h1>Agenda das Consultas</h1>
       </header>
 
-      <section class="agenda-intro" aria-labelledby="agendaIntroTitle">
-        <div><h2 id="agendaIntroTitle">Consultas confirmadas e pedidos dos pacientes</h2><p>As solicitações são exibidas pela ordem de chegada. O momento exato do pedido fica registrado para facilitar uma aprovação justa.</p></div>
-        <button class="button button-primary" id="newAppointmentButton" type="button">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-          Nova consulta manual
-        </button>
-      </section>
+      <section class="agenda-content">
 
-      <section class="summary-grid" aria-label="Resumo da agenda">
-        <div class="summary-card"><div><span class="summary-label">Pendentes</span><strong id="pendingCount">0 solicitações</strong></div></div>
-        <div class="summary-card"><div><span class="summary-label">Hoje</span><strong id="todayCount">0 consultas</strong></div></div>
-        <div class="summary-card"><div><span class="summary-label">Esta semana</span><strong id="weekCount">0 consultas</strong></div></div>
-        <div class="summary-card"><div><span class="summary-label">Próximo atendimento</span><strong id="nextAppointment">Nenhum agendamento</strong></div></div>
-      </section>
+        <h2 class="agenda-subtitle">
+          Escolha um dia e um horário para consultar
+        </h2>
 
-      <section class="request-board" id="solicitacoes" aria-labelledby="requestBoardTitle">
-        <header class="request-board-header">
-          <div><p class="eyebrow">Fila de aprovação</p><h2 id="requestBoardTitle">Solicitações dos pacientes</h2><p>O número da fila considera o instante em que cada pedido foi enviado. Os mais antigos aparecem primeiro.</p></div>
-          <span class="request-total" id="requestTotal">0 pendentes</span>
-        </header>
-        <div class="request-list" id="requestList"></div>
-        <div class="request-empty" id="requestEmpty" hidden><strong>Nenhuma solicitação pendente</strong><p>Novos pedidos feitos pelos pacientes aparecerão aqui automaticamente.</p></div>
-      </section>
+        <!-- =========================================================
+             CARDS DE RESUMO
+             ========================================================= -->
 
-      <section class="agenda-workspace" aria-label="Calendário e detalhes do dia">
-        <div class="calendar-area">
-          <div class="calendar-toolbar">
-            <div class="month-navigation">
-              <button class="icon-button" id="previousMonthButton" type="button" aria-label="Mês anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
-              <div class="month-title" aria-live="polite"><h2 id="monthTitle"></h2><span>Consultas confirmadas e pedidos pendentes</span></div>
-              <button class="icon-button" id="nextMonthButton" type="button" aria-label="Próximo mês"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>
+        <section class="psic-dashboard" aria-label="Resumo da agenda">
+
+          <button class="psic-dashboard-card dashboard-week" id="weekAppointmentsCard" type="button">
+            <span class="dashboard-copy">
+              <small>Esta semana</small>
+              <strong id="weekAppointmentsCount">
+                0 atendimentos
+              </strong>
+            </span>
+
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
+          </button>
+
+          <button class="psic-dashboard-card dashboard-next" id="nextAppointmentCard" type="button">
+            <span class="dashboard-copy">
+              <small>Próximo atendimento</small>
+              <strong id="nextAppointmentSummary">
+                Nenhum agendamento
+              </strong>
+            </span>
+
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
+          </button>
+
+          <button class="psic-dashboard-card dashboard-pending" id="pendingRequestsCard" type="button">
+            <span class="dashboard-copy">
+              <small>Pedidos Pendentes</small>
+              <strong id="pendingRequestsCount">
+                0 solicitações
+              </strong>
+            </span>
+
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
+          </button>
+
+        </section>
+
+        <!-- =========================================================
+             CALENDÁRIO
+             ========================================================= -->
+
+        <section class="psic-calendar-card" aria-label="Calendário de consultas">
+          <div class="psic-calendar-header">
+
+            <div></div>
+
+            <h2 id="psicMonthTitle">
+              Mês
+            </h2>
+
+            <div class="psic-calendar-navigation">
+
+              <button id="psicPreviousMonth" class="calendar-arrow" type="button" aria-label="Mês anterior">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m15 18-6-6 6-6"></path>
+                </svg>
+              </button>
+
+              <button id="psicNextMonth" class="calendar-arrow" type="button" aria-label="Próximo mês">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m9 18 6-6-6-6"></path>
+                </svg>
+              </button>
+
             </div>
-            <button class="button button-secondary button-compact" id="todayButton" type="button">Hoje</button>
+
           </div>
-          <div class="calendar-scroll">
-            <div class="weekdays" aria-hidden="true"><span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span></div>
-            <div class="calendar-grid" id="calendarGrid" role="grid" aria-label="Calendário mensal"></div>
+
+          <div class="weekdays psic-weekdays" aria-hidden="true">
+            <span>DOM</span>
+            <span>SEG</span>
+            <span>TER</span>
+            <span>QUA</span>
+            <span>QUI</span>
+            <span>SEX</span>
+            <span>SÁB</span>
           </div>
-          <div class="calendar-legend"><span><i class="legend-dot legend-consultation"></i> Confirmada</span><span><i class="legend-dot legend-request"></i> Aguardando aprovação</span><span><i class="legend-dot legend-note"></i> Lembrete</span></div>
+
+          <div class="calendar-grid psic-calendar-grid" id="psicCalendarGrid" role="grid"></div>
+        </section>
+
+        <!-- =========================================================
+             POPUP DE HORÁRIOS DISPONÍVEIS (marcar consulta)
+             ========================================================= -->
+
+        <div class="psic-schedule-popup" id="psicSchedulePopup" role="dialog" aria-modal="true" aria-hidden="true"
+          aria-labelledby="psicSchedulePopupDate">
+          <div class="psic-schedule-popup-card">
+
+            <button class="psic-schedule-popup-back" id="psicSchedulePopupClose" type="button" aria-label="Fechar">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m15 18-6-6 6-6"></path>
+              </svg>
+            </button>
+
+            <div class="psic-schedule-popup-header">
+              <span class="psic-schedule-popup-eyebrow">HORÁRIOS DISPONÍVEIS</span>
+              <strong id="psicSchedulePopupDate">Data</strong>
+            </div>
+
+            <label class="psic-patient-field">
+              <span class="sr-only">Paciente</span>
+              <select id="psicPatientSelect" class="psic-patient-select">
+                <option value="">Clique para escolher seu paciente</option>
+              </select>
+            </label>
+
+            <div class="psic-schedule-popup-columns">
+
+              <section class="psic-schedule-column" id="psicOnlineColumn">
+                <div class="psic-schedule-column-pill">
+                  Online
+                </div>
+
+                <div class="psic-schedule-times" id="psicOnlineTimes"></div>
+              </section>
+
+              <section class="psic-schedule-column" id="psicPresentialColumn">
+                <div class="psic-schedule-column-pill">
+                  Presencial
+                </div>
+
+                <div class="psic-schedule-times" id="psicPresentialTimes"></div>
+              </section>
+
+            </div>
+
+            <label class="psic-schedule-terms">
+              <input type="checkbox" id="psicScheduleTerms" />
+              <span>Confirmo que li os Termos de Uso</span>
+            </label>
+
+            <button class="psic-schedule-submit" id="psicScheduleSubmit" type="button" disabled>
+              Marcar consulta
+            </button>
+
+          </div>
         </div>
 
-        <aside class="day-panel" aria-labelledby="selectedDateTitle">
-          <header class="day-panel-header">
-            <div><p class="eyebrow">Detalhes do dia</p><h2 id="selectedDateTitle"></h2><p id="selectedDateWeekday"></p></div>
-            <button class="icon-button" id="addAppointmentForDayButton" type="button" aria-label="Adicionar consulta neste dia"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
-          </header>
+        <!-- =========================================================
+             POPUP DE SOLICITAÇÕES (pedidos pendentes)
+             ========================================================= -->
 
-          <section class="day-section" aria-labelledby="appointmentsTitle">
-            <div class="day-section-heading"><h3 id="appointmentsTitle">Consultas confirmadas</h3><span id="selectedDayCount">0</span></div>
-            <div class="appointment-list" id="appointmentList"></div>
-            <div class="empty-state" id="emptyAppointments" hidden><strong>Nenhuma consulta confirmada</strong><p>Os horários aprovados aparecerão aqui.</p></div>
-          </section>
+        <div class="psic-requests-popup" id="psicRequestsPopup" aria-hidden="true" role="dialog" aria-modal="true"
+          aria-labelledby="psicRequestsPopupTitle">
+          <div class="psic-requests-popup-card">
 
-          <section class="day-section day-request-section" aria-labelledby="dayRequestsTitle">
-            <div class="day-section-heading"><h3 id="dayRequestsTitle">Pedidos para este dia</h3><span id="selectedRequestCount">0</span></div>
-            <div class="day-request-list" id="dayRequestList"></div>
-            <p class="compact-empty" id="emptyDayRequests" hidden>Nenhuma solicitação pendente para esta data.</p>
-          </section>
+            <button class="psic-requests-popup-back" id="psicRequestsPopupClose" type="button" aria-label="Fechar">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m15 18-6-6 6-6"></path>
+              </svg>
+            </button>
 
-          <section class="day-section note-section" aria-labelledby="dayNoteTitle">
-            <div class="day-section-heading"><div><h3 id="dayNoteTitle">Lembrete do dia</h3><p>Uma anotação rápida para sua organização.</p></div><span class="save-status" id="noteSaveStatus"></span></div>
-            <label class="sr-only" for="dayNote">Anotação do dia selecionado</label>
-            <textarea id="dayNote" rows="5" maxlength="280" placeholder="Ex.: confirmar o atendimento das 14h."></textarea>
-            <div class="note-actions"><span id="noteCharacterCount">0/280</span><button class="button button-secondary button-compact" id="clearNoteButton" type="button">Limpar</button><button class="button button-primary button-compact" id="saveNoteButton" type="button">Salvar</button></div>
-          </section>
-        </aside>
+            <header class="psic-requests-popup-header">
+              <span>SOLICITAÇÕES</span>
+
+              <strong id="psicRequestsPopupTitle">
+                Pedidos pendentes
+              </strong>
+            </header>
+
+            <div class="psic-requests-popup-list" id="psicRequestsPopupList"></div>
+
+          </div>
+        </div>
+
+        <!-- =========================================================
+             POPUP DE PRÓXIMAS CONSULTAS
+             ========================================================= -->
+
+        <div class="psic-appointments-popup" id="psicAppointmentsPopup" aria-hidden="true" role="dialog" aria-modal="true"
+          aria-labelledby="psicAppointmentsPopupTitle">
+          <div class="psic-appointments-popup-card">
+
+            <button class="psic-appointments-popup-back" id="psicAppointmentsPopupClose" type="button" aria-label="Fechar">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m15 18-6-6 6-6"></path>
+              </svg>
+            </button>
+
+            <header class="psic-appointments-popup-header">
+              <span>PRÓX. CONSULTAS</span>
+
+              <strong id="psicAppointmentsPopupTitle">
+                Consultas agendadas
+              </strong>
+            </header>
+
+            <div class="psic-appointments-popup-list" id="psicAppointmentsPopupList"></div>
+
+          </div>
+        </div>
+
+        <!-- =========================================================
+             POPUP DE CONSULTAS CONCLUÍDAS 7D
+             ========================================================= -->
+
+        <div class="psic-completed-popup" id="psicCompletedPopup" aria-hidden="true" role="dialog" aria-modal="true"
+          aria-labelledby="psicCompletedPopupTitle">
+          <div class="psic-completed-popup-card">
+
+            <button class="psic-completed-popup-back" id="psicCompletedPopupClose" type="button" aria-label="Fechar">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m15 18-6-6 6-6"></path>
+              </svg>
+            </button>
+
+            <header class="psic-completed-popup-header">
+              <span>CONCLUIDAS 7D</span>
+
+              <strong id="psicCompletedPopupTitle">
+                Atendimentos recentes
+              </strong>
+            </header>
+
+            <div class="psic-completed-popup-list" id="psicCompletedPopupList"></div>
+
+          </div>
+        </div>
+
       </section>
+
     </main>
   </div>
 
-  <div class="modal-backdrop" id="appointmentModal" hidden>
-    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <header class="modal-header"><div><p class="eyebrow">Novo agendamento</p><h2 id="modalTitle">Cadastrar consulta manualmente</h2></div><button class="icon-button" id="closeModalButton" type="button" aria-label="Fechar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></header>
-      <form id="appointmentForm" novalidate>
-        <div class="form-grid">
-          <label class="field field-wide"><span>Paciente</span><input id="appointmentPatient" name="patient" required placeholder="Nome do paciente" /></label>
-          <label class="field"><span>Data</span><input id="appointmentDate" name="date" type="date" required /></label>
-          <label class="field"><span>Horário</span><input id="appointmentTime" name="time" type="time" required /></label>
-          <label class="field"><span>Duração</span><select name="duration" id="appointmentDuration"><option value="30">30 minutos</option><option value="50" selected>50 minutos</option><option value="60">1 hora</option></select></label>
-          <label class="field"><span>Modalidade</span><select name="mode"><option>Online</option><option>Presencial</option></select></label>
-          <label class="field field-wide"><span>Observação breve <small>opcional</small></span><textarea name="observation" rows="3" maxlength="160"></textarea></label>
-        </div>
-        <p class="form-error" id="appointmentFormError" role="alert" hidden></p>
-        <footer class="modal-actions"><button class="button button-secondary" id="cancelModalButton" type="button">Cancelar</button><button class="button button-primary" type="submit">Salvar consulta</button></footer>
-      </form>
-    </section>
-  </div>
-
-  <div class="toast" id="toast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span><span id="toastMessage"></span></div>
+  <div class="toast" id="psicToast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span><span id="psicToastMessage"></span></div>
   <script src="../assets/js/shared-data.js"></script>
-  <script src="../assets/js/sidebar.js"></script>
-  <script src="../assets/js/psicologo/agenda-psicologo.js"></script>
+  <script src="../assets/js/agenda-psicologo.js"></script>
 </body>
+
 </html>

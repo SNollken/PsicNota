@@ -725,3 +725,659 @@ body.modal-open { overflow: hidden; }
   .request-total { justify-self: start; }
   .request-card-actions { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
 }
+
+/* =========================================================
+   REDESIGN DA AGENDA DO PSICÓLOGO
+   Sobrescreve o layout legado acima para o HTML atual.
+   ========================================================= */
+
+.psic-view {
+  background: #ffffff;
+}
+
+.psic-view .agenda-psic-page {
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0 18px 30px;
+}
+
+.psic-view .agenda-topbar {
+  min-height: 95px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-bottom: 1px solid #64727c;
+}
+
+.psic-view .agenda-topbar h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.psic-view .agenda-content {
+  width: min(100%, 1180px);
+  margin: 0 auto;
+  padding-top: 18px;
+}
+
+.psic-view .agenda-subtitle {
+  margin: 6px 0 26px;
+  color: #111827;
+  font-size: 28px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.psic-dashboard {
+  width: min(100%, 1010px);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 36px;
+  margin: 0 auto 38px;
+}
+
+.psic-dashboard-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 42px;
+  align-items: center;
+  min-height: 88px;
+  padding: 11px 15px 11px 24px;
+  border: 1px solid;
+  border-radius: 18px;
+  background: #f8fafb;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.psic-dashboard-card:hover {
+  background: #ffffff;
+  transform: translateY(-1px);
+}
+
+.psic-dashboard-card > svg {
+  width: 26px;
+  height: 26px;
+  justify-self: center;
+  color: #1f637a;
+  stroke-width: 3;
+  fill: none;
+  stroke: currentColor;
+}
+
+.psic-dashboard-card .dashboard-copy {
+  display: block;
+  min-width: 0;
+}
+
+.psic-dashboard-card .dashboard-copy small,
+.psic-dashboard-card .dashboard-copy strong {
+  display: block;
+}
+
+.psic-dashboard-card .dashboard-copy small {
+  margin-bottom: 6px;
+  color: #111827;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.psic-dashboard-card .dashboard-copy strong {
+  overflow: hidden;
+  color: #174e61;
+  font-size: 15px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-week { border-color: #3bae24; }
+.dashboard-next { border-color: #1f637a; }
+.dashboard-pending { border-color: #d90307; }
+
+.psic-calendar-card {
+  width: min(100%, 1080px);
+  margin: 0 auto;
+  padding: 20px 22px;
+  border: 1px solid #e4f6fc;
+  border-radius: 22px;
+  background: #e4f6fc;
+}
+
+.psic-calendar-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  min-height: 58px;
+  margin-bottom: 10px;
+}
+
+.psic-calendar-header > h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 25px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.psic-calendar-navigation {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-self: end;
+}
+
+.calendar-arrow {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid #1f637a;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.calendar-arrow svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: #1f637a;
+  stroke-width: 2.4;
+}
+
+.calendar-arrow:hover {
+  color: #ffffff;
+  background: #1f637a;
+}
+
+.calendar-arrow:hover svg { stroke: #ffffff; }
+
+.psic-view .psic-weekdays,
+.psic-view .psic-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  min-width: 0;
+  gap: 5px;
+  border: 0;
+}
+
+.psic-view .psic-weekdays {
+  margin-bottom: 5px;
+}
+
+.psic-view .psic-weekdays span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 35px;
+  padding: 0;
+  border: 0;
+  color: #111827;
+  background: transparent;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.psic-day {
+  position: relative;
+  display: block;
+  min-width: 0;
+  min-height: 105px;
+  padding: 12px;
+  border: 1px solid #64727c;
+  border-radius: 7px;
+  color: #111827;
+  background: rgba(255, 255, 255, 0.92);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+
+.psic-day:hover:not(:disabled) {
+  z-index: 2;
+  transform: translateY(-1px);
+  border-color: #bfe7f5;
+  background: #ffffff;
+}
+
+.psic-day:disabled { cursor: default; }
+.psic-day.other-month { color: #64727c; background: rgba(255, 255, 255, 0.65); }
+
+.psic-day-number {
+  display: block;
+  margin: 0;
+  color: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.psic-day-info {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  max-width: calc(100% - 12px);
+  transform: translate(-50%, -28%);
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.psic-day.has-available { border-color: #3bae24; }
+.psic-day.has-pending { border-color: #d90307; }
+.psic-day.has-confirmed { border-color: #1f637a; }
+.psic-day.today { border-color: #174e61; }
+
+.psic-day.has-available .psic-day-info,
+.psic-day.has-pending .psic-day-info,
+.psic-day.has-confirmed .psic-day-info,
+.psic-day.today .psic-day-info {
+  color: #174e61;
+}
+
+.psic-schedule-popup,
+.psic-requests-popup,
+.psic-appointments-popup,
+.psic-completed-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(17, 24, 39, 0.42);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.18s ease, visibility 0.18s ease;
+}
+
+.psic-schedule-popup.open,
+.psic-requests-popup.open,
+.psic-appointments-popup.open,
+.psic-completed-popup.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.psic-schedule-popup-card,
+.psic-requests-popup-card,
+.psic-appointments-popup-card,
+.psic-completed-popup-card {
+  position: relative;
+  width: min(100%, 556px);
+  min-height: 360px;
+  max-height: 700px;
+  padding: 22px 20px 20px;
+  overflow-y: auto;
+  border: 1.5px solid #1f637a;
+  border-radius: 24px;
+  background: #e4f6fc;
+}
+
+.psic-requests-popup-card { border-color: #d90307; }
+.psic-completed-popup-card { border-color: #3bae24; }
+
+.psic-schedule-popup-back,
+.psic-requests-popup-back,
+.psic-appointments-popup-back,
+.psic-completed-popup-back {
+  position: absolute;
+  top: 18px;
+  left: 16px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  color: #174e61;
+  background: transparent;
+  cursor: pointer;
+}
+
+.psic-requests-popup-back { color: #d90307; }
+.psic-completed-popup-back { color: #3bae24; }
+
+.psic-schedule-popup-back svg,
+.psic-requests-popup-back svg,
+.psic-appointments-popup-back svg,
+.psic-completed-popup-back svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+}
+
+.psic-schedule-popup-header,
+.psic-requests-popup-header,
+.psic-appointments-popup-header,
+.psic-completed-popup-header {
+  margin-bottom: 22px;
+  text-align: center;
+}
+
+.psic-schedule-popup-eyebrow,
+.psic-requests-popup-header span,
+.psic-appointments-popup-header span,
+.psic-completed-popup-header span {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.psic-schedule-popup-eyebrow { color: #174e61; }
+.psic-requests-popup-header span { color: #d90307; }
+.psic-appointments-popup-header span { color: #1f637a; }
+.psic-completed-popup-header span { color: #3bae24; }
+
+.psic-schedule-popup-header strong,
+.psic-requests-popup-header strong,
+.psic-appointments-popup-header strong,
+.psic-completed-popup-header strong {
+  display: block;
+  color: #111827;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.psic-patient-field {
+  display: block;
+  margin: 12px auto;
+  max-width: 380px;
+}
+
+.psic-patient-select { width: 100%; cursor: pointer; }
+
+.psic-schedule-terms {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 0;
+  color: #174e61;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.psic-schedule-terms input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex: 0 0 auto;
+  accent-color: #1f637a;
+}
+
+.psic-schedule-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 14px;
+  padding: 10px 14px;
+  border: 1px solid #1f637a;
+  border-radius: 10px;
+  color: #ffffff;
+  background: #1f637a;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+}
+
+.psic-schedule-submit:hover:not(:disabled) {
+  background: #174e61;
+  border-color: #174e61;
+  transform: translateY(-1px);
+}
+
+.psic-schedule-submit:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+
+.psic-schedule-popup-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin-top: 8px;
+  margin-bottom: 14px;
+}
+
+.psic-schedule-column { padding: 0 12px; }
+.psic-schedule-column:first-child {
+  border-right: 1px solid #e4f6fc;
+}
+
+.psic-schedule-column-pill {
+  width: fit-content;
+  font-size: 10px;
+  font-weight: 700;
+  color: #174e61;
+}
+
+.psic-schedule-times,
+.psic-requests-popup-list,
+.psic-appointments-popup-list,
+.psic-completed-popup-list {
+  display: grid;
+  gap: 12px;
+}
+
+.psic-schedule-time {
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid #64727c;
+  border-radius: 8px;
+  color: #111827;
+  background: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.14s ease, background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+
+.psic-schedule-time:hover { transform: translateY(-1px); }
+.psic-schedule-time.selected {
+  border-color: #1f637a;
+  color: #ffffff;
+  background: #1f637a;
+}
+
+.psic-schedule-no-slots,
+.psic-popup-empty {
+  margin: 70px 0;
+  color: #64727c;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.psic-request-item,
+.psic-appointment-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  min-height: 78px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.psic-request-item { border: 1px solid #d90307; }
+.psic-appointment-item { border: 1px solid #bfe7f5; }
+
+.psic-request-info,
+.psic-appointment-info {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.psic-request-mode,
+.psic-appointment-mode {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.psic-request-mode { color: #d90307; }
+.psic-appointment-mode { color: #1f637a; }
+
+.psic-request-info strong,
+.psic-appointment-info strong {
+  font-size: 14px;
+  color: #111827;
+}
+
+.psic-request-datetime,
+.psic-appointment-datetime,
+.psic-request-info small {
+  color: #64727c;
+  font-size: 11px;
+}
+
+.psic-request-actions,
+.psic-appointment-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.psic-request-approve,
+.psic-request-reject,
+.psic-appointment-open,
+.psic-appointment-cancel {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid #dce6ea;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #174e61;
+}
+
+.psic-request-approve { color: #3bae24; }
+.psic-request-reject,
+.psic-appointment-cancel { color: #d90307; }
+
+.psic-appointment-open {
+  text-decoration: none;
+  color: #174e61;
+}
+
+.psic-request-approve:hover,
+.psic-request-reject:hover,
+.psic-appointment-open:hover,
+.psic-appointment-cancel:hover {
+  background: #f8fafb;
+}
+
+.psic-request-approve svg,
+.psic-request-reject svg,
+.psic-appointment-open svg,
+.psic-appointment-cancel svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+}
+
+.toast-error {
+  border-left-color: #d90307;
+  color: #d90307;
+  background: #fff4f4;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+@media (max-width: 1180px) {
+  .psic-dashboard { gap: 20px; }
+  .psic-view .agenda-content { width: min(100%, 1080px); }
+}
+
+@media (max-width: 900px) {
+  .psic-dashboard {
+    grid-template-columns: 1fr;
+    width: min(100%, 720px);
+  }
+
+  .psic-calendar-card {
+    width: min(100%, 840px);
+  }
+
+  .psic-schedule-popup-card,
+  .psic-requests-popup-card,
+  .psic-appointments-popup-card,
+  .psic-completed-popup-card {
+    width: 100%;
+    border-radius: 18px;
+  }
+
+  .psic-schedule-popup-columns {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .psic-schedule-column:first-child {
+    border-right: 0;
+    border-bottom: 1px solid #e4f6fc;
+    padding-bottom: 12px;
+  }
+}
+
+@media (max-width: 720px) {
+  .psic-view .agenda-psic-page { padding: 0 16px 24px; }
+  .psic-view .agenda-topbar { min-height: 86px; }
+  .psic-view .agenda-topbar h1 { font-size: 24px; }
+  .psic-view .agenda-subtitle { font-size: 22px; }
+  .psic-calendar-header {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    justify-items: center;
+  }
+  .psic-calendar-navigation { justify-self: center; }
+  .psic-calendar-card { padding: 16px 14px; }
+  .psic-day { min-height: 96px; }
+  .psic-request-item,
+  .psic-appointment-item {
+    grid-template-columns: 1fr;
+  }
+  .psic-request-actions,
+  .psic-appointment-actions {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 520px) {
+  .psic-view .agenda-subtitle { text-align: left; }
+  .psic-dashboard-card {
+    grid-template-columns: minmax(0, 1fr) 36px;
+    padding-left: 18px;
+  }
+  .psic-dashboard-card .dashboard-copy strong { font-size: 14px; }
+  .psic-schedule-times { gap: 8px; }
+  .psic-schedule-time { min-height: 40px; }
+}
