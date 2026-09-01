@@ -1,5 +1,5 @@
 /* ==========================================================================
-   profissional/relatorios.css — CSS único e auto-contido da tela de
+  psicologo/relatorios.css — CSS único e auto-contido da tela de
    relatórios. Origem: menu.css (embutido) + blocos do ex-base.css usados
    pela página + conteúdo original deste arquivo, nesta ordem de cascata
    (a mesma dos <link> antigos).
@@ -1322,6 +1322,7 @@ input[readonly] {
 }
 
 .report-editor-page .report-editor-topbar {
+  position: relative;
   min-height: 58px;
   height: 58px;
   margin: 0 -35px;
@@ -1334,6 +1335,13 @@ input[readonly] {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.report-editor-page .report-editor-topbar .topbar-actions {
+  position: absolute;
+  left: 35px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .report-editor-page .report-editor-topbar .eyebrow {

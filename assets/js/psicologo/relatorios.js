@@ -3,6 +3,7 @@ const data = window.PsiNoteData;
 const params = new URLSearchParams(window.location.search);
 const editReportId = params.get('edit');
 const consultaParam = params.get('consulta');
+const novoReportParam = params.get('novo') === '1';
 const usarNotas = params.get('usarNotas') === '1';
 
 const elements = {
@@ -482,7 +483,6 @@ function init() {
   document.querySelector('#cancelEditButton').addEventListener('click', () => {
     window.location.href = 'relatorios.html';
   });
-  elements.newReportButton.addEventListener('click', () => openEditor(null, null));
   elements.backToListButton.addEventListener('click', () => {
     window.location.href = 'relatorios.html';
   });
@@ -517,6 +517,11 @@ function init() {
   if (consultaParam) {
     const existingReport = data.getReports().find((item) => item.appointmentId === consultaParam);
     openEditor(existingReport || null, consultaParam);
+    return;
+  }
+
+  if (novoReportParam) {
+    openEditor(null, null);
     return;
   }
 
