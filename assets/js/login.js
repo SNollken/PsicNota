@@ -82,6 +82,20 @@ const TEST_ACCOUNTS = [
       professionalData: null,
       createdAt: "2026-08-13T00:00:00.000Z"
     }
+  },
+  {
+    email: "paciente2",
+    password: "123",
+    profile: {
+      id: "perfil-teste-paciente2",
+      role: "paciente",
+      fullName: "Mariana Oliveira Costa",
+      birthDate: "1995-03-12",
+      phone: "(61) 99876-5432",
+      email: "paciente2",
+      professionalData: null,
+      createdAt: "2026-09-01T00:00:00.000Z"
+    }
   }
 ];
 
