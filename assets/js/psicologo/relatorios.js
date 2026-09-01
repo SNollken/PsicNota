@@ -1,4 +1,12 @@
+"use strict";
+
 const data = window.PsiNoteData;
+
+if (!data) {
+  throw new Error(
+    "PsiNoteData não foi carregado. Verifique se shared-data.js é carregado antes."
+  );
+}
 
 const params = new URLSearchParams(window.location.search);
 const editReportId = params.get('edit');

@@ -1,4 +1,12 @@
+"use strict";
+
 const data = window.PsiNoteData;
+
+if (!data) {
+  throw new Error(
+    "PsiNoteData não foi carregado. Verifique se shared-data.js é carregado antes."
+  );
+}
 
 const elements = {
   calendarGrid: document.querySelector('#calendarGrid'),

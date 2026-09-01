@@ -40,7 +40,10 @@
       patient: "Ana Beatriz Souza",
       patientEmail: "ana.beatriz@email.com",
       status: "confirmed",
-      type: "online",
+      mode: "Online",
+      duration: 50,
+      observation: "",
+      source: "psychologist",
       createdAt: isoNow()
     },
     {
@@ -50,7 +53,10 @@
       patient: "Carlos Eduardo Martins",
       patientEmail: "carlos.martins@email.com",
       status: "confirmed",
-      type: "presencial",
+      mode: "Presencial",
+      duration: 50,
+      observation: "",
+      source: "psychologist",
       createdAt: isoNow()
     },
     {
@@ -60,7 +66,10 @@
       patient: "Fernanda Lima Ribeiro",
       patientEmail: "fernanda.lima@email.com",
       status: "cancelled",
-      type: "online",
+      mode: "Online",
+      duration: 50,
+      observation: "",
+      source: "psychologist",
       createdAt: isoNow()
     },
     {
@@ -70,7 +79,10 @@
       patient: "Ana Beatriz Souza",
       patientEmail: "ana.beatriz@email.com",
       status: "confirmed",
-      type: "presencial",
+      mode: "Presencial",
+      duration: 50,
+      observation: "",
+      source: "psychologist",
       createdAt: isoNow()
     },
     {
@@ -80,7 +92,10 @@
       patient: "Mariana Oliveira Costa",
       patientEmail: "mariana.oliveira@email.com",
       status: "confirmed",
-      type: "online",
+      mode: "Online",
+      duration: 50,
+      observation: "",
+      source: "psychologist",
       createdAt: isoNow()
     },
     {
@@ -90,7 +105,10 @@
       patient: "Carlos Eduardo Martins",
       patientEmail: "carlos.martins@email.com",
       status: "confirmed",
-      type: "online",
+      mode: "Online",
+      duration: 50,
+      observation: "",
+      source: "psychologist",
       createdAt: isoNow()
     }
   ];
@@ -100,8 +118,12 @@
       id: "req-seed-1",
       date: dateKey(addDays(today, 3)),
       time: "14:00",
-      patientName: "Lucas Pereira dos Santos",
+      patient: "Lucas Pereira dos Santos",
       patientEmail: "lucas.santos@email.com",
+      patientId: null,
+      mode: "Online",
+      duration: 50,
+      note: "",
       status: "pending",
       requestedAt: isoNow()
     },
@@ -109,8 +131,12 @@
       id: "req-seed-2",
       date: dateKey(addDays(today, 7)),
       time: "10:00",
-      patientName: "Juliana Carvalho",
+      patient: "Juliana Carvalho",
       patientEmail: "juliana.carvalho@email.com",
+      patientId: null,
+      mode: "Presencial",
+      duration: 50,
+      note: "",
       status: "pending",
       requestedAt: isoNow()
     }
@@ -120,7 +146,7 @@
     "appt:appt-seed-1": "Paciente relata melhora no sono. Continuar com técnica de relaxamento. Retorno em 15 dias.",
     "appt:appt-seed-2": "Sessão focada em ansiedade. Trabalhar respiração diafragmática. Paciente demonstra disposição.",
     "appt:appt-seed-1:mood": "melhor",
-    "appt:appt-seed-2:mood": "estavel"
+    "appt:appt-seed-2:mood": "neutro"
   };
 
   localStorage.setItem(appointmentsKey, JSON.stringify(appointments));
