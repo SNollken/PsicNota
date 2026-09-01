@@ -1,3 +1,3 @@
 "use strict";
 
-window.location.replace("auth/login.html");
+window.location.replace("https://psicnota.onrender.com/auth/login.html");
