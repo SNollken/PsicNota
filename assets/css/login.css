@@ -485,6 +485,8 @@ select[aria-invalid="true"]:focus {
   color: var(--success);
   background: var(--success-bg);
   border: 1px solid #3BAE24;
+  border-radius: var(--radius);
+  margin-top: 18px;
 }
 
 .form-message.is-error {
