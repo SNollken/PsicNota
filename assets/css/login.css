@@ -168,6 +168,10 @@ a {
 }
 
 .benefits .benefit-copy {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+  height: auto;
   display: grid;
   gap: 2px;
   text-align: left;
