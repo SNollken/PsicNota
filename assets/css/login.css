@@ -445,6 +445,11 @@ select[aria-invalid="true"]:focus {
   line-height: 1.55;
 }
 
+.forgot-link {
+  display: inline-block;
+  margin-top: 8px;
+}
+
 .field-help,
 .field-error {
   display: block;
