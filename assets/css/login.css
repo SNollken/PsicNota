@@ -119,7 +119,7 @@ a {
 
 .brand-content {
   max-width: 560px;
-  margin: 72px 0;
+  margin: auto 0;
 }
 
 .eyebrow {
@@ -188,7 +188,7 @@ a {
   color: #64727C;
 }
 
-.benefits span {
+.benefits span[aria-hidden] {
   width: 26px;
   height: 26px;
   display: grid;
