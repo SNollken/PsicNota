@@ -11,10 +11,28 @@
   var requestsKey = STORAGE_KEYS.requests;
   var notesKey = STORAGE_KEYS.notes;
 
-  /* So popula se todos estiverem vazios (primeira visita). */
-  var existingAppts = localStorage.getItem(appointmentsKey);
-  var existingReqs = localStorage.getItem(requestsKey);
-  if (existingAppts && existingReqs) return;
+  function readJSON(key, fallback) {
+    try {
+      var raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  function mergeById(existing, seedItems) {
+    var byId = new Map();
+
+    (Array.isArray(existing) ? existing : []).forEach(function (item) {
+      if (item && item.id) byId.set(item.id, item);
+    });
+
+    seedItems.forEach(function (item) {
+      if (!byId.has(item.id)) byId.set(item.id, item);
+    });
+
+    return Array.from(byId.values());
+  }
 
   var today = new Date();
   function dateKey(d) {
@@ -32,7 +50,7 @@
     return new Date().toISOString();
   }
 
-  var appointments = [
+  var seedAppointments = [
     {
       id: "appt-seed-1",
       date: dateKey(addDays(today, -10)),
@@ -110,6 +128,32 @@
       observation: "",
       source: "psychologist",
       createdAt: isoNow()
+    },
+    {
+      id: "appt-seed-7",
+      date: dateKey(addDays(today, -5)),
+      time: "08:30",
+      patient: "Beatriz Nascimento",
+      patientEmail: "beatriz.nascimento@email.com",
+      status: "confirmed",
+      mode: "Presencial",
+      duration: 50,
+      observation: "",
+      source: "psychologist",
+      createdAt: isoNow()
+    },
+    {
+      id: "appt-seed-8",
+      date: dateKey(addDays(today, 8)),
+      time: "16:00",
+      patient: "Gustavo Henrique Alves",
+      patientEmail: "gustavo.alves@email.com",
+      status: "confirmed",
+      mode: "Online",
+      duration: 50,
+      observation: "",
+      source: "psychologist",
+      createdAt: isoNow()
     }
   ];
 
@@ -149,7 +193,22 @@
     "appt:appt-seed-2:mood": "neutro"
   };
 
+  var appointments = mergeById(readJSON(appointmentsKey, []), seedAppointments);
+  var existingRequests = readJSON(requestsKey, null);
+  var existingNotes = readJSON(notesKey, null);
+
   localStorage.setItem(appointmentsKey, JSON.stringify(appointments));
-  localStorage.setItem(requestsKey, JSON.stringify(requests));
-  localStorage.setItem(notesKey, JSON.stringify(notes));
+
+  if (Array.isArray(existingRequests)) {
+    localStorage.setItem(requestsKey, JSON.stringify(existingRequests));
+  } else {
+    localStorage.setItem(requestsKey, JSON.stringify(requests));
+  }
+
+  if (existingNotes && typeof existingNotes === "object" && !Array.isArray(existingNotes)) {
+    var mergedNotes = Object.assign({}, notes, existingNotes);
+    localStorage.setItem(notesKey, JSON.stringify(mergedNotes));
+  } else {
+    localStorage.setItem(notesKey, JSON.stringify(notes));
+  }
 })();
