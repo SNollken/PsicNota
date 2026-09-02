@@ -1,34 +1,148 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Página do PsicNota em construção.">
-  <title>PsicNota · Página em construção</title>
+
+  <meta
+    name="description"
+    content="Pacientes do PsicNota."
+  >
+
+  <title>PsicNota · Pacientes</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/psicologo/pacientes.css">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="../assets/css/psicologo/pacientes.css"
+  >
+
   <script src="../assets/menu/menu.js"></script>
 </head>
+
+
 <body>
+
   <div class="app-shell">
-    <psic-menu tipo="psicologo" ativo="pacientes"></psic-menu>
+
+    <psic-menu
+      tipo="psicologo"
+      ativo="pacientes">
+    </psic-menu>
+
 
     <main class="main-content">
-      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
-      <div class="construction-wrap">
-        <div class="construction-box">
-          <img src="../assets/img/logo_psicnota.png" alt="PsicNota">
-          <h1>Página em construção</h1>
-          <p>Esta área ainda não possui design definido no Figma e está em construção. Use o menu ao lado para navegar.</p>
+
+      <button
+        class="mobile-menu"
+        type="button"
+        aria-label="Abrir menu"
+        aria-expanded="false">
+        ☰
+      </button>
+
+
+      <section class="patients-page">
+
+
+        <header class="patients-header">
+
+          <h1>PACIENTES</h1>
+
+          <span
+            id="patientTotal"
+            class="patients-count">
+            0 pacientes
+          </span>
+
+        </header>
+
+
+        <div class="patients-search-wrapper">
+
+          <label
+            class="sr-only"
+            for="patientSearch">
+            Buscar paciente
+          </label>
+
+          <input
+            id="patientSearch"
+            type="search"
+            autocomplete="off"
+            placeholder="Buscar paciente">
+
         </div>
-      </div>
+
+
+        <div
+          id="patientList"
+          class="patient-list">
+        </div>
+
+
+        <div
+          id="emptyPatients"
+          class="empty-state"
+          hidden>
+
+          Nenhum paciente cadastrado.
+
+        </div>
+
+
+        <div
+          id="noMatch"
+          class="empty-state"
+          hidden>
+
+          Nenhum paciente encontrado.
+
+        </div>
+
+
+        <button
+          id="loadMorePatients"
+          class="load-more"
+          type="button">
+
+          Carregar mais
+
+        </button>
+
+
+        <div
+          id="recentAppointments"
+          class="recent-appointments"
+          hidden>
+        </div>
+
+        <div
+          id="recentEmpty"
+          hidden>
+        </div>
+
+
+      </section>
+
     </main>
+
   </div>
 
+
   <script src="../assets/js/shared-data.js"></script>
+
   <script src="../assets/js/sidebar.js"></script>
   <script src="../assets/js/psicologo/pacientes.js"></script>
+
 </body>
+
 </html>

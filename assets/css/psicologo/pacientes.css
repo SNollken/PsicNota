@@ -1,12 +1,13 @@
 /* ==========================================================================
-   psicologo/pacientes.css — CSS auto-contido da página placeholder "Psicólogo · Pacientes".
-   Blocos do ex-base.css que a página usa + estilo "em construção"
-   (antes inline no HTML). O menu lateral vem por @import do menu.css,
-   componente <psic-menu>.
-   ========================================================================== */
+   psicologo/pacientes.css
+   Tela Psicólogo · Pacientes
+========================================================================== */
+
 @import url("../../menu/menu.css");
 
+
 :root {
+
   --blue-25: #F8FAFB;
   --blue-50: #E4F6FC;
   --blue-75: #E4F6FC;
@@ -14,29 +15,23 @@
   --blue-150: #E4F6FC;
   --blue-200: #BFE7F5;
 
-  --blue-700: #1f637a;
-  --blue-800: #174e61;
+  --blue-700: #1F637A;
+  --blue-800: #174E61;
 
   --ink: #111827;
   --muted: #64727C;
-  --line: #E4F6FC;
-  --white: #ffffff;
-  --sidebar-bg: #F3FBFE;
 
-  --success-bg: #3BAE24;
-  --success-line: #3BAE24;
-  --success: #174E61;
-  --warning-bg: #E4F6FC;
-  --warning-line: #E4F6FC;
-  --warning: #64727C;
-  --danger: #D90307;
-  --danger-bg: #D90307;
-  --danger-line: #D90307;
+  --line: #DCE6EA;
+
+  --white: #FFFFFF;
+
+  --sidebar-bg: #F3FBFE;
 
   --sidebar-width: 294px;
 
   --radius-lg: 26px;
   --radius-md: 18px;
+
 
   font-family:
     Inter,
@@ -47,16 +42,22 @@
     "Segoe UI",
     sans-serif;
 
+
   color: var(--ink);
   background: var(--white);
 }
 
-* { box-sizing: border-box; }
+
+* {
+  box-sizing: border-box;
+}
+
 
 html {
   min-width: 320px;
   scroll-behavior: smooth;
 }
+
 
 body {
   margin: 0;
@@ -65,94 +66,578 @@ body {
   color: var(--ink);
 }
 
-button, input, select, textarea { font: inherit; }
-button, select { cursor: pointer; }
-a { color: inherit; }
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+
+button,
+select {
+  cursor: pointer;
+}
+
+
+a {
+  color: inherit;
+}
+
 
 svg {
   width: 20px;
   height: 20px;
+
   fill: none;
+
   stroke: currentColor;
+
   stroke-width: 1.7;
+
   stroke-linecap: round;
+
   stroke-linejoin: round;
 }
 
-[hidden] { display: none !important; }
+
+[hidden] {
+  display: none !important;
+}
+
+
+/* =========================
+   ACESSIBILIDADE
+========================= */
 
 .sr-only {
   position: absolute;
+
   width: 1px;
   height: 1px;
+
   padding: 0;
   margin: -1px;
+
   overflow: hidden;
+
   clip: rect(0, 0, 0, 0);
+
   white-space: nowrap;
+
   border: 0;
 }
 
-/* Shell padrão das telas logadas: sidebar + conteúdo.
-   Cada CSS de página pode estender; esta é a base mínima. */
-.app-shell {
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
-}
 
 /* =========================
-   CONTEÚDO
+   ESTRUTURA
 ========================= */
+
+.app-shell {
+
+  min-height: 100vh;
+
+  display: grid;
+
+  grid-template-columns:
+    var(--sidebar-width)
+    1fr;
+
+}
+
 
 .main-content {
   grid-column: 2;
+
   width: 100%;
-  max-width: 1460px;
-  margin: 0 auto;
-  padding: 28px 34px 34px;
-}
+  max-width: none;
 
-.mobile-menu { display: none; }
-
-h1 {
   margin: 0;
-  color: #111827;
-  font-size: 24px;
-  letter-spacing: -0.01em;
+
+  padding: 5px 46px 40px;
 }
 
-/* Página em construção */
-.construction-wrap {
+.mobile-menu {
+  display: none;
+}
+
+
+/* =========================
+   PÁGINA
+========================= */
+
+.patients-page {
+  width: 100%;
+  max-width: 1180px;
+
+  margin: 0 auto;
+}
+
+
+/* =========================
+   CABEÇALHO
+========================= */
+
+.patients-header {
+  position: relative;
+
+  width: 100%;
+  height: 90px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 140px);
+
+  margin-bottom: 55px;
+
+  border-bottom: 1px solid #DCE6EA;
 }
 
-.construction-box { text-align: center; padding: 40px 24px; max-width: 460px; }
-.construction-box img { width: 72px; height: 72px; object-fit: contain; }
-.construction-box h1 { font-size: 21px; margin: 20px 0 8px; color: #1F637A; letter-spacing: -0.02em; }
-.construction-box p { color: #64727C; margin: 0; line-height: 1.6; }
+
+.patients-count {
+  position: absolute;
+
+  right: 0;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  min-height: 28px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 4px 12px;
+
+  border: 1px solid #1F637A;
+  border-radius: 6px;
+
+  background: #FFFFFF;
+
+  color: #174E61;
+
+  font-size: 11px;
+}
+
+
+.patients-header h1 { 
+  margin: 0;
+
+  color: #111827;
+
+  font-size: px;
+
+  font-weight: 700;
+
+  line-height: 1;
+
+  letter-spacing: 0.02em;
+}
+
+
+.patients-count {
+
+  position: absolute;
+
+  right: 0;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-height: 34px;
+
+  padding: 0 18px;
+
+  border: 1px solid var(--blue-700);
+
+  border-radius: 8px;
+
+  background: #EAF7FC;
+
+  color: var(--blue-800);
+
+  font-size: 13px;
+
+  font-weight: 500;
+
+  line-height: 1;
+
+  white-space: nowrap;
+}
+
+/* =========================
+   BUSCA
+
+   Mantida para compatibilidade
+   com o JS antigo.
+========================= */
+
+.patients-search-wrapper {
+  display: none;
+}
+
+
+#patientSearch {
+  display: none;
+}
+
+
+/* =========================
+   LISTA DE PACIENTES
+========================= */
+
+.patient-list {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 14px 18px;
+
+  margin: 0 auto;
+}
+
+
+/* =========================
+   CARD DO PACIENTE
+========================= */
+
+.patient-card {
+  width: 100%;
+  min-height: 92px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+
+  padding: 14px 18px;
+
+  border: 1px solid #DCE6EA;
+
+  border-radius: 18px;
+
+  background: #F3FBFE;
+
+  cursor: pointer;
+
+  text-decoration: none;
+
+  transition: .2s;
+}
+
+
+.patient-card:hover {
+  border-color: #BFE7F5;
+}
+
+
+/* =========================
+   AVATAR
+========================= */
+
+.patient-avatar {
+
+  width: 62px;
+  height: 62px;
+
+  flex: 0 0 62px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  background: #DCE8EC;
+
+  color: #174E61;
+
+  font-size: 18px;
+
+  font-weight: 600;
+
+  background-size: cover;
+  background-position: center;
+}
+
+
+/* =========================
+   INFORMAÇÕES
+========================= */
+
+.patient-info {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+
+.patient-info strong {
+
+  display: block;
+
+  min-width: 130px;
+
+  margin: 0;
+
+  font-size: 20px;
+
+  font-weight: 700;
+
+  line-height: 1.1;
+
+  white-space: normal;
+
+}
+
+
+
+.patient-meta {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+
+  color: #64727C;
+
+  font-size: 16px;
+
+  white-space: nowrap;
+
+}
+
+
+.patient-meta span {
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+}
+
+
+
+.patient-next {
+
+  color: #1F637A;
+
+  font-weight: 700;
+
+  order: -1;
+
+}
+
+/* =========================
+   SETA
+========================= */
+
+.patient-arrow {
+
+  flex: 0 0 34px;
+
+  width: 34px;
+
+  height: 34px;
+
+  margin-left: auto;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #1F637A;
+
+}
+
+
+.patient-arrow svg {
+
+  width: 30px;
+
+  height: 30px;
+
+}
+
+
+/* =========================
+   ESTADOS VAZIOS
+========================= */
+
+.empty-state {
+  width: 100%;
+
+  margin-top: 40px;
+
+  text-align: center;
+
+  color: var(--muted);
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================
+   CARREGAR MAIS
+========================= */
+
+.load-more {
+  display: block;
+
+  min-width: 145px;
+  height: 32px;
+
+  margin: 34px auto 0;
+
+  padding: 0 20px;
+
+  border: 1px solid #1F637A;
+  border-radius: 5px;
+
+  background: #FFFFFF;
+
+  color: #174E61;
+
+  font-size: 11px;
+
+  text-align: center;
+}
+
+
+.load-more:hover {
+  background: #F3FBFE;
+
+  border-color: var(--blue-800);
+}
+
+
+/* =========================
+   CONSULTAS RECENTES
+
+   Não fazem parte do layout
+   atual, mas permanecem
+   disponíveis para o JS.
+========================= */
+
+.recent-appointments {
+  display: none;
+}
+
+
+/* =========================
+   RESPONSIVO
+========================= */
 
 @media (max-width: 1180px) {
-  :root { --sidebar-width: 230px; }
-  .main-content { padding-inline: 26px; }
+
+  :root {
+    --sidebar-width: 230px;
+  }
+
+
+  .main-content {
+    padding-left: 26px;
+
+    padding-right: 26px;
+  }
+
+
+  .patient-list {
+    max-width: 900px;
+  }
 }
 
+
+@media (max-width: 800px) {
+
+  .patient-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+
 @media (max-width: 720px) {
-  .app-shell { display: block; }
-  .main-content { padding: 18px 18px 28px; }
+
+  .app-shell {
+    display: block;
+  }
+
+
+  .main-content {
+    padding:
+      18px 18px 28px;
+  }
+
+
   .mobile-menu {
     display: grid;
+
     place-items: center;
+
     width: 38px;
     height: 38px;
+
     margin-bottom: 8px;
-    border: 1px solid var(--line);
+
+    border:
+      1px solid var(--line);
+
     border-radius: 8px;
+
     background: var(--white);
+
     color: var(--blue-800);
   }
-  h1 { font-size: 20px; }
+
+
+  .patients-header {
+    height: 48px;
+
+    margin-bottom: 22px;
+  }
+
+
+  .patients-count {
+    font-size: 10px;
+
+    padding:
+      3px 8px;
+  }
+
+
+  .patient-list {
+    grid-template-columns: 1fr;
+
+    gap: 10px;
+  }
+
+
+  .patient-card {
+    min-height: 64px;
+  }
+
+
+  .load-more {
+    margin-top: 22px;
+  }
 }
