@@ -66,7 +66,7 @@ a {
   padding: 36px clamp(32px, 5vw, 84px);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   background:
     linear-gradient(rgba(243, 251, 254, 0.93), rgba(228, 246, 252, 0.96)),
     radial-gradient(circle at 15% 18%, var(--blue-300) 0 1px, transparent 2px),
