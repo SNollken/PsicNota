@@ -823,16 +823,16 @@ fieldset {
 
   width: 100%;
 
-  height: clamp(36px, 4.45vh, 43px);
+  min-height: 48px;
 
   margin: 0;
-  padding: 0;
+  padding: 12px 20px;
 
-  border: 0;
+  border: 1px solid #1F637A;
 
-  border-radius: 5px;
+  border-radius: 24px;
 
-  background: #2d6279;
+  background: #1F637A;
 
   color: #ffffff;
 
@@ -848,7 +848,7 @@ fieldset {
 }
 
 .primary-button:hover {
-  background: #275f74;
+  background: #174e61;
 }
 
 
