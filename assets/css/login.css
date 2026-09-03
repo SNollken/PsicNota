@@ -407,7 +407,7 @@ select[aria-invalid="true"]:focus {
   color: var(--white);
   background: var(--blue-700);
   border: 1px solid var(--blue-700);
-  border-radius: var(--radius);
+  border-radius: 24px;
   cursor: pointer;
   font-weight: 800;
   transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
