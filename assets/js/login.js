@@ -135,7 +135,7 @@ function enterWithProfile(profile, remember) {
   storage.setItem("psinote.auth.session", JSON.stringify(session));
   storage.setItem("psinoteSession", JSON.stringify(session));
 
-  showMessage("Login validado. Abrindo sua área...", "success");
+  showMessage("Login bem sucessido!", "success");
   const submitButton = loginForm.querySelector('button[type="submit"]');
   submitButton.disabled = true;
   submitButton.textContent = "Entrando...";

@@ -482,11 +482,11 @@ select[aria-invalid="true"]:focus {
 }
 
 .form-message.is-success {
-  color: var(--success);
-  background: var(--success-bg);
-  border: 1px solid #3BAE24;
-  border-radius: var(--radius);
-  margin-top: 18px;
+  color: #3BAE24;
+  background: transparent;
+  border: none;
+  font-weight: 600;
+  margin-top: 12px;
 }
 
 .form-message.is-error {
