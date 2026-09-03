@@ -162,7 +162,7 @@ fieldset {
 
   line-height: 1;
 
-  color: #111827;
+  color: #1F637A;
 
   text-decoration: none !important;
 }
@@ -838,7 +838,7 @@ fieldset {
 
   font-family: "Inter", Arial, sans-serif;
 
-  font-size: clamp(9px, 1.05vh, 11px);
+  font-size: 1rem;
 
   font-weight: 700;
 
