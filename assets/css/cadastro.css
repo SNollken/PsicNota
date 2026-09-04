@@ -4,19 +4,19 @@
 ========================================================= */
 
 :root {
-  --left-bg: #f4fbfe;
+  --left-bg: #f3fbfe;
   --white: #ffffff;
 
   --ink: #111827;
-  --text: #3f5262;
-  --muted: #7e8d96;
+  --muted: #64727c;
+  --accent: #1f637a;
 
-  --blue: #2d6279;
-  --blue-border: #34758c;
-  --blue-hover: #275f74;
+  --blue: #1f637a; /* primary accent */
+  --blue-border: #1f637a;
+  --blue-hover: #174e61;
 
-  --input-bg: #f4fbfe;
-  --line: #d9e7ec;
+  --input-bg: #f3fbfe;
+  --line: #dce6ea;
 }
 
 
@@ -127,7 +127,8 @@ fieldset {
 
   margin: 0;
 
-  color: #111827;
+  color: var(--accent);
+
 
   text-decoration: none !important;
 }
@@ -135,7 +136,8 @@ fieldset {
 .register-brand .brand:hover,
 .register-brand .brand:visited,
 .register-brand .brand:active {
-  color: #111827;
+  color: var(--accent);
+
 
   text-decoration: none !important;
 }
@@ -162,7 +164,7 @@ fieldset {
 
   line-height: 1;
 
-  color: #1F637A;
+  color: var(--accent);
 
   text-decoration: none !important;
 }
@@ -285,7 +287,8 @@ fieldset {
 
   letter-spacing: -0.7px;
 
-  color: #111827;
+  color: var(--accent);
+
 }
 
 
@@ -334,7 +337,8 @@ fieldset {
 
   line-height: 1.2;
 
-  color: #111827;
+  color: var(--accent);
+
 }
 
 .role-options {
@@ -570,7 +574,8 @@ fieldset {
 
   line-height: 1.1;
 
-  color: #111827;
+  color: var(--accent);
+
 }
 
 
@@ -682,7 +687,8 @@ fieldset {
 
   background: transparent;
 
-  color: #111827;
+  color: var(--accent);
+
 
   cursor: pointer;
 }
