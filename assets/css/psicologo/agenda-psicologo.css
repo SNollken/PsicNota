@@ -974,12 +974,12 @@ body.modal-open { overflow: hidden; }
   white-space: nowrap;
 }
 
-.psic-day.has-available { border-color: #3bae24; }
+.psic-day.has-completed { border-color: #3bae24; }
 .psic-day.has-pending { border-color: #d90307; }
 .psic-day.has-confirmed { border-color: #1f637a; }
 .psic-day.today { border-color: #174e61; }
 
-.psic-day.has-available .psic-day-info,
+.psic-day.has-completed .psic-day-info,
 .psic-day.has-pending .psic-day-info,
 .psic-day.has-confirmed .psic-day-info,
 .psic-day.today .psic-day-info {

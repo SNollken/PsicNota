@@ -173,7 +173,8 @@ function renderCalendar() {
   ui.grid.replaceChildren();
   ui.monthTitle.textContent = capitalizeFirst(monthFormatter.format(visibleMonth));
 
-  const today = new Date();
+  const now = new Date();
+  const today = new Date(now);
   today.setHours(0, 0, 0, 0);
   const todayKey = data.toDateKey(new Date());
   const start = getCalendarStart(visibleMonth);
@@ -187,7 +188,6 @@ function renderCalendar() {
 
     const confirmed = getConfirmedForDate(dateKey);
     const pending = getPendingForDate(dateKey);
-    const openSlots = !isOtherMonth && !isPast ? getSelectableSlots(dateKey) : [];
 
     const button = document.createElement("button");
     button.type = "button";
@@ -211,16 +211,13 @@ function renderCalendar() {
       info.textContent = pending[0].time;
       button.append(info);
     } else if (confirmed.length) {
-      button.classList.add("has-confirmed");
-      info.textContent = confirmed[0].time;
+      const upcoming = confirmed.find((item) => dateTimeFromItem(item) >= now);
+      button.classList.add(upcoming ? "has-confirmed" : "has-completed");
+      info.textContent = (upcoming || confirmed[0]).time;
       button.append(info);
     } else if (dateKey === todayKey) {
       button.classList.add("today");
       info.textContent = "HOJE";
-      button.append(info);
-    } else if (openSlots.length) {
-      button.classList.add("has-available");
-      info.textContent = openSlots[0];
       button.append(info);
     }
 
