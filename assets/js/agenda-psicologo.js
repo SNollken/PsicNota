@@ -110,8 +110,9 @@ function getConfirmed() {
 }
 
 function getPendingRequests() {
+  const now = new Date();
   return requests
-    .filter((item) => item.status === "pending")
+    .filter((item) => item.status === "pending" && dateTimeFromItem(item) > now)
     .sort((a, b) => new Date(a.requestedAt) - new Date(b.requestedAt));
 }
 
@@ -486,6 +487,12 @@ function renderRequestsPopup() {
 function approveRequest(requestId) {
   const request = requests.find((item) => item.id === requestId);
   if (!request || request.status !== "pending") return;
+
+  if (dateTimeFromItem(request) <= new Date()) {
+    renderAll();
+    showToast("O horário desta solicitação já passou.", true);
+    return;
+  }
 
   const earlierSameSlot = getPendingRequests().find((item) => (
     item.id !== request.id &&
