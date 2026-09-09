@@ -1,15 +1,8 @@
 "use strict";
 
-/* Seed de dados de teste — popula o localStorage com consultas, pedidos
-   e notas quando nao existem dados ainda. Roda uma vez so. */
-
 (function () {
   var STORAGE_KEYS = window.PsiNoteData && window.PsiNoteData.STORAGE_KEYS;
   if (!STORAGE_KEYS) return;
-
-  var appointmentsKey = STORAGE_KEYS.appointments;
-  var requestsKey = STORAGE_KEYS.requests;
-  var notesKey = STORAGE_KEYS.notes;
 
   function readJSON(key, fallback) {
     try {
@@ -20,195 +13,68 @@
     }
   }
 
-  function mergeById(existing, seedItems) {
-    var byId = new Map();
-
-    (Array.isArray(existing) ? existing : []).forEach(function (item) {
-      if (item && item.id) byId.set(item.id, item);
+  function replaceSeedItems(existing, seedItems, prefix) {
+    var customItems = (Array.isArray(existing) ? existing : []).filter(function (item) {
+      return !item || !String(item.id || "").startsWith(prefix);
     });
+    return customItems.concat(seedItems);
+  }
 
-    seedItems.forEach(function (item) {
-      if (!byId.has(item.id)) byId.set(item.id, item);
-    });
+  function dateKey(date) {
+    var year = date.getFullYear();
+    var month = String(date.getMonth() + 1).padStart(2, "0");
+    var day = String(date.getDate()).padStart(2, "0");
+    return year + "-" + month + "-" + day;
+  }
 
-    return Array.from(byId.values());
+  function addDays(date, amount) {
+    var result = new Date(date);
+    result.setDate(result.getDate() + amount);
+    return result;
   }
 
   var today = new Date();
-  function dateKey(d) {
-    var y = d.getFullYear();
-    var m = String(d.getMonth() + 1).padStart(2, "0");
-    var day = String(d.getDate()).padStart(2, "0");
-    return y + "-" + m + "-" + day;
-  }
-  function addDays(d, n) {
-    var r = new Date(d);
-    r.setDate(r.getDate() + n);
-    return r;
-  }
-  function isoNow() {
-    return new Date().toISOString();
-  }
-
-  var seedAppointments = [
-    {
-      id: "appt-seed-1",
-      date: dateKey(addDays(today, -10)),
-      time: "09:00",
-      patient: "Ana Beatriz Souza",
-      patientEmail: "ana.beatriz@email.com",
-      status: "confirmed",
-      mode: "Online",
-      duration: 50,
-      observation: "",
-      source: "psychologist",
-      createdAt: isoNow()
-    },
-    {
-      id: "appt-seed-2",
-      date: dateKey(addDays(today, -7)),
-      time: "14:00",
-      patient: "Carlos Eduardo Martins",
-      patientEmail: "carlos.martins@email.com",
-      status: "confirmed",
-      mode: "Presencial",
-      duration: 50,
-      observation: "",
-      source: "psychologist",
-      createdAt: isoNow()
-    },
-    {
-      id: "appt-seed-3",
-      date: dateKey(addDays(today, -3)),
-      time: "10:00",
-      patient: "Fernanda Lima Ribeiro",
-      patientEmail: "fernanda.lima@email.com",
-      status: "cancelled",
-      mode: "Online",
-      duration: 50,
-      observation: "",
-      source: "psychologist",
-      createdAt: isoNow()
-    },
-    {
-      id: "appt-seed-4",
-      date: dateKey(addDays(today, 2)),
-      time: "09:00",
-      patient: "Ana Beatriz Souza",
-      patientEmail: "ana.beatriz@email.com",
-      status: "confirmed",
-      mode: "Presencial",
-      duration: 50,
-      observation: "",
-      source: "psychologist",
-      createdAt: isoNow()
-    },
-    {
-      id: "appt-seed-5",
-      date: dateKey(addDays(today, 5)),
-      time: "15:00",
-      patient: "Mariana Oliveira Costa",
-      patientEmail: "mariana.oliveira@email.com",
-      status: "confirmed",
-      mode: "Online",
-      duration: 50,
-      observation: "",
-      source: "psychologist",
-      createdAt: isoNow()
-    },
-    {
-      id: "appt-seed-6",
-      date: dateKey(addDays(today, 12)),
-      time: "11:00",
-      patient: "Carlos Eduardo Martins",
-      patientEmail: "carlos.martins@email.com",
-      status: "confirmed",
-      mode: "Online",
-      duration: 50,
-      observation: "",
-      source: "psychologist",
-      createdAt: isoNow()
-    },
-    {
-      id: "appt-seed-7",
-      date: dateKey(addDays(today, -5)),
-      time: "08:30",
-      patient: "Beatriz Nascimento",
-      patientEmail: "beatriz.nascimento@email.com",
-      status: "confirmed",
-      mode: "Presencial",
-      duration: 50,
-      observation: "",
-      source: "psychologist",
-      createdAt: isoNow()
-    },
-    {
-      id: "appt-seed-8",
-      date: dateKey(addDays(today, 8)),
-      time: "16:00",
-      patient: "Gustavo Henrique Alves",
-      patientEmail: "gustavo.alves@email.com",
-      status: "confirmed",
-      mode: "Online",
-      duration: 50,
-      observation: "",
-      source: "psychologist",
-      createdAt: isoNow()
-    }
+  var createdAt = today.toISOString();
+  var patients = [
+    { id: "patient-seed-ana", name: "Ana Beatriz Souza", fullName: "Ana Beatriz Souza", email: "ana.beatriz@email.com", phone: "+55 (61) 99991-2048", location: "Brasília, DF, Brasil", avatar: "../assets/img/patient-ana.svg", avatarDataUrl: "../assets/img/patient-ana.svg" },
+    { id: "patient-seed-carlos", name: "Carlos Eduardo Martins", fullName: "Carlos Eduardo Martins", email: "carlos.martins@email.com", phone: "+55 (61) 99982-7316", location: "Goiânia, GO, Brasil", avatar: "../assets/img/patient-carlos.svg", avatarDataUrl: "../assets/img/patient-carlos.svg" },
+    { id: "patient-seed-fernanda", name: "Fernanda Lima Ribeiro", fullName: "Fernanda Lima Ribeiro", email: "fernanda.lima@email.com", phone: "+55 (61) 99973-6589", location: "Brasília, DF, Brasil", avatar: "../assets/img/patient-fernanda.svg", avatarDataUrl: "../assets/img/patient-fernanda.svg" }
   ];
 
-  var requests = [
-    {
-      id: "req-seed-1",
-      date: dateKey(addDays(today, 3)),
-      time: "14:00",
-      patient: "Lucas Pereira dos Santos",
-      patientEmail: "lucas.santos@email.com",
-      patientId: null,
-      mode: "Online",
-      duration: 50,
-      note: "",
-      status: "pending",
-      requestedAt: isoNow()
-    },
-    {
-      id: "req-seed-2",
-      date: dateKey(addDays(today, 7)),
-      time: "10:00",
-      patient: "Juliana Carvalho",
-      patientEmail: "juliana.carvalho@email.com",
-      patientId: null,
-      mode: "Presencial",
-      duration: 50,
-      note: "",
-      status: "pending",
-      requestedAt: isoNow()
-    }
+  var appointments = [
+    { id: "appt-seed-ana-last", date: dateKey(addDays(today, -12)), time: "09:00", patient: "Ana Beatriz Souza", patientEmail: "ana.beatriz@email.com", status: "confirmed", mode: "Online", duration: 50, observation: "Acompanhamento de rotina.", source: "psychologist", createdAt: createdAt },
+    { id: "appt-seed-ana-next", date: dateKey(addDays(today, 4)), time: "14:30", patient: "Ana Beatriz Souza", patientEmail: "ana.beatriz@email.com", status: "confirmed", mode: "Presencial", duration: 50, observation: "", source: "psychologist", createdAt: createdAt },
+    { id: "appt-seed-carlos-last", date: dateKey(addDays(today, -8)), time: "16:00", patient: "Carlos Eduardo Martins", patientEmail: "carlos.martins@email.com", status: "confirmed", mode: "Presencial", duration: 50, observation: "Revisão das estratégias combinadas.", source: "psychologist", createdAt: createdAt },
+    { id: "appt-seed-carlos-next", date: dateKey(addDays(today, 7)), time: "10:00", patient: "Carlos Eduardo Martins", patientEmail: "carlos.martins@email.com", status: "confirmed", mode: "Online", duration: 50, observation: "", source: "psychologist", createdAt: createdAt },
+    { id: "appt-seed-fernanda-last", date: dateKey(addDays(today, -5)), time: "11:30", patient: "Fernanda Lima Ribeiro", patientEmail: "fernanda.lima@email.com", status: "confirmed", mode: "Online", duration: 50, observation: "Acompanhamento de adaptação à nova rotina.", source: "psychologist", createdAt: createdAt },
+    { id: "appt-seed-fernanda-next", date: dateKey(addDays(today, 10)), time: "15:00", patient: "Fernanda Lima Ribeiro", patientEmail: "fernanda.lima@email.com", status: "confirmed", mode: "Presencial", duration: 50, observation: "", source: "psychologist", createdAt: createdAt }
   ];
 
   var notes = {
-    "appt:appt-seed-1": "Paciente relata melhora no sono. Continuar com técnica de relaxamento. Retorno em 15 dias.",
-    "appt:appt-seed-2": "Sessão focada em ansiedade. Trabalhar respiração diafragmática. Paciente demonstra disposição.",
-    "appt:appt-seed-1:mood": "melhor",
-    "appt:appt-seed-2:mood": "neutro"
+    "appt:appt-seed-ana-last": "Paciente relata melhora na qualidade do sono. Manter a rotina de relaxamento antes de dormir.",
+    "appt:appt-seed-carlos-last": "Sessão focada em reconhecer sinais de sobrecarga. Paciente definiu pausas curtas durante o trabalho.",
+    "appt:appt-seed-fernanda-last": "Paciente se mostrou mais segura ao relatar limites estabelecidos na nova rotina familiar.",
+    "appt:appt-seed-ana-last:mood": "melhor",
+    "appt:appt-seed-carlos-last:mood": "neutro",
+    "appt:appt-seed-fernanda-last:mood": "melhor"
   };
 
-  var appointments = mergeById(readJSON(appointmentsKey, []), seedAppointments);
-  var existingRequests = readJSON(requestsKey, null);
-  var existingNotes = readJSON(notesKey, null);
+  var reports = [
+    { id: "report-seed-ana", patient: "Ana Beatriz Souza", appointmentId: "appt-seed-ana-last", mood: "melhor", status: "final", blocks: { queixa: "Dificuldade para desacelerar antes de dormir.", intervencao: "Psicoeducação sobre higiene do sono e prática de respiração guiada.", evolucao: "Relata redução dos despertares noturnos durante a semana.", proxima: "Revisar rotina noturna e estratégias de prevenção." }, freeText: "", attachments: [], createdAt: createdAt, updatedAt: createdAt },
+    { id: "report-seed-carlos", patient: "Carlos Eduardo Martins", appointmentId: "appt-seed-carlos-last", mood: "neutro", status: "final", blocks: { queixa: "Sensação de sobrecarga nas demandas profissionais.", intervencao: "Mapeamento de prioridades e treino de pausas conscientes.", evolucao: "Identificou situações que antecedem o aumento da ansiedade.", proxima: "Acompanhar aplicação das pausas e reavaliar limites." }, freeText: "", attachments: [], createdAt: createdAt, updatedAt: createdAt },
+    { id: "report-seed-fernanda", patient: "Fernanda Lima Ribeiro", appointmentId: "appt-seed-fernanda-last", mood: "melhor", status: "final", blocks: { queixa: "Dificuldade para adaptar a rotina familiar às novas demandas.", intervencao: "Exploração de limites, rede de apoio e organização semanal.", evolucao: "Relata maior clareza para comunicar necessidades.", proxima: "Consolidar os acordos de rotina definidos na sessão." }, freeText: "", attachments: [], createdAt: createdAt, updatedAt: createdAt }
+  ];
 
-  localStorage.setItem(appointmentsKey, JSON.stringify(appointments));
-
-  if (Array.isArray(existingRequests)) {
-    localStorage.setItem(requestsKey, JSON.stringify(existingRequests));
-  } else {
-    localStorage.setItem(requestsKey, JSON.stringify(requests));
-  }
-
+  var existingNotes = readJSON(STORAGE_KEYS.notes, {});
+  var customNotes = {};
   if (existingNotes && typeof existingNotes === "object" && !Array.isArray(existingNotes)) {
-    var mergedNotes = Object.assign({}, notes, existingNotes);
-    localStorage.setItem(notesKey, JSON.stringify(mergedNotes));
-  } else {
-    localStorage.setItem(notesKey, JSON.stringify(notes));
+    Object.keys(existingNotes).forEach(function (key) {
+      if (!key.startsWith("appt:appt-seed-")) customNotes[key] = existingNotes[key];
+    });
   }
-})();
+
+  localStorage.setItem(STORAGE_KEYS.appointments, JSON.stringify(replaceSeedItems(readJSON(STORAGE_KEYS.appointments, []), appointments, "appt-seed-")));
+  localStorage.setItem(STORAGE_KEYS.profiles, JSON.stringify(replaceSeedItems(readJSON(STORAGE_KEYS.profiles, []), patients, "patient-seed-")));
+  localStorage.setItem(STORAGE_KEYS.reports, JSON.stringify(replaceSeedItems(readJSON(STORAGE_KEYS.reports, []), reports, "report-seed-")));
+  localStorage.setItem(STORAGE_KEYS.notes, JSON.stringify(Object.assign(customNotes, notes)));
+}());
