@@ -1,36 +1,327 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Página do PsicNota em construção.">
-  <title>PsicNota · Página em construção</title>
-  <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
-  <link rel="icon" type="image/x-icon" href="../favicon.ico">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <title>PsicNota · Perfil do paciente</title>
+
   <link rel="stylesheet" href="../assets/css/psicologo/historico.css">
+
   <script src="../assets/menu/menu.js"></script>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body>
+
   <div class="app-shell">
+
     <psic-menu tipo="psicologo" ativo=""></psic-menu>
 
+
     <main class="main-content">
-      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
-      <div class="construction-wrap">
-        <div class="construction-box">
-          <img src="../assets/img/logo_psicnota.png" alt="PsicNota">
-          <h1>Página em construção</h1>
-          <p>Esta área ainda não possui design definido no Figma e está em construção. Use o menu ao lado para navegar.</p>
+
+      <button class="mobile-menu" type="button">
+        ☰
+      </button>
+
+
+      <header class="page-title">
+        <h1 id="patientTitle">
+          PERFIL DE PACIENTE
+        </h1>
+      </header>
+
+
+      <section class="patient-card">
+
+        <div class="patient-info">
+
+          <div class="patient-avatar">
+            <img id="patientAvatar" src="../assets/img/avatar.png" class="patient-photo">
+          </div>
+
+
+          <div>
+            <h2 id="patientName">
+              Janaina Silva
+            </h2>
+
+            <p id="patientMeta">
+              29 anos • Ela / Dela
+            </p>
+          </div>
+
         </div>
-      </div>
+
+
+
+        <div class="patient-contact">
+
+          <p>
+            <i data-lucide="mail"></i>
+            <span id="patientEmail">janaina@gmail.com</span>
+          </p>
+
+
+          <p>
+            <i data-lucide="phone"></i>
+            <span id="patientPhone">+55 (61) 99999 - 0000</span>
+          </p>
+
+
+          <p>
+            <i data-lucide="map-pin"></i>
+            <span id="patientLocation">Brasília, DF, Brasil</span>
+          </p>
+
+        </div>
+
+
+
+        <div class="patient-actions">
+
+          <button class="primary">
+            Notas rápidas
+          </button>
+
+
+          <button class="outline">
+            Agendar consulta
+          </button>
+
+        </div>
+
+
+      </section>
+
+
+
+      <nav class="patient-tabs">
+
+        <button class="active">
+          Visão Geral
+        </button>
+
+        <button>
+          Consultas
+        </button>
+
+        <button>
+          Notas Rápidas
+        </button>
+
+        <button>
+          Relatórios
+        </button>
+
+        <button>
+          Dados completos
+        </button>
+
+      </nav>
+
+
+
+      <section class="appointment-grid">
+
+
+        <article class="small-card">
+
+          <h3>
+            Próxima consulta
+          </h3>
+
+
+          <div class="appointment-box">
+
+            <div class="calendar-icon">
+              <i data-lucide="calendar"></i>
+            </div>
+
+            <div class="appointment-info">
+
+              <strong id="nextDate">
+                09/07/2026
+              </strong>
+
+              <span id="nextInfo">
+                14:30 • Online
+              </span>
+
+            </div>
+
+            <b class="appointment-arrow">
+              ›
+            </b>
+
+          </div>
+
+        </article>
+
+
+
+        <article class="small-card">
+
+          <h3>
+            Última consulta
+          </h3>
+
+
+          <div class="appointment-box">
+
+            <div class="calendar-icon">
+              <i data-lucide="calendar"></i>
+            </div>
+
+            <div class="appointment-info">
+
+              <strong id="lastDate">
+                09/07/2026
+              </strong>
+
+              <span id="lastInfo">
+                14:30 • Online
+              </span>
+
+            </div>
+
+            <b class="appointment-arrow">
+              ›
+            </b>
+
+          </div>
+
+        </article>
+
+
+      </section>
+
+
+
+
+
+      <section class="content-grid">
+
+
+
+        <article class="list-card">
+
+
+          <h2>
+            Notas Rápidas
+          </h2>
+
+
+          <div id="notesList">
+
+
+            <div class="list-item">
+
+              <span class="icon">
+              </span>
+
+
+              <div>
+
+                <strong>
+                  09/07/2026
+                </strong>
+
+
+                <p>
+                  Paciente relatou que lorem ipsum lorem ipsum...
+                </p>
+
+              </div>
+
+
+              <b>
+                ›
+              </b>
+
+
+            </div>
+
+
+
+          </div>
+
+
+        </article>
+
+
+
+
+
+
+        <article class="list-card">
+
+
+          <h2>
+            Relatórios Recentes
+          </h2>
+
+
+          <div id="reportsList">
+
+
+            <div class="list-item">
+
+
+              <span class="icon">
+                📄
+              </span>
+
+
+              <div>
+
+                <strong>
+                  09/07/2026
+                </strong>
+
+
+                <p>
+                  Paciente relatou que lorem ipsum lorem ipsum...
+                </p>
+
+
+              </div>
+
+
+              <b>
+                ›
+              </b>
+
+
+            </div>
+
+
+
+          </div>
+
+
+        </article>
+
+
+
+      </section>
+
+
+
     </main>
+
+
   </div>
+
+
 
   <script src="../assets/js/shared-data.js"></script>
   <script src="../assets/js/sidebar.js"></script>
   <script src="../assets/js/psicologo/historico.js"></script>
+
 </body>
+
 </html>

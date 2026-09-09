@@ -1,169 +1,691 @@
 "use strict";
 
-if (!document.querySelector("#introTitle")) {
-  const menuButton = document.querySelector(".mobile-menu");
-  const sidebar = document.querySelector(".sidebar");
-  menuButton?.addEventListener("click", () => {
-    const isOpen = sidebar.classList.toggle("open");
-    menuButton.setAttribute("aria-expanded", String(isOpen));
-  });
-  document.addEventListener("click", (event) => {
-    if (window.innerWidth <= 720 && sidebar && menuButton
-      && !sidebar.contains(event.target) && !menuButton.contains(event.target)) {
-      sidebar.classList.remove("open");
-      menuButton.setAttribute("aria-expanded", "false");
-    }
-  });
-} else {
+
 const data = window.PsiNoteData;
 
+
 const params = new URLSearchParams(window.location.search);
-const patientName = params.get('paciente') || '';
+
+const patientName =
+  params.get("paciente") || "Paciente";
+
+
 
 const elements = {
-  introTitle: document.querySelector('#introTitle'),
-  timeline: document.querySelector('#timeline'),
-  emptyTimeline: document.querySelector('#emptyTimeline'),
-  statConsultas: document.querySelector('#statConsultas'),
-  statRelatorios: document.querySelector('#statRelatorios'),
-  statNotas: document.querySelector('#statNotas'),
-  statDocs: document.querySelector('#statDocs'),
-  docList: document.querySelector('#docList'),
-  emptyDocs: document.querySelector('#emptyDocs'),
-  psychologistName: document.querySelector('#psychologistName'),
-  psychologistAvatar: document.querySelector('#psychologistAvatar'),
-  sidebar: document.querySelector('.sidebar'),
-  mobileMenu: document.querySelector('.mobile-menu'),
-  logoutLink: document.querySelector('#logoutLink')
+
+  title:
+    document.querySelector("#patientTitle"),
+
+  name:
+    document.querySelector("#patientName"),
+
+  avatar:
+    document.querySelector("#patientAvatar"),
+
+  email:
+    document.querySelector("#patientEmail"),
+
+  phone:
+    document.querySelector("#patientPhone"),
+
+  location:
+    document.querySelector("#patientLocation"),
+
+
+  nextDate:
+    document.querySelector("#nextDate"),
+
+  nextInfo:
+    document.querySelector("#nextInfo"),
+
+  lastDate:
+    document.querySelector("#lastDate"),
+
+  lastInfo:
+    document.querySelector("#lastInfo"),
+
+
+  notes:
+    document.querySelector("#notesList"),
+
+  reports:
+    document.querySelector("#reportsList"),
+
+
+  sidebar:
+    document.querySelector(".sidebar"),
+
+  mobile:
+    document.querySelector(".mobile-menu")
+
 };
 
-const fullDateFormatter = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
-const shortDateFormatter = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-function getInitials(name) {
-  return String(name).split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toUpperCase();
+
+
+
+
+function initials(name) {
+
+  return name
+    .split(" ")
+    .map(x => x[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
 }
 
-function renderHeader() {
+
+
+
+
+
+
+function renderPsychologist() {
+
+
   const session = data.getSession();
-  const displayName = (session && (session.fullName || session.name)) || 'Psicólogo PsiNote';
-  elements.psychologistName.textContent = displayName;
-  elements.psychologistAvatar.textContent = getInitials(displayName);
+
+
+  if (!session) return;
+
+
 }
 
-function addTimelineItem({ kind, title, when, body }) {
-  const item = document.createElement('div');
-  item.className = `timeline-item timeline-${kind}`;
-  const titleEl = document.createElement('p');
-  titleEl.className = 'timeline-title';
-  titleEl.textContent = title;
-  const whenEl = document.createElement('p');
-  whenEl.className = 'timeline-when';
-  whenEl.textContent = when;
-  item.append(titleEl, whenEl);
-  if (body) {
-    const bodyEl = document.createElement('p');
-    bodyEl.className = 'timeline-body';
-    bodyEl.textContent = body;
-    item.append(bodyEl);
-  }
-  elements.timeline.append(item);
+
+
+
+
+
+
+
+function getPatient() {
+
+  if (!data.getProfiles)
+    return null;
+
+
+  return data
+    .getProfiles()
+    .find(
+      p =>
+        p.name === patientName ||
+        p.fullName === patientName
+    );
+
 }
+
+
+
+
+
+
+
+
+function renderPatient() {
+
+
+  const patient =
+    getPatient();
+
+
+
+  elements.title.textContent =
+    `PERFIL DE ${patientName.toUpperCase()}`;
+
+
+
+  elements.name.textContent =
+    patientName;
+
+
+
+  if (!patient)
+    return;
+
+
+
+  elements.email.textContent =
+    patient.email || "Não informado";
+
+
+  elements.phone.textContent =
+    patient.phone ||
+    patient.telephone ||
+    "Não informado";
+
+
+  elements.location.textContent =
+    patient.location ||
+    patient.city ||
+    "Não informado";
+
+
+
+  if (patient.avatar) {
+
+    elements.avatar.src = patient.avatar;
+
+  }
+  else if (patient.photo) {
+
+    elements.avatar.src = patient.photo;
+
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+function formatDate(date) {
+
+
+  const parts =
+    date.split("-");
+
+
+  return `${parts[2]}/${parts[1]}/${parts[0]}`;
+
+}
+
+
+
+
+
+
+
+
+
+function renderAppointments() {
+
+
+  if (
+    !elements.nextDate ||
+    !elements.lastDate
+  )
+    return;
+
+
+
+  const appointments =
+
+    data.getAppointments()
+
+      .filter(
+
+        item =>
+
+          item.patient === patientName &&
+
+          item.status !== "cancelled"
+
+      )
+
+      .sort(
+
+        (a, b) =>
+
+          (a.date + a.time)
+            .localeCompare(
+              b.date + b.time
+            )
+
+      );
+
+
+
+
+  if (!appointments.length) {
+
+    elements.nextDate.textContent =
+      "--/--/----";
+
+    elements.nextInfo.textContent =
+      "Sem consultas";
+
+    elements.lastDate.textContent =
+      "--/--/----";
+
+    elements.lastInfo.textContent =
+      "Sem consultas";
+
+    return;
+
+  }
+
+
+
+
+  const now =
+    new Date();
+
+
+
+  const future =
+
+    appointments.filter(item => {
+
+
+      return new Date(
+        `${item.date}T${item.time}`
+      ) >= now;
+
+
+    });
+
+
+
+
+  const next =
+
+    future[0] || appointments[0];
+
+
+
+
+  const previous =
+
+    appointments
+
+      .filter(
+        item =>
+          item !== next
+      )
+
+      .sort(
+
+        (a, b) =>
+
+          (b.date + b.time)
+            .localeCompare(
+              a.date + a.time
+            )
+
+      )[0];
+
+
+
+
+
+
+  if (next) {
+
+
+    elements.nextDate.textContent =
+
+      formatDate(next.date);
+
+
+    elements.nextInfo.textContent =
+
+      `${next.time} • ${next.mode}`;
+
+
+  }
+
+
+
+
+
+  if (previous) {
+
+
+    elements.lastDate.textContent =
+
+      formatDate(previous.date);
+
+
+    elements.lastInfo.textContent =
+
+      `${previous.time} • ${previous.mode}`;
+
+
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+function createItem(date, text, type) {
+
+
+  const item =
+    document.createElement("div");
+
+
+  item.className =
+    "list-item";
+
+
+
+  item.innerHTML = `
+
+    <span class="icon">
+
+      ${type === "report"
+      ? '<i data-lucide="file-text"></i>'
+      : '<i data-lucide="message-square"></i>'
+    }
+
+    </span>
+
+
+    <div>
+
+      <strong>
+        ${date}
+      </strong>
+
+
+      <p>
+        ${text}
+      </p>
+
+    </div>
+
+
+    <b>
+      ›
+    </b>
+
+  `;
+
+
+
+  return item;
+
+}
+
+
+
+
+
+
+
+
+
+function renderNotes() {
+
+
+  if (!elements.notes)
+    return;
+
+
+
+  elements.notes.innerHTML = "";
+
+
+
+  const appointments =
+
+    data.getAppointments()
+
+      .filter(
+
+        item =>
+
+          item.patient === patientName
+
+      );
+
+
+
+  const notes =
+
+    appointments
+
+      .filter(
+
+        item =>
+
+          data.hasAppointmentNote(item.id)
+
+      );
+
+
+
+
+  if (notes.length === 0) {
+
+
+    elements.notes.append(
+
+      createItem(
+        "--",
+        "Nenhuma nota rápida encontrada",
+        "note"
+      )
+
+    );
+
+
+    return;
+
+  }
+
+
+
+
+
+
+  notes.slice(0, 3)
+
+    .forEach(item => {
+
+
+      elements.notes.append(
+
+
+        createItem(
+
+          new Intl.DateTimeFormat(
+            "pt-BR"
+          )
+
+            .format(
+
+              data.fromDateKey(
+                item.date
+              )
+
+            ),
+
+
+          data.getAppointmentNote(
+            item.id
+          ),
+
+
+          "note"
+
+        )
+
+      );
+
+
+    });
+
+
+}
+
+
+
+
+
+
+
+
+
+function renderReports() {
+
+
+  if (!elements.reports)
+    return;
+
+
+
+  elements.reports.innerHTML = "";
+
+
+
+  const reports =
+
+
+    data.getReports()
+
+      .filter(
+
+        item =>
+
+          item.patient === patientName
+
+      )
+
+      .slice(0, 3);
+
+
+
+
+
+  if (reports.length === 0) {
+
+
+    elements.reports.append(
+
+      createItem(
+        "--",
+        "Nenhum relatório encontrado",
+        "report"
+      )
+
+    );
+
+
+    return;
+
+  }
+
+
+
+
+
+
+
+  reports.forEach(report => {
+
+
+    elements.reports.append(
+
+
+      createItem(
+
+        new Intl.DateTimeFormat(
+          "pt-BR"
+        )
+
+          .format(
+
+            new Date(
+              report.createdAt
+            )
+
+          ),
+
+
+        "Relatório pós-consulta disponível",
+
+
+        "report"
+
+      )
+
+    );
+
+
+  });
+
+
+}
+
+
+
+
+
+
+
+
+/* MENU MOBILE */
+
+
+elements.mobile?.addEventListener(
+
+  "click",
+
+  () => {
+
+
+    const open =
+
+      elements.sidebar.classList.toggle(
+        "open"
+      );
+
+
+    elements.mobile
+
+      .setAttribute(
+
+        "aria-expanded",
+
+        String(open)
+
+      );
+
+
+  });
+
+
+
+
+
+
+
+
+
 
 function init() {
-  renderHeader();
 
-  if (!patientName) {
-    elements.introTitle.textContent = 'Nenhum paciente selecionado';
-    elements.emptyTimeline.hidden = false;
-    return;
-  }
 
-  elements.introTitle.textContent = patientName;
-  document.title = `PsicNota | Histórico de ${patientName}`;
+  renderPsychologist();
 
-  const appointments = data.getAppointments()
-    .filter((item) => item.patient === patientName)
-    .sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
-  const reports = data.getReports()
-    .filter((report) => report.patient === patientName)
-    .sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
-  const documents = data.getDocuments()
-    .filter((doc) => doc.patient === patientName)
-    .sort((a, b) => new Date(b.attachedAt) - new Date(a.attachedAt));
+  renderPatient();
 
-  const notesCount = appointments.filter((item) => data.hasAppointmentNote(item.id)).length;
+  renderAppointments();
 
-  elements.statConsultas.textContent = String(appointments.filter((item) => item.status !== 'cancelled').length);
-  elements.statRelatorios.textContent = String(reports.length);
-  elements.statNotas.textContent = String(notesCount);
-  elements.statDocs.textContent = String(documents.length);
+  renderNotes();
 
-  const entries = [];
+  renderReports();
 
-  appointments.forEach((appointment) => {
-    const date = data.fromDateKey(appointment.date);
-    const cancelled = appointment.status === 'cancelled';
-    const note = data.getAppointmentNote(appointment.id);
-    entries.push({
-      sortKey: `${appointment.date}T${appointment.time}`,
-      kind: cancelled ? 'cancelled' : 'consultation',
-      title: cancelled
-        ? `Consulta cancelada · ${appointment.time} · ${appointment.mode}`
-        : `Consulta confirmada · ${appointment.time} · ${appointment.mode}`,
-      when: fullDateFormatter.format(date),
-      body: [appointment.observation, note ? `Notas rápidas:\n${note}` : ''].filter(Boolean).join('\n\n')
-    });
-  });
 
-  reports.forEach((report) => {
-    const blocksText = Object.entries(report.blocks || {})
-      .filter(([, value]) => value && value.trim())
-      .map(([key, value]) => {
-        const labels = { queixa: 'Queixa', intervencao: 'Intervenção', evolucao: 'Evolução', proxima: 'Próxima sessão' };
-        return `${labels[key] || key}: ${value.trim()}`;
-      })
-      .join('\n');
-    entries.push({
-      sortKey: (report.updatedAt || report.createdAt || '').slice(0, 16).replace('T', 'T'),
-      kind: 'report',
-      title: 'Relatório pós-consulta',
-      when: `Atualizado em ${shortDateFormatter.format(new Date(report.updatedAt || report.createdAt))}`,
-      body: [blocksText, report.freeText || ''].filter(Boolean).join('\n\n')
-    });
-  });
+  lucide.createIcons();
 
-  entries.sort((a, b) => b.sortKey.localeCompare(a.sortKey));
-
-  elements.timeline.replaceChildren();
-  elements.emptyTimeline.hidden = entries.length > 0;
-  entries.forEach((entry) => addTimelineItem(entry));
-
-  elements.docList.replaceChildren();
-  elements.emptyDocs.hidden = documents.length > 0;
-  documents.forEach((doc) => {
-    const item = document.createElement('div');
-    item.className = 'doc-item';
-    const info = document.createElement('div');
-    info.className = 'doc-item-info';
-    const title = document.createElement('strong');
-    title.textContent = doc.name;
-    const meta = document.createElement('span');
-    meta.textContent = `${doc.type === 'laudo' ? 'Laudo' : 'Receita'} · anexado em ${shortDateFormatter.format(new Date(doc.attachedAt))}`;
-    info.append(title, meta);
-    const badge = document.createElement('span');
-    badge.className = doc.type === 'laudo' ? 'badge badge-laudos' : 'badge badge-receita';
-    badge.textContent = doc.type === 'laudo' ? 'Laudo' : 'Receita';
-    item.append(info, badge);
-    elements.docList.append(item);
-  });
 }
 
-elements.mobileMenu.addEventListener('click', () => {
-  const isOpen = elements.sidebar.classList.toggle('open');
-  elements.mobileMenu.setAttribute('aria-expanded', String(isOpen));
-});
-elements.logoutLink?.addEventListener('click', () => data.clearSession());
 
 init();
-}
