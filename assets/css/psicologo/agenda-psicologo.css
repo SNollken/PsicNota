@@ -951,6 +951,11 @@ body.modal-open { overflow: hidden; }
 
 .psic-day:disabled { cursor: default; }
 .psic-day.other-month { color: #64727c; background: rgba(255, 255, 255, 0.65); }
+.psic-day.is-unavailable {
+  border-color: #dce6ea;
+  color: #64727c;
+  background: #f8fafb;
+}
 
 .psic-day-number {
   display: block;

@@ -222,6 +222,8 @@ function renderCalendar() {
       button.classList.add("today");
       info.textContent = "HOJE";
       button.append(info);
+    } else if (isPast) {
+      button.classList.add("is-unavailable");
     }
 
     /*
