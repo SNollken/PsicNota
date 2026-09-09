@@ -50,6 +50,8 @@ const ui = {
 
   completedPopup: document.querySelector("#psicCompletedPopup"),
   completedPopupClose: document.querySelector("#psicCompletedPopupClose"),
+  completedPopupEyebrow: document.querySelector("#psicCompletedPopupEyebrow"),
+  completedPopupTitle: document.querySelector("#psicCompletedPopupTitle"),
   completedList: document.querySelector("#psicCompletedPopupList"),
 
   toast: document.querySelector("#psicToast"),
@@ -227,8 +229,15 @@ function renderCalendar() {
      * em qualquer dia do mês atual que não seja passado.
      */
     const selectable = !isOtherMonth && !isPast;
-    button.disabled = !selectable;
-    if (selectable) {
+    const completed = button.classList.contains("has-completed");
+    button.disabled = !selectable && !completed;
+    if (completed) {
+      button.setAttribute("aria-label", `Ver histórico de ${capitalizeFirst(popupDateFormatter.format(date))}`);
+      button.addEventListener("click", () => {
+        renderCompletedPopup(dateKey);
+        openPopup(ui.completedPopup);
+      });
+    } else if (selectable) {
       button.addEventListener("click", () => openSchedulePopup(date));
     }
 
@@ -628,19 +637,23 @@ function renderAppointmentsPopup() {
   upcoming.forEach((item) => ui.appointmentsList.append(createAppointmentCard(item, true)));
 }
 
-function renderCompletedPopup() {
+function renderCompletedPopup(dateKey = null) {
   const now = new Date();
   const sevenDaysAgo = new Date(now);
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
   const completed = getConfirmed()
     .map((item) => ({ ...item, dateTime: dateTimeFromItem(item) }))
-    .filter((item) => item.dateTime < now && item.dateTime >= sevenDaysAgo)
+    .filter((item) => item.dateTime < now && (dateKey ? item.date === dateKey : item.dateTime >= sevenDaysAgo))
     .sort((a, b) => b.dateTime - a.dateTime);
 
+  ui.completedPopupTitle.textContent = dateKey
+    ? `Histórico de ${capitalizeFirst(popupDateFormatter.format(data.fromDateKey(dateKey)))}`
+    : "Atendimentos recentes";
+  ui.completedPopupEyebrow.textContent = dateKey ? "HISTÓRICO" : "CONCLUÍDAS 7D";
   ui.completedList.replaceChildren();
   if (!completed.length) {
-    ui.completedList.append(createEmptyMessage("Nenhum atendimento nos últimos 7 dias."));
+    ui.completedList.append(createEmptyMessage(dateKey ? "Nenhum atendimento concluído nesta data." : "Nenhum atendimento nos últimos 7 dias."));
     return;
   }
   completed.forEach((item) => ui.completedList.append(createAppointmentCard(item, false)));
