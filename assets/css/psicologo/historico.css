@@ -315,7 +315,8 @@ body{
 }
 
 
-.patient-tabs button{
+.patient-tabs button,
+.patient-tabs a{
 
   height:58px;
 
@@ -331,8 +332,31 @@ body{
 
   color:var(--ink);
 
+  text-decoration:none;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  cursor:pointer;
+
 }
 
+.patient-tabs a{
+
+  text-decoration:none;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  color:var(--ink);
+
+}
 
 
 .patient-tabs .active{

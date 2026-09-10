@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PsicNota · Histórico de Relatórios</title>
+
+
+<link rel="stylesheet" href="../assets/css/psicologo/historico-relatorios.css">
+
+
+<script src="../assets/menu/menu.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+
+</head>
+
+
+<body>
+
+
+<div class="app-shell">
+
+
+<psic-menu tipo="psicologo" ativo=""></psic-menu>
+
+
+
+<main class="main-content">
+
+
+
+<button class="mobile-menu" type="button">
+
+☰
+
+</button>
+
+
+
+
+
+<header class="page-title">
+
+<h1 id="patientTitle">
+PERFIL DE PACIENTE
+</h1>
+
+</header>
+
+
+
+
+
+<section class="patient-card">
+
+
+
+<div class="patient-info">
+
+
+<div class="patient-avatar">
+
+<img
+id="patientAvatar"
+src="../assets/img/avatar.png"
+class="patient-photo"
+>
+
+
+</div>
+
+
+
+<div>
+
+<h2 id="patientName">
+Paciente
+</h2>
+
+
+<p id="patientMeta">
+29 anos • Ela / Dela
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="patient-contact">
+
+
+<p>
+
+<i data-lucide="mail"></i>
+
+<span id="patientEmail">
+email
+</span>
+
+</p>
+
+
+
+<p>
+
+<i data-lucide="phone"></i>
+
+<span id="patientPhone">
+telefone
+</span>
+
+</p>
+
+
+
+<p>
+
+<i data-lucide="map-pin"></i>
+
+<span id="patientLocation">
+localização
+</span>
+
+</p>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="patient-actions">
+
+
+<button class="primary">
+
+Notas rápidas
+
+</button>
+
+
+
+<button class="outline">
+
+Agendar consulta
+
+</button>
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+<nav class="patient-tabs">
+
+
+<a href="historico.html">
+
+Visão Geral
+
+</a>
+
+
+
+<a href="historico-consultas.html">
+
+Consultas
+
+</a>
+
+
+
+<a href="historico-notas.html">
+
+Historico Notas
+
+</a>
+
+
+
+<a 
+class="active"
+href="historico-relatorios.html">
+
+Relatórios
+
+</a>
+
+
+
+<a href="dados-completos.html">
+
+Dados completos
+
+</a>
+
+
+
+</nav>
+
+
+
+
+
+
+
+
+<section class="reports-history">
+
+
+
+<div
+id="reportsHistoryList"
+class="reports-history-list"
+>
+
+
+</div>
+
+
+
+
+
+<div
+id="reportsEmpty"
+class="reports-empty"
+hidden
+>
+
+
+<i data-lucide="file-x"></i>
+
+
+<p>
+Nenhum relatório encontrado.
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="load-more-wrap">
+
+
+<button
+id="loadMoreButton"
+class="load-more-button"
+hidden
+>
+
+Carregar mais
+
+</button>
+
+
+</div>
+
+
+
+
+</section>
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+
+<script src="../assets/js/shared-data.js"></script>
+<script src="../assets/js/seed-data.js"></script>
+<script src="../assets/js/sidebar.js"></script>
+<script src="../assets/js/psicologo/historico-relatorios.js"></script>
+
+
+
+</body>
+
+
+</html>

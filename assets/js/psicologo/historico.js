@@ -9,6 +9,20 @@ const params = new URLSearchParams(window.location.search);
 const patientName =
   params.get("paciente") || "Paciente";
 
+  function updateTabsLinks(){
+
+  const encodedPatient = encodeURIComponent(patientName);
+
+  document.querySelectorAll(".patient-tabs a").forEach(link=>{
+
+    const page = link.getAttribute("href").split("?")[0];
+
+    link.href = `${page}?paciente=${encodedPatient}`;
+
+  });
+
+ }
+
 
 
 const elements = {
@@ -681,6 +695,8 @@ function init() {
   renderNotes();
 
   renderReports();
+
+  updateTabsLinks();
 
 
   lucide.createIcons();

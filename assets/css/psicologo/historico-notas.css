@@ -1,0 +1,370 @@
+/* ==========================================================================
+   PsicNota · Histórico de Notas
+========================================================================== */
+
+@import url("./historico.css");
+
+
+/* ===============================
+   HISTÓRICO DE NOTAS
+================================ */
+
+.notes-history {
+
+  margin-top:18px;
+
+  min-height:435px;
+
+  background:var(--blue-50);
+
+  border-radius:22px;
+
+  padding:18px 20px 14px;
+
+  display:flex;
+
+  flex-direction:column;
+
+}
+
+
+
+/* ===============================
+   GRID
+================================ */
+
+.notes-history-list {
+
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:16px 20px;
+
+}
+
+
+
+/* ===============================
+   ITEM DA NOTA
+================================ */
+
+.note-history-item {
+
+  min-height:92px;
+
+  background:#F8FCFE;
+
+  border:1px solid #DCE6EA;
+
+  border-radius:18px;
+
+  padding:14px 18px;
+
+  display:grid;
+
+  grid-template-columns:52px 1fr 34px;
+
+  align-items:center;
+
+  column-gap:12px;
+
+  cursor:pointer;
+
+  transition:
+    transform .15s ease,
+    border-color .15s ease,
+    background-color .15s ease;
+
+}
+
+
+.note-history-item:hover {
+
+  border-color:var(--blue-200);
+
+  background:#FFFFFF;
+
+}
+
+
+.note-history-item:active {
+
+  transform:scale(.995);
+
+}
+
+
+
+/* ===============================
+   ÍCONE
+================================ */
+
+.note-history-icon {
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+}
+
+
+.note-history-icon svg {
+
+  width:36px;
+
+  height:36px;
+
+  stroke:#111827;
+
+  stroke-width:2;
+
+}
+
+
+
+/* ===============================
+   CONTEÚDO
+================================ */
+
+.note-history-content {
+
+  min-width:0;
+
+}
+
+
+.note-history-date {
+
+  display:block;
+
+  margin:0 0 4px;
+
+  color:var(--blue-700);
+
+  font-size:18px;
+
+  line-height:1.1;
+
+  font-weight:700;
+
+  text-align:center;
+
+}
+
+
+.note-history-text {
+
+  margin:0;
+
+  color:var(--muted);
+
+  font-size:15px;
+
+  line-height:1.25;
+
+  display:-webkit-box;
+
+  -webkit-box-orient:vertical;
+
+  -webkit-line-clamp:2;
+
+  overflow:hidden;
+
+}
+
+
+
+/* ===============================
+   SETA
+================================ */
+
+.note-history-arrow {
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  color:var(--blue-700);
+
+}
+
+
+.note-history-arrow svg {
+
+  width:32px;
+
+  height:32px;
+
+  stroke-width:2.5;
+
+}
+
+
+
+/* ===============================
+   CARREGAR MAIS
+================================ */
+
+.load-more-wrap {
+
+  margin-top:auto;
+
+  padding-top:22px;
+
+  display:flex;
+
+  justify-content:center;
+
+}
+
+
+.load-more-button {
+
+  min-width:190px;
+
+  height:46px;
+
+  padding:0 25px;
+
+  border:1px solid var(--blue-700);
+
+  border-radius:7px;
+
+  background:#FFFFFF;
+
+  color:var(--blue-700);
+
+  font-size:15px;
+
+  font-weight:600;
+
+  cursor:pointer;
+
+  transition:
+    background-color .15s ease,
+    color .15s ease;
+
+}
+
+
+.load-more-button:hover {
+
+  background:var(--blue-700);
+
+  color:#FFFFFF;
+
+}
+
+
+
+/* ===============================
+   SEM NOTAS
+================================ */
+
+.notes-empty {
+
+  flex:1;
+
+  min-height:250px;
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+
+  justify-content:center;
+
+  gap:12px;
+
+  color:var(--muted);
+
+  text-align:center;
+
+}
+
+
+.notes-empty svg {
+
+  width:42px;
+
+  height:42px;
+
+}
+
+
+.notes-empty p {
+
+  margin:0;
+
+  font-size:16px;
+
+}
+
+
+
+/* ===============================
+   RESPONSIVO
+================================ */
+
+@media(max-width:1100px) {
+
+  .notes-history-list {
+
+    grid-template-columns:1fr;
+
+  }
+
+}
+
+
+@media(max-width:720px) {
+
+  .notes-history {
+
+    padding:14px;
+
+    min-height:350px;
+
+  }
+
+
+  .note-history-item {
+
+    min-height:84px;
+
+    grid-template-columns:42px 1fr 26px;
+
+    padding:12px;
+
+  }
+
+
+  .note-history-icon svg {
+
+    width:30px;
+
+    height:30px;
+
+  }
+
+
+  .note-history-date {
+
+    font-size:16px;
+
+  }
+
+
+  .note-history-text {
+
+    font-size:13px;
+
+  }
+
+}
