@@ -954,7 +954,7 @@ body.modal-open { overflow: hidden; }
 .psic-day.is-unavailable {
   border-color: #dce6ea;
   color: #64727c;
-  background: #f8fafb;
+  background: #dce6ea;
 }
 
 .psic-day-number {
