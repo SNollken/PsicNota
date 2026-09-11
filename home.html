@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Página inicial do PsicNota (em construção).">
-  <title>PsicNota | Página inicial</title>
+  <meta name="description" content="Landing page do PsicNota – organização de atendimentos para psicólogos.">
+  <title>PsicNota | Landing Page</title>
   <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,39 +13,184 @@
   <link rel="stylesheet" href="assets/css/home.css">
 </head>
 <body>
-  <main class="auth-layout">
-    <section class="auth-brand" aria-labelledby="brand-title">
-      <a class="brand" href="home.html" aria-label="Página inicial do PsicNota">
-        <img src="assets/img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />
+  <!-- Header / Navigation -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a class="brand" href="home.html" aria-label="PsicNota – Home">
+        <img src="assets/img/logo_psicnota.png" alt="Logotipo PsicNota" class="brand-icon" />
         <span class="brand-text">PsicNota</span>
       </a>
-
-      <div class="brand-content">
-        <p class="eyebrow">EM CONSTRUÇÃO</p>
-        <h1 id="brand-title">Aqui será a página inicial do PsicNota.</h1>
-        <p>
-          O design desta tela ainda não foi feito no Figma. Assim que estiver
-          pronto, ela será implementada aqui.
-        </p>
+      <nav class="nav" aria-label="Navegação principal">
+        <ul class="nav-list">
+          <li><a href="#recursos">Recursos</a></li>
+          <li><a href="#beneficios">Benefícios</a></li>
+          <li><a href="#seguranca">Segurança</a></li>
+        </ul>
+      </nav>
+      <div class="auth-links">
+        <a class="secondary-button" href="auth/login.html">Entrar</a>
+        <a class="primary-button" href="auth/cadastro.html">Criar conta</a>
       </div>
+    </div>
+  </header>
 
-      <p class="brand-footer">PsicNota · Organização para um atendimento mais humano.</p>
-    </section>
+  <!-- Hero Section -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container hero-inner">
+      <h1 id="hero-title" class="hero-title">Suas anotações, organizadas.<br>Seu tempo pós‑consulta, eficiente.</h1>
+      <p class="hero-subtitle">Plataforma completa para psicólogos organizarem consultas, tomarem notas e gerar relatórios de forma segura.</p>
+      <div class="hero-actions">
+        <a class="primary-button" href="auth/cadastro.html">Começar agora →</a>
+        <a class="secondary-button" href="#recursos">Saiba mais</a>
+      </div>
+    </div>
+  </section>
 
-    <section class="auth-panel" aria-labelledby="home-title">
-      <div class="auth-panel-inner">
-        <header class="auth-header">
-          <p class="eyebrow">ENQUANTO ISSO</p>
-          <h2 id="home-title">Entre ou crie sua conta</h2>
-        </header>
+  <!-- Features Section -->
+  <section class="features" id="recursos" aria-labelledby="features-title">
+    <div class="container">
+      <h2 id="features-title" class="section-title">Tudo que você precisa, em um só lugar</h2>
+      <ul class="feature-list">
+        <li class="feature-card">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7h8M8 12h8M8 17h6"/></svg>
+          <h3>Agendamento inteligente</h3>
+          <p>Calendário visual com disponibilidade em tempo real.</p>
+        </li>
+        <li class="feature-card">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          <h3>Anotações rápidas</h3>
+          <p>Registre observações durante a sessão com poucos cliques.</p>
+        </li>
+        <li class="feature-card">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/></svg>
+          <h3>Relatórios profissionais</h3>
+          <p>Gere documentos padronizados para pacientes e órgãos reguladores.</p>
+        </li>
+        <li class="feature-card">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/><path d="M12 14v7"/></svg>
+          <h3>Gestão de pacientes</h3>
+          <p>Banco de dados com histórico completo e histórico de sessões.</p>
+        </li>
+        <li class="feature-card">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M5 12h14"/></svg>
+          <h3>Segurança dos dados</h3>
+          <p>Criptografia ponta‑a‑ponta e controle de acessos por perfil.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
 
-        <div class="home-actions">
-          <a class="primary-button" href="auth/cadastro.html">Criar conta</a>
-          <a class="secondary-button" href="auth/login.html">Já tenho conta · Entrar</a>
+  <!-- Audience Section -->
+  <section class="audience" id="audiencia" aria-labelledby="audience-title">
+    <div class="container">
+      <h2 id="audience-title" class="section-title">Para quem o PsicNota foi feito?</h2>
+      <div class="audience-grid">
+        <article class="audience-card">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 0-7 17.5V20h14v-0.5A10 10 0 0 0 12 2z"/></svg>
+          <h3>Profissionais</h3>
+          <p>Organize sua agenda, registre sessões e mantenha prontuários seguros.</p>
+        </article>
+        <article class="audience-card">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <h3>Pacientes</h3>
+          <p>Solicite consultas, acompanhe seu histórico e receba relatórios personalizados.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits Section -->
+  <section class="benefits-section" id="beneficios" aria-labelledby="benefits-title">
+    <div class="container">
+      <h2 id="benefits-title" class="section-title">Menos burocracia, mais presença</h2>
+      <div class="benefit-grid">
+        <div class="benefit-item">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/></svg>
+          <h3>Economize tempo</h3>
+          <p>Automatize agendamentos e facilite o registro de notas.</p>
+        </div>
+        <div class="benefit-item">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          <h3>Mais segurança</h3>
+          <p>Dados criptografados e acesso por perfil garantem privacidade.</p>
+        </div>
+        <div class="benefit-item">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/></svg>
+          <h3>Acesse de qualquer lugar</h3>
+          <p>Plataforma web responsiva, disponível em desktops e tablets.</p>
         </div>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
+
+  <!-- Security Section -->
+  <section class="security" id="seguranca" aria-labelledby="security-title">
+    <div class="container security-inner">
+      <div class="security-visual">
+        <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1l9 4v6c0 5-3 9-9 11-6-2-9-6-9-11V5l9-4z"/></svg>
+      </div>
+      <div class="security-content">
+        <h2 id="security-title" class="section-title">Informações importantes no lugar certo</h2>
+        <p>Interface segura e organizada que garante que dados sensíveis fiquem protegidos.</p>
+        <ul class="security-list">
+          <li>🔒 Dados organizados</li>
+          <li>👤 Acesso por perfil</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final Call to Action -->
+  <section class="cta-final" aria-labelledby="cta-title">
+    <div class="container cta-inner">
+      <h2 id="cta-title" class="section-title">Pronto para organizar sua rotina?</h2>
+      <p class="cta-subtitle">Comece agora e tenha mais tempo para o que realmente importa.</p>
+      <a class="primary-button" href="auth/cadastro.html">Criar a minha conta →</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a class="brand" href="home.html" aria-label="PsicNota – Home">
+          <img src="assets/img/logo_psicnota.png" alt="Logotipo PsicNota" class="brand-icon" />
+          <span class="brand-text">PsicNota</span>
+        </a>
+        <p class="brand-tagline">Organize. Registre. Acompanhe.</p>
+      </div>
+      <div class="footer-links">
+        <div class="link-col">
+          <h4>Links</h4>
+          <ul>
+            <li><a href="#recursos">Recursos</a></li>
+            <li><a href="#beneficios">Benefícios</a></li>
+            <li><a href="#seguranca">Segurança</a></li>
+          </ul>
+        </div>
+        <div class="link-col">
+          <h4>Empresa</h4>
+          <ul>
+            <li><a href="sobre.html">Sobre</a></li>
+            <li><a href="contato.html">Contato</a></li>
+            <li><a href="privacidade.html">Política de privacidade</a></li>
+          </ul>
+        </div>
+        <div class="link-col">
+          <h4>Social</h4>
+          <ul class="social-list">
+            <li><a href="#" aria-label="Instagram">Instagram</a></li>
+            <li><a href="#" aria-label="Facebook">Facebook</a></li>
+            <li><a href="#" aria-label="LinkedIn">LinkedIn</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 PsicNota. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
   <script src="assets/js/home.js"></script>
 </body>
 </html>
