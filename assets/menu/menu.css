@@ -152,6 +152,14 @@
 
 .nav-item.active:hover { background: #BFE7F5; }
 
+/* Ritmo do menu do paciente conforme o design "Menu Paciente"
+   (docs/designs/Menu Paciente.svg): pills de 43px com ~14px entre si e
+   rótulo MENU rente ao primeiro pill. Escopado pelo aria-label da sidebar
+   para não alterar o menu do psicólogo. */
+.sidebar[aria-label="Navegação do paciente"] .main-nav { gap: 14px; }
+
+.sidebar[aria-label="Navegação do paciente"] .nav-label { margin-bottom: 10px; }
+
 .nav-badge {
   margin-left: auto;
   min-width: 22px;

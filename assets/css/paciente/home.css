@@ -1,10 +1,8 @@
 /* ==========================================================================
-   paciente/home.css — CSS auto-contido da página placeholder "Paciente · Início".
-   Blocos do ex-base.css que a página usa + estilo "em construção"
-   (antes inline no HTML). O menu lateral vem por @import do menu.css,
-   componente <psic-menu>.
+   paciente/home.css — CSS auto-contido da tela "Início" do paciente.
+   O menu lateral vem pelo <link> do menu.css no head da página
+   (componente <psic-menu>), mesma convenção de paciente/perfil.html.
    ========================================================================== */
-@import url("../../menu/menu.css");
 
 :root {
   --blue-25: #F8FAFB;
@@ -19,19 +17,9 @@
 
   --ink: #111827;
   --muted: #64727C;
-  --line: #E4F6FC;
+  --line: #DCE6EA;
   --white: #ffffff;
   --sidebar-bg: #F3FBFE;
-
-  --success-bg: #3BAE24;
-  --success-line: #3BAE24;
-  --success: #174E61;
-  --warning-bg: #E4F6FC;
-  --warning-line: #E4F6FC;
-  --warning: #64727C;
-  --danger: #D90307;
-  --danger-bg: #D90307;
-  --danger-line: #D90307;
 
   --sidebar-width: 294px;
 
@@ -93,8 +81,7 @@ svg {
   border: 0;
 }
 
-/* Shell padrão das telas logadas: sidebar + conteúdo.
-   Cada CSS de página pode estender; esta é a base mínima. */
+/* Shell padrão das telas logadas: sidebar + conteúdo. */
 .app-shell {
   min-height: 100vh;
   display: grid;
@@ -122,18 +109,13 @@ h1 {
   letter-spacing: -0.01em;
 }
 
-/* Página em construção */
-.construction-wrap {
+.home-topbar {
   display: flex;
   align-items: center;
-  justify-content: center;
-  min-height: calc(100vh - 140px);
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 18px;
 }
-
-.construction-box { text-align: center; padding: 40px 24px; max-width: 460px; }
-.construction-box img { width: 72px; height: 72px; object-fit: contain; }
-.construction-box h1 { font-size: 21px; margin: 20px 0 8px; color: #1F637A; letter-spacing: -0.02em; }
-.construction-box p { color: #64727C; margin: 0; line-height: 1.6; }
 
 @media (max-width: 1180px) {
   :root { --sidebar-width: 230px; }

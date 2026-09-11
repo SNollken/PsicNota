@@ -16,7 +16,7 @@
              Se omitido, usa o tipo salvo na sessão.
      ativo = qual item aparece destacado:
              psicologo: "agenda" | "relatorios" | "pacientes" | "perfil" | ""
-             paciente : "agendar" | "laudos" | "perfil" | ""
+             paciente : "inicio" | "agendar" | "laudos" | "perfil" | ""
 
    O componente renderiza em LIGHT DOM de forma SÍNCRONA durante o parse,
    então os scripts de cada página (agenda-psicologo.js, pacientes.js, perfil.js...)
@@ -31,6 +31,7 @@
 
   var ICON_AGENDA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"/></svg>';
   var ICON_CLIP = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>';
+  var ICON_HOME = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.6 12 4l8 6.6V20a1 1 0 0 1-1 1h-4.6v-6.2H9.6V21H5a1 1 0 0 1-1-1v-10.4Z"/></svg>';
   var ICON_PESSOA = '<svg class="nav-icon-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11.5a4.25 4.25 0 1 0-4.25-4.25A4.26 4.26 0 0 0 12 11.5Zm0 2.1c-3.88 0-8.05 1.95-8.05 5.4v1.6h16.1v-1.6c0-3.45-4.17-5.4-8.05-5.4Z"/></svg>';
 
   function item(href, icone, rotulo, ativo) {
@@ -81,6 +82,7 @@
       '      </a>\n' +
       '      <nav class="main-nav">\n' +
       '        <p class="nav-label">MENU</p>\n' +
+      '        ' + item(prefixoPagina + 'home.html', ICON_HOME, '<span>Início</span>', ativo === 'inicio') + '\n' +
       '        ' + item(prefixoPagina + 'agenda-paciente.html', ICON_AGENDA, '<span>Agendar consulta</span>', ativo === 'agendar') + '\n' +
       '        ' + item(prefixoPagina + 'laudos.html', ICON_CLIP, '<span>Receitas e Laudos</span>', ativo === 'laudos') + '\n' +
       '      </nav>\n\n' +
