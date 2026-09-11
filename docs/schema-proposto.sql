@@ -1,6 +1,6 @@
 -- =====================================================================
--- PSICNOTA - SCHEMA PROPOSTO v1 (Supabase PostgreSQL 17)
--- Status: PROPOSTA. NAO EXECUTAR sem revisao da Sofia.
+-- PSICNOTA - SCHEMA INICIAL v2 (Supabase PostgreSQL 17)
+-- Status: revisado para aplicacao unica em banco vazio.
 -- Projeto: gjfqslgoplpqeqewytdn (regiao sa-east-1)
 -- Data: 2026-08-26
 --
@@ -12,7 +12,6 @@
 -- ---------------------------------------------------------------------
 -- 0) EXTENSOES
 -- ---------------------------------------------------------------------
-create extension if not exists btree_gist;  -- preparacao p/ restricao de sobreposicao de horarios
 create extension if not exists pg_trgm;     -- busca por nome de paciente (opcional)
 
 -- ---------------------------------------------------------------------
@@ -35,6 +34,14 @@ create table public.perfis (
   papel                    text not null check (papel in ('psicologo','paciente')),
   nome_completo            text not null check (char_length(trim(nome_completo)) >= 3),
   nome_social              text,
+  pronomes                 text,
+  genero                   text,
+  cidade                   text,
+  estado                   char(2),
+  formato_preferido        text,
+  periodo_preferido        text,
+  lembretes_consulta       boolean not null default false,
+  notificacoes_email       boolean not null default false,
   data_nascimento          date,
   telefone                 text,
   email                    text not null,
@@ -55,6 +62,10 @@ create table public.dados_psicologo (
   especialidade       text,
   formato_atendimento text not null default 'ambos'
                       check (formato_atendimento in ('online','presencial','ambos')),
+  sobre_mim           text,
+  abordagem_terapeutica text,
+  publico_atendido    text,
+  areas_atuacao       text[] not null default '{}',
   constraint dados_psicologo_crp_unico unique (crp_uf, crp_numero)
 );
 
@@ -83,8 +94,7 @@ create table public.solicitacoes (
                 check (status in ('pending','approved','rejected','cancelled')),
   solicitado_em timestamptz not null default now(),
   revisado_em   timestamptz,
-  motivo_recusa text,
-  consulta_id   uuid  -- FK criada apos a tabela consultas (referencia mutua)
+  motivo_recusa text
 );
 
 -- impede 2 solicitacoes pendentes do mesmo paciente pro mesmo slot
@@ -116,11 +126,6 @@ create table public.consultas (
   criado_em      timestamptz not null default now(),
   atualizado_em  timestamptz not null default now()
 );
-
--- fecha a referencia mutua
-alter table public.solicitacoes
-  add constraint solicitacoes_consulta_fk
-  foreign key (consulta_id) references public.consultas (id) on delete set null;
 
 -- slot unico por psicologo (ignorando canceladas) - igual ao prototipo
 create unique index consultas_slot_unico_idx
@@ -161,7 +166,7 @@ create table public.relatorios (
   bloco_evolucao        text not null default '',
   bloco_encaminhamentos text not null default '',
   texto_livre           text not null default '',
-  status                text not null default 'draft' check (status in ('draft','final')),
+  status                text not null default 'rascunho' check (status in ('rascunho','final')),
   criado_em             timestamptz not null default now(),
   atualizado_em         timestamptz not null default now()
 );
@@ -196,7 +201,7 @@ create table public.documentos (
   paciente_id            uuid not null references public.perfis (id) on delete cascade,
   tipo                   text not null check (tipo in ('laudo','receita')),
   titulo                 text not null,
-  storage_path           text not null,
+  storage_path           text,
   liberado_para_paciente boolean not null default false,
   liberado_em            timestamptz,
   criado_em              timestamptz not null default now()
@@ -206,13 +211,6 @@ create index documentos_paciente_idx on public.documentos (paciente_id)
   where liberado_para_paciente;
 create index documentos_psicologo_idx on public.documentos (psicologo_id, criado_em desc);
 
--- Template de PDF do psicologo
-create table public.templates_documento (
-  psicologo_id  uuid primary key references public.perfis (id) on delete cascade,
-  storage_path  text not null,
-  atualizado_em timestamptz not null default now()
-);
-
 -- ---------------------------------------------------------------------
 -- 9) LOGS DE ACESSO (accountability LGPD; so metadados, nunca conteudo)
 --    Escrita apenas via service_role/backend; nenhum usuario le direto.
@@ -221,7 +219,7 @@ create table public.logs_acesso (
   id          bigint generated always as identity primary key,
   ator_id     uuid references public.perfis (id) on delete set null,
   tabela_alvo text not null,
-  registro_id uuid,
+  registro_id text,
   acao        text not null check (acao in ('select','insert','update','delete')),
   ip          inet,
   user_agent  text,
@@ -254,8 +252,13 @@ begin
   values (
     new.id,
     case when p_papel = 'psicologo' then 'psicologo' else 'paciente' end,
-    coalesce(nullif(trim(new.raw_user_meta_data->>'nome_completo'), ''), 'Usuario'),
-    nullif(new.raw_user_meta_data->>'data_nascimento', '')::date,
+    coalesce(nullif(trim(new.raw_user_meta_data->>'nome_completo'), ''), 'Usuário'),
+    case
+      when nullif(new.raw_user_meta_data->>'data_nascimento', '') is null then null
+      when new.raw_user_meta_data->>'data_nascimento' ~ '^\\d{2}/\\d{2}/\\d{4}$'
+        then to_date(new.raw_user_meta_data->>'data_nascimento', 'DD/MM/YYYY')
+      else (new.raw_user_meta_data->>'data_nascimento')::date
+    end,
     nullif(new.raw_user_meta_data->>'telefone', ''),
     new.email
   );
@@ -299,7 +302,6 @@ alter table public.notas               enable row level security;
 alter table public.relatorios          enable row level security;
 alter table public.anexos_relatorio    enable row level security;
 alter table public.documentos          enable row level security;
-alter table public.templates_documento enable row level security;
 alter table public.logs_acesso         enable row level security;
 
 -- Helpers SECURITY DEFINER (evitam recursao de RLS na tabela perfis)
@@ -314,6 +316,15 @@ $$ select coalesce(public.papel_atual(uid), '') = 'psicologo' $$;
 create or replace function public.e_paciente(uid uuid default auth.uid())
 returns boolean language sql stable security definer set search_path = public as
 $$ select coalesce(public.papel_atual(uid), '') = 'paciente' $$;
+
+revoke all on function public.set_updated_at() from public;
+revoke all on function public.handle_new_user() from public;
+revoke all on function public.papel_atual(uuid) from public;
+revoke all on function public.e_psicologo(uuid) from public;
+revoke all on function public.e_paciente(uuid) from public;
+grant execute on function public.papel_atual(uuid) to authenticated;
+grant execute on function public.e_psicologo(uuid) to authenticated;
+grant execute on function public.e_paciente(uuid) to authenticated;
 
 -- PERFIS: cada um ve/edita o proprio; psicologo ve pacientes com consulta
 -- em comum; paciente ve dados basicos dos proprios psicologos.
@@ -347,7 +358,7 @@ create policy dados_psicologo_write on public.dados_psicologo for all
 -- DISPONIBILIDADES: slots sao necessarios pro agendamento (nao sao
 -- sensiveis); escrita so do proprio psicologo.
 create policy disponibilidades_select on public.disponibilidades for select
-  using (auth.role() = 'authenticated');
+  to authenticated using (true);
 create policy disponibilidades_write on public.disponibilidades for all
   using (public.e_psicologo() and psicologo_id = auth.uid())
   with check (public.e_psicologo() and psicologo_id = auth.uid());
@@ -367,7 +378,8 @@ create policy solicitacoes_psicologo_select on public.solicitacoes for select
   using (public.e_psicologo() and psicologo_id = auth.uid());
 create policy solicitacoes_psicologo_update on public.solicitacoes for update
   using (public.e_psicologo() and psicologo_id = auth.uid() and status = 'pending')
-  with check (public.e_psicologo() and psicologo_id = auth.uid());
+  with check (public.e_psicologo() and psicologo_id = auth.uid()
+              and status in ('approved','rejected'));
 -- Paciente cancela a propria solicitacao pendente (fluxo do prototipo).
 create policy solicitacoes_paciente_cancel on public.solicitacoes for update
   using (paciente_id = auth.uid() and status = 'pending')
@@ -380,7 +392,7 @@ create policy consultas_psicologo_all on public.consultas for all
   using (public.e_psicologo() and psicologo_id = auth.uid())
   with check (public.e_psicologo() and psicologo_id = auth.uid());
 
--- NOTAS / RELATORIOS / ANEXOS / TEMPLATES: somente o psicologo dono.
+-- NOTAS / RELATORIOS / ANEXOS: somente o psicologo dono.
 -- Paciente nao tem nenhuma politica = acesso negado por padrao.
 create policy notas_psicologo_all on public.notas for all
   using (public.e_psicologo() and psicologo_id = auth.uid())
@@ -393,10 +405,6 @@ create policy relatorios_psicologo_all on public.relatorios for all
 create policy anexos_psicologo_all on public.anexos_relatorio for all
   using (public.e_psicologo() and psicologo_id = auth.uid())
   with check (public.e_psicologo() and psicologo_id = auth.uid());
-
-create policy templates_psicologo_all on public.templates_documento for all
-  using (psicologo_id = auth.uid())
-  with check (psicologo_id = auth.uid());
 
 -- DOCUMENTOS (laudos/receitas): psicologo gerencia; paciente so ve o que
 -- foi liberado explicitamente.
@@ -417,6 +425,8 @@ from public.consultas
 where paciente_id = auth.uid();
 
 grant select on public.minhas_consultas to authenticated;
+
+grant select, insert, update, delete on all tables in schema public to authenticated;
 
 -- ---------------------------------------------------------------------
 -- 12) STORAGE (buckets privados)

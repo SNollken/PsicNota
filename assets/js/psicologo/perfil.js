@@ -3,11 +3,11 @@
 (function () {
   const ROLE = "psicologo";
   const ROLE_LABEL = "Psicólogo";
-  const OTHER_PROFILE_PATH = "../paciente/perfil.html";
   const data = window.PsiNoteData;
+  const backend = window.PsicNotaBackend;
   const form = document.getElementById("profileForm");
 
-  if (!form || !data) return;
+  if (!form || !data || !backend) return;
 
   const elements = {
     avatar: document.querySelector("[data-avatar]"),
@@ -38,21 +38,13 @@
     areasAddBtn: document.querySelector("[data-areas-add-btn]")
   };
 
-  const currentSession = data.getSession();
-  if (currentSession && currentSession.role && currentSession.role !== ROLE) {
-    window.location.replace(OTHER_PROFILE_PATH);
-    return;
-  }
-
-  let session = currentSession || {
-    id: "perfil-demo-" + ROLE,
-    role: ROLE,
-    name: ROLE_LABEL + " PsicNota",
-    fullName: ROLE_LABEL + " PsicNota",
-    email: ""
-  };
-  let avatarDataUrl = session.avatarDataUrl || "";
-  let areas = Array.isArray(session.areas) ? session.areas.slice() : [];
+  let session = data.getSession() || {};
+  let userId = "";
+  let avatarPath = "";
+  let avatarDataUrl = "";
+  let pendingAvatarFile = null;
+  let removeAvatar = false;
+  let areas = [];
   let snapshot = {};
 
   function value(name, fallback = "") {
@@ -231,53 +223,59 @@
     if (modal) modal.hidden = true;
   }
 
-  function saveProfile() {
+  async function saveProfile() {
     const profile = collectForm();
-    const existingProfessional = session.professionalData || {};
+    profile.areas = areas.slice();
+    elements.confirmSave.disabled = true;
+    elements.confirmSave.textContent = "Salvando...";
 
-    session = {
-      ...session,
-      ...profile,
-      name: profile.fullName,
-      fullName: profile.fullName,
-      role: ROLE,
-      avatarDataUrl,
-      areas: areas.slice(),
-      professionalData: {
-        ...existingProfessional,
-        crp: profile.crp,
-        crpState: profile.crpState,
-        specialty: profile.specialty,
-        serviceFormat: profile.serviceFormat,
-        about: profile.about,
-        approach: profile.approach,
-        audience: profile.audience
-      }
-    };
-
-    const remember = Boolean(localStorage.getItem("psinote.auth.session") || localStorage.getItem("psinoteSession"));
-    data.setSession(session, remember);
-
-    const profiles = data.getProfiles();
-    const index = profiles.findIndex((item) => item.id === session.id || item.email === session.email);
-    const storedProfile = {
-      ...(index >= 0 ? profiles[index] : {}),
-      ...session
-    };
-
-    if (index >= 0) profiles[index] = storedProfile;
-    else profiles.push(storedProfile);
-    data.saveProfiles(profiles);
-
-    snapshot = profileFromSession();
-    snapshot.areas = areas.slice();
-    render(snapshot);
-    setEditing(false);
+    try {
+      avatarPath = await backend.saveProfile(
+        userId,
+        ROLE,
+        profile,
+        pendingAvatarFile,
+        removeAvatar,
+        avatarPath
+      );
+      avatarDataUrl = await backend.avatarUrl(avatarPath);
+      session = {
+        ...session,
+        ...profile,
+        id: userId,
+        name: profile.socialName || profile.fullName,
+        fullName: profile.fullName,
+        role: ROLE,
+        avatarDataUrl,
+        areas: areas.slice(),
+        professionalData: {
+          crp: profile.crp,
+          crpState: profile.crpState,
+          specialty: profile.specialty,
+          serviceFormat: profile.serviceFormat,
+          about: profile.about,
+          approach: profile.approach,
+          audience: profile.audience
+        }
+      };
+      const remember = Boolean(localStorage.getItem("psinote.auth.session") || localStorage.getItem("psinoteSession"));
+      data.setSession(session, remember);
+      pendingAvatarFile = null;
+      removeAvatar = false;
+      snapshot = profileFromSession();
+      snapshot.areas = areas.slice();
+      render(snapshot);
+      setEditing(false);
+      openModal(elements.successModal);
+    } catch (error) {
+      console.error(error);
+      showFeedback("Não foi possível salvar o perfil. Tente novamente.", true);
+    } finally {
+      elements.confirmSave.disabled = false;
+      elements.confirmSave.textContent = "Salvar";
+    }
   }
 
-  snapshot = profileFromSession();
-  snapshot.areas = areas.slice();
-  render(snapshot);
   setEditing(false);
 
   elements.edit?.addEventListener("click", () => {
@@ -287,6 +285,8 @@
 
   elements.cancel?.addEventListener("click", () => {
     avatarDataUrl = session.avatarDataUrl || "";
+    pendingAvatarFile = null;
+    removeAvatar = false;
     areas = (snapshot.areas || []).slice();
     render(snapshot);
     setEditing(false);
@@ -304,6 +304,8 @@
   elements.avatarInput?.addEventListener("change", () => {
     const file = elements.avatarInput.files?.[0];
     if (!file) return;
+    pendingAvatarFile = file;
+    removeAvatar = false;
     const reader = new FileReader();
     reader.addEventListener("load", () => {
       setAvatar(String(reader.result || ""), value("fullName"));
@@ -313,6 +315,8 @@
 
   elements.removePhoto?.addEventListener("click", () => {
     startEditing();
+    pendingAvatarFile = null;
+    removeAvatar = true;
     setAvatar("", value("fullName"));
   });
 
@@ -338,15 +342,63 @@
   });
 
   elements.confirmCancel?.addEventListener("click", () => closeModal(elements.confirmModal));
-  elements.confirmSave?.addEventListener("click", () => {
+  elements.confirmSave?.addEventListener("click", async () => {
     closeModal(elements.confirmModal);
-    saveProfile();
-    openModal(elements.successModal);
+    await saveProfile();
   });
   elements.successOk?.addEventListener("click", () => closeModal(elements.successModal));
 
-  elements.logout?.addEventListener("click", () => {
+  elements.logout?.addEventListener("click", async (event) => {
+    event.preventDefault();
+    await backend.signOut();
     data.clearSession();
     window.location.href = "../auth/login.html";
   });
+
+  async function initialize() {
+    try {
+      const loaded = await backend.requireProfile(ROLE);
+      if (!loaded) return;
+      const profile = loaded.profile;
+      const professional = loaded.professional;
+      userId = loaded.user.id;
+      avatarPath = profile.avatar_url || "";
+      avatarDataUrl = loaded.avatarUrl;
+      areas = Array.isArray(professional.areas_atuacao) ? professional.areas_atuacao.slice() : [];
+      session = {
+        id: userId,
+        role: ROLE,
+        name: profile.nome_social || profile.nome_completo,
+        fullName: profile.nome_completo,
+        socialName: profile.nome_social || "",
+        pronoun: profile.pronomes || "",
+        gender: profile.genero || "",
+        city: profile.cidade || "",
+        state: profile.estado || "",
+        birthDate: profile.data_nascimento || "",
+        phone: profile.telefone || "",
+        email: profile.email,
+        avatarDataUrl,
+        areas: areas.slice(),
+        professionalData: {
+          crp: professional.crp_numero,
+          crpState: professional.crp_uf,
+          specialty: professional.especialidade || "",
+          serviceFormat: professional.formato_atendimento,
+          about: professional.sobre_mim || "",
+          approach: professional.abordagem_terapeutica || "",
+          audience: professional.publico_atendido || ""
+        }
+      };
+      snapshot = profileFromSession();
+      snapshot.areas = areas.slice();
+      render(snapshot);
+      setEditing(false);
+    } catch (error) {
+      console.error(error);
+      showFeedback("Não foi possível carregar seu perfil.", true);
+    }
+  }
+
+  initialize();
 }());

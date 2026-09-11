@@ -70,14 +70,14 @@
 
         <form id="loginForm" class="auth-form" novalidate>
           <div class="form-group">
-            <label for="loginEmail">E-mail</label>
+            <label for="loginEmail">Usuário</label>
             <input
               id="loginEmail"
-              name="email"
-              type="email"
-              inputmode="email"
-              autocomplete="email"
-              placeholder="Digite seu e-mail"
+              name="username"
+              type="text"
+              inputmode="text"
+              autocomplete="username"
+              placeholder="Digite seu usuário"
               aria-describedby="loginEmailError"
               required
             >
@@ -128,6 +128,8 @@
     </section>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js"></script>
   <script src="../assets/js/login.js"></script>
 </body>
 </html>

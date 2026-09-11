@@ -3,11 +3,11 @@
 (function () {
   const ROLE = "paciente";
   const ROLE_LABEL = "Paciente";
-  const OTHER_PROFILE_PATH = "../psicologo/perfil.html";
   const data = window.PsiNoteData;
+  const backend = window.PsicNotaBackend;
   const form = document.getElementById("profileForm");
 
-  if (!form || !data) return;
+  if (!form || !data || !backend) return;
 
   const elements = {
     avatar: document.querySelector("[data-avatar]"),
@@ -33,20 +33,12 @@
     successOk: document.getElementById("successOkBtn")
   };
 
-  const currentSession = data.getSession();
-  if (currentSession && currentSession.role && currentSession.role !== ROLE) {
-    window.location.replace(OTHER_PROFILE_PATH);
-    return;
-  }
-
-  let session = currentSession || {
-    id: "perfil-demo-" + ROLE,
-    role: ROLE,
-    name: ROLE_LABEL + " PsicNota",
-    fullName: ROLE_LABEL + " PsicNota",
-    email: ""
-  };
-  let avatarDataUrl = session.avatarDataUrl || "";
+  let session = data.getSession() || {};
+  let userId = "";
+  let avatarPath = "";
+  let avatarDataUrl = "";
+  let pendingAvatarFile = null;
+  let removeAvatar = false;
   let snapshot = {};
 
   function value(name, fallback = "") {
@@ -212,52 +204,48 @@
     if (modal) modal.hidden = true;
   }
 
-  function saveProfile() {
+  async function saveProfile() {
     const profile = collectForm();
-    const existingProfessional = session.professionalData || {};
+    elements.confirmSave.disabled = true;
+    elements.confirmSave.textContent = "Salvando...";
 
-    session = {
-      ...session,
-      ...profile,
-      name: profile.fullName,
-      fullName: profile.fullName,
-      role: ROLE,
-      avatarDataUrl
-    };
+    try {
+      avatarPath = await backend.saveProfile(
+        userId,
+        ROLE,
+        profile,
+        pendingAvatarFile,
+        removeAvatar,
+        avatarPath
+      );
+      avatarDataUrl = await backend.avatarUrl(avatarPath);
 
-    if (ROLE === "psicologo") {
-      session.professionalData = {
-        ...existingProfessional,
-        crp: profile.crp,
-        crpState: profile.crpState,
-        specialty: profile.specialty,
-        serviceFormat: profile.serviceFormat
+      session = {
+        ...session,
+        ...profile,
+        id: userId,
+        name: profile.socialName || profile.fullName,
+        fullName: profile.fullName,
+        role: ROLE,
+        avatarDataUrl
       };
-    } else {
-      session.professionalData = null;
+      const remember = Boolean(localStorage.getItem("psinote.auth.session") || localStorage.getItem("psinoteSession"));
+      data.setSession(session, remember);
+      pendingAvatarFile = null;
+      removeAvatar = false;
+      snapshot = profileFromSession();
+      render(snapshot);
+      setEditing(false);
+      openModal(elements.successModal);
+    } catch (error) {
+      console.error(error);
+      showFeedback("Não foi possível salvar o perfil. Tente novamente.", true);
+    } finally {
+      elements.confirmSave.disabled = false;
+      elements.confirmSave.textContent = "Salvar";
     }
-
-    const remember = Boolean(localStorage.getItem("psinote.auth.session") || localStorage.getItem("psinoteSession"));
-    data.setSession(session, remember);
-
-    const profiles = data.getProfiles();
-    const index = profiles.findIndex((item) => item.id === session.id || item.email === session.email);
-    const storedProfile = {
-      ...(index >= 0 ? profiles[index] : {}),
-      ...session
-    };
-
-    if (index >= 0) profiles[index] = storedProfile;
-    else profiles.push(storedProfile);
-    data.saveProfiles(profiles);
-
-    snapshot = profileFromSession();
-    render(snapshot);
-    setEditing(false);
   }
 
-  snapshot = profileFromSession();
-  render(snapshot);
   setEditing(false);
 
   elements.edit?.addEventListener("click", () => {
@@ -267,6 +255,8 @@
 
   elements.cancel?.addEventListener("click", () => {
     avatarDataUrl = session.avatarDataUrl || "";
+    pendingAvatarFile = null;
+    removeAvatar = false;
     render(snapshot);
     setEditing(false);
   });
@@ -283,6 +273,8 @@
   elements.avatarInput?.addEventListener("change", () => {
     const file = elements.avatarInput.files?.[0];
     if (!file) return;
+    pendingAvatarFile = file;
+    removeAvatar = false;
     const reader = new FileReader();
     reader.addEventListener("load", () => {
       setAvatar(String(reader.result || ""), value("fullName"));
@@ -292,6 +284,8 @@
 
   elements.removePhoto?.addEventListener("click", () => {
     startEditing();
+    pendingAvatarFile = null;
+    removeAvatar = true;
     setAvatar("", value("fullName"));
   });
 
@@ -302,15 +296,53 @@
   });
 
   elements.confirmCancel?.addEventListener("click", () => closeModal(elements.confirmModal));
-  elements.confirmSave?.addEventListener("click", () => {
+  elements.confirmSave?.addEventListener("click", async () => {
     closeModal(elements.confirmModal);
-    saveProfile();
-    openModal(elements.successModal);
+    await saveProfile();
   });
   elements.successOk?.addEventListener("click", () => closeModal(elements.successModal));
 
-  elements.logout?.addEventListener("click", () => {
+  elements.logout?.addEventListener("click", async (event) => {
+    event.preventDefault();
+    await backend.signOut();
     data.clearSession();
     window.location.href = "../auth/login.html";
   });
+
+  async function initialize() {
+    try {
+      const loaded = await backend.requireProfile(ROLE);
+      if (!loaded) return;
+      userId = loaded.user.id;
+      avatarPath = loaded.profile.avatar_url || "";
+      avatarDataUrl = loaded.avatarUrl;
+      session = {
+        id: userId,
+        role: ROLE,
+        name: loaded.profile.nome_social || loaded.profile.nome_completo,
+        fullName: loaded.profile.nome_completo,
+        socialName: loaded.profile.nome_social || "",
+        pronoun: loaded.profile.pronomes || "",
+        gender: loaded.profile.genero || "",
+        city: loaded.profile.cidade || "",
+        state: loaded.profile.estado || "",
+        preferredFormat: loaded.profile.formato_preferido || "",
+        preferredPeriod: loaded.profile.periodo_preferido || "",
+        appointmentReminders: loaded.profile.lembretes_consulta,
+        emailNotifications: loaded.profile.notificacoes_email,
+        birthDate: loaded.profile.data_nascimento || "",
+        phone: loaded.profile.telefone || "",
+        email: loaded.profile.email,
+        avatarDataUrl
+      };
+      snapshot = profileFromSession();
+      render(snapshot);
+      setEditing(false);
+    } catch (error) {
+      console.error(error);
+      showFeedback("Não foi possível carregar seu perfil.", true);
+    }
+  }
+
+  initialize();
 }());
