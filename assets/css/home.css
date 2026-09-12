@@ -974,6 +974,14 @@ select[aria-invalid="true"]:focus {
   text-decoration: none;
 }
 
+/* G4: itens "Empresa" (sobre/contato/privacidade) ainda não têm página própria.
+   Links neutralizados: não-navegáveis, mas com visual idêntico ao design —
+   o seletor .link-col a acima continua valendo (mesma cor branca, sem sublinhado). */
+.footer-link-disabled {
+  cursor: default;
+  pointer-events: none;
+}
+
 .footer-bottom {
   margin-top: 24px;
   text-align: center;
