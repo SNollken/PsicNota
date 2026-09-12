@@ -1,36 +1,293 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Página do PsicNota em construção.">
-  <title>PsicNota · Página em construção</title>
+  <meta name="description" content="Histórico da consulta: detalhes, anotações, humor e documentos no PsicNota">
+  <title>PsicNota | Histórico da consulta</title>
   <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
   <link rel="icon" type="image/x-icon" href="../favicon.ico">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="../assets/css/psicologo/consulta.css">
   <script src="../assets/menu/menu.js"></script>
 </head>
+
 <body>
+
   <div class="app-shell">
-    <psic-menu tipo="psicologo" ativo=""></psic-menu>
+
+    <psic-menu tipo="psicologo" ativo="pacientes"></psic-menu>
 
     <main class="main-content">
-      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
-      <div class="construction-wrap">
-        <div class="construction-box">
-          <img src="../assets/img/logo_psicnota.png" alt="PsicNota">
-          <h1>Página em construção</h1>
-          <p>Esta área ainda não possui design definido no Figma e está em construção. Use o menu ao lado para navegar.</p>
+
+      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">
+        ☰
+      </button>
+
+      <header class="topbar">
+        <div class="page-heading">
+          <p class="eyebrow">Consulta</p>
+          <h1 id="consultaTitle">Histórico da consulta</h1>
+          <p class="page-sub" id="consultaSub"></p>
         </div>
-      </div>
+
+        <div class="topbar-actions">
+          <div class="patient-pill" id="patientPill" title="Paciente desta consulta">
+            <span class="patient-pill-avatar" id="patientPillAvatar" aria-hidden="true"></span>
+          </div>
+
+          <a class="button button-secondary button-compact" id="historicoLink" href="historico.html">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6" />
+            </svg>
+            Voltar ao histórico
+          </a>
+
+          <a class="button button-secondary button-compact" id="relatorioLink" href="relatorios.html">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+              <path d="M14 2v6h6M9 13h6M9 17h6" />
+            </svg>
+            Ver relatório
+          </a>
+        </div>
+      </header>
+
+      <!-- CONSULTA NÃO ENCONTRADA -->
+      <section class="not-found-card" id="notFound" hidden>
+        <h2>Consulta não encontrada</h2>
+        <p>
+          Não foi possível abrir esta consulta. O link está incompleto ou o
+          registro não existe mais. Use o botão acima para voltar ao histórico.
+        </p>
+      </section>
+
+      <!-- FICHA DA CONSULTA -->
+      <article class="consulta-card" id="consultaContent" hidden>
+
+        <header class="consulta-head">
+          <div class="consulta-head-main">
+            <h2>Ficha da consulta</h2>
+            <p>Dados registrados na agenda e no atendimento.</p>
+          </div>
+
+          <span class="status-badge" id="infoStatus"></span>
+        </header>
+
+        <!-- INFORMAÇÕES -->
+        <section class="consulta-section">
+          <span class="section-tile" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Z" />
+              <path d="M8 2v4m8-4v4M3 9h18" />
+            </svg>
+          </span>
+
+          <div class="section-body">
+            <h3 class="section-title">Informações da consulta</h3>
+
+            <div class="info-grid">
+              <div class="info-cell">
+                <span>Data</span>
+                <strong id="infoDate"></strong>
+              </div>
+
+              <div class="info-cell">
+                <span>Horário</span>
+                <strong id="infoTime"></strong>
+              </div>
+
+              <div class="info-cell">
+                <span>Duração</span>
+                <strong id="infoDuration"></strong>
+              </div>
+
+              <div class="info-cell">
+                <span>Modalidade</span>
+                <strong id="infoMode"></strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ANOTAÇÕES -->
+        <section class="consulta-section">
+          <span class="section-tile" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+            </svg>
+          </span>
+
+          <div class="section-body">
+            <h3 class="section-title">Anotações da sessão</h3>
+            <p class="section-hint">
+              Registro privado do atendimento. Salve antes de encerrar a consulta.
+            </p>
+
+            <textarea class="note-area" id="sessionNote" placeholder="Escreva aqui as anotações desta consulta..."></textarea>
+
+            <div class="note-footer">
+              <button class="button button-primary button-compact" id="saveNoteButton" type="button">
+                Salvar anotações
+              </button>
+
+              <span class="save-status" id="noteSaveStatus"></span>
+              <span class="note-updated" id="noteUpdatedAt" hidden></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- HUMOR -->
+        <section class="consulta-section">
+          <span class="section-tile" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="9" />
+              <circle cx="9" cy="10" r="1" />
+              <circle cx="15" cy="10" r="1" />
+              <path d="M8 14c1 3 7 3 8 0" />
+            </svg>
+          </span>
+
+          <div class="section-body">
+            <h3 class="section-title">Emoção do dia</h3>
+            <p class="section-hint">
+              Marque como o paciente chegou à sessão. Clique de novo para desmarcar.
+            </p>
+
+            <div class="mood-picker" id="noteMoodPicker" role="radiogroup" aria-label="Emoção do dia">
+
+              <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="muito-bem" aria-label="Muito bem">
+                <span class="mood-emoji" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <circle cx="9" cy="10" r="1"></circle>
+                    <circle cx="15" cy="10" r="1"></circle>
+                    <path d="M8 14c1 3 7 3 8 0"></path>
+                  </svg>
+                </span>
+                <span class="mood-label">Muito bem</span>
+              </button>
+
+              <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="bem" aria-label="Bem">
+                <span class="mood-emoji" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <circle cx="9" cy="10" r="1"></circle>
+                    <circle cx="15" cy="10" r="1"></circle>
+                    <path d="M9 14c1.5 1.5 4.5 1.5 6 0"></path>
+                  </svg>
+                </span>
+                <span class="mood-label">Bem</span>
+              </button>
+
+              <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="neutro" aria-label="Estável">
+                <span class="mood-emoji" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <circle cx="9" cy="10" r="1"></circle>
+                    <circle cx="15" cy="10" r="1"></circle>
+                    <path d="M8.5 15h7"></path>
+                  </svg>
+                </span>
+                <span class="mood-label">Estável</span>
+              </button>
+
+              <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="mal" aria-label="Mal">
+                <span class="mood-emoji" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M8 10.5l2-.8"></path>
+                    <path d="M16 10.5l-2-.8"></path>
+                    <circle cx="9" cy="11" r="1"></circle>
+                    <circle cx="15" cy="11" r="1"></circle>
+                    <path d="M9 16c1.5-1.8 4.5-1.8 6 0"></path>
+                  </svg>
+                </span>
+                <span class="mood-label">Mal</span>
+              </button>
+
+              <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="muito-mal" aria-label="Muito mal">
+                <span class="mood-emoji" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M7.5 9.5l2.5 1"></path>
+                    <path d="M16.5 10.5l-2.5-1"></path>
+                    <circle cx="9" cy="11" r="1"></circle>
+                    <circle cx="15" cy="11" r="1"></circle>
+                    <path d="M8 16.5c2-2.5 6-2.5 8 0"></path>
+                  </svg>
+                </span>
+                <span class="mood-label">Muito mal</span>
+              </button>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- DOCUMENTOS -->
+        <section class="consulta-section">
+          <span class="section-tile" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57a4 4 0 1 1 5.66 5.66l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+            </svg>
+          </span>
+
+          <div class="section-body">
+            <h3 class="section-title">Receitas e laudos do paciente</h3>
+            <p class="section-hint">
+              Anexe documentos ao prontuário. Eles aparecem para o paciente em Receitas e Laudos.
+            </p>
+
+            <form class="doc-form" id="attachDocForm">
+              <select id="docType" aria-label="Tipo do documento">
+                <option value="receita">Receita</option>
+                <option value="laudo">Laudo</option>
+              </select>
+
+              <input id="docName" type="text" placeholder="Nome do documento" aria-label="Nome do documento">
+
+              <button class="button button-primary button-compact" type="submit">
+                Anexar
+              </button>
+            </form>
+
+            <div class="doc-list" id="patientDocs"></div>
+
+            <p class="doc-empty" id="emptyDocs" hidden>
+              Nenhum documento anexado para este paciente até agora.
+            </p>
+          </div>
+        </section>
+
+        <footer class="consulta-footer">
+          <button class="button button-primary" id="finishAppointmentButton" type="button">
+            Encerrar consulta e gerar relatório
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14m-6-6 6 6-6 6" />
+            </svg>
+          </button>
+        </footer>
+
+      </article>
+
     </main>
+
+  </div>
+
+  <div class="toast" id="toast" hidden role="status">
+    <span id="toastMessage"></span>
   </div>
 
   <script src="../assets/js/shared-data.js"></script>
   <script src="../assets/js/sidebar.js"></script>
   <script src="../assets/js/psicologo/consulta.js"></script>
+
 </body>
+
 </html>

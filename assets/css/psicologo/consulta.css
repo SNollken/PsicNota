@@ -1,15 +1,19 @@
 /* ==========================================================================
-   psicologo/consulta.css — CSS auto-contido da página placeholder "Psicólogo · Consulta".
-   Blocos do ex-base.css que a página usa + estilo "em construção"
-   (antes inline no HTML). O menu lateral vem por @import do menu.css,
-   componente <psic-menu>.
+   psicologo/consulta.css — tela "Histórico da consulta" (detalhe de uma
+   consulta do psicólogo). CSS auto-contido: tokens + shell + topbar + card
+   de detalhe com linhas separadas por divisórias, tiles de 49px #BFE7F5
+   rx24.5, botões quadrados 39px #E4F6FC rx7.5, badges de status #BEEFBE /
+   #EBA1A2 e card #F3FBFE rx35, conforme docs/designs/Historico da
+   consulta.svg. O menu lateral vem por @import do menu.css (<psic-menu>).
+   Pill do paciente na topbar: geometria 47px rx23.5 #F3FBFE stroke #DCE6EA
+   (compartilhada com o design Notas Psicologo.svg do mesmo drop).
    ========================================================================== */
+
 @import url("../../menu/menu.css");
 
 :root {
   --blue-25: #F8FAFB;
   --blue-50: #E4F6FC;
-  --blue-75: #E4F6FC;
   --blue-100: #E4F6FC;
   --blue-150: #E4F6FC;
   --blue-200: #BFE7F5;
@@ -19,19 +23,14 @@
 
   --ink: #111827;
   --muted: #64727C;
-  --line: #E4F6FC;
+  --line: #DCE6EA;
   --white: #ffffff;
   --sidebar-bg: #F3FBFE;
 
-  --success-bg: #3BAE24;
-  --success-line: #3BAE24;
-  --success: #174E61;
-  --warning-bg: #E4F6FC;
-  --warning-line: #E4F6FC;
-  --warning: #64727C;
-  --danger: #D90307;
-  --danger-bg: #D90307;
-  --danger-line: #D90307;
+  --ok-bg: #BEEFBE;
+  --ok-ink: #174E61;
+  --cancel-bg: #EBA1A2;
+  --cancel-ink: #D90307;
 
   --sidebar-width: 294px;
 
@@ -93,8 +92,6 @@ svg {
   border: 0;
 }
 
-/* Shell padrão das telas logadas: sidebar + conteúdo.
-   Cada CSS de página pode estender; esta é a base mínima. */
 .app-shell {
   min-height: 100vh;
   display: grid;
@@ -115,6 +112,29 @@ svg {
 
 .mobile-menu { display: none; }
 
+/* =========================
+   TOPO DA PÁGINA
+========================= */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 6px 0 20px;
+}
+
+.page-heading { min-width: 0; }
+
+.eyebrow {
+  margin: 0 0 5px;
+  color: var(--blue-700);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 h1 {
   margin: 0;
   color: #111827;
@@ -122,22 +142,459 @@ h1 {
   letter-spacing: -0.01em;
 }
 
-/* Página em construção */
-.construction-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(100vh - 140px);
+.page-sub {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
 }
 
-.construction-box { text-align: center; padding: 40px 24px; max-width: 460px; }
-.construction-box img { width: 72px; height: 72px; object-fit: contain; }
-.construction-box h1 { font-size: 21px; margin: 20px 0 8px; color: #1F637A; letter-spacing: -0.02em; }
-.construction-box p { color: #64727C; margin: 0; line-height: 1.6; }
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* Pill do paciente (iniciais), geometria do drop */
+.patient-pill {
+  display: grid;
+  place-items: center;
+  width: 47px;
+  height: 47px;
+  border: 1px solid var(--line);
+  border-radius: 23.5px;
+  background: var(--sidebar-bg);
+}
+
+.patient-pill-avatar {
+  display: grid;
+  place-items: center;
+  width: 39px;
+  height: 39px;
+  border-radius: 50%;
+  background: var(--blue-200);
+  color: var(--blue-800);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.16s, border-color 0.16s, color 0.16s;
+}
+
+.button svg {
+  width: 17px;
+  height: 17px;
+}
+
+.button-primary {
+  background: var(--blue-700);
+  color: var(--white);
+}
+
+.button-primary:hover { background: var(--blue-800); }
+
+.button-secondary {
+  background: var(--blue-50);
+  border-color: var(--blue-50);
+  color: var(--blue-800);
+}
+
+.button-secondary:hover {
+  background: var(--blue-200);
+  border-color: var(--blue-200);
+}
+
+.button-compact {
+  min-height: 38px;
+  padding: 0 14px;
+  font-size: 12px;
+}
+
+/* =========================
+   CARD DE DETALHE
+========================= */
+
+.consulta-card {
+  background: var(--sidebar-bg);
+  border-radius: 35px;
+  padding: 10px 28px 28px;
+}
+
+.consulta-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 64px;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.consulta-head-main { min-width: 0; }
+
+.consulta-head-main h2 {
+  margin: 0;
+  color: var(--blue-800);
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.consulta-head-main p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Badges de status (paleta do design) */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  background: var(--blue-100);
+  color: var(--blue-700);
+}
+
+.status-badge.is-confirmed {
+  background: var(--ok-bg);
+  color: var(--ok-ink);
+}
+
+.status-badge.is-cancelled {
+  background: var(--cancel-bg);
+  color: var(--cancel-ink);
+}
+
+/* Linhas de seção (divisórias #DCE6EA como no design) */
+.consulta-section {
+  display: grid;
+  grid-template-columns: 49px minmax(0, 1fr);
+  gap: 18px;
+  padding: 22px 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.consulta-section:last-of-type { border-bottom: 0; }
+
+.section-tile {
+  display: grid;
+  place-items: center;
+  width: 49px;
+  height: 49px;
+  border-radius: 24.5px;
+  background: var(--blue-200);
+  color: var(--blue-800);
+}
+
+.section-tile svg {
+  width: 22px;
+  height: 22px;
+}
+
+.section-body { min-width: 0; }
+
+.section-title {
+  margin: 0 0 4px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.section-hint {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* Grade de informações da consulta */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.info-cell {
+  background: var(--white);
+  border-radius: 14px;
+  padding: 12px 16px;
+}
+
+.info-cell span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.info-cell strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--blue-800);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Anotações */
+.note-area {
+  width: 100%;
+  min-height: 132px;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--white);
+  color: var(--ink);
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.note-area:focus {
+  outline: 2px solid var(--blue-200);
+  border-color: var(--blue-700);
+}
+
+.note-footer {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.save-status {
+  color: var(--ok-ink);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.note-updated {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Seletor de humor (quadrados como no rodapé do design) */
+.mood-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.mood-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 39px;
+  height: 39px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 7.5px;
+  background: var(--blue-100);
+  color: var(--blue-800);
+  cursor: pointer;
+  transition: background 0.16s, border-color 0.16s;
+}
+
+.mood-option:hover { background: var(--blue-200); }
+
+.mood-option.selected {
+  background: #A7B6C0;
+  border-color: var(--blue-700);
+  color: var(--white);
+}
+
+.mood-option .mood-emoji svg {
+  width: 20px;
+  height: 20px;
+}
+
+.mood-option .mood-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+/* Documentos */
+.doc-form {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr) auto;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.doc-form select,
+.doc-form input {
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--white);
+  color: var(--ink);
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.doc-list {
+  display: grid;
+  gap: 10px;
+}
+
+.doc-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  background: var(--white);
+  border-radius: 14px;
+  padding: 12px 16px;
+}
+
+.doc-item-info { min-width: 0; }
+
+.doc-item-info strong {
+  display: block;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.doc-item-info span {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.badge-laudos {
+  background: var(--blue-150);
+  color: var(--blue-800);
+}
+
+.badge-receita {
+  background: var(--ok-bg);
+  color: var(--ok-ink);
+}
+
+.doc-empty {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--white);
+  border-radius: 14px;
+  padding: 12px 16px;
+}
+
+/* Rodapé do card */
+.consulta-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 4px 0;
+  border-top: 1px solid var(--line);
+  margin-top: 6px;
+}
+
+/* =========================
+   NÃO ENCONTRADO
+========================= */
+
+.not-found-card {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  background: var(--sidebar-bg);
+  border-radius: 35px;
+  padding: 34px 32px;
+}
+
+.not-found-card h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--blue-800);
+}
+
+.not-found-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 520px;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+.toast {
+  position: fixed;
+  right: 26px;
+  bottom: 26px;
+  z-index: 60;
+  max-width: 340px;
+  padding: 12px 18px;
+  border-radius: 14px;
+  background: var(--blue-800);
+  color: var(--white);
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 12px 30px rgba(17, 24, 39, 0.22);
+}
+
+.toast.toast-error {
+  background: var(--cancel-ink);
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
 
 @media (max-width: 1180px) {
   :root { --sidebar-width: 230px; }
   .main-content { padding-inline: 26px; }
+  .info-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 720px) {
@@ -155,4 +612,10 @@ h1 {
     color: var(--blue-800);
   }
   h1 { font-size: 20px; }
+  .topbar { flex-wrap: wrap; }
+  .consulta-card { padding: 6px 16px 20px; border-radius: 26px; }
+  .consulta-section { grid-template-columns: 1fr; gap: 12px; }
+  .info-grid { grid-template-columns: 1fr; }
+  .doc-form { grid-template-columns: 1fr; }
+  .not-found-card { border-radius: 26px; }
 }

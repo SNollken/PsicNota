@@ -25,6 +25,7 @@ const elements = {
   consultaContent: document.querySelector('#consultaContent'),
   consultaTitle: document.querySelector('#consultaTitle'),
   consultaSub: document.querySelector('#consultaSub'),
+  patientPillAvatar: document.querySelector('#patientPillAvatar'),
   historicoLink: document.querySelector('#historicoLink'),
   relatorioLink: document.querySelector('#relatorioLink'),
   infoDate: document.querySelector('#infoDate'),
@@ -93,6 +94,7 @@ function renderAppointmentInfo() {
   elements.infoStatus.textContent = appointment.status === 'confirmed' ? 'Confirmada' : appointment.status === 'cancelled' ? 'Cancelada' : 'Pendente';
 
   const encodedPatient = encodeURIComponent(appointment.patient);
+  elements.patientPillAvatar.textContent = getInitials(appointment.patient);
   elements.historicoLink.href = `historico.html?paciente=${encodedPatient}`;
   elements.relatorioLink.href = `relatorios.html?consulta=${appointment.id}`;
 }
