@@ -1,24 +1,480 @@
 /* ==========================================================================
-   esqueci-senha.css — CSS auto-contido da página "esqueci minha senha"
-   (placeholder em construção). Estilo extraído do <style> inline do HTML.
+   esqueci-senha.css — CSS auto-contido da página "Recuperar senha"
+   (auth/esqueci-senha.html), fiel ao design docs/designs/Recupera senha.svg.
+   Regra do projeto: 1 HTML = 1 CSS com nome idêntico.
    ========================================================================== */
 
-* { box-sizing: border-box; }
+:root {
+  --blue-50: #F3FBFE;
+  --blue-100: #E4F6FC;
+  --blue-700: #1F637A;
+  --blue-800: #174E61;
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  background: #F8FAFB;
-  color: #111827;
+  --ink: #111827;
+  --muted: #64727C;
+  --line: #DCE6EA;
+  --white: #ffffff;
+
+  --error: #D90307;
+
+  --radius-md: 10px;
+  --radius-lg: 24px;
+
+  --shadow-focus: 0 0 0 4px rgba(31, 99, 122, 0.12);
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color: var(--ink);
+  background: var(--white);
 }
 
-.box { text-align: center; padding: 40px 24px; max-width: 420px; }
-.box img { width: 72px; height: 72px; object-fit: contain; }
-h1 { font-size: 1.3rem; margin: 20px 0 8px; color: #1F637A; letter-spacing: -0.02em; }
-p { color: #64727C; margin: 0 0 28px; line-height: 1.6; }
-a { color: #1F637A; font-weight: 600; text-decoration: none; }
-a:hover { text-decoration: underline; }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+
+  color: var(--ink);
+  background: var(--white);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* =========================
+   LAYOUT EM DUAS COLUNAS
+========================= */
+
+.auth-layout {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(320px, 520px) minmax(0, 1fr);
+}
+
+/* =========================
+   PAINEL ESQUERDO (MARCA)
+========================= */
+
+.auth-brand {
+  min-height: 100vh;
+  padding: 32px 46px 48px;
+
+  display: flex;
+  flex-direction: column;
+
+  background: var(--blue-50);
+}
+
+.brand {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.brand .brand-icon {
+  width: 64px;
+  height: 64px;
+
+  object-fit: contain;
+}
+
+.brand .brand-text {
+  font-family: "Laila", serif;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1;
+
+  color: var(--ink);
+}
+
+.brand-content {
+  max-width: 430px;
+  margin-top: clamp(72px, 17vh, 176px);
+}
+
+.brand-content h1 {
+  margin: 0;
+
+  color: var(--ink);
+  font-size: clamp(26px, 2.4vw, 34px);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.brand-content > p {
+  max-width: 400px;
+  margin: 26px 0 0;
+
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.trust-card {
+  max-width: 430px;
+  margin-top: 78px;
+  padding: 22px 24px;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+
+  background: var(--blue-100);
+}
+
+.trust-card svg {
+  width: 30px;
+  height: 30px;
+
+  flex: 0 0 auto;
+
+  color: var(--blue-700);
+}
+
+.trust-card-copy {
+  min-width: 0;
+
+  display: grid;
+  gap: 6px;
+}
+
+.trust-card-copy strong {
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.trust-card-copy small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+/* =========================
+   PAINEL DIREITO (FORM)
+========================= */
+
+.auth-panel {
+  min-height: 100vh;
+  padding: 168px 48px 64px;
+
+  display: flex;
+  justify-content: center;
+
+  background: var(--white);
+}
+
+.auth-panel-inner {
+  width: min(100%, 426px);
+  margin-right: auto;
+  margin-left: clamp(0px, 18%, 200px);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  color: var(--blue-800);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.back-link svg {
+  width: 17px;
+  height: 17px;
+
+  stroke-width: 2.2;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.auth-header {
+  margin-top: 96px;
+}
+
+.auth-header h2 {
+  margin: 0;
+
+  color: var(--ink);
+  font-size: 27px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.auth-header p {
+  margin: 14px 0 0;
+
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.65;
+}
+
+/* =========================
+   FORMULÁRIO
+========================= */
+
+.auth-form {
+  margin-top: 52px;
+}
+
+.form-group label {
+  display: inline-block;
+  margin-bottom: 9px;
+
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.email-field {
+  position: relative;
+}
+
+.email-field svg {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  width: 18px;
+  height: 18px;
+
+  transform: translateY(-50%);
+
+  color: var(--muted);
+
+  pointer-events: none;
+}
+
+.email-field input {
+  width: 100%;
+  height: 50px;
+  padding: 0 14px 0 44px;
+
+  color: var(--ink);
+  background: var(--blue-50);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  outline: none;
+
+  font-size: 13.5px;
+  font-weight: 500;
+
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    background 150ms ease;
+}
+
+.email-field input::placeholder {
+  color: var(--muted);
+}
+
+.email-field input:focus {
+  background: var(--white);
+  border-color: var(--blue-700);
+  box-shadow: var(--shadow-focus);
+}
+
+.email-field input[aria-invalid="true"] {
+  border-color: var(--error);
+}
+
+.email-field input[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 4px rgba(217, 3, 7, 0.09);
+}
+
+.field-error {
+  display: block;
+  min-height: 18px;
+  margin-top: 6px;
+
+  color: var(--error);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.form-message {
+  display: none;
+  margin-top: 14px;
+  padding: 11px 14px;
+
+  border-radius: var(--radius-md);
+
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.form-message.is-success,
+.form-message.is-error {
+  display: block;
+}
+
+.form-message.is-success {
+  color: var(--blue-800);
+  background: var(--blue-100);
+  border: 1px solid var(--line);
+}
+
+.form-message.is-error {
+  color: var(--error);
+  background: #FDECEC;
+  border: 1px solid var(--error);
+}
+
+.primary-button {
+  width: 100%;
+  height: 50px;
+  margin-top: 12px;
+  padding: 0 20px;
+
+  color: var(--white);
+  background: var(--blue-700);
+  border: 1px solid var(--blue-700);
+  border-radius: var(--radius-md);
+
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 700;
+
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    transform 150ms ease;
+}
+
+.primary-button:hover {
+  background: var(--blue-800);
+  border-color: var(--blue-800);
+}
+
+.primary-button:active {
+  transform: translateY(1px);
+}
+
+.primary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.66;
+}
+
+/* =========================
+   RODAPÉ DO PAINEL
+========================= */
+
+.auth-switch {
+  margin: 38px 0 0;
+  padding-top: 16px;
+
+  color: var(--muted);
+  text-align: center;
+
+  border-top: 1px solid var(--line);
+
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.auth-switch a {
+  display: inline-block;
+  margin-top: 10px;
+
+  color: var(--blue-800);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   RESPONSIVIDADE
+========================= */
+
+@media (max-width: 980px) {
+  .auth-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-brand {
+    min-height: 0;
+    padding: 28px 24px 40px;
+
+    border-bottom: 1px solid var(--line);
+  }
+
+  .brand-content {
+    margin-top: 44px;
+  }
+
+  .trust-card {
+    margin-top: 32px;
+  }
+
+  .auth-panel {
+    min-height: 0;
+    padding: 40px 24px 56px;
+  }
+
+  .auth-panel-inner {
+    margin-left: auto;
+  }
+
+  .auth-header {
+    margin-top: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand .brand-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .brand .brand-text {
+    font-size: 24px;
+  }
+
+  .auth-panel {
+    padding: 32px 18px 48px;
+  }
+}

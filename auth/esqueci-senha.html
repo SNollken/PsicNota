@@ -3,18 +3,109 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PsicNota · Página em construção</title>
+  <meta name="description" content="Recupere o acesso à sua conta PsicNota.">
+  <title>Recuperar senha | PsicNota</title>
   <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
   <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/esqueci-senha.css">
 </head>
 <body>
-  <div class="box">
-    <img src="../assets/img/logo_psicnota.png" alt="PsicNota">
-    <h1>Página em construção</h1>
-    <p>Esta área ainda não possui design definido no Figma e está em construção.</p>
-    <a href="login.html">← Voltar para o login</a>
-  </div>
+  <main class="auth-layout">
+
+    <!-- =====================================================
+         LADO ESQUERDO (MARCA)
+    ====================================================== -->
+    <section class="auth-brand" aria-labelledby="brand-title">
+      <a class="brand" href="../index.html" aria-label="Página inicial do PsicNota">
+        <img src="../assets/img/logo.svg" alt="Logo PsicNota" class="brand-icon">
+        <span class="brand-text">PsicNota</span>
+      </a>
+
+      <div class="brand-content">
+        <h1 id="brand-title">Recupere o acesso<br>à sua conta.</h1>
+        <p>
+          Informe seu e-mail cadastrado e enviaremos
+          as instruções para redefinir sua senha.
+        </p>
+
+        <aside class="trust-card">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3l7 2.8v5.4c0 4.4-2.9 8.3-7 9.8-4.1-1.5-7-5.4-7-9.8V5.8L12 3z"></path>
+          </svg>
+          <span class="trust-card-copy">
+            <strong>Acesso seguro</strong>
+            <small>
+              O link de redefinição será enviado somente
+              para o e-mail vinculado à sua conta.
+            </small>
+          </span>
+        </aside>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         LADO DIREITO (FORMULÁRIO)
+    ====================================================== -->
+    <section class="auth-panel" aria-labelledby="recovery-title">
+      <div class="auth-panel-inner">
+
+        <a class="back-link" href="login.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19 12H5"></path>
+            <path d="m12 19-7-7 7-7"></path>
+          </svg>
+          Voltar para o login
+        </a>
+
+        <header class="auth-header">
+          <h2 id="recovery-title">Redefinir senha</h2>
+          <p>
+            Digite o e-mail usado no cadastro.<br>
+            Você receberá um link para criar uma nova senha.
+          </p>
+        </header>
+
+        <form id="recoveryForm" class="auth-form" novalidate>
+          <div class="form-group">
+            <label for="recoveryEmail">E-mail</label>
+
+            <div class="email-field">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                <path d="m3 7 9 6 9-6"></path>
+              </svg>
+              <input
+                id="recoveryEmail"
+                name="email"
+                type="email"
+                inputmode="email"
+                autocomplete="email"
+                placeholder="seuemail@exemplo.com"
+                aria-describedby="recoveryEmailError"
+                required
+              >
+            </div>
+            <small class="field-error" id="recoveryEmailError"></small>
+          </div>
+
+          <div id="recoveryMessage" class="form-message" role="status" aria-live="polite"></div>
+
+          <button class="primary-button" type="submit">Enviar link de redefinição</button>
+        </form>
+
+        <p class="auth-switch">
+          Já possui senha?
+          <a href="login.html">Entrar na minha conta</a>
+        </p>
+
+      </div>
+    </section>
+
+  </main>
+
   <script src="../assets/js/esqueci-senha.js"></script>
 </body>
 </html>
