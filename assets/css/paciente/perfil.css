@@ -414,6 +414,13 @@ h1 {
   gap: 12px;
 }
 
+.section-heading-copy {
+  display: grid;
+  gap: 2px;
+
+  min-width: 0;
+}
+
 .section-icon {
   width: 36px;
   height: 36px;

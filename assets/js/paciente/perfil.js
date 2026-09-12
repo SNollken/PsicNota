@@ -99,7 +99,7 @@
 
     if (elements.avatar) elements.avatar.innerHTML = markup;
 
-    const sidebarAvatar = document.getElementById(ROLE === "paciente" ? "patientAvatar" : "psychologistAvatar");
+    const sidebarAvatar = document.getElementById("patientAvatar");
     if (sidebarAvatar) {
       sidebarAvatar.innerHTML = avatarDataUrl
         ? '<img src="' + avatarDataUrl + '" alt="">'
@@ -110,7 +110,6 @@
   }
 
   function profileFromSession() {
-    const professional = session.professionalData || {};
     return {
       fullName: session.fullName || session.name || "",
       birthDate: session.birthDate || "",
@@ -124,10 +123,6 @@
       preferredPeriod: session.preferredPeriod || "",
       appointmentReminders: Boolean(session.appointmentReminders),
       emailNotifications: Boolean(session.emailNotifications),
-      crp: session.crp || professional.crp || "",
-      crpState: session.crpState || professional.crpState || "",
-      specialty: session.specialty || professional.specialty || "",
-      serviceFormat: session.serviceFormat || professional.serviceFormat || "",
       gender: session.gender || ""
     };
   }
@@ -146,10 +141,6 @@
       preferredPeriod: value("preferredPeriod"),
       appointmentReminders: Boolean(form.elements.namedItem("appointmentReminders")?.checked),
       emailNotifications: Boolean(form.elements.namedItem("emailNotifications")?.checked),
-      crp: value("crp").trim(),
-      crpState: value("crpState").trim(),
-      specialty: value("specialty"),
-      serviceFormat: value("serviceFormat"),
       gender: value("gender")
     };
   }
@@ -172,7 +163,7 @@
     const location = [profile.city, profile.state].filter(Boolean).join("/");
     if (elements.summaryLocation) elements.summaryLocation.textContent = location || "Não informado";
 
-    const sidebarName = document.getElementById(ROLE === "paciente" ? "patientNameTop" : "psychologistName");
+    const sidebarName = document.getElementById("patientNameTop");
     if (sidebarName) sidebarName.textContent = displayName;
 
     setAvatar(avatarDataUrl, displayName);
