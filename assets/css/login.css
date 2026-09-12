@@ -87,20 +87,6 @@ a {
   letter-spacing: -0.02em;
 }
 
-.brand-mark {
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  color: var(--blue-800);
-  background: var(--blue-200);
-  border: 1px solid rgba(31, 99, 122, 0.12);
-  font-family: Georgia, serif;
-  font-size: 1.45rem;
-  font-weight: 700;
-}
-
 /* marca nova: logo PNG + fonte Laila (padrão do Editar Perfil) */
 .brand .brand-icon {
   width: 64px;
@@ -198,28 +184,6 @@ a {
   color: var(--blue-800);
   background: var(--white);
   border: 1px solid var(--blue-200);
-}
-
-.role-explanation {
-  margin-top: 34px;
-  display: grid;
-  gap: 14px;
-}
-
-.role-explanation div {
-  padding: 16px 0;
-  display: grid;
-  gap: 4px;
-  border-top: 1px solid var(--line-strong);
-}
-
-.role-explanation strong {
-  color: var(--blue-800);
-}
-
-.role-explanation span {
-  color: var(--muted);
-  line-height: 1.55;
 }
 
 .auth-panel {
@@ -433,16 +397,6 @@ select[aria-invalid="true"]:focus {
   color: var(--muted);
   text-align: center;
   border-top: 1px solid var(--line);
-}
-
-.demo-note {
-  margin: 22px 0 0;
-  padding: 12px 14px;
-  color: #64727C;
-  background: var(--blue-50);
-  border-left: 3px solid var(--blue-300);
-  font-size: 0.78rem;
-  line-height: 1.55;
 }
 
 .forgot-link {

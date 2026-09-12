@@ -497,8 +497,8 @@ function renderPatient(patient) {
 
   name.innerHTML =
     names.length > 1
-      ? `${names[0]}<br>${names.slice(1).join(" ")}`
-      : patient.name;
+      ? `${data.escapeHtml(names[0])}<br>${data.escapeHtml(names.slice(1).join(" "))}`
+      : data.escapeHtml(patient.name);
 
 
   const meta =

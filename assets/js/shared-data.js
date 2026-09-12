@@ -212,6 +212,15 @@
     return new Intl.DateTimeFormat("pt-BR", options).format(new Date(isoString));
   }
 
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
   ensureData();
 
   window.PsiNoteData = {
@@ -242,6 +251,7 @@
     getSession,
     setSession,
     clearSession,
-    formatRequestMoment
+    formatRequestMoment,
+    escapeHtml
   };
 }());
