@@ -1299,496 +1299,384 @@ input[readonly] {
 }
 
 /* ==========================================================================
-   relatorios.css — Estilos da tela de Relatórios do PsicNota
-   Editor de relatório pós-consulta: header com consulta + humor,
-   área de escrita, anexos, ações de salvar.
+   EDITOR DE RELATÓRIO (design "Relatorio Psicologo")
+   Topbar com título centrado, linha consulta + humor, painel de escrita
+   azul-claro com toolbar rica, rodapé com dropbox tracejado de anexos.
    ========================================================================== */
 
-.report-editor-page {
-  --report-bg: #ffffff;
-  --report-soft: #f4fbfd;
-  --report-soft-2: #e8f6fb;
-  --report-line: #d9e9ee;
-  --report-blue: #2b667b;
-  --report-blue-dark: #174e61;
-  --report-text: #17212b;
-  --report-muted: #65747e;
-}
+.report-editor-page { background: var(--blue-25); }
 
-.report-editor-page .main-content {
-  padding: 0 35px 25px;
-  max-width: none;
-  background: var(--report-bg);
-}
-
-.report-editor-page .report-editor-topbar {
-  position: relative;
-  min-height: 58px;
-  height: 58px;
-  margin: 0 -35px;
-  padding: 0 35px;
-  border-bottom: 1px solid #e5edf0;
+/* Topbar: título centrado, sem eyebrow nem ações (voltar via sidebar) */
+.report-editor-topbar {
   justify-content: center;
+  padding: 22px 34px;
+  background: var(--white);
+  border-bottom: 1px solid var(--line);
 }
 
-.report-editor-page .report-editor-topbar .page-heading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.report-editor-page .report-editor-topbar .topbar-actions {
-  position: absolute;
-  left: 35px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.report-editor-page .report-editor-topbar .eyebrow {
-  display: none;
-}
-
-.report-editor-page .report-editor-topbar h1 {
+.report-editor-topbar h1 {
+  margin: 0;
+  color: var(--ink);
   font-size: 22px;
-  font-weight: 700;
-  letter-spacing: 0;
-  color: var(--report-text);
+  letter-spacing: -0.01em;
+  text-align: center;
 }
 
-.report-editor-page #editorView {
-  min-height: calc(100vh - 58px);
-  display: flex;
-  flex-direction: column;
-}
-
-.report-editor-page #editorView > form {
-  min-height: calc(100vh - 58px);
-  display: flex;
-  flex-direction: column;
-}
+/* -------------------------
+   LINHA CONSULTA + HUMOR
+------------------------- */
 
 .report-editor-header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 260px;
-  width: min(100%, 1380px);
-  margin: 0 auto;
-  padding: 28px 0 18px;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin: 26px 0 18px;
 }
 
-.report-consultation,
-.report-mood-section {
-  display: grid;
-  gap: 6px;
+.report-consultation {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 280px;
 }
 
 .report-editor-label {
-  color: var(--report-text);
+  color: var(--ink);
   font-size: 13px;
-  line-height: 1;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .report-consultation-select {
-  position: relative;
   display: flex;
   align-items: center;
-  width: 330px;
-  height: 40px;
-  padding: 0 28px 0 12px;
-  border: 1px solid var(--report-line);
+  gap: 10px;
+  padding: 5px 16px 5px 5px;
+  background: var(--white);
+  border: 1px solid var(--blue-200);
   border-radius: 999px;
-  background: var(--report-soft);
 }
+
+.report-consultation-select select {
+  max-width: 340px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+}
+
+.report-select-arrow {
+  display: grid;
+  place-items: center;
+  color: var(--blue-800);
+}
+
+.report-select-arrow svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.report-context-note { margin: 0; color: var(--muted); font-size: 12px; }
+.report-context-note:empty { display: none; }
 
 .report-patient-avatar {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
-  flex: 0 0 32px;
-  overflow: hidden;
-  margin-right: 7px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  background: var(--report-soft-2);
-  color: var(--report-blue-dark);
-  font-size: 11px;
-  font-weight: 800;
-}
-
-.report-patient-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.report-consultation-select select {
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--report-text);
-  font-size: 13px;
-  font-weight: 700;
-  text-align: left;
-  text-align-last: left;
-  appearance: none;
-}
-
-.report-consultation-select select:focus {
-  box-shadow: none;
-}
-
-.report-select-arrow {
-  position: absolute;
-  right: 9px;
-  top: 50%;
-  transform: translateY(-55%);
-  color: var(--report-blue-dark);
-  font-size: 11px;
-  font-weight: 800;
-  pointer-events: none;
-}
-
-.report-context-note {
-  margin: 0;
+  background: var(--blue-200);
+  color: var(--blue-800);
   font-size: 12px;
-  line-height: 1.4;
-  color: var(--report-muted);
+  font-weight: 700;
+  overflow: hidden;
 }
 
 .report-editor-page .mood-picker {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: nowrap;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .report-editor-page .mood-option {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  min-width: 92px;
-  height: 45px;
-  padding: 0 14px;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  background: var(--report-soft-2);
-  color: var(--report-blue-dark);
-  font-size: 12px;
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--blue-50);
+  color: var(--blue-800);
+  font-size: 13px;
   font-weight: 600;
-  box-shadow: none;
 }
 
-.report-editor-page .mood-option:hover {
-  background: #dff1f7;
-}
+.report-editor-page .mood-option:hover { background: var(--blue-200); }
 
-.report-editor-page .mood-option.selected {
-  background: #c4e7f2;
-  border-color: #a9d8e5;
-  box-shadow: none;
-  font-weight: 800;
-}
+.report-editor-page .mood-option.selected { background: var(--blue-200); }
 
 .report-editor-page .mood-emoji {
-  font-size: 14px;
-  line-height: 1;
+  display: grid;
+  place-items: center;
 }
+
+.report-editor-page .mood-emoji svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* -------------------------
+   PAINEL DE ESCRITA
+------------------------- */
 
 .report-writing-area {
-  flex: 1;
-  width: min(100%, 1380px);
-  min-height: 620px;
-  margin: 0 auto 13px;
-  border: 1px solid #dcebef;
-  border-radius: 20px;
-  background: #f8fcfd;
-  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 560px;
+  padding: 16px;
+  background: #F1F9FC;
+  border: 1px solid var(--line);
+  border-radius: 16px;
 }
 
-.report-writing-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: 620px;
+.report-toolbar {
+  align-self: center;
+  display: flex;
+  align-items: stretch;
+  padding: 4px;
+  background: var(--white);
+  border: 1px solid var(--blue-200);
+  border-radius: 10px;
+}
+
+.report-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 6px;
+}
+
+.report-toolbar-group + .report-toolbar-group { border-left: 1px solid var(--line); }
+
+.report-tool-btn {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 30px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--blue-800);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.report-tool-btn:hover { background: var(--blue-50); }
+
+.report-tool-btn svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.report-tool-italic { font-family: Georgia, serif; font-style: italic; }
+.report-tool-underline { text-decoration: underline; }
+
+.report-toolbar select {
+  margin-right: 4px;
+  padding: 5px 6px;
+  background: var(--white);
+  border: 1px solid var(--blue-200);
+  border-radius: 8px;
+  color: var(--blue-800);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .report-main-textarea {
-  display: block;
-  width: 100%;
-  height: 100%;
-  min-height: 620px;
-  margin: 0;
-  padding: 35px 80px 35px 35px;
-  border: 0;
-  outline: 0;
-  border-radius: 20px;
-  background: transparent;
-  color: var(--report-text);
-  font-family: inherit;
-  font-size: 18px;
-  font-weight: 500;
+  flex: 1;
+  margin-top: 14px;
+  padding: 10px 12px 48px;
+  overflow-y: auto;
+  color: var(--ink);
+  font-size: 14px;
   line-height: 1.7;
-  resize: none;
-  text-align: left;
+  outline: none;
 }
 
-.report-main-textarea:focus {
-  box-shadow: none;
+.report-main-textarea:empty::before {
+  content: attr(data-placeholder);
+  color: var(--muted);
 }
 
-.report-main-textarea::placeholder {
-  color: #91a3ad;
-  font-weight: 500;
+.report-main-textarea h2 { margin: 12px 0 6px; font-size: 18px; }
+
+.report-main-textarea blockquote {
+  margin: 10px 0;
+  padding-left: 12px;
+  border-left: 3px solid var(--blue-200);
+  color: var(--muted);
 }
 
 .report-microphone {
   position: absolute;
-  right: 14px;
+  right: 18px;
   bottom: 14px;
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
-  padding: 0;
+  width: 40px;
+  height: 40px;
   border: 0;
-  border-radius: 50%;
   background: transparent;
-  color: var(--report-text);
-  cursor: pointer;
-}
-
-.report-microphone:hover {
-  background: var(--report-soft-2);
+  color: var(--ink);
 }
 
 .report-microphone svg {
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.report-legacy-fields {
-  display: none !important;
-}
+.report-legacy-fields { display: none; }
+
+/* -------------------------
+   RODAPÉ: ANEXOS + AÇÕES
+------------------------- */
 
 .report-editor-footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  width: min(100%, 1380px);
-  margin: 0 auto;
-  padding: 0 0 25px;
+  gap: 22px;
+  flex-wrap: wrap;
+  margin-top: 20px;
 }
 
 .report-attachments-area {
   display: flex;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 12px;
-  min-width: 0;
-  flex: 1;
-}
-
-.report-attach-button {
-  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 154px;
-  height: 70px;
-  flex: 0 0 154px;
-  border: 1px dashed var(--report-blue);
-  border-radius: 14px;
-  background: #f5f9fb;
-  color: var(--report-blue-dark);
-  font-size: 13px;
+  gap: 16px;
+  flex-wrap: wrap;
+  flex: 1;
+  min-width: 280px;
+}
+
+.report-attach-dropbox {
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  width: 300px;
+  min-height: 96px;
+  border: 1.5px dashed var(--blue-800);
+  border-radius: 12px;
+  background: repeating-linear-gradient(45deg, rgba(228, 246, 252, 0.6) 0 6px, transparent 6px 12px);
+  color: var(--blue-800);
+  font-size: 12px;
   font-weight: 700;
-  cursor: pointer;
+  letter-spacing: 0.08em;
 }
 
-.report-attach-button:hover {
-  background: var(--report-soft-2);
-}
-
-.report-attach-button svg {
-  width: 15px;
-  height: 15px;
+.report-attach-dropbox svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .report-editor-footer .attach-chips {
-  display: grid;
-  grid-template-columns: repeat(3, 125px);
-  gap: 6px;
-  flex: 1;
-  min-width: 0;
-  margin-left: 10px;
-}
-
-.report-editor-footer .attach-chip {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 125px;
-  height: 30px;
-  padding: 0 8px;
-  border: 1px solid #dce8ec;
-  border-radius: 6px;
-  background: #ffffff;
-  color: var(--report-muted);
-  font-size: 10px;
-  overflow: hidden;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.report-editor-footer .attach-chip strong {
-  max-width: 85px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.report-editor-footer .attach-chip-icon {
-  font-size: 8px;
-}
-
-.report-editor-footer .attach-chip-remove {
-  width: 13px;
-  height: 13px;
-  font-size: 11px;
-}
-
-.report-editor-footer .attach-note {
-  display: none;
-}
-
-.report-editor-footer .draft-status {
-  position: absolute;
-  left: -9999px;
-}
+.report-editor-footer .attach-chip-icon { color: #6750A4; }
 
 .report-save-actions {
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
   gap: 12px;
-  flex: 0 0 auto;
+  margin-left: auto;
 }
 
 .report-editor-footer .button {
-  min-height: 45px;
-  height: 45px;
-  padding: 0 25px;
+  padding: 12px 22px;
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
 }
 
-.report-editor-footer .report-cancel-button {
-  display: none;
-}
-
 .report-editor-footer .report-draft-button {
-  background: #ffffff;
-  border: 1px solid var(--report-blue);
-  color: var(--report-blue-dark);
+  background: var(--white);
+  border: 1px solid var(--blue-800);
+  color: var(--blue-800);
 }
 
 .report-editor-footer .report-save-button {
-  min-width: 190px;
-  background: #2d6a80;
-  border-color: #2d6a80;
-  color: #ffffff;
+  background: var(--blue-800);
+  border: 1px solid var(--blue-800);
+  color: var(--white);
 }
 
-.report-editor-footer .report-save-button:hover {
-  background: #22566a;
-}
+.report-editor-footer .report-save-button:hover { background: var(--blue-700); }
 
-.report-editor-page #listView {
+.draft-status {
   width: 100%;
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: right;
 }
+
+.draft-status:empty { display: none; }
+
+/* -------------------------
+   RESPONSIVO DO EDITOR
+------------------------- */
 
 @media (max-width: 900px) {
   .report-editor-header {
-    align-items: flex-start;
     flex-direction: column;
-    gap: 16px;
+    align-items: stretch;
   }
 
-  .report-mood-section {
-    width: 100%;
+  .report-editor-footer {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .report-editor-page .mood-picker {
+  .report-attach-dropbox { width: 100%; }
+
+  .report-save-actions { margin-left: 0; }
+
+  .report-toolbar {
     flex-wrap: wrap;
-  }
-
-  .report-writing-area {
-    min-height: 560px;
-  }
-
-  .report-writing-inner,
-  .report-main-textarea {
-    min-height: 560px;
-  }
-
-  .report-editor-footer {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .report-save-actions {
-    width: 100%;
-    justify-content: flex-end;
-  }
-}
-
-@media (max-width: 720px) {
-  .report-editor-page .main-content {
-    padding: 0 16px 18px;
-  }
-
-  .report-editor-page .report-editor-topbar {
-    margin: 0 -16px;
-    padding: 0 16px;
-  }
-
-  .report-editor-header {
-    width: 100%;
-  }
-
-  .report-consultation-select {
-    width: min(100%, 280px);
-  }
-
-  .report-writing-area {
-    width: 100%;
-    min-height: 420px;
-  }
-
-  .report-writing-inner,
-  .report-main-textarea {
-    min-height: 420px;
-  }
-
-  .report-editor-footer {
-    width: 100%;
-  }
-
-  .report-attachments-area {
-    width: 100%;
-  }
-
-  .report-save-actions {
-    width: 100%;
-  }
-
-  .report-save-actions .button {
-    flex: 1;
+    justify-content: center;
   }
 }

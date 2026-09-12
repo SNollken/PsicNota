@@ -33,18 +33,7 @@
 
 
       <header class="topbar report-editor-topbar">
-
-        <div class="page-heading">
-          <p class="eyebrow">Relatório</p>
-          <h1 id="pageTitle">Relatórios</h1>
-        </div>
-
-        <div class="topbar-actions">
-          <button class="button button-secondary button-compact" id="backToListButton" type="button" hidden>
-            Voltar para a lista
-          </button>
-        </div>
-
+        <h1 id="pageTitle">Relatórios</h1>
       </header>
 
 
@@ -96,8 +85,7 @@
 
         <form id="reportForm" novalidate>
 
-
-          <!-- INFORMAÇÕES SUPERIORES -->
+          <!-- CONSULTA + EMOÇÃO DO DIA -->
           <section class="report-editor-header">
 
             <div class="report-consultation">
@@ -112,10 +100,12 @@
                   <span>PS</span>
                 </span>
 
-                <select id="reportAppointment"></select>
+                <select id="reportAppointment" aria-label="Consulta vinculada"></select>
 
-                <span class="report-select-arrow">
-                  ↓
+                <span class="report-select-arrow" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M6 9l6 6 6-6"></path>
+                  </svg>
                 </span>
 
               </div>
@@ -125,89 +115,71 @@
             </div>
 
 
-            <div class="report-mood-section">
+            <div class="mood-picker" id="moodPicker" role="radiogroup" aria-label="Emoção do dia">
 
+              <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="muito-bem">
+                <span class="mood-emoji" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <circle cx="9" cy="10" r="1"></circle>
+                    <circle cx="15" cy="10" r="1"></circle>
+                    <path d="M8 14c1 3 7 3 8 0"></path>
+                  </svg>
+                </span>
+                <span>Muito bem</span>
+              </button>
 
+              <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="bem">
+                <span class="mood-emoji" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <circle cx="9" cy="10" r="1"></circle>
+                    <circle cx="15" cy="10" r="1"></circle>
+                    <path d="M9 14c1.5 1.5 4.5 1.5 6 0"></path>
+                  </svg>
+                </span>
+                <span>Bem</span>
+              </button>
 
-              <div class="mood-picker" id="moodPicker" role="radiogroup" aria-label="Emoção do dia">
+              <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="neutro">
+                <span class="mood-emoji" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <circle cx="9" cy="10" r="1"></circle>
+                    <circle cx="15" cy="10" r="1"></circle>
+                    <path d="M8.5 15h7"></path>
+                  </svg>
+                </span>
+                <span>Estável</span>
+              </button>
 
-                <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="muito-bem">
-                  <span class="mood-emoji" aria-hidden="true">
-                    <svg viewBox="0 0 24 24">
-                      <circle cx="12" cy="12" r="9"></circle>
+              <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="mal">
+                <span class="mood-emoji" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M8 10.5l2-.8"></path>
+                    <path d="M16 10.5l-2-.8"></path>
+                    <circle cx="9" cy="11" r="1"></circle>
+                    <circle cx="15" cy="11" r="1"></circle>
+                    <path d="M9 16c1.5-1.8 4.5-1.8 6 0"></path>
+                  </svg>
+                </span>
+                <span>Mal</span>
+              </button>
 
-                      <circle cx="9" cy="10" r="1"></circle>
-                      <circle cx="15" cy="10" r="1"></circle>
-
-                      <path d="M8 14c1 3 7 3 8 0"></path>
-                    </svg>
-                  </span>
-                  <span>Muito bem</span>
-                </button>
-
-                <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="bem">
-                  <span class="mood-emoji" aria-hidden="true">
-                    <svg viewBox="0 0 24 24">
-                      <circle cx="12" cy="12" r="9"></circle>
-
-                      <circle cx="9" cy="10" r="1"></circle>
-                      <circle cx="15" cy="10" r="1"></circle>
-
-                      <path d="M9 14c1.5 1.5 4.5 1.5 6 0"></path>
-                    </svg>
-                  </span>
-                  <span>Bem</span>
-                </button>
-
-                <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="neutro">
-                  <span class="mood-emoji" aria-hidden="true">
-                    <svg viewBox="0 0 24 24">
-                      <circle cx="12" cy="12" r="9"></circle>
-
-                      <circle cx="9" cy="10" r="1"></circle>
-                      <circle cx="15" cy="10" r="1"></circle>
-
-                      <path d="M8.5 15h7"></path>
-                    </svg>
-                  </span>
-                  <span>Estável</span>
-                </button>
-
-                <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="mal">
-                  <span class="mood-emoji" aria-hidden="true">
-                    <svg viewBox="0 0 24 24">
-                      <circle cx="12" cy="12" r="9"></circle>
-
-                      <path d="M8 10.5l2-.8"></path>
-                      <path d="M16 10.5l-2-.8"></path>
-
-                      <circle cx="9" cy="11" r="1"></circle>
-                      <circle cx="15" cy="11" r="1"></circle>
-
-                      <path d="M9 16c1.5-1.8 4.5-1.8 6 0"></path>
-                    </svg>
-                  </span>
-                  <span>Mal</span>
-                </button>
-
-                <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="muito-mal">
-                  <span class="mood-emoji" aria-hidden="true">
-                    <svg viewBox="0 0 24 24">
-                      <circle cx="12" cy="12" r="9"></circle>
-
-                      <path d="M7.5 9.5l2.5 1"></path>
-                      <path d="M16.5 10.5l-2.5-1"></path>
-
-                      <circle cx="9" cy="11" r="1"></circle>
-                      <circle cx="15" cy="11" r="1"></circle>
-
-                      <path d="M8 16.5c2-2.5 6-2.5 8 0"></path>
-                    </svg>
-                  </span>
-                  <span>Muito mal</span>
-                </button>
-
-              </div>
+              <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="muito-mal">
+                <span class="mood-emoji" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M7.5 9.5l2.5 1"></path>
+                    <path d="M16.5 10.5l-2.5-1"></path>
+                    <circle cx="9" cy="11" r="1"></circle>
+                    <circle cx="15" cy="11" r="1"></circle>
+                    <path d="M8 16.5c2-2.5 6-2.5 8 0"></path>
+                  </svg>
+                </span>
+                <span>Muito mal</span>
+              </button>
 
             </div>
 
@@ -217,20 +189,67 @@
           <!-- ÁREA PRINCIPAL DE ESCRITA -->
           <section class="report-writing-area">
 
-            <div class="report-writing-inner">
+            <div class="report-toolbar" id="reportToolbar" role="toolbar" aria-label="Formatação do texto">
 
-              <textarea id="freeText" class="report-main-textarea" rows="1"
-                placeholder="Digite suas anotações da sessão..." aria-label="Anotações da sessão"></textarea>
+              <div class="report-toolbar-group">
+                <select id="formatBlockSelect" aria-label="Estilo do parágrafo">
+                  <option value="p" selected>Normal</option>
+                  <option value="h2">Título</option>
+                  <option value="blockquote">Citação</option>
+                </select>
+                <select id="fontSizeSelect" aria-label="Tamanho da fonte">
+                  <option value="2">12</option>
+                  <option value="3" selected>14</option>
+                  <option value="4">16</option>
+                  <option value="5">18</option>
+                </select>
+              </div>
 
-              <button class="report-microphone" type="button" aria-label="Gravar anotação por voz"
-                title="Anotação por voz">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Z" />
-                  <path d="M19 11a7 7 0 0 1-14 0M12 18v4M8 22h8" />
-                </svg>
-              </button>
+              <div class="report-toolbar-group">
+                <button type="button" class="report-tool-btn" data-cmd="bold" aria-label="Negrito">B</button>
+                <button type="button" class="report-tool-btn report-tool-italic" data-cmd="italic" aria-label="Itálico">I</button>
+                <button type="button" class="report-tool-btn report-tool-underline" data-cmd="underline" aria-label="Sublinhado">U</button>
+              </div>
+
+              <div class="report-toolbar-group">
+                <button type="button" class="report-tool-btn" data-cmd="insertUnorderedList" aria-label="Lista com marcadores">
+                  <svg viewBox="0 0 24 24"><path d="M9 6h12M9 12h12M9 18h12"></path><path d="M4 6h.01M4 12h.01M4 18h.01"></path></svg>
+                </button>
+                <button type="button" class="report-tool-btn" data-cmd="insertOrderedList" aria-label="Lista numerada">
+                  <svg viewBox="0 0 24 24"><path d="M10 6h11M10 12h11M10 18h11"></path><path d="M4 5h1.5v4M4 9h2M4 14h2a1 1 0 0 1 0 2H4v2h2"></path></svg>
+                </button>
+                <button type="button" class="report-tool-btn" data-cmd="justifyLeft" aria-label="Alinhar à esquerda">
+                  <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h14"></path></svg>
+                </button>
+              </div>
+
+              <div class="report-toolbar-group">
+                <button type="button" class="report-tool-btn" data-cmd="undo" aria-label="Desfazer">
+                  <svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"></path><path d="M4 9h10a6 6 0 0 1 0 12h-3"></path></svg>
+                </button>
+                <button type="button" class="report-tool-btn" data-cmd="redo" aria-label="Refazer">
+                  <svg viewBox="0 0 24 24"><path d="M15 14l5-5-5-5"></path><path d="M20 9H10a6 6 0 0 0 0 12h3"></path></svg>
+                </button>
+              </div>
+
+              <div class="report-toolbar-group">
+                <button type="button" class="report-tool-btn" id="toolbarAttachButton" aria-label="Anexar arquivo">
+                  <svg viewBox="0 0 24 24"><path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l8.57-8.57a4 4 0 1 1 5.66 5.66l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                </button>
+              </div>
 
             </div>
+
+            <div id="freeText" class="report-main-textarea" contenteditable="true" role="textbox" aria-multiline="true"
+              aria-label="Anotações da sessão" data-placeholder="Digite suas anotações da sessão..."></div>
+
+            <button class="report-microphone" type="button" aria-label="Gravar anotação por voz"
+              title="Anotação por voz">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Z" />
+                <path d="M19 11a7 7 0 0 1-14 0M12 18v4M8 22h8" />
+              </svg>
+            </button>
 
           </section>
 
@@ -263,12 +282,12 @@
 
             <div class="report-attachments-area">
 
-              <button class="report-attach-button" id="attachButton" type="button">
+              <button class="report-attach-dropbox" id="attachButton" type="button">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l8.57-8.57a4 4 0 1 1 5.66 5.66l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+                  <path d="M7 8l-4 4 4 4" />
+                  <path d="M17 8l4 4-4 4" />
+                  <path d="M3 12h18" />
                 </svg>
-
                 <span>Anexar arquivo</span>
               </button>
 
@@ -276,21 +295,10 @@
 
               <div class="attach-chips" id="attachChips"></div>
 
-              <p class="attach-note" id="attachNote">
-                No protótipo, apenas o nome do arquivo é armazenado.
-              </p>
-
             </div>
 
 
-            <span class="draft-status" id="draftStatus"></span>
-
-
             <div class="report-save-actions">
-
-              <button class="button button-secondary report-cancel-button" id="cancelEditButton" type="button">
-                Cancelar
-              </button>
 
               <button class="button button-secondary report-draft-button" id="saveDraftButton" type="button">
                 Salvar como rascunho
@@ -302,9 +310,9 @@
 
             </div>
 
+            <span class="draft-status" id="draftStatus"></span>
+
           </section>
-
-
 
 
         </form>

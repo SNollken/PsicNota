@@ -67,7 +67,7 @@ const BLOCKS = [
 const MOODS = [
   { key: 'muito-bem', label: 'Muito bem', emoji: '😄' },
   { key: 'bem', label: 'Bem', emoji: '🙂' },
-  { key: 'neutro', label: 'Neutro', emoji: '😐' },
+  { key: 'neutro', label: 'Estável', emoji: '😐' },
   { key: 'mal', label: 'Mal', emoji: '🙁' },
   { key: 'muito-mal', label: 'Muito mal', emoji: '😞' }
 ];
@@ -78,6 +78,20 @@ function moodInfo(key) {
 
 let currentMood = null;
 let currentAttachments = [];
+
+function getFreeText() {
+  return elements.freeText.isContentEditable
+    ? elements.freeText.innerText
+    : elements.freeText.value;
+}
+
+function setFreeText(value) {
+  if (elements.freeText.isContentEditable) {
+    elements.freeText.textContent = value;
+  } else {
+    elements.freeText.value = value;
+  }
+}
 
 function renderMoodPicker() {
   elements.moodPicker.querySelectorAll('.mood-option').forEach((option) => {
@@ -96,14 +110,14 @@ function formatFileSize(bytes) {
 
 function renderAttachments() {
   elements.attachChips.replaceChildren();
-  elements.attachNote.hidden = currentAttachments.length > 0;
+  if (elements.attachNote) elements.attachNote.hidden = currentAttachments.length > 0;
   currentAttachments.forEach((file) => {
     const chip = document.createElement('span');
     chip.className = 'attach-chip';
     const icon = document.createElement('span');
     icon.className = 'attach-chip-icon';
     icon.setAttribute('aria-hidden', 'true');
-    icon.textContent = '📎';
+    icon.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"></path><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"></path></svg>';
     const name = document.createElement('strong');
     name.textContent = file.name;
     const size = formatFileSize(file.size);
@@ -196,7 +210,7 @@ function saveDraft() {
       evolucao: elements.blockEvolucao.value,
       proxima: elements.blockProxima.value
     },
-    freeText: elements.freeText.value,
+    freeText: getFreeText(),
     savedAt: new Date().toISOString()
   };
   try {
@@ -238,7 +252,7 @@ function loadDraftIfMatches() {
     elements.blockEvolucao.value = draft.blocks.evolucao || '';
     elements.blockProxima.value = draft.blocks.proxima || '';
   }
-  elements.freeText.value = draft.freeText || '';
+  setFreeText(draft.freeText || '');
   const time = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' }).format(new Date(draft.savedAt));
   elements.draftStatus.textContent = `Rascunho recuperado (salvo às ${time})`;
   return true;
@@ -360,7 +374,7 @@ function openEditor(report, appointmentId) {
   elements.editorView.hidden = false;
   elements.pageTitle.textContent = report ? 'Editar relatório da consulta' : 'Novo relatório da consulta';
   elements.newReportButton.hidden = true;
-  elements.backToListButton.hidden = false;
+  if (elements.backToListButton) elements.backToListButton.hidden = false;
 
   const targetAppointmentId = report?.appointmentId || appointmentId || '';
   buildAppointmentOptions(targetAppointmentId);
@@ -378,7 +392,7 @@ function openEditor(report, appointmentId) {
   elements.blockIntervencao.value = report?.blocks?.intervencao || '';
   elements.blockEvolucao.value = report?.blocks?.evolucao || '';
   elements.blockProxima.value = report?.blocks?.proxima || '';
-  elements.freeText.value = report?.freeText || '';
+  setFreeText(report?.freeText || '');
 
   const appointment = targetAppointmentId ? findAppointment(targetAppointmentId) : null;
   renderAppointmentInfo(appointment);
@@ -386,7 +400,7 @@ function openEditor(report, appointmentId) {
   if (usarNotas && appointmentId) {
     const note = data.getAppointmentNote(appointmentId);
     if (note) {
-      elements.freeText.value = [elements.freeText.value, note].filter(Boolean).join('\n\n');
+      setFreeText([getFreeText(), note].filter(Boolean).join('\n\n'));
       showToast('As notas rápidas da consulta foram adicionadas ao texto livre.');
     }
   }
@@ -426,7 +440,7 @@ function persistReport(status) {
     mood: currentMood,
     attachments: currentAttachments.map((item) => ({ ...item })),
     blocks,
-    freeText: elements.freeText.value.trim(),
+    freeText: getFreeText().trim(),
     status,
     updatedAt: new Date().toISOString()
   };
@@ -473,6 +487,37 @@ function init() {
     });
   });
 
+  const toolbar = document.querySelector('#reportToolbar');
+  if (toolbar) {
+    toolbar.addEventListener('mousedown', (event) => {
+      if (event.target.closest('button')) event.preventDefault();
+    });
+    toolbar.querySelectorAll('button[data-cmd]').forEach((toolButton) => {
+      toolButton.addEventListener('click', () => {
+        elements.freeText.focus();
+        document.execCommand(toolButton.dataset.cmd, false, null);
+      });
+    });
+    const formatBlockSelect = toolbar.querySelector('#formatBlockSelect');
+    if (formatBlockSelect) {
+      formatBlockSelect.addEventListener('change', () => {
+        elements.freeText.focus();
+        document.execCommand('formatBlock', false, formatBlockSelect.value);
+      });
+    }
+    const fontSizeSelect = toolbar.querySelector('#fontSizeSelect');
+    if (fontSizeSelect) {
+      fontSizeSelect.addEventListener('change', () => {
+        elements.freeText.focus();
+        document.execCommand('fontSize', false, fontSizeSelect.value);
+      });
+    }
+    const toolbarAttachButton = toolbar.querySelector('#toolbarAttachButton');
+    if (toolbarAttachButton) {
+      toolbarAttachButton.addEventListener('click', () => elements.attachInput.click());
+    }
+  }
+
   elements.attachButton.addEventListener('click', () => elements.attachInput.click());
   elements.attachInput.addEventListener('change', () => {
     Array.from(elements.attachInput.files || []).forEach((file) => {
@@ -488,12 +533,17 @@ function init() {
     scheduleDraftSave();
   });
 
-  document.querySelector('#cancelEditButton').addEventListener('click', () => {
-    window.location.href = 'relatorios.html';
-  });
-  elements.backToListButton.addEventListener('click', () => {
-    window.location.href = 'relatorios.html';
-  });
+  const cancelEditButton = document.querySelector('#cancelEditButton');
+  if (cancelEditButton) {
+    cancelEditButton.addEventListener('click', () => {
+      window.location.href = 'relatorios.html';
+    });
+  }
+  if (elements.backToListButton) {
+    elements.backToListButton.addEventListener('click', () => {
+      window.location.href = 'relatorios.html';
+    });
+  }
 
   elements.reportAppointment.addEventListener('change', () => {
     const appointment = elements.reportAppointment.value ? findAppointment(elements.reportAppointment.value) : null;
