@@ -1,750 +1,498 @@
 /* ==========================================================================
-   PsicNota · Perfil do paciente
-========================================================================== */
+   psicologo/historico.css — tela "Histórico das consultas" do psicólogo.
+   CSS auto-contido: tokens + shell + topbar + card de lista + paginação.
+   O menu lateral vem por @import do menu.css (componente <psic-menu>).
+   Referência visual: docs/designs/Historico das consultas.svg (lista) e
+   Historico da consulta.svg (componentes de linha: tile 49px #BFE7F5 rx24.5,
+   botões quadrados 39px #E4F6FC rx7.5, badges #BEEFBE / #EBA1A2, card #F3FBFE
+   rx35, divisórias #DCE6EA).
+   ========================================================================== */
 
 @import url("../../menu/menu.css");
 
-
 :root {
+  --blue-25: #F8FAFB;
+  --blue-50: #E4F6FC;
+  --blue-100: #E4F6FC;
+  --blue-150: #E4F6FC;
+  --blue-200: #BFE7F5;
 
-  --blue-25:#F8FAFB;
-  --blue-50:#E4F6FC;
-  --blue-100:#E4F6FC;
-  --blue-200:#BFE7F5;
+  --blue-700: #1f637a;
+  --blue-800: #174e61;
 
-  --blue-700:#1F637A;
-  --blue-800:#174E61;
+  --ink: #111827;
+  --muted: #64727C;
+  --line: #DCE6EA;
+  --white: #ffffff;
+  --sidebar-bg: #F3FBFE;
 
-  --ink:#111827;
-  --muted:#64727C;
+  --ok-bg: #BEEFBE;
+  --ok-ink: #174E61;
+  --cancel-bg: #EBA1A2;
+  --cancel-ink: #D90307;
 
-  --line:#DCE6EA;
+  --sidebar-width: 294px;
 
-  --white:#FFFFFF;
-
-  --sidebar-width:294px;
-
-  --radius-lg:26px;
-  --radius-md:18px;
-
+  --radius-lg: 26px;
+  --radius-md: 18px;
 
   font-family:
     Inter,
+    ui-sans-serif,
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
 
+  color: var(--ink);
+  background: var(--white);
 }
 
+* { box-sizing: border-box; }
 
-*{
-  box-sizing:border-box;
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
 }
 
-
-body{
-
-  margin:0;
-
-  background:#fff;
-
-  color:var(--ink);
-
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--white);
+  color: var(--ink);
 }
 
+button, input, select, textarea { font: inherit; }
+button, select { cursor: pointer; }
+a { color: inherit; }
 
-
-.app-shell{
-
-  min-height:100vh;
-
-  display:grid;
-
-  grid-template-columns:var(--sidebar-width) 1fr;
-
+svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
+[hidden] { display: none !important; }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
-/* ===============================
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+}
+
+/* =========================
    CONTEÚDO
-================================ */
+========================= */
 
-
-.main-content{
-
-  padding:0 34px 40px;
-
-  width:100%;
-
-  max-width:none;
-
+.main-content {
+  grid-column: 2;
+  width: 100%;
+  max-width: 1460px;
+  margin: 0 auto;
+  padding: 28px 34px 34px;
 }
 
+.mobile-menu { display: none; }
 
+/* =========================
+   TOPO DA PÁGINA
+========================= */
 
-.mobile-menu{
-
-  display:none;
-
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 6px 0 20px;
 }
 
+.page-heading { min-width: 0; }
 
-
-/* ===============================
-   TITULO
-================================ */
-
-
-.page-title{
-
-  height:60px;
-
-  border-bottom:1px solid var(--line);
-
-  display:flex;
-
-  justify-content:center;
-
-  align-items:center;
-
+.eyebrow {
+  margin: 0 0 5px;
+  color: var(--blue-700);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-
-.page-title h1{
-
-  margin:0;
-
-  font-size:28px;
-
-  font-weight:700;
-
-  letter-spacing:-0.03em;
-
+h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 24px;
+  letter-spacing: -0.01em;
 }
 
-
-
-
-
-/* ===============================
-   PERFIL DO PACIENTE
-================================ */
-
-
-.patient-card{
-
-  margin-top:26px;
-
-  margin-bottom:26px;
-
-  min-height:186px;
-
-  background:var(--blue-50);
-
-  border-radius:22px;
-
-  padding:18px 24px;
-
-  display:grid;
-
-  grid-template-columns:1.35fr 1fr auto;
-
-  align-items:center;
-
-  gap:30px;
-
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
 }
 
-
-
-.patient-info{
-
-  display:flex;
-
-  align-items:center;
-
-  gap:30px;
-
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.16s, border-color 0.16s, color 0.16s;
 }
 
-
-
-.patient-photo{
-
-  width:154px;
-
-  height:150px;
-
-  border-radius:50%;
-
-  object-fit:cover;
-
+.button svg {
+  width: 17px;
+  height: 17px;
 }
 
-
-
-.patient-info h2{
-
-  margin:0;
-
-  font-size:40px;
-
-  font-weight:700;
-
-  letter-spacing:-0.03em;
-
+.button-secondary {
+  background: var(--blue-50);
+  border-color: var(--blue-50);
+  color: var(--blue-800);
 }
 
-
-
-.patient-info p{
-
-  margin:2px 0 0;
-
-  color:var(--muted);
-
-  font-size:28px;
-
-
-
+.button-secondary:hover {
+  background: var(--blue-200);
+  border-color: var(--blue-200);
 }
 
-
-
-.patient-contact p{
-
-  display:flex;
-
-  align-items:center;
-
-  gap:12px;
-
-  margin:8px 0;
-
-  font-size:28px;
-
-  font-weight:600;
-
+.button-compact {
+  min-height: 38px;
+  padding: 0 14px;
+  font-size: 12px;
 }
 
-
-
-.patient-contact svg{
-
-  width:30px;
-
-  height:30px;
-
-  stroke:#111827;
-
-  stroke-width:2;
-
-  flex-shrink:0;
-
+/* Chip do paciente no topo */
+.patient-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 16px 6px 6px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--sidebar-bg);
 }
 
-
-
-.patient-actions{
-
-  display:flex;
-
-  flex-direction:column;
-
-  gap:10px;
-
+.patient-chip-avatar {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--blue-200);
+  color: var(--blue-800);
+  font-size: 13px;
+  font-weight: 800;
 }
 
-
-
-.patient-actions button{
-
-  width:300px;
-
-  height:50px;
-
-  border-radius:6px;
-
-  font-size:19px;
-
+.patient-chip strong {
+  font-size: 13px;
+  color: var(--ink);
 }
 
-.primary{
-
-  border:0;
-
-  background:var(--blue-700);
-
-  color:white;
-
+.patient-chip span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
 }
 
+/* =========================
+   CARD DA LISTA
+========================= */
 
-
-.outline{
-
-  background:white;
-
-  border:1px solid var(--blue-700);
-
-  color:var(--blue-700);
-
+.history-card {
+  background: var(--sidebar-bg);
+  border-radius: 35px;
+  padding: 10px 28px 24px;
 }
 
-
-
-
-/* ===============================
-   ABAS
-================================ */
-
-
-.patient-tabs{
-
-  height:58px;
-
-  display:flex;
-
-  align-items:end;
-
-  border-bottom:1px solid var(--line);
-
+.history-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 54px;
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--line);
 }
 
-
-.patient-tabs button{
-
-  height:58px;
-
-  padding:0 40px;
-
-  border:0;
-
-  background:none;
-
-  font-size:25px;
-
-  font-weight:600;
-
-  color:var(--ink);
-
+.history-card-head h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--blue-800);
+  letter-spacing: 0.02em;
 }
 
-
-
-.patient-tabs .active{
-
-  border-bottom:2px solid var(--blue-700);
-
+.history-count {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
 }
 
-
-
-
-
-/* ===============================
-   CONSULTAS
-================================ */
-
-.appointment-grid{
-
-  display:grid;
-
-  grid-template-columns:406px 406px;
-
-  justify-content:space-between;
-
-  max-width:958px;
-
-  margin:22px auto 12px;
-
+/* Linha da lista */
+.history-row {
+  display: grid;
+  grid-template-columns: 49px minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  gap: 18px;
+  min-height: 92px;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--line);
 }
 
+.history-row:last-child { border-bottom: 0; }
 
-.small-card{
-
-  width:406px;
-
-  height:179px;
-
-  background:var(--blue-50);
-
-  border-radius:22px;
-
-  padding:14px 18px 18px;
-
-  display:flex;
-
-  flex-direction:column;
-
-  align-items:center;
-
+.history-tile {
+  display: grid;
+  place-items: center;
+  width: 49px;
+  height: 49px;
+  border-radius: 24.5px;
+  background: var(--blue-200);
+  color: var(--blue-800);
 }
 
-
-.small-card h3{
-
-  margin:0 0 14px;
-
-  text-align:center;
-
-  font-size:32px;
-
-  line-height:1.1;
-
-  font-weight:700;
-
-  color:var(--ink);
-
+.history-tile svg {
+  width: 22px;
+  height: 22px;
 }
 
+.history-main { min-width: 0; }
 
-.appointment-box{
-
-  width:264px;
-
-  height:94px;
-
-  background:#FFFFFF;
-
-  border-radius:18px;
-
-  padding:10px 14px;
-
-  display:grid;
-
-  grid-template-columns:48px 1fr 24px;
-
-  align-items:center;
-
-  column-gap:8px;
-
+.history-main strong {
+  display: block;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
 }
 
-
-.calendar-icon{
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
-
+.history-main span {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-
-.calendar-icon svg{
-
-  width:40px;
-
-  height:40px;
-
-  stroke:#111827;
-
-  stroke-width:2;
-
+/* Badges de status */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
 }
 
-
-.appointment-info{
-
-  display:flex;
-
-  flex-direction:column;
-
-  justify-content:center;
-
+.status-confirmed {
+  background: var(--ok-bg);
+  color: var(--ok-ink);
 }
 
-
-.appointment-info strong{
-
-  display:block;
-
-  color:var(--blue-700);
-
-  font-size:20px;
-
-  font-weight:700;
-
-  line-height:1.2;
-
+.status-cancelled {
+  background: var(--cancel-bg);
+  color: var(--cancel-ink);
 }
 
-
-.appointment-info span{
-
-  display:block;
-
-  color:var(--muted);
-
-  font-size:15px;
-
-  margin-top:5px;
-
-  line-height:1.2;
-
+.status-pending {
+  background: var(--blue-100);
+  color: var(--blue-700);
 }
 
-
-.appointment-arrow{
-
-  color:var(--blue-700);
-
-  font-size:42px;
-
-  font-weight:400;
-
-  line-height:1;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
-
+/* Humor registrado */
+.history-mood {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--blue-800);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
-
-.appointment-box strong{
-
-  display:block;
-
-  color:var(--blue-700);
-
-  font-size:20px;
-
-  font-weight:700;
-
-  line-height:1.2;
-
+.history-mood svg {
+  width: 20px;
+  height: 20px;
 }
 
-
-.appointment-box span{
-
-  display:block;
-
-  color:var(--muted);
-
-  font-size:15px;
-
-  margin-top:5px;
-
+.history-mood.empty {
+  color: var(--muted);
+  font-weight: 500;
 }
 
-
-.appointment-box b{
-
-  font-size:42px;
-
-  line-height:1;
-
-  color:var(--blue-700);
-
-  font-weight:400;
-
+/* Ações quadradas da linha (39px, rx 7.5, como no design) */
+.history-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-/* ===============================
-   LISTAS RECENTES
-================================ */
-
-
-.content-grid{
-
-  display:grid;
-
-  grid-template-columns:1fr 1fr;
-
-  gap:24px;
-
-  margin-top:18px;
-
+.square-button {
+  display: grid;
+  place-items: center;
+  width: 39px;
+  height: 39px;
+  border: 0;
+  border-radius: 7.5px;
+  background: var(--blue-100);
+  color: var(--blue-800);
+  text-decoration: none;
+  transition: background 0.16s, color 0.16s;
 }
 
-
-
-.list-card{
-
-  background:var(--blue-50);
-
-  border-radius:22px;
-
-  padding:18px;
-
-  min-height:435px;
-
+.square-button:hover {
+  background: var(--blue-200);
+  color: var(--blue-700);
 }
 
-
-
-.list-card h2{
-
-  text-align:center;
-
-  font-size:26px;
-
-  font-weight:700;
-
-  margin:0 0 18px;
-
+.square-button svg {
+  width: 18px;
+  height: 18px;
 }
 
+/* =========================
+   PAGINAÇÃO
+========================= */
 
-
-.list-item{
-
-  height:92px;
-
-  background:#F8FCFE;
-
-  border:1px solid #DCE6EA;
-
-  border-radius:18px;
-
-  margin-bottom:16px;
-
-  padding:14px 20px;
-
-  display:grid;
-
-  grid-template-columns:55px 1fr 35px;
-
-  align-items:center;
-
+.history-pager {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 18px 4px 0;
 }
 
-
-
-.icon{
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
-
+.pager-button {
+  display: grid;
+  place-items: center;
+  width: 39px;
+  height: 39px;
+  border: 0;
+  border-radius: 7.5px;
+  background: var(--blue-100);
+  color: var(--blue-800);
+  font-size: 13px;
+  font-weight: 700;
+  transition: background 0.16s, color 0.16s;
 }
 
+.pager-button:hover { background: var(--blue-200); }
 
-.icon svg{
-
-  width:34px;
-
-  height:34px;
-
-  stroke:#111827;
-
-  stroke-width:2;
-
+.pager-button.current {
+  background: #A7B6C0;
+  color: var(--white);
 }
 
-
-.list-item strong{
-
-  display:block;
-
-  color:var(--blue-700);
-
-  font-size:18px;
-
-  font-weight:700;
-
-  text-align:center;
-
+.pager-button:disabled {
+  opacity: 0.45;
+  cursor: default;
 }
 
+/* =========================
+   ESTADO VAZIO
+   (variante "Historico das consultas-1.svg": área principal só com o
+   fundo tintado, sem card) 
+========================= */
 
-
-.list-item p{
-
-  margin:0;
-
-  font-size:15px;
-
-  line-height:18px;
-
-  color:var(--muted);
-
+.history-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 420px;
+  border-radius: 35px;
+  background: var(--sidebar-bg);
+  color: var(--muted);
+  text-align: center;
+  padding: 40px 24px;
 }
 
-
-.list-item b{
-
-  font-size:40px;
-
-  font-weight:400;
-
-  color:var(--blue-700);
-
-  text-align:right;
-
+.history-empty svg {
+  width: 40px;
+  height: 40px;
+  color: var(--blue-200);
 }
 
+.history-empty strong {
+  color: var(--blue-800);
+  font-size: 16px;
+  font-weight: 800;
+}
 
+.history-empty p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 420px;
+}
 
-/* ===============================
+/* =========================
    RESPONSIVO
-================================ */
+========================= */
 
-
-@media(max-width:1100px){
-
-
-  .patient-card{
-
-    grid-template-columns:1fr;
-
-  }
-
-
-  .appointment-grid,
-  .content-grid{
-
-    grid-template-columns:1fr;
-
-  }
-
-
+@media (max-width: 1180px) {
+  :root { --sidebar-width: 230px; }
+  .main-content { padding-inline: 26px; }
+  .history-row { grid-template-columns: 49px minmax(0, 1fr) auto auto; }
+  .history-mood { display: none; }
 }
 
-
-
-@media(max-width:720px){
-
-
-  .app-shell{
-
-    display:block;
-
+@media (max-width: 720px) {
+  .app-shell { display: block; }
+  .main-content { padding: 18px 18px 28px; }
+  .mobile-menu {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    margin-bottom: 8px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--blue-800);
   }
-
-
-  .main-content{
-
-    padding:18px;
-
+  h1 { font-size: 20px; }
+  .topbar { flex-wrap: wrap; }
+  .history-card { padding: 6px 16px 18px; border-radius: 26px; }
+  .history-row {
+    grid-template-columns: 49px minmax(0, 1fr) auto;
+    gap: 12px;
   }
-
-
-  .mobile-menu{
-
-    display:block;
-
-    margin-bottom:10px;
-
-  }
-
-
-  .patient-tabs{
-
-    overflow:auto;
-
-  }
-
-
+  .status-badge { display: none; }
+  .history-empty { border-radius: 26px; }
 }

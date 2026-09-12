@@ -1,691 +1,200 @@
 "use strict";
 
+/* psicologo/historico.js — lista do histórico de consultas do paciente.
+   Fluxo de dados: shared-data.js (getAppointments, getAppointmentMood).
+   Layout fiel a docs/designs/Historico das consultas.svg (lista paginada)
+   com estado vazio da variante -1. */
 
 const data = window.PsiNoteData;
 
-
 const params = new URLSearchParams(window.location.search);
+const patientFilter = params.get("paciente") || "";
 
-const patientName =
-  params.get("paciente") || "Paciente";
+const PAGE_SIZE = 7;
 
-
-
-const elements = {
-
-  title:
-    document.querySelector("#patientTitle"),
-
-  name:
-    document.querySelector("#patientName"),
-
-  avatar:
-    document.querySelector("#patientAvatar"),
-
-  email:
-    document.querySelector("#patientEmail"),
-
-  phone:
-    document.querySelector("#patientPhone"),
-
-  location:
-    document.querySelector("#patientLocation"),
-
-
-  nextDate:
-    document.querySelector("#nextDate"),
-
-  nextInfo:
-    document.querySelector("#nextInfo"),
-
-  lastDate:
-    document.querySelector("#lastDate"),
-
-  lastInfo:
-    document.querySelector("#lastInfo"),
-
-
-  notes:
-    document.querySelector("#notesList"),
-
-  reports:
-    document.querySelector("#reportsList"),
-
-
-  sidebar:
-    document.querySelector(".sidebar"),
-
-  mobile:
-    document.querySelector(".mobile-menu")
-
+const MOODS = {
+  "muito-bem": { label: "Muito bem", emoji: "😄" },
+  "bem": { label: "Bem", emoji: "🙂" },
+  "neutro": { label: "Estável", emoji: "😐" },
+  "mal": { label: "Mal", emoji: "🙁" },
+  "muito-mal": { label: "Muito mal", emoji: "😞" }
 };
 
+const STATUS = {
+  confirmed: { label: "Confirmada", className: "status-confirmed" },
+  cancelled: { label: "Cancelada", className: "status-cancelled" },
+  pending: { label: "Pendente", className: "status-pending" }
+};
 
+const elements = {
+  card: document.querySelector("#historyCard"),
+  rows: document.querySelector("#historyRows"),
+  pager: document.querySelector("#historyPager"),
+  count: document.querySelector("#historyCount"),
+  empty: document.querySelector("#historyEmpty"),
+  emptyText: document.querySelector("#historyEmptyText"),
+  chip: document.querySelector("#patientChip"),
+  chipName: document.querySelector("#patientChipName"),
+  chipAvatar: document.querySelector("#patientChipAvatar"),
+  sidebar: document.querySelector(".sidebar"),
+  mobileMenu: document.querySelector(".mobile-menu")
+};
 
+let currentPage = 1;
 
-
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
 
 function initials(name) {
-
-  return name
-    .split(" ")
-    .map(x => x[0])
+  return String(name)
+    .split(/\s+/)
+    .filter(Boolean)
     .slice(0, 2)
+    .map((part) => part[0])
     .join("")
     .toUpperCase();
-
 }
 
-
-
-
-
-
-
-function renderPsychologist() {
-
-
-  const session = data.getSession();
-
-
-  if (!session) return;
-
-
+function formatDate(dateKey) {
+  const [year, month, day] = String(dateKey).split("-");
+  return `${day}/${month}/${year}`;
 }
 
+function getAppointments() {
+  const items = data.getAppointments()
+    .filter((item) => (patientFilter ? item.patient === patientFilter : true));
 
-
-
-
-
-
-
-function getPatient() {
-
-  if (!data.getProfiles)
-    return null;
-
-
-  return data
-    .getProfiles()
-    .find(
-      p =>
-        p.name === patientName ||
-        p.fullName === patientName
-    );
-
+  return items.sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
 }
 
-
-
-
-
-
-
-
-function renderPatient() {
-
-
-  const patient =
-    getPatient();
-
-
-
-  elements.title.textContent =
-    `PERFIL DE ${patientName.toUpperCase()}`;
-
-
-
-  elements.name.textContent =
-    patientName;
-
-
-
-  if (!patient)
-    return;
-
-
-
-  elements.email.textContent =
-    patient.email || "Não informado";
-
-
-  elements.phone.textContent =
-    patient.phone ||
-    patient.telephone ||
-    "Não informado";
-
-
-  elements.location.textContent =
-    patient.location ||
-    patient.city ||
-    "Não informado";
-
-
-
-  if (patient.avatar) {
-
-    elements.avatar.src = patient.avatar;
-
-  }
-  else if (patient.photo) {
-
-    elements.avatar.src = patient.photo;
-
-  }
-
-
+function statusOf(item) {
+  return STATUS[item.status] || STATUS.pending;
 }
 
-
-
-
-
-
-
-
-
-function formatDate(date) {
-
-
-  const parts =
-    date.split("-");
-
-
-  return `${parts[2]}/${parts[1]}/${parts[0]}`;
-
+function moodOf(item) {
+  return MOODS[data.getAppointmentMood(item.id)] || null;
 }
 
-
-
-
-
-
-
-
-
-function renderAppointments() {
-
-
-  if (
-    !elements.nextDate ||
-    !elements.lastDate
-  )
-    return;
-
-
-
-  const appointments =
-
-    data.getAppointments()
-
-      .filter(
-
-        item =>
-
-          item.patient === patientName &&
-
-          item.status !== "cancelled"
-
-      )
-
-      .sort(
-
-        (a, b) =>
-
-          (a.date + a.time)
-            .localeCompare(
-              b.date + b.time
-            )
-
-      );
-
-
-
-
-  if (!appointments.length) {
-
-    elements.nextDate.textContent =
-      "--/--/----";
-
-    elements.nextInfo.textContent =
-      "Sem consultas";
-
-    elements.lastDate.textContent =
-      "--/--/----";
-
-    elements.lastInfo.textContent =
-      "Sem consultas";
-
-    return;
-
-  }
-
-
-
-
-  const now =
-    new Date();
-
-
-
-  const future =
-
-    appointments.filter(item => {
-
-
-      return new Date(
-        `${item.date}T${item.time}`
-      ) >= now;
-
-
-    });
-
-
-
-
-  const next =
-
-    future[0] || appointments[0];
-
-
-
-
-  const previous =
-
-    appointments
-
-      .filter(
-        item =>
-          item !== next
-      )
-
-      .sort(
-
-        (a, b) =>
-
-          (b.date + b.time)
-            .localeCompare(
-              a.date + a.time
-            )
-
-      )[0];
-
-
-
-
-
-
-  if (next) {
-
-
-    elements.nextDate.textContent =
-
-      formatDate(next.date);
-
-
-    elements.nextInfo.textContent =
-
-      `${next.time} • ${next.mode}`;
-
-
-  }
-
-
-
-
-
-  if (previous) {
-
-
-    elements.lastDate.textContent =
-
-      formatDate(previous.date);
-
-
-    elements.lastInfo.textContent =
-
-      `${previous.time} • ${previous.mode}`;
-
-
-  }
-
-
+function renderChip() {
+  if (!patientFilter) return;
+  elements.chip.hidden = false;
+  elements.chipName.textContent = patientFilter;
+  elements.chipAvatar.textContent = initials(patientFilter);
 }
 
+function createRow(item) {
+  const status = statusOf(item);
+  const mood = moodOf(item);
 
+  const row = document.createElement("article");
+  row.className = "history-row";
 
+  const meta = [
+    `${item.time} • ${item.mode}`,
+    patientFilter ? "" : item.patient
+  ].filter(Boolean).join(" • ");
 
-
-
-
-
-
-
-function createItem(date, text, type) {
-
-
-  const item =
-    document.createElement("div");
-
-
-  item.className =
-    "list-item";
-
-
-
-  item.innerHTML = `
-
-    <span class="icon">
-
-      ${type === "report"
-      ? '<i data-lucide="file-text"></i>'
-      : '<i data-lucide="message-square"></i>'
-    }
-
+  row.innerHTML = `
+    <span class="history-tile" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Z" />
+        <path d="M8 2v4m8-4v4M3 9h18" />
+      </svg>
     </span>
 
-
-    <div>
-
-      <strong>
-        ${date}
-      </strong>
-
-
-      <p>
-        ${text}
-      </p>
-
+    <div class="history-main">
+      <strong>${escapeHtml(formatDate(item.date))}</strong>
+      <span>${escapeHtml(meta)}</span>
     </div>
 
+    <span class="status-badge ${status.className}">${status.label}</span>
 
-    <b>
-      ›
-    </b>
+    <span class="history-mood${mood ? "" : " empty"}">
+      ${mood ? `${mood.emoji} ${mood.label}` : "Sem humor"}
+    </span>
 
+    <div class="history-actions">
+      <a class="square-button" href="consulta.html?id=${encodeURIComponent(item.id)}" title="Abrir consulta" aria-label="Abrir consulta de ${escapeHtml(formatDate(item.date))}">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
+      </a>
+      <a class="square-button" href="relatorios.html?consulta=${encodeURIComponent(item.id)}" title="Relatórios da consulta" aria-label="Relatórios da consulta de ${escapeHtml(formatDate(item.date))}">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+          <path d="M14 2v6h6M9 13h6M9 17h6" />
+        </svg>
+      </a>
+    </div>
   `;
 
-
-
-  return item;
-
+  return row;
 }
 
+function renderPager(totalPages) {
+  elements.pager.replaceChildren();
+  if (totalPages <= 1) return;
 
-
-
-
-
-
-
-
-function renderNotes() {
-
-
-  if (!elements.notes)
-    return;
-
-
-
-  elements.notes.innerHTML = "";
-
-
-
-  const appointments =
-
-    data.getAppointments()
-
-      .filter(
-
-        item =>
-
-          item.patient === patientName
-
-      );
-
-
-
-  const notes =
-
-    appointments
-
-      .filter(
-
-        item =>
-
-          data.hasAppointmentNote(item.id)
-
-      );
-
-
-
-
-  if (notes.length === 0) {
-
-
-    elements.notes.append(
-
-      createItem(
-        "--",
-        "Nenhuma nota rápida encontrada",
-        "note"
-      )
-
-    );
-
-
-    return;
-
-  }
-
-
-
-
-
-
-  notes.slice(0, 3)
-
-    .forEach(item => {
-
-
-      elements.notes.append(
-
-
-        createItem(
-
-          new Intl.DateTimeFormat(
-            "pt-BR"
-          )
-
-            .format(
-
-              data.fromDateKey(
-                item.date
-              )
-
-            ),
-
-
-          data.getAppointmentNote(
-            item.id
-          ),
-
-
-          "note"
-
-        )
-
-      );
-
-
+  for (let page = 1; page <= totalPages; page += 1) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "pager-button" + (page === currentPage ? " current" : "");
+    button.textContent = String(page);
+    button.setAttribute("aria-label", `Página ${page}`);
+    if (page === currentPage) button.setAttribute("aria-current", "page");
+    button.addEventListener("click", () => {
+      currentPage = page;
+      render();
     });
-
-
+    elements.pager.append(button);
+  }
 }
 
+function render() {
+  const items = getAppointments();
 
-
-
-
-
-
-
-
-function renderReports() {
-
-
-  if (!elements.reports)
+  if (!items.length) {
+    elements.card.hidden = true;
+    elements.empty.hidden = false;
+    elements.emptyText.textContent = patientFilter
+      ? `Ainda não há consultas registradas para ${patientFilter}. Assim que a primeira consulta entrar na agenda, ela aparece aqui.`
+      : "Quando houver consultas registradas, elas aparecem nesta página em ordem cronológica.";
     return;
-
-
-
-  elements.reports.innerHTML = "";
-
-
-
-  const reports =
-
-
-    data.getReports()
-
-      .filter(
-
-        item =>
-
-          item.patient === patientName
-
-      )
-
-      .slice(0, 3);
-
-
-
-
-
-  if (reports.length === 0) {
-
-
-    elements.reports.append(
-
-      createItem(
-        "--",
-        "Nenhum relatório encontrado",
-        "report"
-      )
-
-    );
-
-
-    return;
-
   }
 
+  elements.empty.hidden = true;
+  elements.card.hidden = false;
 
+  const totalPages = Math.ceil(items.length / PAGE_SIZE);
+  if (currentPage > totalPages) currentPage = totalPages;
 
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageItems = items.slice(start, start + PAGE_SIZE);
 
+  elements.count.textContent =
+    `${items.length} consulta${items.length === 1 ? "" : "s"}` +
+    (totalPages > 1 ? ` · página ${currentPage} de ${totalPages}` : "");
 
+  elements.rows.replaceChildren();
+  pageItems.forEach((item) => elements.rows.append(createRow(item)));
 
-
-  reports.forEach(report => {
-
-
-    elements.reports.append(
-
-
-      createItem(
-
-        new Intl.DateTimeFormat(
-          "pt-BR"
-        )
-
-          .format(
-
-            new Date(
-              report.createdAt
-            )
-
-          ),
-
-
-        "Relatório pós-consulta disponível",
-
-
-        "report"
-
-      )
-
-    );
-
-
-  });
-
-
+  renderPager(totalPages);
 }
 
-
-
-
-
-
-
-
-/* MENU MOBILE */
-
-
-elements.mobile?.addEventListener(
-
-  "click",
-
-  () => {
-
-
-    const open =
-
-      elements.sidebar.classList.toggle(
-        "open"
-      );
-
-
-    elements.mobile
-
-      .setAttribute(
-
-        "aria-expanded",
-
-        String(open)
-
-      );
-
-
+function initMobileMenu() {
+  if (!elements.mobileMenu || !elements.sidebar) return;
+  elements.mobileMenu.addEventListener("click", () => {
+    const isOpen = elements.sidebar.classList.toggle("open");
+    elements.mobileMenu.setAttribute("aria-expanded", String(isOpen));
   });
-
-
-
-
-
-
-
-
-
-
-function init() {
-
-
-  renderPsychologist();
-
-  renderPatient();
-
-  renderAppointments();
-
-  renderNotes();
-
-  renderReports();
-
-
-  lucide.createIcons();
-
 }
 
-
-init();
+initMobileMenu();
+renderChip();
+render();
