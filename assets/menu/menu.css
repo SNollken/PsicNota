@@ -160,6 +160,14 @@
 
 .sidebar[aria-label="Navegação do paciente"] .nav-label { margin-bottom: 10px; }
 
+/* Ritmo do menu do psicólogo conforme o design "Menu Psicologo"
+   (docs/designs/Menu Psicologo.svg): 4 pills de 43px com ~9px entre si e
+   rótulo MENU rente ao primeiro pill (mesma geometria de rótulo do design
+   do paciente). Escopado pelo aria-label da sidebar. */
+.sidebar[aria-label="Navegação principal"] .main-nav { gap: 9px; }
+
+.sidebar[aria-label="Navegação principal"] .nav-label { margin-bottom: 10px; }
+
 .nav-badge {
   margin-left: auto;
   min-width: 22px;

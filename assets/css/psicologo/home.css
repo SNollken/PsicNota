@@ -1,42 +1,36 @@
 /* ==========================================================================
-   psicologo/home.css — CSS auto-contido da página placeholder "Psicólogo · Início".
-   Blocos do ex-base.css que a página usa + estilo "em construção"
-   (antes inline no HTML). O menu lateral vem por @import do menu.css,
-   componente <psic-menu>.
+   psicologo/home.css — CSS auto-contido da tela "Início" do psicólogo.
+   O menu lateral vem pelo <link> do menu.css no head da página
+   (componente <psic-menu>), mesma convenção de paciente/home.html
+   e psicologo/perfil.html.
+   Layout conforme docs/designs/Home psicologo.svg: painel azul-claro
+   arredondado com saudação, 3 cards de indicador, duas colunas de
+   listas (agenda de hoje / consultas pendentes) e card de notas rápidas.
    ========================================================================== */
-@import url("../../menu/menu.css");
 
 :root {
   --blue-25: #F8FAFB;
   --blue-50: #E4F6FC;
-  --blue-75: #E4F6FC;
-  --blue-100: #E4F6FC;
-  --blue-150: #E4F6FC;
+  --blue-100: #F3FBFE;
   --blue-200: #BFE7F5;
 
-  --blue-700: #1f637a;
-  --blue-800: #174e61;
+  --blue-700: #1F637A;
+  --blue-800: #174E61;
+
+  --green: #3BAE24;
+  --orange: #FF8D28;
 
   --ink: #111827;
   --muted: #64727C;
-  --line: #E4F6FC;
+  --line: #DCE6EA;
   --white: #ffffff;
   --sidebar-bg: #F3FBFE;
 
-  --success-bg: #3BAE24;
-  --success-line: #3BAE24;
-  --success: #174E61;
-  --warning-bg: #E4F6FC;
-  --warning-line: #E4F6FC;
-  --warning: #64727C;
-  --danger: #D90307;
-  --danger-bg: #D90307;
-  --danger-line: #D90307;
-
   --sidebar-width: 294px;
 
-  --radius-lg: 26px;
-  --radius-md: 18px;
+  --radius-panel: 24px;
+  --radius-card: 16px;
+  --radius-pill: 999px;
 
   font-family:
     Inter,
@@ -93,8 +87,7 @@ svg {
   border: 0;
 }
 
-/* Shell padrão das telas logadas: sidebar + conteúdo.
-   Cada CSS de página pode estender; esta é a base mínima. */
+/* Shell padrão das telas logadas: sidebar + conteúdo. */
 .app-shell {
   min-height: 100vh;
   display: grid;
@@ -110,39 +103,313 @@ svg {
   width: 100%;
   max-width: 1460px;
   margin: 0 auto;
-  padding: 28px 34px 34px;
+  padding: 24px 24px 24px 0;
 }
 
 .mobile-menu { display: none; }
 
-h1 {
-  margin: 0;
-  color: #111827;
-  font-size: 24px;
+/* Painel principal arredondado (rect azul do design). */
+.home-panel {
+  min-height: calc(100vh - 48px);
+  padding: 30px 34px 34px;
+  background: var(--blue-50);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+}
+
+/* ---- Saudação ---- */
+
+.home-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 26px;
+}
+
+.home-title {
+  margin: 0 0 6px;
+  color: var(--blue-800);
+  font-size: 22px;
+  font-weight: 700;
   letter-spacing: -0.01em;
 }
 
-/* Página em construção */
-.construction-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(100vh - 140px);
+.home-subtitle {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
 }
 
-.construction-box { text-align: center; padding: 40px 24px; max-width: 460px; }
-.construction-box img { width: 72px; height: 72px; object-fit: contain; }
-.construction-box h1 { font-size: 21px; margin: 20px 0 8px; color: #1F637A; letter-spacing: -0.02em; }
-.construction-box p { color: #64727C; margin: 0; line-height: 1.6; }
+.home-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.icon-btn {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--blue-800);
+}
+
+.icon-btn svg {
+  width: 22px;
+  height: 22px;
+}
+
+.icon-btn:hover {
+  background: var(--blue-200);
+}
+
+/* ---- Cards de indicador ---- */
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  max-width: 860px;
+  margin: 0 auto 30px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  background: var(--blue-100);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.stat-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--blue-200);
+  color: var(--blue-700);
+}
+
+.stat-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.stat-label {
+  color: var(--blue-800);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.stat-value {
+  color: var(--blue-800);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.stat-link {
+  color: var(--blue-700);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.stat-link:hover { text-decoration: underline; }
+
+/* ---- Duas colunas de cards ---- */
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.home-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.list-card,
+.notes-card {
+  padding: 18px 20px 14px;
+  background: var(--blue-100);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+}
+
+.card-title {
+  margin: 0 0 8px;
+  color: var(--blue-800);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.slot-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.slot-row {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1.15fr) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+}
+
+.slot-row + .slot-row {
+  border-top: 1px solid var(--line);
+}
+
+.slot-time {
+  padding: 4px 0;
+  text-align: center;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--blue-800);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.slot-name {
+  color: var(--blue-800);
+  font-size: 13px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.slot-mode {
+  color: var(--muted);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.badge {
+  padding: 3px 10px;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-pill);
+  font-size: 10.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.badge--ok { color: var(--green); }
+.badge--pending { color: var(--orange); }
+
+.card-footer-link {
+  display: inline-block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 0 4px;
+  border-top: 1px solid var(--line);
+  color: var(--blue-700);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.card-footer-link:hover { text-decoration: underline; }
+
+/* ---- Notas rápidas ---- */
+
+.notes-title {
+  margin: 4px 0 14px;
+  text-align: center;
+  color: var(--blue-800);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.notes-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.note-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--blue-50);
+  border-radius: 12px;
+  text-decoration: none;
+}
+
+.note-row:hover { background: var(--blue-200); }
+
+.note-row svg {
+  flex: 0 0 20px;
+  color: var(--blue-800);
+}
+
+.note-body {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+
+.note-date {
+  display: block;
+  color: var(--blue-700);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.note-text {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+.note-chevron {
+  flex: 0 0 18px;
+  color: var(--blue-800);
+}
+
+/* ---- Responsivo ---- */
 
 @media (max-width: 1180px) {
   :root { --sidebar-width: 230px; }
-  .main-content { padding-inline: 26px; }
+  .main-content { padding-right: 18px; }
+  .home-panel { padding: 24px 22px 26px; }
+  .stats-row { gap: 14px; }
+}
+
+@media (max-width: 980px) {
+  .home-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (max-width: 720px) {
   .app-shell { display: block; }
   .main-content { padding: 18px 18px 28px; }
+  .home-panel { padding: 20px 16px 24px; }
   .mobile-menu {
     display: grid;
     place-items: center;
@@ -154,5 +421,8 @@ h1 {
     background: var(--white);
     color: var(--blue-800);
   }
-  h1 { font-size: 20px; }
+  .home-head { flex-direction: column; }
+  .stats-row { grid-template-columns: minmax(0, 1fr); max-width: none; }
+  .slot-row { grid-template-columns: 50px minmax(0, 1fr) auto; }
+  .slot-mode { display: none; }
 }

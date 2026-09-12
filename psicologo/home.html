@@ -1,31 +1,106 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Página do PsicNota em construção.">
-  <title>PsicNota · Página em construção</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Página inicial do psicólogo no PsicNota" />
+  <title>PsicNota | Início</title>
   <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
   <link rel="icon" type="image/x-icon" href="../favicon.ico">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/psicologo/home.css">
+
+  <link rel="stylesheet" href="../assets/css/psicologo/home.css" />
+  <link rel="stylesheet" href="../assets/menu/menu.css" />
   <script src="../assets/menu/menu.js"></script>
 </head>
+
 <body>
   <div class="app-shell">
-    <psic-menu tipo="psicologo" ativo=""></psic-menu>
+    <psic-menu tipo="psicologo" ativo="inicio"></psic-menu>
 
     <main class="main-content">
-      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
-      <div class="construction-wrap">
-        <div class="construction-box">
-          <img src="../assets/img/logo_psicnota.png" alt="PsicNota">
-          <h1>Página em construção</h1>
-          <p>Esta área ainda não possui design definido no Figma e está em construção. Use o menu ao lado para navegar.</p>
+      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">
+        ☰
+      </button>
+
+      <section class="home-panel">
+        <header class="home-head">
+          <div class="home-head-text">
+            <h1 class="home-title">Olá, <span id="homeUserName">Juberto</span>!</h1>
+            <p class="home-subtitle">Bem-vindo ao seu painel. Aqui você acompanha sua agenda, pacientes e atendimentos.</p>
+          </div>
+          <div class="home-head-actions">
+            <button class="icon-btn" type="button" aria-label="Notificações">
+              <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+            </button>
+            <a class="icon-btn" href="agenda-psicologo.html" aria-label="Abrir agenda">
+              <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 9h18M8 3v4M16 3v4"></path></svg>
+            </a>
+          </div>
+        </header>
+
+        <section class="stats-row" aria-label="Indicadores do consultório">
+          <article class="stat-card">
+            <span class="stat-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 9h18M8 3v4M16 3v4"></path></svg>
+            </span>
+            <div class="stat-body">
+              <span class="stat-label">Consultas hoje</span>
+              <span class="stat-value" id="statConsultas">5</span>
+              <a class="stat-link" href="agenda-psicologo.html">Ver agenda <span aria-hidden="true">&rarr;</span></a>
+            </div>
+          </article>
+
+          <article class="stat-card">
+            <span class="stat-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="4"></circle><path d="M2 21c0-4 3-7 7-7s7 3 7 7"></path><path d="M17 11a3 3 0 1 0 0-6"></path><path d="M22 21c0-3-2-5-5-5"></path></svg>
+            </span>
+            <div class="stat-body">
+              <span class="stat-label">Pacientes ativos</span>
+              <span class="stat-value" id="statPacientes">28</span>
+              <a class="stat-link" href="pacientes.html">Ver pacientes <span aria-hidden="true">&rarr;</span></a>
+            </div>
+          </article>
+
+          <article class="stat-card">
+            <span class="stat-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </span>
+            <div class="stat-body">
+              <span class="stat-label">Anotações</span>
+              <span class="stat-value" id="statAnotacoes">12</span>
+              <a class="stat-link" href="#notas-rapidas">Ver anotações <span aria-hidden="true">&rarr;</span></a>
+            </div>
+          </article>
+        </section>
+
+        <div class="home-grid">
+          <div class="home-col">
+            <section class="list-card" aria-labelledby="agendaHojeTitle">
+              <h2 class="card-title" id="agendaHojeTitle">Agenda de hoje</h2>
+              <ul class="slot-list" id="agendaHojeList"></ul>
+              <a class="card-footer-link" href="agenda-psicologo.html">Ver agenda completa <span aria-hidden="true">&rarr;</span></a>
+            </section>
+
+            <section class="notes-card" id="notas-rapidas" aria-labelledby="notasTitle">
+              <h2 class="notes-title" id="notasTitle">Notas Rápidas</h2>
+              <ul class="notes-list" id="notasList"></ul>
+            </section>
+          </div>
+
+          <div class="home-col">
+            <section class="list-card" aria-labelledby="pendentesTitle">
+              <h2 class="card-title" id="pendentesTitle">Consultas pendentes</h2>
+              <ul class="slot-list" id="pendentesList"></ul>
+              <a class="card-footer-link" href="agenda-psicologo.html">Ver pendências completas <span aria-hidden="true">&rarr;</span></a>
+            </section>
+          </div>
         </div>
-      </div>
+      </section>
     </main>
   </div>
 
@@ -33,4 +108,5 @@
   <script src="../assets/js/sidebar.js"></script>
   <script src="../assets/js/psicologo/home.js"></script>
 </body>
+
 </html>
