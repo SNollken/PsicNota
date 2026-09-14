@@ -57,7 +57,7 @@ const elements = {
    CONFIGURAÇÃO
 ========================= */
 
-const PATIENTS_PER_PAGE = 8;
+const PATIENTS_PER_PAGE = 10;
 
 let visiblePatients = PATIENTS_PER_PAGE;
 
@@ -100,21 +100,21 @@ const session =
 
 const currentPsychologist =
   session &&
-  ["psicologo", "psychologist"].includes(session.role)
+    ["psicologo", "psychologist"].includes(session.role)
 
     ? session
 
     : {
 
-        id: "demo-psychologist",
+      id: "demo-psychologist",
 
-        name: "Psicólogo PsiNota",
+      name: "Psicólogo PsiNota",
 
-        fullName: "Psicólogo PsiNota",
+      fullName: "Psicólogo PsiNota",
 
-        role: "psicologo"
+      role: "psicologo"
 
-      };
+    };
 
 
 /* =========================
@@ -331,9 +331,9 @@ function buildPatients() {
           typeof data.hasAppointmentNote === "function"
 
             ? items.filter(
-                item =>
-                  data.hasAppointmentNote(item.id)
-              ).length
+              item =>
+                data.hasAppointmentNote(item.id)
+            ).length
 
             : 0,
 
@@ -521,12 +521,10 @@ function renderPatient(patient) {
 
 
     next.textContent =
-      `Próxima: ${
-        shortDateFormatter.format(
-          patient.next.dateTime
-        )
-      } às ${
-        patient.next.time
+      `Próxima: ${shortDateFormatter.format(
+        patient.next.dateTime
+      )
+      } às ${patient.next.time
       }`;
 
 
@@ -543,10 +541,9 @@ function renderPatient(patient) {
 
 
     last.textContent =
-      `Última consulta: ${
-        shortDateFormatter.format(
-          patient.last.dateTime
-        )
+      `Última consulta: ${shortDateFormatter.format(
+        patient.last.dateTime
+      )
       }`;
 
 
@@ -620,8 +617,8 @@ function renderPatients() {
   const query =
     elements.patientSearch
       ? elements.patientSearch.value
-          .trim()
-          .toLowerCase()
+        .trim()
+        .toLowerCase()
       : "";
 
 
@@ -630,11 +627,11 @@ function renderPatients() {
     query
 
       ? allPatients.filter(
-          patient =>
-            patient.name
-              .toLowerCase()
-              .includes(query)
-        )
+        patient =>
+          patient.name
+            .toLowerCase()
+            .includes(query)
+      )
 
       : allPatients;
 
@@ -691,9 +688,9 @@ function renderPatients() {
   if (elements.patientTotal) {
 
     elements.patientTotal.textContent =
-    filtered.length === 1
-      ? '1 paciente no total'
-      : `${filtered.length} pacientes no total`;
+      filtered.length === 1
+        ? '1 paciente no total'
+        : `${filtered.length} pacientes no total`;
 
   }
 
@@ -712,10 +709,9 @@ function renderPatients() {
   if (elements.loadMore) {
 
     elements.loadMore.hidden =
-      patientsToShow.length >= filtered.length;
+      filtered.length <= 10;
 
   }
-
 }
 
 

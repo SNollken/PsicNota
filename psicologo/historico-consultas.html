@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PsicNota · Consultas do paciente</title>
+
+
+<link rel="stylesheet" href="../assets/css/psicologo/historico-consultas.css">
+
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<script src="../assets/menu/menu.js"></script>
+
+
+</head>
+
+
+<body>
+
+
+<div class="app-shell">
+
+
+<psic-menu tipo="psicologo" ativo=""></psic-menu>
+
+
+
+<main class="main-content">
+
+
+
+<button class="mobile-menu" type="button">
+☰
+</button>
+
+
+
+
+
+<header class="page-title">
+
+<h1 id="patientTitle">
+PERFIL DE PACIENTE
+</h1>
+
+</header>
+
+
+
+
+
+
+
+<section class="patient-card">
+
+
+
+<div class="patient-info">
+
+
+<div class="patient-avatar">
+
+<img 
+id="patientAvatar"
+src="../assets/img/avatar.png"
+class="patient-photo"
+>
+
+</div>
+
+
+
+<div>
+
+
+<h2 id="patientName">
+Janaina Silva
+</h2>
+
+
+<p id="patientMeta">
+29 anos • Ela / Dela
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="patient-contact">
+
+
+
+<p>
+
+<i data-lucide="mail"></i>
+
+<span id="patientEmail">
+janaina@gmail.com
+</span>
+
+</p>
+
+
+
+
+<p>
+
+<i data-lucide="phone"></i>
+
+<span id="patientPhone">
++55 (61) 99999 - 0000
+</span>
+
+</p>
+
+
+
+
+
+<p>
+
+<i data-lucide="map-pin"></i>
+
+<span id="patientLocation">
+Brasília, DF, Brasil
+</span>
+
+</p>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="patient-actions">
+
+
+<button class="primary">
+
+Notas rápidas
+
+</button>
+
+
+
+<button class="outline">
+
+Agendar consulta
+
+</button>
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<nav class="patient-tabs">
+
+  <a href="historico.html?paciente=Janaina%20Silva">
+    Visão Geral
+  </a>
+
+
+  <a class="active" href="historico-consultas.html?paciente=Janaina%20Silva">
+    Consultas
+  </a>
+
+
+  <a href="historico-notas.html?paciente=Janaina%20Silva">
+    Historico Notas
+  </a>
+
+
+  <a href="historico-relatorios.html?paciente=Janaina%20Silva">
+    Relatórios
+  </a>
+
+
+  <a href="dados-completos.html?paciente=Janaina%20Silva">
+    Dados completos
+  </a>
+
+</nav>
+
+
+
+
+
+
+
+
+<section class="consultas-container">
+
+
+
+<div id="appointmentsList">
+
+
+
+<!-- JS INSERE AS CONSULTAS AQUI -->
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+
+
+<script src="../assets/js/shared-data.js"></script>
+
+<script src="../assets/js/seed-data.js"></script>
+
+<script src="../assets/js/sidebar.js"></script>
+
+<script src="../assets/js/psicologo/historico-consultas.js"></script>
+
+
+
+
+
+</body>
+
+
+</html>

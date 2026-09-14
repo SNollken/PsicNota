@@ -151,13 +151,17 @@ svg {
   grid-column: 2;
 
   width: 100%;
+
+  zoom: 1.25;
+
+  transform-origin: top center;
+
   max-width: none;
 
-  margin: 0;
+  margin: 0 auto;
 
   padding: 5px 46px 40px;
 }
-
 .mobile-menu {
   display: none;
 }
@@ -226,7 +230,7 @@ svg {
 
   color: #111827;
 
-  font-size: px;
+  font-size: 32px;
 
   font-weight: 700;
 
