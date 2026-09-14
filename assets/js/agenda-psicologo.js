@@ -600,7 +600,7 @@ function createAppointmentCard(item, withActions) {
 
     const open = document.createElement("a");
     open.className = "psic-appointment-open";
-    open.href = `consulta.html?id=${item.id}`;
+    open.href = `notas.html?consulta=${encodeURIComponent(item.id)}`;
     open.setAttribute("aria-label", `Notas rápidas da consulta de ${item.patient}`);
     open.title = "Notas rápidas";
     open.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
