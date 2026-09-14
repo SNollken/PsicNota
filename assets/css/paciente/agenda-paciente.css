@@ -2109,12 +2109,12 @@ input[readonly] {
    ========================================================= */
 
 .patient-day.has-available {
-  border-color: #3bae24;
+  border-color: #1f637a;
 }
 
 .patient-day.has-available .patient-day-number,
 .patient-day.has-available .patient-day-info {
-  color: #3bae24;
+  color: #174e61;
 }
 
 
@@ -2240,6 +2240,223 @@ input[readonly] {
   color: var(--blue-700);
 
   stroke-width: 3;
+}
+
+.patient-view {
+  background: #ffffff;
+  overflow-x: hidden;
+}
+
+.patient-view .agenda-patient-page {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0 18px 30px;
+}
+
+.patient-view .app-shell {
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.patient-view .agenda-topbar {
+  min-height: 95px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-bottom: 1px solid #64727c;
+}
+
+.patient-view .agenda-topbar h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.patient-view .agenda-content {
+  width: min(100%, 1180px);
+  margin: 0 auto;
+  padding-top: 18px;
+}
+
+.patient-view .agenda-subtitle {
+  margin: 6px 0 26px;
+  color: #111827;
+  font-size: 28px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.patient-dashboard {
+  width: min(100%, 1010px);
+  gap: 36px;
+  margin: 0 auto 38px;
+}
+
+.patient-dashboard-card {
+  min-height: 88px;
+  padding: 11px 15px 11px 24px;
+  border-radius: 18px;
+  background: #f8fafb;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.patient-dashboard-card:hover {
+  background: #ffffff;
+  transform: translateY(-1px);
+}
+
+.patient-dashboard-card > svg {
+  color: #1f637a;
+  stroke-width: 3;
+}
+
+.patient-dashboard-card .dashboard-copy small {
+  margin-bottom: 6px;
+  color: #111827;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.patient-dashboard-card .dashboard-copy strong {
+  color: #174e61;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.patient-calendar-card {
+  width: min(100%, 1080px);
+  margin: 0 auto;
+  padding: 20px 22px;
+  border: 1px solid #e4f6fc;
+  border-radius: 22px;
+  background: #e4f6fc;
+}
+
+.patient-calendar-header {
+  min-height: 58px;
+  margin-bottom: 10px;
+}
+
+.patient-calendar-header > h2 {
+  font-size: 25px;
+}
+
+.patient-calendar-navigation {
+  gap: 8px;
+}
+
+.patient-calendar-card .calendar-arrow {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #1f637a;
+  background: #ffffff;
+}
+
+.patient-calendar-card .calendar-arrow svg {
+  width: 18px;
+  height: 18px;
+  stroke: #1f637a;
+  stroke-width: 2.4;
+}
+
+.patient-calendar-card .calendar-arrow:hover {
+  color: #ffffff;
+  background: #1f637a;
+}
+
+.patient-calendar-card .calendar-arrow:hover svg {
+  stroke: #ffffff;
+}
+
+.patient-view .patient-weekdays,
+.patient-view .patient-calendar-grid {
+  gap: 5px;
+  border: 0;
+}
+
+.patient-view .patient-weekdays {
+  margin-bottom: 5px;
+}
+
+.patient-view .patient-weekdays span {
+  min-height: 35px;
+  padding: 0;
+  border: 0;
+  color: #111827;
+  background: transparent;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.patient-day {
+  min-height: 105px;
+  padding: 12px;
+  border: 1px solid #64727c;
+  border-radius: 7px;
+  color: #111827;
+  background: rgba(255, 255, 255, 0.92);
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+
+.patient-day:hover:not(:disabled) {
+  z-index: 2;
+  transform: translateY(-1px);
+  border-color: #bfe7f5;
+  background: #ffffff;
+}
+
+.patient-day.other-month {
+  border-color: #dce6ea;
+  color: #64727c;
+  background: #dce6ea;
+}
+
+.patient-day.is-unavailable {
+  border-color: #dce6ea;
+  color: #64727c;
+  background: #dce6ea;
+}
+
+.patient-day.is-unavailable .patient-day-number,
+.patient-day.is-unavailable .patient-day-info {
+  color: #64727c;
+}
+
+.patient-day-number {
+  color: inherit;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.patient-day-info {
+  color: #174e61;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.patient-day.has-pending { border-color: #d90307; }
+.patient-day.has-approved { border-color: #1f637a; }
+.patient-day.has-available { border-color: #1f637a; }
+.patient-day.today { border-color: #174e61; }
+
+.patient-day.has-pending .patient-day-info { color: #d90307; }
+.patient-day.has-approved .patient-day-info,
+.patient-day.has-available .patient-day-info,
+.patient-day.today .patient-day-info { color: #174e61; }
+
+@media (max-width: 720px) {
+  .patient-view .agenda-patient-page { padding: 0 20px 40px; }
+  .patient-view .agenda-topbar { min-height: 88px; }
+  .patient-view .agenda-topbar h1 { font-size: 22px; }
+  .patient-view .agenda-subtitle { font-size: 24px; }
+  .patient-calendar-card { padding: 16px; border-radius: 18px; }
 }
 
 
@@ -2495,9 +2712,13 @@ input[readonly] {
 }
 
 .schedule-terms input {
+  flex: 0 0 16px;
   width: 14px;
   height: 14px;
+  min-width: 14px;
+  min-height: 14px;
   margin: 0;
+  padding: 0;
 
   accent-color: var(--blue-700);
 }

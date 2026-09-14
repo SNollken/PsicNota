@@ -1202,7 +1202,7 @@ function renderCalendar() {
 
 
     button.className =
-      "patient-day";
+      "patient-day psic-day";
 
 
     button.setAttribute(
@@ -1239,7 +1239,7 @@ function renderCalendar() {
 
 
     number.className =
-      "patient-day-number";
+      "patient-day-number psic-day-number";
 
 
     number.textContent =
@@ -1260,7 +1260,7 @@ function renderCalendar() {
 
 
     info.className =
-      "patient-day-info";
+      "patient-day-info psic-day-info";
 
 
     /*
@@ -1294,7 +1294,8 @@ function renderCalendar() {
       futureAppointment
     ) {
       button.classList.add(
-        "has-approved"
+        "has-approved",
+        "has-confirmed"
       );
 
 
@@ -1338,6 +1339,18 @@ function renderCalendar() {
 
       button.append(
         info
+      );
+    }
+
+    if (
+      !isOtherMonth &&
+      dateKey !== todayKey &&
+      !pendingRequests.length &&
+      !futureAppointment &&
+      !openSlots.length
+    ) {
+      button.classList.add(
+        "is-unavailable"
       );
     }
 
