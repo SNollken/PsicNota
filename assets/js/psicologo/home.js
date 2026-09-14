@@ -66,6 +66,7 @@
       .sort((a, b) => String(a.time).localeCompare(String(b.time)));
     if (!items.length) return DEMO_AGENDA;
     return items.map((item) => ({
+      id: item.id,
       time: item.time,
       patient: item.patient,
       mode: normalizeMode(item.mode)
@@ -109,6 +110,13 @@
     const li = document.createElement("li");
     li.className = "slot-row";
 
+    const link = document.createElement("a");
+    link.className = "slot-link";
+    link.href = item.id
+      ? `consulta.html?id=${encodeURIComponent(item.id)}`
+      : "agenda-psicologo.html";
+    link.setAttribute("aria-label", `Abrir consulta de ${item.patient} às ${item.time}`);
+
     const time = document.createElement("span");
     time.className = "slot-time";
     time.textContent = item.time;
@@ -125,7 +133,8 @@
     badge.className = `badge ${badgeClass}`;
     badge.textContent = badgeText;
 
-    li.append(time, name, mode, badge);
+    link.append(time, name, mode, badge);
+    li.appendChild(link);
     return li;
   }
 
