@@ -5,8 +5,8 @@
 -- Data: 2026-08-26
 --
 -- Modelo de dados derivado do prototipo (assets/js/shared-data.js,
--- cadastro.js, agenda-psicologo.js, agenda-paciente.js, relatorios.js,
--- laudos.js, perfil.js, pacientes.js).
+-- cadastro.js, agenda-psicologo.js, agenda-paciente.js, perfil.js,
+-- pacientes.js).
 -- =====================================================================
 
 -- ---------------------------------------------------------------------
@@ -152,54 +152,13 @@ create table public.notas (
 create index notas_psicologo_idx on public.notas (psicologo_id);
 
 -- ---------------------------------------------------------------------
--- 6) RELATORIOS (pos-consulta; blocos estruturados + texto livre)
---    LGPD: paciente NUNCA ve.
--- ---------------------------------------------------------------------
-create table public.relatorios (
-  id                    uuid primary key default gen_random_uuid(),
-  psicologo_id          uuid not null references public.perfis (id) on delete cascade,
-  paciente_id           uuid not null references public.perfis (id) on delete cascade,
-  consulta_id           uuid references public.consultas (id) on delete set null,
-  humor                 text check (humor in ('muito-bem','bem','neutro','mal','muito-mal')),
-  bloco_queixa          text not null default '',
-  bloco_intervencao     text not null default '',
-  bloco_evolucao        text not null default '',
-  bloco_encaminhamentos text not null default '',
-  texto_livre           text not null default '',
-  status                text not null default 'rascunho' check (status in ('rascunho','final')),
-  criado_em             timestamptz not null default now(),
-  atualizado_em         timestamptz not null default now()
-);
-
-create index relatorios_psicologo_idx on public.relatorios (psicologo_id, atualizado_em desc);
-create index relatorios_paciente_idx  on public.relatorios (paciente_id);
-create index relatorios_consulta_idx  on public.relatorios (consulta_id);
-
--- ---------------------------------------------------------------------
--- 7) ANEXOS DE RELATORIO (arquivos no storage; aqui so metadados)
--- ---------------------------------------------------------------------
-create table public.anexos_relatorio (
-  id            uuid primary key default gen_random_uuid(),
-  relatorio_id  uuid not null references public.relatorios (id) on delete cascade,
-  psicologo_id  uuid not null references public.perfis (id) on delete cascade,
-  storage_path  text not null,
-  nome_arquivo  text not null,
-  tamanho_bytes bigint check (tamanho_bytes is null or tamanho_bytes >= 0),
-  mime_type     text,
-  adicionado_em timestamptz not null default now()
-);
-
-create index anexos_relatorio_idx on public.anexos_relatorio (relatorio_id);
-
--- ---------------------------------------------------------------------
--- 8) DOCUMENTOS (laudos e receitas em uma tabela so, discriminados por
---    tipo; o PDF sai do template do psicologo)
+-- 6) DOCUMENTOS (receitas emitidas pelo psicologo)
 -- ---------------------------------------------------------------------
 create table public.documentos (
   id                     uuid primary key default gen_random_uuid(),
   psicologo_id           uuid not null references public.perfis (id) on delete cascade,
   paciente_id            uuid not null references public.perfis (id) on delete cascade,
-  tipo                   text not null check (tipo in ('laudo','receita')),
+  tipo                   text not null check (tipo = 'receita'),
   titulo                 text not null,
   storage_path           text,
   liberado_para_paciente boolean not null default false,
@@ -212,7 +171,7 @@ create index documentos_paciente_idx on public.documentos (paciente_id)
 create index documentos_psicologo_idx on public.documentos (psicologo_id, criado_em desc);
 
 -- ---------------------------------------------------------------------
--- 9) LOGS DE ACESSO (accountability LGPD; so metadados, nunca conteudo)
+-- 7) LOGS DE ACESSO (accountability LGPD; so metadados, nunca conteudo)
 --    Escrita apenas via service_role/backend; nenhum usuario le direto.
 -- ---------------------------------------------------------------------
 create table public.logs_acesso (
@@ -230,12 +189,11 @@ create index logs_acesso_ator_idx on public.logs_acesso (ator_id, criado_em desc
 create index logs_acesso_alvo_idx on public.logs_acesso (tabela_alvo, registro_id);
 
 -- ---------------------------------------------------------------------
--- 10) TRIGGERS
+-- 8) TRIGGERS
 -- ---------------------------------------------------------------------
 create trigger trg_perfis_updated     before update on public.perfis     for each row execute function public.set_updated_at();
 create trigger trg_consultas_updated  before update on public.consultas  for each row execute function public.set_updated_at();
 create trigger trg_notas_updated      before update on public.notas      for each row execute function public.set_updated_at();
-create trigger trg_relatorios_updated before update on public.relatorios for each row execute function public.set_updated_at();
 
 -- Cria perfil automaticamente quando o usuario se cadastra no Supabase Auth.
 -- CONTRATO DE INTEGRACAO: o signUp (cadastro.js, hoje ainda demo/localStorage)
@@ -288,10 +246,10 @@ create trigger on_auth_user_created
   for each row execute function public.handle_new_user();
 
 -- ---------------------------------------------------------------------
--- 11) RLS - MULTI-TENANT
+-- 9) RLS - MULTI-TENANT
 --     Tenant = psicologo (cada consultorio e isolado).
 --     Psicologo: tudo que tem psicologo_id = auth.uid().
---     Paciente: so as proprias linhas; notas/relatorios/anexos NUNCA.
+--     Paciente: so as proprias linhas; notas NUNCA.
 -- ---------------------------------------------------------------------
 alter table public.perfis              enable row level security;
 alter table public.dados_psicologo     enable row level security;
@@ -299,8 +257,6 @@ alter table public.disponibilidades    enable row level security;
 alter table public.solicitacoes        enable row level security;
 alter table public.consultas           enable row level security;
 alter table public.notas               enable row level security;
-alter table public.relatorios          enable row level security;
-alter table public.anexos_relatorio    enable row level security;
 alter table public.documentos          enable row level security;
 alter table public.logs_acesso         enable row level security;
 
@@ -392,21 +348,13 @@ create policy consultas_psicologo_all on public.consultas for all
   using (public.e_psicologo() and psicologo_id = auth.uid())
   with check (public.e_psicologo() and psicologo_id = auth.uid());
 
--- NOTAS / RELATORIOS / ANEXOS: somente o psicologo dono.
+-- NOTAS: somente o psicologo dono.
 -- Paciente nao tem nenhuma politica = acesso negado por padrao.
 create policy notas_psicologo_all on public.notas for all
   using (public.e_psicologo() and psicologo_id = auth.uid())
   with check (public.e_psicologo() and psicologo_id = auth.uid());
 
-create policy relatorios_psicologo_all on public.relatorios for all
-  using (public.e_psicologo() and psicologo_id = auth.uid())
-  with check (public.e_psicologo() and psicologo_id = auth.uid());
-
-create policy anexos_psicologo_all on public.anexos_relatorio for all
-  using (public.e_psicologo() and psicologo_id = auth.uid())
-  with check (public.e_psicologo() and psicologo_id = auth.uid());
-
--- DOCUMENTOS (laudos/receitas): psicologo gerencia; paciente so ve o que
+-- DOCUMENTOS (receitas): psicologo gerencia; paciente so ve o que
 -- foi liberado explicitamente.
 create policy documentos_psicologo_all on public.documentos for all
   using (public.e_psicologo() and psicologo_id = auth.uid())
@@ -433,7 +381,6 @@ grant select, insert, update, delete on all tables in schema public to authentic
 -- ---------------------------------------------------------------------
 insert into storage.buckets (id, name, public)
 values ('avatars',     'avatars',     false),
-       ('anexos',      'anexos',      false),
        ('documentos',  'documentos',  false)
 on conflict (id) do nothing;
 
@@ -446,13 +393,6 @@ create policy avatars_update_own on storage.objects for update
   using (bucket_id = 'avatars' and auth.uid()::text = (storage.foldername(name))[1]);
 create policy avatars_delete_own on storage.objects for delete
   using (bucket_id = 'avatars' and auth.uid()::text = (storage.foldername(name))[1]);
-
--- anexos de relatorio: psicologo/<uid>/...
-create policy anexos_psicologo_all on storage.objects for all
-  using (bucket_id = 'anexos' and public.e_psicologo()
-         and auth.uid()::text = (storage.foldername(name))[2])
-  with check (bucket_id = 'anexos' and public.e_psicologo()
-         and auth.uid()::text = (storage.foldername(name))[2]);
 
 -- documentos: psicologo gerencia; paciente baixa apenas o liberado
 create policy documentos_psicologo_all on storage.objects for all
