@@ -27,7 +27,6 @@ const elements = {
   consultaSub: document.querySelector('#consultaSub'),
   patientPillAvatar: document.querySelector('#patientPillAvatar'),
   historicoLink: document.querySelector('#historicoLink'),
-  relatorioLink: document.querySelector('#relatorioLink'),
   infoDate: document.querySelector('#infoDate'),
   infoTime: document.querySelector('#infoTime'),
   infoDuration: document.querySelector('#infoDuration'),
@@ -96,7 +95,6 @@ function renderAppointmentInfo() {
   const encodedPatient = encodeURIComponent(appointment.patient);
   elements.patientPillAvatar.textContent = getInitials(appointment.patient);
   elements.historicoLink.href = `historico.html?paciente=${encodedPatient}`;
-  elements.relatorioLink.href = `relatorios.html?consulta=${appointment.id}`;
 }
 
 function renderMoodPicker() {
@@ -174,7 +172,6 @@ function handleAttachDoc(event) {
   data.saveDocuments(documents);
 
   elements.docName.value = '';
-  renderDocuments();
   showToast(`${elements.docType.value === 'laudo' ? 'Laudo' : 'Receita'} anexado para ${appointment.patient}.`);
 }
 
@@ -200,7 +197,7 @@ function init() {
   elements.saveNoteButton.addEventListener('click', saveNotes);
   elements.finishAppointmentButton.addEventListener('click', () => {
     saveNotes();
-    window.location.href = `relatorios.html?consulta=${appointment.id}&usarNotas=1`;
+    window.location.href = `historico.html?paciente=${encodeURIComponent(appointment.patient)}`;
   });
   elements.noteMoodPicker.querySelectorAll('.mood-option').forEach((option) => {
     option.addEventListener('click', () => {

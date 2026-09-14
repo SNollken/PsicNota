@@ -1,0 +1,123 @@
+"use strict";
+
+(() => {
+  const data = window.PsiNoteData;
+  const query = new URLSearchParams(location.search);
+  const patientName = query.get("paciente") || "";
+  const escape = data.escapeHtml;
+  const tabs = ["overview", "appointments", "notes", "reports", "details"];
+  const dateFormat = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
+  const now = new Date();
+  const appointments = data.getAppointments().filter(item => item.patient === patientName && item.status !== "cancelled").sort((a, b) => new Date(`${b.date}T${b.time || "00:00"}`) - new Date(`${a.date}T${a.time || "00:00"}`));
+  const reports = data.getReports().filter(item => item.patient === patientName).sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
+  const profiles = data.getProfiles();
+  const profile = profiles.find(item => [item.name, item.fullName, item.socialName].includes(patientName)) || {};
+  const notes = appointments.filter(item => data.hasAppointmentNote(item.id)).map(item => ({ appointment: item, text: data.getAppointmentNote(item.id) }));
+
+  function formatDate(value) {
+    if (!value) return "Data não informada";
+    const parsed = value.includes("/") ? new Date(value.split("/").reverse().join("-") + "T00:00:00") : new Date(value + "T00:00:00");
+    return Number.isNaN(parsed.getTime()) ? "Data não informada" : dateFormat.format(parsed);
+  }
+
+  function age(value) {
+    if (!value) return "Idade não informada";
+    const parts = value.includes("/") ? value.split("/").reverse() : value.split("-");
+    const birth = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    if (Number.isNaN(birth.getTime())) return "Idade não informada";
+    let years = now.getFullYear() - birth.getFullYear();
+    if (now.getMonth() < birth.getMonth() || (now.getMonth() === birth.getMonth() && now.getDate() < birth.getDate())) years--;
+    return `${years} anos`;
+  }
+
+  function recordCard(kind, title, description, href) {
+    return `<a class="record-card" href="${href}"><span class="record-icon" aria-hidden="true">${kind === "note" ? "▢" : "▤"}</span><span class="record-copy"><strong>${escape(title)}</strong><span>${escape(description || "Sem descrição")}</span></span><span class="record-arrow" aria-hidden="true">›</span></a>`;
+  }
+
+  function noteCards(items) {
+    return items.map(item => recordCard("note", formatDate(item.appointment.date), item.text, `notas.html?consulta=${encodeURIComponent(item.appointment.id)}`)).join("");
+  }
+
+
+  function empty(message) { return `<p class="empty">${escape(message)}</p>`; }
+  function section(name, items, kind) {
+    const panel = document.createElement("div");
+    panel.className = "records-panel";
+    panel.innerHTML = `<div class="record-list">${kind === "note" ? noteCards(items.slice(0, 8)) : reportCards(items.slice(0, 8))}</div>${items.length ? "" : empty(`Nenhum ${name.toLowerCase()} registrado para este paciente.`)}${items.length > 8 ? '<button class="load-more" type="button">Carregar mais</button>' : ""}`;
+    if (items.length > 8) {
+      let shown = 8;
+      panel.querySelector(".load-more").addEventListener("click", event => {
+        shown += 8;
+        panel.querySelector(".record-list").innerHTML = kind === "note" ? noteCards(items.slice(0, shown)) : reportCards(items.slice(0, shown));
+        event.currentTarget.hidden = shown >= items.length;
+      });
+    }
+    return panel;
+  }
+
+  function field(label, value) {
+    return `<div class="detail-field"><label>${escape(label)}</label><output>${escape(value || "Não informado")}</output></div>`;
+  }
+  function detailCard(title, fields, columns) {
+    return `<section class="detail-card"><h2>${escape(title)}</h2><div class="detail-grid ${columns}">${fields.join("")}</div></section>`;
+  }
+  function availability(title, value) {
+    const days = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"];
+    const periods = ["Manhã", "Tarde", "Noite"];
+    const selected = Array.isArray(value) ? value : [];
+    return `<section class="detail-card"><h2>◉ &nbsp; Disponibilidade semanal — ${title}</h2><p>Horários em que a paciente tem preferência para consultas ${title.toLowerCase()}.</p><table class="availability"><thead><tr><th>Dia da semana</th>${periods.map(period => `<th>${period}</th>`).join("")}</tr></thead><tbody>${days.map(day => `<tr><th>${day}</th>${periods.map(period => `<td>${selected.includes(`${day}:${period}`) ? '<span class="available">✓ Disponível</span>' : "—"}</td>`).join("")}</tr>`).join("")}</tbody></table></section>`;
+  }
+
+  function render() {
+    if (!patientName) {
+      document.querySelector(".profile-content").innerHTML = `<p class="empty">Selecione um paciente em <a href="pacientes.html">Meus pacientes</a>.</p>`;
+      return;
+    }
+    const display = profile.socialName || patientName;
+    document.title = `PsicNota · ${display}`;
+    document.querySelector("#pageTitle").textContent = `PERFIL DE ${display.split(" ")[0].toUpperCase()}`;
+    document.querySelector("#patientName").textContent = display;
+    document.querySelector("#patientMeta").textContent = [age(profile.birthDate), profile.pronoun].filter(Boolean).join(" • ");
+    document.querySelector("#patientEmail").textContent = profile.email || "E-mail não informado";
+    document.querySelector("#patientPhone").textContent = profile.phone || "Telefone não informado";
+    document.querySelector("#patientLocation").textContent = [profile.city, profile.state, profile.country].filter(Boolean).join(", ") || "Local não informado";
+    const avatar = document.querySelector("#patientAvatar");
+    if (profile.avatarDataUrl || profile.avatar_url) avatar.style.backgroundImage = `url("${profile.avatarDataUrl || profile.avatar_url}")`;
+    else avatar.textContent = display.split(/\s+/).slice(0, 2).map(part => part[0]).join("").toUpperCase();
+    const upcoming = appointments.filter(item => new Date(`${item.date}T${item.time || "00:00"}`) >= now).sort((a, b) => new Date(`${a.date}T${a.time || "00:00"}`) - new Date(`${b.date}T${b.time || "00:00"}`))[0];
+    const last = appointments.find(item => new Date(`${item.date}T${item.time || "00:00"}`) < now);
+    const appointmentPreview = (title, item) => `<article class="overview-card"><h2>${title}</h2>${item ? `<a class="overview-link" href="consulta.html?id=${encodeURIComponent(item.id)}"><span>▣</span><span>${formatDate(item.date)}<small>${escape(item.time || "")} • ${escape(item.mode || "Não informada")}</small></span><span>›</span></a>` : empty("Nenhuma consulta")}</article>`;
+    document.querySelector("#panel-overview").innerHTML = `<div class="overview-top">${appointmentPreview("Próxima consulta", upcoming)}${appointmentPreview("Última consulta", last)}</div><div class="overview-lists"><div class="overview-list"><h2>Notas Rápidas</h2><div class="record-list">${noteCards(notes.slice(0, 3)) || empty("Nenhuma nota registrada.")}</div></div></div>`;
+    const appointmentPanel = document.querySelector("#panel-appointments");
+    appointmentPanel.innerHTML = `<div class="records-panel appointments-panel">${appointments.map(item => `<div class="appointment-row"><span aria-hidden="true">▣</span><strong class="appointment-date">${formatDate(item.date)}</strong><span>${escape(item.time || "")} • ${escape(item.mode || "Não informada")}</span><div class="appointment-actions"><a href="notas.html?consulta=${encodeURIComponent(item.id)}">▢ Abrir Notas</a><a href="consulta.html?id=${encodeURIComponent(item.id)}" aria-label="Abrir consulta">›</a></div></div>`).join("")}${appointments.length ? "" : empty("Nenhuma consulta registrada para este paciente.")}</div>`;
+    document.querySelector("#panel-notes").append(section("Nota", notes, "note"));
+    document.querySelector("#panel-details").innerHTML = `<div class="details-shell">${detailCard("♙ &nbsp; Informações pessoais", [field("Nome completo", profile.fullName || patientName), field("Nome social", profile.socialName), field("Data de Nascimento", profile.birthDate ? formatDate(profile.birthDate) : ""), field("Pronomes", profile.pronoun), field("Gênero", profile.gender)], "")}${detailCard("☎ &nbsp; Contato", [field("E-mail", profile.email), field("Celular", profile.phone), field("Cidade", profile.city), field("Estado", profile.state)], "four")}${detailCard("♢ &nbsp; Preferências de atendimento", [field("Formato preferido", profile.preferredFormat), field("Período preferido", profile.preferredPeriod), field("Sobre mim", profile.about)], "three")}${availability("Online", profile.availabilityOnline)}${availability("Presencial", profile.availabilityInPerson)}</div>`;
+    document.querySelector("#quickNoteButton").addEventListener("click", () => { if (appointments[0]) location.href = `notas.html?consulta=${encodeURIComponent(appointments[0].id)}`; else selectTab("notes"); });
+    selectTab(query.get("aba") || "overview");
+  }
+
+  function selectTab(name) {
+    const active = tabs.includes(name) ? name : "overview";
+    document.querySelectorAll('[role="tab"]').forEach(button => {
+      const selected = button.dataset.tab === active;
+      button.setAttribute("aria-selected", String(selected));
+      button.tabIndex = selected ? 0 : -1;
+    });
+    tabs.forEach(tab => { document.querySelector(`#panel-${tab}`).hidden = tab !== active; });
+    history.replaceState(null, "", `?paciente=${encodeURIComponent(patientName)}&aba=${active}`);
+  }
+
+  document.querySelectorAll('[role="tab"]').forEach((button, index) => {
+    button.addEventListener("click", () => selectTab(button.dataset.tab));
+    button.addEventListener("keydown", event => {
+      const direction = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+      if (!direction) return;
+      event.preventDefault();
+      const next = document.querySelectorAll('[role="tab"]')[(index + direction + tabs.length) % tabs.length];
+      selectTab(next.dataset.tab);
+      next.focus();
+    });
+  });
+  render();
+})();
+

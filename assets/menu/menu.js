@@ -15,8 +15,8 @@
      tipo  = "psicologo" | "paciente"
              Se omitido, usa o tipo salvo na sessão.
      ativo = qual item aparece destacado:
-             psicologo: "inicio" | "agenda" | "relatorios" | "pacientes" | "perfil" | ""
-             paciente : "inicio" | "agendar" | "laudos" | "perfil" | ""
+             psicologo: "inicio" | "agenda" | "pacientes" | "perfil" | ""
+             paciente : "inicio" | "agendar" | "perfil" | ""
 
    O componente renderiza em LIGHT DOM de forma SÍNCRONA durante o parse,
    então os scripts de cada página (agenda-psicologo.js, pacientes.js, perfil.js...)
@@ -63,7 +63,6 @@
       '        <p class="nav-label">MENU</p>\n' +
       '        ' + item(prefixoPagina + 'home.html', ICON_HOME, 'Início', ativo === 'inicio') + '\n' +
       '        ' + item(prefixoPagina + 'agenda-psicologo.html', ICON_AGENDA, 'Agendar consulta', ativo === 'agenda') + '\n' +
-      '        ' + item(prefixoPagina + 'relatorios.html', ICON_CLIP, 'Relatórios', ativo === 'relatorios') + '\n' +
       '        ' + item(prefixoPagina + 'pacientes.html', ICON_PESSOA, 'Meus pacientes', ativo === 'pacientes') + '\n' +
       '        ' + item(LOGIN_HREF, ICON_SAIR, 'Sair', false, 'nav-item-sair') + '\n' +
       '      </nav>\n\n' +
@@ -93,7 +92,6 @@
       '        <p class="nav-label">MENU</p>\n' +
       '        ' + item(prefixoPagina + 'home.html', ICON_HOME, '<span>Início</span>', ativo === 'inicio') + '\n' +
       '        ' + item(prefixoPagina + 'agenda-paciente.html', ICON_AGENDA, '<span>Agendar consulta</span>', ativo === 'agendar') + '\n' +
-      '        ' + item(prefixoPagina + 'laudos.html', ICON_CLIP, '<span>Receitas e Laudos</span>', ativo === 'laudos') + '\n' +
       '        ' + item(LOGIN_HREF, ICON_SAIR, '<span>Sair</span>', false, 'nav-item-sair') + '\n' +
       '      </nav>\n\n' +
       '      <a class="sidebar-profile" href="' + perfilHref + '"' + (ativo === 'perfil' ? ' aria-current="page"' : '') + ' aria-label="Editar meu perfil">\n' +
@@ -115,8 +113,8 @@
       for (var j = 0; j < chaves.length; j += 1) {
         try {
           var sessao = JSON.parse(storages[i].getItem(chaves[j]) || 'null');
-          if (sessao && sessao.role === 'paciente') return 'paciente';
-          if (sessao && sessao.role === 'psicologo') return 'psicologo';
+          if (sessao && ['paciente', 'patient'].indexOf(sessao.role) !== -1) return 'paciente';
+          if (sessao && ['psicologo', 'psychologist'].indexOf(sessao.role) !== -1) return 'psicologo';
         } catch (error) {
           /* Ignora dados inválidos e tenta a próxima chave. */
         }

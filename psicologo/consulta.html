@@ -48,13 +48,6 @@
             Voltar ao histórico
           </a>
 
-          <a class="button button-secondary button-compact" id="relatorioLink" href="relatorios.html">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
-              <path d="M14 2v6h6M9 13h6M9 17h6" />
-            </svg>
-            Ver relatório
-          </a>
         </div>
       </header>
 
@@ -230,8 +223,7 @@
           </div>
         </section>
 
-        <!-- DOCUMENTOS -->
-        <section class="consulta-section">
+        <section class="consulta-section" hidden aria-hidden="true">
           <span class="section-tile" aria-hidden="true">
             <svg viewBox="0 0 24 24">
               <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57a4 4 0 1 1 5.66 5.66l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
@@ -239,35 +231,12 @@
           </span>
 
           <div class="section-body">
-            <h3 class="section-title">Receitas e laudos do paciente</h3>
-            <p class="section-hint">
-              Anexe documentos ao prontuário. Eles aparecem para o paciente em Receitas e Laudos.
-            </p>
-
-            <form class="doc-form" id="attachDocForm">
-              <select id="docType" aria-label="Tipo do documento">
-                <option value="receita">Receita</option>
-                <option value="laudo">Laudo</option>
-              </select>
-
-              <input id="docName" type="text" placeholder="Nome do documento" aria-label="Nome do documento">
-
-              <button class="button button-primary button-compact" type="submit">
-                Anexar
-              </button>
-            </form>
-
-            <div class="doc-list" id="patientDocs"></div>
-
-            <p class="doc-empty" id="emptyDocs" hidden>
-              Nenhum documento anexado para este paciente até agora.
-            </p>
           </div>
         </section>
 
         <footer class="consulta-footer">
           <button class="button button-primary" id="finishAppointmentButton" type="button">
-            Encerrar consulta e gerar relatório
+            Encerrar consulta
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M5 12h14m-6-6 6 6-6 6" />
             </svg>

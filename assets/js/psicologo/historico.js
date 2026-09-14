@@ -125,12 +125,6 @@ function createRow(item) {
           <circle cx="12" cy="12" r="3" />
         </svg>
       </a>
-      <a class="square-button" href="relatorios.html?consulta=${encodeURIComponent(item.id)}" title="Relatórios da consulta" aria-label="Relatórios da consulta de ${escapeHtml(formatDate(item.date))}">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
-          <path d="M14 2v6h6M9 13h6M9 17h6" />
-        </svg>
-      </a>
     </div>
   `;
 

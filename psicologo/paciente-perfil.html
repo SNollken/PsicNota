@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PsicNota · Perfil do paciente</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/psicologo/paciente-perfil.css">
+  <script src="../assets/menu/menu.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <psic-menu tipo="psicologo" ativo="pacientes"></psic-menu>
+    <main class="main-content">
+      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+      <header class="page-heading"><h1 id="pageTitle">PERFIL DO PACIENTE</h1></header>
+      <div class="profile-content">
+        <section class="patient-summary" aria-label="Resumo do paciente">
+          <div class="patient-avatar" id="patientAvatar" aria-hidden="true"></div>
+          <div class="patient-identity"><h2 id="patientName"></h2><p id="patientMeta"></p></div>
+          <div class="patient-contact">
+            <p><span class="contact-icon" aria-hidden="true">✉</span><span id="patientEmail"></span></p>
+            <p><span class="contact-icon" aria-hidden="true">☎</span><span id="patientPhone"></span></p>
+            <p><span class="contact-icon" aria-hidden="true">♧</span><span id="patientLocation"></span></p>
+          </div>
+          <div class="summary-actions">
+            <button type="button" id="quickNoteButton" class="button-primary">Notas rápidas</button>
+            <a id="scheduleButton" class="button-outline" href="agenda-psicologo.html">Agendar consulta</a>
+          </div>
+        </section>
+        <div class="patient-tabs" role="tablist" aria-label="Seções do perfil">
+          <button type="button" role="tab" id="tab-overview" data-tab="overview" aria-controls="panel-overview">Visão Geral</button>
+          <button type="button" role="tab" id="tab-appointments" data-tab="appointments" aria-controls="panel-appointments">Consultas</button>
+          <button type="button" role="tab" id="tab-notes" data-tab="notes" aria-controls="panel-notes">Notas Rápidas</button>
+          <button type="button" role="tab" id="tab-details" data-tab="details" aria-controls="panel-details">Dados completos</button>
+        </div>
+        <section role="tabpanel" id="panel-overview" aria-labelledby="tab-overview" class="tab-panel"></section>
+        <section role="tabpanel" id="panel-appointments" aria-labelledby="tab-appointments" class="tab-panel"></section>
+        <section role="tabpanel" id="panel-notes" aria-labelledby="tab-notes" class="tab-panel"></section>
+        <section role="tabpanel" id="panel-details" aria-labelledby="tab-details" class="tab-panel"></section>
+      </div>
+    </main>
+  </div>
+  <script src="../assets/js/shared-data.js"></script>
+  <script src="../assets/js/sidebar.js"></script>
+  <script src="../assets/js/psicologo/paciente-perfil.js"></script>
+</body>
+</html>
