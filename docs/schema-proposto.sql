@@ -152,26 +152,7 @@ create table public.notas (
 create index notas_psicologo_idx on public.notas (psicologo_id);
 
 -- ---------------------------------------------------------------------
--- 6) DOCUMENTOS (receitas emitidas pelo psicologo)
--- ---------------------------------------------------------------------
-create table public.documentos (
-  id                     uuid primary key default gen_random_uuid(),
-  psicologo_id           uuid not null references public.perfis (id) on delete cascade,
-  paciente_id            uuid not null references public.perfis (id) on delete cascade,
-  tipo                   text not null check (tipo = 'receita'),
-  titulo                 text not null,
-  storage_path           text,
-  liberado_para_paciente boolean not null default false,
-  liberado_em            timestamptz,
-  criado_em              timestamptz not null default now()
-);
-
-create index documentos_paciente_idx on public.documentos (paciente_id)
-  where liberado_para_paciente;
-create index documentos_psicologo_idx on public.documentos (psicologo_id, criado_em desc);
-
--- ---------------------------------------------------------------------
--- 7) LOGS DE ACESSO (accountability LGPD; so metadados, nunca conteudo)
+-- 6) LOGS DE ACESSO (accountability LGPD; so metadados, nunca conteudo)
 --    Escrita apenas via service_role/backend; nenhum usuario le direto.
 -- ---------------------------------------------------------------------
 create table public.logs_acesso (
@@ -189,7 +170,7 @@ create index logs_acesso_ator_idx on public.logs_acesso (ator_id, criado_em desc
 create index logs_acesso_alvo_idx on public.logs_acesso (tabela_alvo, registro_id);
 
 -- ---------------------------------------------------------------------
--- 8) TRIGGERS
+-- 7) TRIGGERS
 -- ---------------------------------------------------------------------
 create trigger trg_perfis_updated     before update on public.perfis     for each row execute function public.set_updated_at();
 create trigger trg_consultas_updated  before update on public.consultas  for each row execute function public.set_updated_at();
@@ -246,7 +227,7 @@ create trigger on_auth_user_created
   for each row execute function public.handle_new_user();
 
 -- ---------------------------------------------------------------------
--- 9) RLS - MULTI-TENANT
+-- 8) RLS - MULTI-TENANT
 --     Tenant = psicologo (cada consultorio e isolado).
 --     Psicologo: tudo que tem psicologo_id = auth.uid().
 --     Paciente: so as proprias linhas; notas NUNCA.
@@ -257,7 +238,6 @@ alter table public.disponibilidades    enable row level security;
 alter table public.solicitacoes        enable row level security;
 alter table public.consultas           enable row level security;
 alter table public.notas               enable row level security;
-alter table public.documentos          enable row level security;
 alter table public.logs_acesso         enable row level security;
 
 -- Helpers SECURITY DEFINER (evitam recursao de RLS na tabela perfis)
@@ -354,14 +334,6 @@ create policy notas_psicologo_all on public.notas for all
   using (public.e_psicologo() and psicologo_id = auth.uid())
   with check (public.e_psicologo() and psicologo_id = auth.uid());
 
--- DOCUMENTOS (receitas): psicologo gerencia; paciente so ve o que
--- foi liberado explicitamente.
-create policy documentos_psicologo_all on public.documentos for all
-  using (public.e_psicologo() and psicologo_id = auth.uid())
-  with check (public.e_psicologo() and psicologo_id = auth.uid());
-create policy documentos_paciente_select on public.documentos for select
-  using (paciente_id = auth.uid() and liberado_para_paciente);
-
 -- LOGS_ACESSO: RLS ligado e zero politicas = ninguem le/escreve direto.
 -- Escrita so pelo backend com service_role (que tem BYPASSRLS).
 
@@ -380,8 +352,7 @@ grant select, insert, update, delete on all tables in schema public to authentic
 -- 12) STORAGE (buckets privados)
 -- ---------------------------------------------------------------------
 insert into storage.buckets (id, name, public)
-values ('avatars',     'avatars',     false),
-       ('documentos',  'documentos',  false)
+values ('avatars', 'avatars', false)
 on conflict (id) do nothing;
 
 -- avatars: caminho <uid>/arquivo
@@ -394,19 +365,6 @@ create policy avatars_update_own on storage.objects for update
 create policy avatars_delete_own on storage.objects for delete
   using (bucket_id = 'avatars' and auth.uid()::text = (storage.foldername(name))[1]);
 
--- documentos: psicologo gerencia; paciente baixa apenas o liberado
-create policy documentos_psicologo_all on storage.objects for all
-  using (bucket_id = 'documentos' and public.e_psicologo()
-         and auth.uid()::text = (storage.foldername(name))[2])
-  with check (bucket_id = 'documentos' and public.e_psicologo()
-         and auth.uid()::text = (storage.foldername(name))[2]);
-create policy documentos_paciente_read on storage.objects for select
-  using (bucket_id = 'documentos' and exists (
-    select 1 from public.documentos d
-    where d.storage_path = storage.objects.name
-      and d.paciente_id = auth.uid()
-      and d.liberado_para_paciente
-  ));
 
 -- =====================================================================
 -- FIM DA PROPOSTA. Notas de aplicacao:
