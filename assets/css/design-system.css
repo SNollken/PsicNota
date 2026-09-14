@@ -9,6 +9,15 @@
   --text-primary: #101828;
   --text-secondary: #687985;
   --border-default: #d7e4e8;
+  /* Valores medidos em Notas Psicologo.svg (1440 × 1100). */
+  --notes-canvas: #f8fafb;
+  --notes-panel: #f3fbfe;
+  --notes-control: #e4f6fc;
+  --notes-selected: #bfe7f5;
+  --notes-ink: #111827;
+  --notes-petrol: #174e61;
+  --notes-primary: #1f637a;
+  --notes-border: #dce6ea;
   --status-error: #d90307;
   --status-success: #3bae24;
   --status-warning: #ff8d28;
