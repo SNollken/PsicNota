@@ -17,9 +17,9 @@
   --white: #ffffff;
   --success-bg: #3BAE24;
   --success: #3BAE24;
-  --error-bg: #D90307;
+  --error-bg: #fff4f4;
   --error: #D90307;
-  --error-line: #D90307;
+  --error-line: #efb4b4;
   --radius: 8px;
   --shadow-focus: 0 0 0 4px rgba(31, 99, 122, 0.12);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -290,7 +290,7 @@ select:focus {
 input[aria-invalid="true"],
 select[aria-invalid="true"] {
   border-color: var(--error);
-  background: #D90307;
+  background: #fffafa;
 }
 
 input[aria-invalid="true"]:focus,
@@ -418,14 +418,23 @@ select[aria-invalid="true"]:focus {
 }
 
 .field-error {
+  min-height: 0;
+  margin-top: 7px;
   color: var(--error);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.field-error:empty {
+  display: none;
 }
 
 .form-message {
   display: none;
   margin-top: 18px;
-  padding: 12px 14px;
-  border-radius: var(--radius);
+  padding: 12px 14px 12px 42px;
+  border-radius: 10px;
+  position: relative;
   font-size: 0.85rem;
   line-height: 1.5;
 }
@@ -447,6 +456,23 @@ select[aria-invalid="true"]:focus {
   color: var(--error);
   background: var(--error-bg);
   border: 1px solid var(--error-line);
+  font-weight: 600;
+}
+
+.form-message.is-error::before {
+  content: "!";
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  color: var(--white);
+  background: var(--error);
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: 800;
 }
 
 .role-fieldset {

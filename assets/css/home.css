@@ -328,7 +328,7 @@ select:focus {
 input[aria-invalid="true"],
 select[aria-invalid="true"] {
   border-color: var(--error);
-  background: #D90307;
+  background: #fffafa;
 }
 
 input[aria-invalid="true"]:focus,
@@ -461,8 +461,14 @@ select[aria-invalid="true"]:focus {
 }
 
 .field-error {
+  min-height: 0;
+  margin-top: 7px;
   color: var(--error);
+  font-size: 0.8rem;
+  font-weight: 600;
 }
+
+.field-error:empty { display: none; }
 
 .form-message {
   display: none;
@@ -486,8 +492,9 @@ select[aria-invalid="true"]:focus {
 
 .form-message.is-error {
   color: var(--error);
-  background: var(--error-bg);
-  border: 1px solid var(--error-line);
+  background: #fff4f4;
+  border: 1px solid #efb4b4;
+  font-weight: 600;
 }
 
 .role-fieldset {

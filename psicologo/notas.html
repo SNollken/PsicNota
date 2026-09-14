@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PsicNota | Anotações Rápidas</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/menu/menu.css">
+  <link rel="stylesheet" href="../assets/css/psicologo/notas.css">
+  <script src="../assets/menu/menu.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <psic-menu tipo="psicologo" ativo="agenda"></psic-menu>
+    <main class="notes-main">
+      <header class="notes-topbar">
+        <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+        <h1>Anotações Rápidas</h1>
+      </header>
+      <div class="notes-content">
+        <div class="notes-controls">
+          <div class="consultation-field">
+            <label for="notesAppointment">Consulta</label>
+            <div class="consultation-select">
+              <img src="../assets/img/avatar-paciente.png" alt="" id="patientAvatar">
+              <select id="notesAppointment" aria-label="Consulta vinculada"></select>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 9 7 7 7-7"/></svg>
+            </div>
+          </div>
+          <div class="moods" role="radiogroup" aria-label="Emoção do dia">
+            <button type="button" role="radio" aria-checked="false" data-mood="muito-bem"><span class="mood-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><circle cx="9" cy="10" r="1"></circle><circle cx="15" cy="10" r="1"></circle><path d="M8 14c1 3 7 3 8 0"></path></svg></span> Muito bem</button>
+            <button type="button" role="radio" aria-checked="false" data-mood="bem"><span class="mood-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="m12 7 1.5 3 3.5.5-2.5 2.4.6 3.4-3.1-1.6-3.1 1.6.6-3.4L7 10.5l3.5-.5Z"></path></svg></span> Bem</button>
+            <button type="button" role="radio" aria-checked="false" data-mood="neutro"><span class="mood-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="m12 7 1.5 3 3.5.5-2.5 2.4.6 3.4-3.1-1.6-3.1 1.6.6-3.4L7 10.5l3.5-.5Z"></path></svg></span> Estável</button>
+            <button type="button" role="radio" aria-checked="false" data-mood="mal"><span class="mood-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="m12 7 1.5 3 3.5.5-2.5 2.4.6 3.4-3.1-1.6-3.1 1.6.6-3.4L7 10.5l3.5-.5Z"></path></svg></span> Mal</button>
+            <button type="button" role="radio" aria-checked="false" data-mood="muito-mal"><span class="mood-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="m12 7 1.5 3 3.5.5-2.5 2.4.6 3.4-3.1-1.6-3.1 1.6.6-3.4L7 10.5l3.5-.5Z"></path></svg></span> Muito mal</button>
+          </div>
+        </div>
+        <label class="sr-only" for="noteText">Anotações da consulta</label>
+        <textarea id="noteText" aria-label="Anotações da consulta"></textarea>
+        <div class="notes-actions">
+          <button class="save-button" id="saveNote" type="button">Salvar</button>
+          <button class="finish-button" id="finishConsultation" type="button">Finalizar Consulta</button>
+        </div>
+        <p class="notes-status" id="notesStatus" role="status" aria-live="polite"></p>
+      </div>
+    </main>
+  </div>
+  <script src="../assets/js/shared-data.js"></script>
+  <script src="../assets/js/sidebar.js"></script>
+  <script src="../assets/js/psicologo/notas.js"></script>
+</body>
+</html>

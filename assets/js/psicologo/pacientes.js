@@ -401,14 +401,14 @@ function renderPatient(patient) {
 
   card.setAttribute(
     "aria-label",
-    `Abrir histórico de ${patient.name}`
+    `Abrir perfil de ${patient.name}`
   );
 
 
-  function openHistory() {
+  function openProfile() {
 
     window.location.href =
-      `historico.html?paciente=${encodeURIComponent(
+      `paciente-perfil.html?paciente=${encodeURIComponent(
         patient.name
       )}`;
 
@@ -417,7 +417,7 @@ function renderPatient(patient) {
 
   card.addEventListener(
     "click",
-    openHistory
+    openProfile
   );
 
 
@@ -432,7 +432,7 @@ function renderPatient(patient) {
 
         event.preventDefault();
 
-        openHistory();
+        openProfile();
 
       }
 
