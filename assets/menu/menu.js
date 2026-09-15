@@ -15,7 +15,7 @@
      tipo  = "psicologo" | "paciente"
              Se omitido, usa o tipo salvo na sessão.
      ativo = qual item aparece destacado:
-             psicologo: "inicio" | "agenda" | "pacientes" | "perfil" | ""
+             psicologo: "inicio" | "agenda" | "pacientes" | "relatorios" | "perfil" | ""
              paciente : "inicio" | "agendar" | "perfil" | ""
 
    O componente renderiza em LIGHT DOM de forma SÍNCRONA durante o parse,
@@ -64,6 +64,7 @@
       '        ' + item(prefixoPagina + 'home.html', ICON_HOME, 'Início', ativo === 'inicio') + '\n' +
       '        ' + item(prefixoPagina + 'agenda-psicologo.html', ICON_AGENDA, 'Agendar consulta', ativo === 'agenda') + '\n' +
       '        ' + item(prefixoPagina + 'pacientes.html', ICON_PESSOA, 'Meus pacientes', ativo === 'pacientes') + '\n' +
+      '        ' + item(prefixoPagina + 'relatorios.html', ICON_CLIP, 'Relatórios', ativo === 'relatorios') + '\n' +
       '        ' + item(LOGIN_HREF, ICON_SAIR, 'Sair', false, 'nav-item-sair') + '\n' +
       '      </nav>\n\n' +
       '      <a class="sidebar-profile" href="' + perfilHref + '"' + (ativo === 'perfil' ? ' aria-current="page"' : '') + ' aria-label="Editar meu perfil">\n' +
