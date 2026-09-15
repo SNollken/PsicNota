@@ -56,40 +56,8 @@
 
         <header class="patients-header">
 
-          <div class="patients-heading">
-            <h1>Meus pacientes</h1>
-            <span id="patientTotal" class="patients-count">Carregando...</span>
-          </div>
-
-          <div class="header-actions">
-
-            <div class="search-pill">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="11" cy="11" r="7"/>
-                <path d="m21 21-4.3-4.3"/>
-              </svg>
-
-              <label class="sr-only" for="patientSearch">
-                Buscar paciente
-              </label>
-
-              <input
-                id="patientSearch"
-                type="search"
-                autocomplete="off"
-                placeholder="Buscar paciente">
-            </div>
-
-            <a
-              class="btn-primary"
-              href="agenda-psicologo.html">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-              Novo paciente
-            </a>
-
-          </div>
+          <h1>Pacientes</h1>
+          <span id="patientTotal" class="patients-count">Carregando...</span>
 
         </header>
 
@@ -114,13 +82,6 @@
         </div>
 
 
-        <div
-          id="noMatch"
-          class="page-state"
-          hidden>
-          Nenhum paciente encontrado para a busca.
-        </div>
-
         <div id="patientError" class="page-state page-state-error" role="alert" hidden>
           Não foi possível carregar os pacientes. Atualize a página e tente novamente.
         </div>
@@ -133,18 +94,6 @@
           hidden>
           Carregar mais
         </button>
-
-
-        <div
-          id="recentAppointments"
-          class="recent-appointments"
-          hidden>
-        </div>
-
-        <div
-          id="recentEmpty"
-          hidden>
-        </div>
 
       </section>
 
