@@ -24,7 +24,7 @@
 
   <link
     rel="stylesheet"
-    href="../assets/css/psicologo/pacientes.css"
+    href="../assets/css/psicologo/pacientes.css?v=2"
   >
 
   <script src="../assets/menu/menu.js"></script>
@@ -56,7 +56,10 @@
 
         <header class="patients-header">
 
-          <h1>Meus pacientes</h1>
+          <div class="patients-heading">
+            <h1>Meus pacientes</h1>
+            <span id="patientTotal" class="patients-count">Carregando...</span>
+          </div>
 
           <div class="header-actions">
 
@@ -91,24 +94,21 @@
         </header>
 
 
-        <div class="patients-toolbar">
-          <span
-            id="patientTotal"
-            class="patients-count">
-            0 pacientes no total
-          </span>
-        </div>
-
-
         <div
           id="patientList"
-          class="patient-list">
+          class="patient-list"
+          aria-live="polite"
+          aria-busy="true">
+        </div>
+
+        <div id="loadingPatients" class="page-state" role="status">
+          Carregando pacientes...
         </div>
 
 
         <div
           id="emptyPatients"
-          class="empty-state"
+          class="page-state"
           hidden>
           Nenhum paciente cadastrado.
         </div>
@@ -116,16 +116,21 @@
 
         <div
           id="noMatch"
-          class="empty-state"
+          class="page-state"
           hidden>
           Nenhum paciente encontrado para a busca.
+        </div>
+
+        <div id="patientError" class="page-state page-state-error" role="alert" hidden>
+          Não foi possível carregar os pacientes. Atualize a página e tente novamente.
         </div>
 
 
         <button
           id="loadMorePatients"
           class="load-more"
-          type="button">
+          type="button"
+          hidden>
           Carregar mais
         </button>
 
@@ -148,10 +153,10 @@
   </div>
 
 
-  <script src="../assets/js/shared-data.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js"></script>
   <script src="../assets/js/sidebar.js"></script>
-  <script src="../assets/js/psicologo/pacientes.js"></script>
+  <script src="../assets/js/psicologo/pacientes.js?v=2"></script>
 
 </body>
 
