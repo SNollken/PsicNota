@@ -57,7 +57,15 @@
 
           <article class="stat-card">
             <span class="stat-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="4"></circle><path d="M2 21c0-4 3-7 7-7s7 3 7 7"></path><path d="M17 11a3 3 0 1 0 0-6"></path><path d="M22 21c0-3-2-5-5-5"></path></svg>
+              <svg class="patients-icon" viewBox="0 0 24 24">
+  <circle cx="12" cy="7" r="3"></circle>
+  <circle cx="5.5" cy="9" r="2.2"></circle>
+  <circle cx="18.5" cy="9" r="2.2"></circle>
+
+  <path d="M7 19v-1.3c0-3 2.2-5.2 5-5.2s5 2.2 5 5.2V19H7z"></path>
+  <path d="M2 19v-1c0-2.5 1.7-4.3 4-4.3.7 0 1.3.1 1.9.4A7 7 0 0 0 6 19H2z"></path>
+  <path d="M18 19c0-1.9-.7-3.6-1.9-4.9.6-.3 1.2-.4 1.9-.4 2.3 0 4 1.8 4 4.3v1H18z"></path>
+</svg>
             </span>
             <div class="stat-body">
               <span class="stat-label">Pacientes ativos</span>
@@ -93,12 +101,79 @@
           </div>
 
           <div class="home-col">
-            <section class="list-card" aria-labelledby="pendentesTitle">
-              <h2 class="card-title" id="pendentesTitle">Consultas pendentes</h2>
-              <ul class="slot-list" id="pendentesList"></ul>
-              <a class="card-footer-link" href="agenda-psicologo.html">Ver pendências completas <span aria-hidden="true">&rarr;</span></a>
-            </section>
-          </div>
+
+  <section class="list-card" aria-labelledby="pendentesTitle">
+    <h2 class="card-title" id="pendentesTitle">Consultas pendentes</h2>
+    <ul class="slot-list" id="pendentesList"></ul>
+    <a class="card-footer-link" href="agenda-psicologo.html">
+      Ver pendências completas <span aria-hidden="true">&rarr;</span>
+    </a>
+  </section>
+
+
+  <section class="reports-card" aria-labelledby="reportsTitle">
+
+    <h2 class="notes-title" id="reportsTitle">
+      Relatórios Recentes
+    </h2>
+
+    <ul class="reports-list">
+
+      <li class="report-row">
+        <svg viewBox="0 0 24 24">
+          <path d="M6 2h9l5 5v15H6z"></path>
+          <path d="M15 2v6h6"></path>
+          <path d="M9 13h6"></path>
+          <path d="M9 17h6"></path>
+        </svg>
+
+        <div class="report-body">
+          <span class="report-date">09/07/2026</span>
+          <p>Paciente relatou que lorem ipsum lore ipsum lore ipsum...</p>
+        </div>
+
+        <span class="report-chevron">›</span>
+      </li>
+
+
+      <li class="report-row">
+        <svg viewBox="0 0 24 24">
+          <path d="M6 2h9l5 5v15H6z"></path>
+          <path d="M15 2v6h6"></path>
+          <path d="M9 13h6"></path>
+          <path d="M9 17h6"></path>
+        </svg>
+
+        <div class="report-body">
+          <span class="report-date">09/07/2026</span>
+          <p>Paciente relatou que lorem ipsum lore ipsum lore ipsum...</p>
+        </div>
+
+        <span class="report-chevron">›</span>
+      </li>
+
+
+      <li class="report-row">
+        <svg viewBox="0 0 24 24">
+          <path d="M6 2h9l5 5v15H6z"></path>
+          <path d="M15 2v6h6"></path>
+          <path d="M9 13h6"></path>
+          <path d="M9 17h6"></path>
+        </svg>
+
+        <div class="report-body">
+          <span class="report-date">09/07/2026</span>
+          <p>Paciente relatou que lorem ipsum lore ipsum lore ipsum...</p>
+        </div>
+
+        <span class="report-chevron">›</span>
+      </li>
+
+    </ul>
+
+  </section>
+
+</div>
         </div>
       </section>
     </main>
