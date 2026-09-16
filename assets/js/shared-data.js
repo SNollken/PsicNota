@@ -6,7 +6,6 @@
     requests: "psinote.agenda.requests",
     notes: "psinote.agenda.notes",
     reports: "psinote.reports",
-    documents: "psinote.documents",
     profiles: "psinoteProfilesDemo",
     latestProfile: "psinoteProfileDemo",
     session: "psinote.auth.session"
@@ -75,7 +74,6 @@
       write(STORAGE_KEYS.profiles, latest ? [latest] : []);
     }
     if (!Array.isArray(readStorage(localStorage, STORAGE_KEYS.reports, null))) write(STORAGE_KEYS.reports, []);
-    if (!Array.isArray(readStorage(localStorage, STORAGE_KEYS.documents, null))) write(STORAGE_KEYS.documents, []);
   }
 
   function getAppointments() {
@@ -121,15 +119,6 @@
 
   function saveReports(items) {
     write(STORAGE_KEYS.reports, items);
-  }
-
-  function getDocuments() {
-    ensureData();
-    return readStorage(localStorage, STORAGE_KEYS.documents, []);
-  }
-
-  function saveDocuments(items) {
-    write(STORAGE_KEYS.documents, items);
   }
 
   function appointmentNoteKey(appointmentId) {
@@ -239,8 +228,6 @@
     saveNotes,
     getReports,
     saveReports,
-    getDocuments,
-    saveDocuments,
     getAppointmentNote,
     setAppointmentNote,
     hasAppointmentNote,
