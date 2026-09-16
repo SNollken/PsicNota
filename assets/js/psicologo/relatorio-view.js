@@ -26,7 +26,6 @@ const elements = {
   docPatient: document.querySelector('#docPatient'),
   docMeta: document.querySelector('#docMeta'),
   docMood: document.querySelector('#docMood'),
-  docAttachments: document.querySelector('#docAttachments'),
   docDraftBadge: document.querySelector('#docDraftBadge'),
   docBlocks: document.querySelector('#docBlocks'),
   printButton: document.querySelector('#printButton'),
@@ -79,22 +78,6 @@ function render() {
   elements.docMood.hidden = !mood;
   if (mood) {
     elements.docMood.textContent = `Emoção do dia: ${mood.emoji} ${mood.label}`;
-  }
-
-  const attachments = Array.isArray(report.attachments) ? report.attachments : [];
-  elements.docAttachments.hidden = attachments.length === 0;
-  elements.docAttachments.replaceChildren();
-  if (attachments.length > 0) {
-    const label = document.createElement('span');
-    label.className = 'report-block-label';
-    label.textContent = attachments.length === 1 ? 'Anexo' : 'Anexos';
-    elements.docAttachments.append(label);
-    attachments.forEach((file) => {
-      const chip = document.createElement('span');
-      chip.className = 'attach-chip attach-chip-static';
-      chip.textContent = `📎 ${file.name}`;
-      elements.docAttachments.append(chip);
-    });
   }
 
   elements.docBlocks.replaceChildren();

@@ -1,7 +1,7 @@
 /* ==========================================================================
    psicologo/relatorio-view.css — CSS da tela "Visualização de relatório"
    do psicólogo. Importa relatorios.css (que embute menu.css, tokens,
-   topbar, botões, badges, avisos, report-block/attach-chip) e adiciona
+   topbar, botões, badges, avisos, report-block) e adiciona
    só as regras da página: cartão do documento com acento roxo (#6750A4),
    pill de humor, badge "Rascunho", estado não-encontrado e impressão.
    ========================================================================== */
@@ -85,11 +85,6 @@ body { background: var(--blue-25); }
 .doc-blocks { margin-top: 28px; }
 
 .doc-blocks .report-block:last-child { margin-bottom: 0; }
-
-/* Anexos injetados pelo JS: label + chips */
-.doc-attachments { margin-top: 26px; }
-
-.doc-attachments .report-block-label { margin-bottom: 10px; }
 
 /* =========================
    RELATÓRIO NÃO ENCONTRADO
