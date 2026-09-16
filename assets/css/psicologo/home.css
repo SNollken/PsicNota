@@ -501,6 +501,16 @@ svg {
 
   border-radius:12px;
 
+  text-decoration:none;
+
+  color:inherit;
+
+  transition:background-color 120ms ease-out;
+}
+
+
+.report-row:hover {
+  background:var(--blue-200);
 }
 
 
