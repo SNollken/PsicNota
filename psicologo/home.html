@@ -32,7 +32,7 @@
       <section class="home-panel">
         <header class="home-head">
           <div class="home-head-text">
-            <h1 class="home-title">Olá, <span id="homeUserName">Juberto</span>!</h1>
+            <h1 class="home-title">Olá, <span id="homeUserName">...</span>!</h1>
             <p class="home-subtitle">Bem-vindo ao seu painel. Aqui você acompanha sua agenda, pacientes e atendimentos.
             </p>
           </div>
@@ -62,7 +62,7 @@
             </span>
             <div class="stat-body">
               <span class="stat-label">Consultas hoje</span>
-              <span class="stat-value" id="statConsultas">5</span>
+              <span class="stat-value" id="statConsultas">-</span>
               <a class="stat-link" href="agenda-psicologo.html">Ver agenda <span aria-hidden="true">&rarr;</span></a>
             </div>
           </article>
@@ -81,7 +81,7 @@
             </span>
             <div class="stat-body">
               <span class="stat-label">Pacientes ativos</span>
-              <span class="stat-value" id="statPacientes">28</span>
+              <span class="stat-value" id="statPacientes">-</span>
               <a class="stat-link" href="pacientes.html">Ver pacientes <span aria-hidden="true">&rarr;</span></a>
             </div>
           </article>
@@ -94,7 +94,7 @@
             </span>
             <div class="stat-body">
               <span class="stat-label">Anotações</span>
-              <span class="stat-value" id="statAnotacoes">12</span>
+              <span class="stat-value" id="statAnotacoes">-</span>
               <a class="stat-link" href="notas.html">Ver anotações <span aria-hidden="true">&rarr;</span></a>
             </div>
           </article>
@@ -136,95 +136,7 @@
     </h2>
 
 
-    <ul class="reports-list">
-
-      <li>
-        <a class="report-row" href="relatorios.html">
-
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M6 2h9l5 5v15H6z"></path>
-            <path d="M15 2v6h6"></path>
-            <path d="M9 13h6"></path>
-            <path d="M9 17h6"></path>
-          </svg>
-
-          <div class="report-body">
-            <span class="report-date">
-              09/07/2026
-            </span>
-
-            <p>
-              Paciente relatou que lorem ipsum lore ipsum lore ipsum...
-            </p>
-          </div>
-
-          <span class="report-chevron">
-            ›
-          </span>
-
-        </a>
-      </li>
-
-
-
-      <li>
-        <a class="report-row" href="relatorios.html">
-
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M6 2h9l5 5v15H6z"></path>
-            <path d="M15 2v6h6"></path>
-            <path d="M9 13h6"></path>
-            <path d="M9 17h6"></path>
-          </svg>
-
-          <div class="report-body">
-            <span class="report-date">
-              09/07/2026
-            </span>
-
-            <p>
-              Paciente relatou que lorem ipsum lore ipsum lore ipsum...
-            </p>
-          </div>
-
-          <span class="report-chevron">
-            ›
-          </span>
-
-        </a>
-      </li>
-
-
-
-      <li>
-        <a class="report-row" href="relatorios.html">
-
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M6 2h9l5 5v15H6z"></path>
-            <path d="M15 2v6h6"></path>
-            <path d="M9 13h6"></path>
-            <path d="M9 17h6"></path>
-          </svg>
-
-          <div class="report-body">
-            <span class="report-date">
-              09/07/2026
-            </span>
-
-            <p>
-              Paciente relatou que lorem ipsum lore ipsum lore ipsum...
-            </p>
-          </div>
-
-          <span class="report-chevron">
-            ›
-          </span>
-
-        </a>
-      </li>
-
-
-    </ul>
+    <ul class="reports-list" id="relatoriosRecentesList"></ul>
 
   </section>
 
@@ -234,7 +146,8 @@
     </main>
   </div>
 
-  <script src="../assets/js/shared-data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js"></script>
   <script src="../assets/js/sidebar.js"></script>
   <script src="../assets/js/psicologo/home.js"></script>
 </body>
