@@ -449,7 +449,7 @@ svg {
   .slot-link { grid-template-columns: 50px minmax(0, 1fr) auto; }
   .slot-mode { display: none; }
 }
-<<<<<<< HEAD
+
 
 /* =========================
    RELATÓRIOS RECENTES
@@ -566,5 +566,4 @@ svg {
   color:var(--blue-800);
 
 }
-=======
->>>>>>> 3dea018b5289afdaaf3eee67d61a1a34250dac46
+
