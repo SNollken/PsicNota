@@ -38,13 +38,6 @@ const elements = {
   noteMoodPicker: document.querySelector('#noteMoodPicker'),
   finishAppointmentButton: document.querySelector('#finishAppointmentButton'),
   saveNoteButton: document.querySelector('#saveNoteButton'),
-  attachDocForm: document.querySelector('#attachDocForm'),
-  docType: document.querySelector('#docType'),
-  docName: document.querySelector('#docName'),
-  patientDocs: document.querySelector('#patientDocs'),
-  emptyDocs: document.querySelector('#emptyDocs'),
-  toast: document.querySelector('#toast'),
-  toastMessage: document.querySelector('#toastMessage'),
   psychologistName: document.querySelector('#psychologistName'),
   psychologistAvatar: document.querySelector('#psychologistAvatar'),
   sidebar: document.querySelector('.sidebar'),
@@ -55,17 +48,8 @@ const elements = {
 const fullDateFormatter = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
 const shortDateFormatter = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-let toastTimeout = null;
 let appointment = null;
 let currentMood = null;
-
-function showToast(message, isError = false) {
-  window.clearTimeout(toastTimeout);
-  elements.toastMessage.textContent = message;
-  elements.toast.classList.toggle('toast-error', isError);
-  elements.toast.hidden = false;
-  toastTimeout = window.setTimeout(() => { elements.toast.hidden = true; }, 3800);
-}
 
 function getInitials(name) {
   return String(name).split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toUpperCase();
@@ -124,57 +108,6 @@ function saveNotes() {
   window.setTimeout(() => { elements.noteSaveStatus.textContent = ''; }, 1800);
 }
 
-function renderDocuments() {
-  const documents = data.getDocuments()
-    .filter((doc) => doc.patient === appointment.patient)
-    .sort((a, b) => new Date(b.attachedAt) - new Date(a.attachedAt));
-
-  elements.patientDocs.replaceChildren();
-  elements.emptyDocs.hidden = documents.length > 0;
-
-  documents.forEach((doc) => {
-    const item = document.createElement('div');
-    item.className = 'doc-item';
-    const info = document.createElement('div');
-    info.className = 'doc-item-info';
-    const title = document.createElement('strong');
-    title.textContent = doc.name;
-    const meta = document.createElement('span');
-    meta.textContent = `${doc.type === 'laudo' ? 'Laudo' : 'Receita'} · anexado em ${shortDateFormatter.format(new Date(doc.attachedAt))}`;
-    info.append(title, meta);
-
-    const badge = document.createElement('span');
-    badge.className = doc.type === 'laudo' ? 'badge badge-laudos' : 'badge badge-receita';
-    badge.textContent = doc.type === 'laudo' ? 'Laudo' : 'Receita';
-
-    item.append(info, badge);
-    elements.patientDocs.append(item);
-  });
-}
-
-function handleAttachDoc(event) {
-  event.preventDefault();
-  const name = elements.docName.value.trim();
-  if (!name) {
-    showToast('Informe o nome do documento.', true);
-    elements.docName.focus();
-    return;
-  }
-
-  const documents = data.getDocuments();
-  documents.push({
-    id: data.createId('doc'),
-    patient: appointment.patient,
-    type: elements.docType.value,
-    name,
-    attachedAt: new Date().toISOString()
-  });
-  data.saveDocuments(documents);
-
-  elements.docName.value = '';
-  showToast(`${elements.docType.value === 'laudo' ? 'Laudo' : 'Receita'} anexado para ${appointment.patient}.`);
-}
-
 function init() {
   renderHeader();
 
@@ -192,7 +125,6 @@ function init() {
   elements.consultaContent.hidden = false;
   renderAppointmentInfo();
   renderNotes();
-  renderDocuments();
 
   elements.saveNoteButton.addEventListener('click', saveNotes);
   elements.finishAppointmentButton.addEventListener('click', () => {
@@ -205,7 +137,6 @@ function init() {
       renderMoodPicker();
     });
   });
-  elements.attachDocForm.addEventListener('submit', handleAttachDoc);
 }
 
 elements.mobileMenu.addEventListener('click', () => {
@@ -216,7 +147,6 @@ elements.logoutLink?.addEventListener('click', () => data.clearSession());
 window.addEventListener('storage', () => {
   if (appointment) {
     renderNotes();
-    renderDocuments();
   }
 });
 
