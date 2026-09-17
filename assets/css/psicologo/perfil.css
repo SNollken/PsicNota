@@ -75,11 +75,11 @@ svg {
   grid-column: 2;
 
   width: 100%;
-  max-width: 1460px;
+  max-width: none;
 
-  margin: 0 auto;
+  margin: 0;
 
-  padding: 18px 26px 40px;
+  padding: 18px 28px 40px 22px;
 }
 
 .mobile-menu {
@@ -95,19 +95,21 @@ svg {
   align-items: center;
   justify-content: space-between;
 
-  gap: 24px;
+  min-height: 185px;
 
-  padding: 24px 28px;
+  gap: 28px;
+
+  padding: 16px 74px 16px 27px;
 
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
 
-  background: var(--blue-100);
+  background: #F3FBFE;
 }
 
 .profile-avatar {
-  width: 118px;
-  height: 118px;
+  width: 135px;
+  height: 137px;
 
   display: grid;
   place-items: center;
@@ -116,7 +118,7 @@ svg {
 
   overflow: hidden;
 
-  border-radius: 50%;
+  border-radius: 0;
 
   background: linear-gradient(145deg, #1F637A, #174E61);
   background-position: center;
@@ -222,13 +224,13 @@ h1 {
 
   gap: 10px;
 
-  width: 200px;
+  width: 185px;
 
   flex: 0 0 auto;
 }
 
 .button {
-  min-height: 42px;
+  min-height: 45px;
 
   display: inline-flex;
   align-items: center;
