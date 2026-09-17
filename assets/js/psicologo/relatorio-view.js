@@ -44,7 +44,9 @@ const BLOCKS = [
   { key: 'proxima', label: 'Encaminhamentos' }
 ];
 
-function render() {
+async function render() {
+  await data.syncRemoteData();
+
   const report = data.getReports().find((item) => item.id === reportId);
   if (!reportId || !report) {
     elements.notFound.hidden = false;
@@ -118,5 +120,5 @@ elements.mobileMenu.addEventListener('click', () => {
 });
 elements.logoutLink?.addEventListener('click', () => data.clearSession());
 
-render();
+void render();
 }

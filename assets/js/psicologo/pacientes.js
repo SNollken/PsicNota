@@ -1180,25 +1180,43 @@ async function loadPatientsFromDatabase() {
     return;
   }
 
-  const { data: databasePatients, error } = await client
-    .from("perfis")
-    .select("id, nome_completo, nome_social, email")
-    .eq("papel", "paciente")
-    .order("nome_completo", { ascending: true });
+  const [perfisQuery] = await Promise.all([
+    client
+      .from("perfis")
+      .select("id, nome_completo, nome_social, email")
+      .eq("papel", "paciente")
+      .order("nome_completo", { ascending: true }),
+    data.syncRemoteData()
+  ]);
+
+  const { data: databasePatients, error } = perfisQuery;
 
   if (error) {
     throw error;
   }
 
-  allPatients = (databasePatients || []).map((patient) => ({
-    name: patient.nome_social || patient.nome_completo || patient.email || "Paciente",
-    next: null,
-    last: null,
-    avatarDataUrl: null
-  }));
+  const statsByName = new Map(
+    buildPatients().map((patient) => [patient.name, patient])
+  );
+
+  allPatients = (databasePatients || []).map((patient) => {
+    const name = patient.nome_social || patient.nome_completo || patient.email || "Paciente";
+    const stats = statsByName.get(name) || {};
+    return {
+      name,
+      next: stats.next || null,
+      last: stats.last || null,
+      total: stats.total || 0,
+      notes: stats.notes || 0,
+      reports: stats.reports || 0,
+      avatarDataUrl: null
+    };
+  });
 
   visiblePatients = PATIENTS_PER_PAGE;
   renderPatients();
+  renderRecentAppointments();
+  renderHeader();
 }
 
 void loadPatientsFromDatabase().catch((error) => {

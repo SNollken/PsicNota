@@ -12,8 +12,6 @@
   --line: #DCE6EA;
   --white: #ffffff;
 
-  --sidebar-width: 280px;
-
   --radius-lg: 24px;
   --radius-md: 12px;
 
@@ -75,11 +73,11 @@ svg {
   grid-column: 2;
 
   width: 100%;
-  max-width: 1460px;
+  max-width: none;
 
-  margin: 0 auto;
+  margin: 0;
 
-  padding: 18px 26px 40px;
+  padding: 18px 34px 40px 16px;
 }
 
 .mobile-menu {
@@ -95,9 +93,11 @@ svg {
   align-items: center;
   justify-content: space-between;
 
-  gap: 24px;
+  min-height: 185px;
 
-  padding: 24px 28px;
+  gap: 28px;
+
+  padding: 14px 10px 14px 22px;
 
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
@@ -106,8 +106,8 @@ svg {
 }
 
 .profile-avatar {
-  width: 118px;
-  height: 118px;
+  width: 154px;
+  height: 150px;
 
   display: grid;
   place-items: center;
@@ -116,7 +116,7 @@ svg {
 
   overflow: hidden;
 
-  border-radius: 50%;
+  border-radius: 0;
 
   background: linear-gradient(145deg, #1F637A, #174E61);
   background-position: center;
@@ -171,10 +171,13 @@ h1 {
 }
 
 .profile-contacts {
+  flex: 0 0 auto;
+  min-width: 0;
+
   display: grid;
   gap: 5px;
 
-  margin-top: 10px;
+  align-content: center;
 }
 
 .profile-contact {
@@ -216,15 +219,23 @@ h1 {
   flex-direction: column;
   align-items: stretch;
 
-  gap: 10px;
+  gap: 16px;
 
-  width: 200px;
+  width: 190px;
 
   flex: 0 0 auto;
 }
 
+/* O design do cabeçalho mostra apenas "Editar perfil" e "Alterar senha";
+   troca de foto, remoção e logout ficam por conta do menu lateral. */
+.profile-actions > .button-photo,
+.profile-actions > .button-remove-photo,
+.profile-actions > .button-logout {
+  display: none;
+}
+
 .button {
-  min-height: 42px;
+  min-height: 48px;
 
   display: inline-flex;
   align-items: center;
@@ -234,7 +245,7 @@ h1 {
 
   padding: 0 16px;
 
-  border-radius: 9px;
+  border-radius: 8px;
 
   font-size: 13px;
   font-weight: 700;
@@ -262,28 +273,28 @@ h1 {
 
 .button-edit,
 .button-save {
-  border: 1px solid var(--blue-800);
+  border: 1px solid var(--blue-700);
 
-  background: var(--blue-800);
+  background: var(--blue-700);
   color: #ffffff;
 }
 
 .button-edit:hover,
 .button-save:hover {
-  background: var(--blue-700);
-  border-color: var(--blue-700);
+  background: var(--blue-800);
+  border-color: var(--blue-800);
 }
 
 .button-photo {
-  border: 1px solid var(--blue-800);
+  border: 1px solid var(--blue-700);
 
-  background: var(--blue-800);
+  background: var(--blue-700);
   color: #ffffff;
 }
 
 .button-photo:hover {
-  background: var(--blue-700);
-  border-color: var(--blue-700);
+  background: var(--blue-800);
+  border-color: var(--blue-800);
 }
 
 .button-password {
@@ -379,11 +390,11 @@ h1 {
 .profile-panel {
   display: grid;
 
-  gap: 22px;
+  gap: 30px;
 
   margin-top: 14px;
 
-  padding: 24px;
+  padding: 38px 6px 28px;
 
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
@@ -397,9 +408,9 @@ h1 {
 
 .profile-section {
   display: grid;
-  gap: 20px;
+  gap: 16px;
 
-  padding: 24px 26px 26px;
+  padding: 29px 26px 25px;
 
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
@@ -503,7 +514,7 @@ select {
   width: 100%;
 
   min-width: 0;
-  height: 46px;
+  height: 36px;
 
   padding: 0 12px;
 

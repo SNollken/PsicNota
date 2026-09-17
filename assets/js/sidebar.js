@@ -12,6 +12,9 @@
    carrega sob demanda, então a foto aparece em TODAS as telas sem precisar
    editar cada HTML. */
 (function () {
+  if (window.__psicSidebarLoaded) return;
+  window.__psicSidebarLoaded = true;
+
   const data = window.PsiNoteData;
 
   // Prefixo dos assets resolvido a partir do próprio sidebar.js, para montar o

@@ -326,8 +326,9 @@ function renderAppointments(){
 
 
 
-function init(){
+async function init(){
 
+  await data.syncRemoteData();
 
   renderPatient();
 
@@ -343,4 +344,4 @@ function init(){
 
 
 
-init();
+void init();

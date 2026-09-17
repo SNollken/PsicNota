@@ -9,10 +9,16 @@
   const tabs = ["overview", "appointments", "notes", "reports", "details"];
   const dateFormat = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
   const now = new Date();
-  const appointments = data.getAppointments().filter(item => item.patient === patientName && item.status !== "cancelled").sort((a, b) => new Date(`${b.date}T${b.time || "00:00"}`) - new Date(`${a.date}T${a.time || "00:00"}`));
-  const reports = data.getReports().filter(item => item.patient === patientName).sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
+  let appointments = [];
+  let reports = [];
   let profile = {};
-  const notes = appointments.filter(item => data.hasAppointmentNote(item.id)).map(item => ({ appointment: item, text: data.getAppointmentNote(item.id) }));
+  let notes = [];
+
+  function loadLocalRecords() {
+    appointments = data.getAppointments().filter(item => item.patient === patientName && item.status !== "cancelled").sort((a, b) => new Date(`${b.date}T${b.time || "00:00"}`) - new Date(`${a.date}T${a.time || "00:00"}`));
+    reports = data.getReports().filter(item => item.patient === patientName).sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
+    notes = appointments.filter(item => data.hasAppointmentNote(item.id)).map(item => ({ appointment: item, text: data.getAppointmentNote(item.id) }));
+  }
 
   function formatDate(value) {
     if (!value) return "Data não informada";
@@ -155,7 +161,13 @@
       next.focus();
     });
   });
-  if (!patientName) render();
-  else void loadProfile().catch(showProfileError);
+  async function init() {
+    await data.syncRemoteData();
+    loadLocalRecords();
+    if (!patientName) render();
+    else void loadProfile().catch(showProfileError);
+  }
+
+  void init();
 })();
 

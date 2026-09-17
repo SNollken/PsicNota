@@ -222,11 +222,13 @@ h1 {
   flex-direction: column;
   align-items: stretch;
 
-  gap: 10px;
+  gap: 12px;
 
   width: 185px;
 
   flex: 0 0 auto;
+
+  transform: translateY(4px);
 }
 
 .button {
@@ -290,6 +292,12 @@ h1 {
 .button-photo:hover {
   background: var(--blue-700);
   border-color: var(--blue-700);
+}
+
+.profile-actions > .button-photo,
+.profile-actions > .button-remove-photo,
+.profile-actions > .button-logout {
+  display: none;
 }
 
 .button-password {
@@ -385,11 +393,11 @@ h1 {
 .profile-panel {
   display: grid;
 
-  gap: 22px;
+  gap: 30px;
 
   margin-top: 14px;
 
-  padding: 24px;
+  padding: 37px 6px 28px;
 
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
@@ -403,14 +411,18 @@ h1 {
 
 .profile-section {
   display: grid;
-  gap: 20px;
+  gap: 16px;
 
-  padding: 24px 26px 26px;
+  padding: 24px 26px 25px;
 
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
 
   background: var(--blue-100);
+}
+
+.profile-section:nth-child(3) {
+  margin-bottom: -20px;
 }
 
 .section-heading {
@@ -506,7 +518,7 @@ select {
   width: 100%;
 
   min-width: 0;
-  height: 46px;
+  height: 37px;
 
   padding: 0 12px;
 

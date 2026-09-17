@@ -98,18 +98,27 @@ function renderNotes() {
   elements.noteUpdatedAt.hidden = !(note || currentMood);
 }
 
-function saveNotes() {
+async function saveNotes() {
   const text = elements.sessionNote.value;
   data.setAppointmentNote(appointment.id, text);
   data.setAppointmentMood(appointment.id, currentMood || '');
-  elements.noteSaveStatus.textContent = 'Salvo';
+
+  if (text.trim() || currentMood) {
+    const saved = await data.saveNoteToDb(appointment.id, text, currentMood || null);
+    elements.noteSaveStatus.textContent = saved ? 'Salvo' : 'Salvo localmente (sem conexão)';
+  } else {
+    elements.noteSaveStatus.textContent = 'Salvo';
+  }
+
   elements.noteUpdatedAt.textContent = 'Anotações salvas';
   elements.noteUpdatedAt.hidden = false;
   window.setTimeout(() => { elements.noteSaveStatus.textContent = ''; }, 1800);
 }
 
-function init() {
+async function init() {
   renderHeader();
+
+  await data.syncRemoteData();
 
   if (!appointmentId) {
     elements.notFound.hidden = false;
@@ -126,9 +135,9 @@ function init() {
   renderAppointmentInfo();
   renderNotes();
 
-  elements.saveNoteButton.addEventListener('click', saveNotes);
-  elements.finishAppointmentButton.addEventListener('click', () => {
-    saveNotes();
+  elements.saveNoteButton.addEventListener('click', () => void saveNotes());
+  elements.finishAppointmentButton.addEventListener('click', async () => {
+    await saveNotes();
     window.location.href = `historico.html?paciente=${encodeURIComponent(appointment.patient)}`;
   });
   elements.noteMoodPicker.querySelectorAll('.mood-option').forEach((option) => {
@@ -150,5 +159,5 @@ window.addEventListener('storage', () => {
   }
 });
 
-init();
+void init();
 }

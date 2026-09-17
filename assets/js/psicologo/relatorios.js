@@ -124,6 +124,11 @@ function findAppointment(appointmentId) {
   return data.getAppointments().find((item) => item.id === appointmentId);
 }
 
+function findPatientIdByName(name) {
+  const normalized = String(name).trim().toLowerCase();
+  return data.getAppointments().find((item) => String(item.patient).trim().toLowerCase() === normalized)?.patientId || null;
+}
+
 function appointmentLabel(appointment) {
   if (!appointment) return 'Sem consulta vinculada';
   return `${fullDateFormatter.format(data.fromDateKey(appointment.date))} às ${appointment.time} · ${appointment.patient}`;
@@ -282,8 +287,9 @@ function renderList() {
     deleteButton.type = 'button';
     deleteButton.className = 'button button-secondary button-compact';
     deleteButton.textContent = 'Excluir';
-    deleteButton.addEventListener('click', () => {
+    deleteButton.addEventListener('click', async () => {
       if (!window.confirm(`Excluir o relatório de ${report.patient}? Essa ação não pode ser desfeita.`)) return;
+      await data.deleteReportFromDb(report.id);
       data.saveReports(data.getReports().filter((item) => item.id !== report.id));
       renderList();
       showToast('Relatório excluído.');
@@ -363,7 +369,7 @@ function openEditor(report, appointmentId) {
   }
 }
 
-function persistReport(status) {
+async function persistReport(status) {
   const patient = elements.reportPatient.value.trim();
   if (!patient) {
     showToast('Informe o nome do paciente antes de salvar.', true);
@@ -379,8 +385,11 @@ function persistReport(status) {
   const reports = data.getReports();
   const existing = editReportId ? reports.find((item) => item.id === editReportId) : null;
   const appointmentId = elements.reportAppointment.value || null;
+  const appointment = appointmentId ? findAppointment(appointmentId) : null;
+
   const payload = {
     patient,
+    patientId: appointment?.patientId || existing?.patientId || findPatientIdByName(patient),
     appointmentId,
     mood: currentMood,
     blocks,
@@ -389,14 +398,25 @@ function persistReport(status) {
     updatedAt: new Date().toISOString()
   };
 
+  let report;
+
   if (existing) {
     Object.assign(existing, payload);
+    report = existing;
   } else {
-    reports.push({
+    report = {
       id: data.createId('report'),
       createdAt: new Date().toISOString(),
       ...payload
-    });
+    };
+    reports.push(report);
+  }
+
+  const savedId = await data.saveReportToDb(report);
+  if (savedId) {
+    report.id = savedId;
+  } else if (window.PsicNotaSupabase) {
+    showToast('Não foi possível salvar no banco. O relatório ficou salvo localmente.', true);
   }
 
   data.saveReports(reports);
@@ -404,21 +424,23 @@ function persistReport(status) {
   return true;
 }
 
-function handleReportSubmit(event) {
+async function handleReportSubmit(event) {
   event.preventDefault();
-  if (!persistReport('final')) return;
+  if (!(await persistReport('final'))) return;
   showToast('Relatório salvo. Ele já aparece no histórico do paciente.');
   window.location.href = 'relatorios.html';
 }
 
-function handleSaveDraft() {
-  if (!persistReport('rascunho')) return;
+async function handleSaveDraft() {
+  if (!(await persistReport('rascunho'))) return;
   showToast('Rascunho salvo. Você pode retomá-lo quando quiser.');
   window.location.href = 'relatorios.html';
 }
 
-function init() {
+async function init() {
   renderHeader();
+
+  await data.syncRemoteData();
 
   elements.reportForm.addEventListener('submit', handleReportSubmit);
   elements.saveDraftButton.addEventListener('click', handleSaveDraft);
@@ -517,4 +539,4 @@ elements.mobileMenu.addEventListener('click', () => {
 });
 elements.logoutLink?.addEventListener('click', () => data.clearSession());
 
-init();
+void init();

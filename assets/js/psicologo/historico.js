@@ -685,8 +685,9 @@ elements.mobile?.addEventListener(
 
 
 
-function init() {
+async function init() {
 
+  await data.syncRemoteData();
 
   renderPsychologist();
 
@@ -706,4 +707,4 @@ function init() {
 }
 
 
-init();
+void init();

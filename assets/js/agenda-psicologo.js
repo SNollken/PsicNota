@@ -82,6 +82,7 @@ let requests = data.getRequests();
 let patientOptions = [];
 
 let usingRemoteRequests = false;
+let usingRemoteAppointments = false;
 let psychologistUid = null;
 
 const now0 = new Date();
@@ -431,7 +432,7 @@ function handleMarkAppointment() {
     return;
   }
 
-  appointments.push({
+  const newAppointment = {
     id: data.createId("appointment"),
     patient: option.name,
     patientId: option.id || null,
@@ -442,12 +443,34 @@ function handleMarkAppointment() {
     observation: "",
     status: "confirmed",
     source: "psychologist"
-  });
+  };
+
+  if (supabaseClient && usingRemoteAppointments) {
+    void persistMarkedAppointment(newAppointment);
+    return;
+  }
+
+  appointments.push(newAppointment);
   data.saveAppointments(appointments);
 
   closePopup(ui.schedulePopup);
   renderAll();
   showToast(`Consulta de ${option.name} marcada para ${popupSelectedTime}.`);
+}
+
+async function persistMarkedAppointment(newAppointment) {
+  const createdId = await data.persistAppointmentToDb(newAppointment);
+  if (!createdId) {
+    showToast("Não foi possível marcar a consulta no banco.", true);
+    return;
+  }
+  newAppointment.id = createdId;
+  appointments.push(newAppointment);
+  data.saveAppointments(appointments);
+
+  closePopup(ui.schedulePopup);
+  renderAll();
+  showToast(`Consulta de ${newAppointment.patient} marcada para ${newAppointment.time}.`);
 }
 
 /* =========================================================
@@ -558,7 +581,7 @@ async function approveRequest(requestId) {
     });
     data.saveAppointments(appointments);
 
-    await loadRemoteRequests();
+    await Promise.all([loadRemoteRequests(), loadRemoteAppointments()]);
     showToast(`Solicitação de ${request.patient} aprovada para ${request.time}.`);
     return;
   }
@@ -724,10 +747,24 @@ function renderCompletedPopup(dateKey = null) {
   completed.forEach((item) => ui.completedList.append(createAppointmentCard(item, false)));
 }
 
-function deleteAppointment(appointmentId) {
+async function deleteAppointment(appointmentId) {
   const appointment = appointments.find((item) => item.id === appointmentId);
   if (!appointment) return;
   if (!window.confirm(`Cancelar a consulta de ${appointment.patient} às ${appointment.time}?`)) return;
+
+  if (supabaseClient && usingRemoteAppointments) {
+    const cancelled = await data.cancelAppointmentInDb(appointmentId);
+    if (!cancelled) {
+      showToast("Não foi possível cancelar a consulta no banco.", true);
+      return;
+    }
+    appointment.status = "cancelled";
+    data.saveAppointments(appointments);
+    renderAll();
+    showToast("Consulta cancelada. O horário voltou a ficar disponível.");
+    return;
+  }
+
   appointment.status = "cancelled";
   data.saveAppointments(appointments);
   renderAll();
@@ -800,12 +837,27 @@ async function loadRemoteRequests() {
   return true;
 }
 
+async function loadRemoteAppointments() {
+  if (!supabaseClient) return false;
+
+  const remote = await data.loadAppointmentsFromDb();
+  if (!remote) return false;
+
+  appointments = remote;
+  usingRemoteAppointments = true;
+
+  renderAll();
+  return true;
+}
+
 /* =========================================================
    RENDER GERAL
    ========================================================= */
 
 function renderAll() {
-  appointments = data.getAppointments();
+  if (!usingRemoteAppointments) {
+    appointments = data.getAppointments();
+  }
   if (!usingRemoteRequests) {
     requests = data.getRequests();
   }
@@ -881,4 +933,5 @@ window.addEventListener("storage", renderAll);
 
 renderAll();
 
+void loadRemoteAppointments();
 void loadRemoteRequests();

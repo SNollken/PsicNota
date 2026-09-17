@@ -189,6 +189,304 @@
     });
   }
 
+  /* =========================================================
+     SINCRONIZAÇÃO COM O BANCO (Supabase)
+     Em sessão autenticada o banco é a fonte de verdade e o
+     localStorage vira cache (write-through). Sem cliente ou sem
+     sessão, o cache local continua a fonte (modo demonstração).
+     ========================================================= */
+
+  function getSupabaseClient() {
+    return window.PsicNotaSupabase || null;
+  }
+
+  async function getAuthUser() {
+    const client = getSupabaseClient();
+    if (!client) return null;
+    try {
+      const { data, error } = await client.auth.getUser();
+      if (error || !data?.user) return null;
+      return data.user;
+    } catch {
+      return null;
+    }
+  }
+
+  function displayNameFromProfile(profile) {
+    return profile?.nome_social || profile?.nome_completo || "";
+  }
+
+  function normalizeAppointment(row) {
+    return {
+      id: row.id,
+      patientId: row.paciente_id,
+      psychologistId: row.psicologo_id,
+      patient: displayNameFromProfile(row.paciente) || "Paciente",
+      psychologist: displayNameFromProfile(row.psicologo) || "Psicólogo",
+      date: row.data,
+      time: String(row.horario || "").slice(0, 5),
+      duration: row.duracao_min || 50,
+      mode: capitalizeFirst(row.modalidade),
+      observation: row.observacao || "",
+      status: row.status,
+      source: row.origem || "psychologist",
+      requestId: row.solicitacao_id || null
+    };
+  }
+
+  function normalizeReport(row) {
+    return {
+      id: row.id,
+      patientId: row.paciente_id,
+      patient: displayNameFromProfile(row.paciente) || "Paciente",
+      appointmentId: row.consulta_id || null,
+      mood: row.humor || null,
+      blocks: {
+        queixa: row.bloco_queixa || "",
+        intervencao: row.bloco_intervencao || "",
+        evolucao: row.bloco_evolucao || "",
+        proxima: row.bloco_encaminhamentos || ""
+      },
+      freeText: row.texto_livre || "",
+      status: row.status,
+      createdAt: row.criado_em,
+      updatedAt: row.atualizado_em
+    };
+  }
+
+  const APPOINTMENT_SELECT = (
+    "id, psicologo_id, paciente_id, data, horario, duracao_min, modalidade,"
+    + " status, observacao, origem, solicitacao_id,"
+    + " paciente:perfis!consultas_paciente_id_fkey(nome_completo, nome_social),"
+    + " psicologo:perfis!consultas_psicologo_id_fkey(nome_completo, nome_social)"
+  );
+
+  async function fetchPapel(client, uid) {
+    const { data, error } = await client.from("perfis").select("papel").eq("id", uid).single();
+    if (error || !data) return null;
+    return data.papel || null;
+  }
+
+  async function loadAppointmentsFromDb() {
+    const client = getSupabaseClient();
+    if (!client) return null;
+
+    const user = await getAuthUser();
+    if (!user) return null;
+
+    const papel = await fetchPapel(client, user.id);
+    if (!papel) return null;
+
+    const { data: rows, error } = await client
+      .from("consultas")
+      .select(APPOINTMENT_SELECT)
+      .eq(papel === "psicologo" ? "psicologo_id" : "paciente_id", user.id)
+      .order("data", { ascending: true })
+      .order("horario", { ascending: true });
+
+    if (error) return null;
+
+    const items = (rows || []).map(normalizeAppointment);
+    saveAppointments(items);
+    return items;
+  }
+
+  async function loadNotesFromDb() {
+    const client = getSupabaseClient();
+    if (!client) return null;
+
+    const user = await getAuthUser();
+    if (!user) return null;
+
+    const { data: rows, error } = await client
+      .from("notas")
+      .select("consulta_id, conteudo, humor")
+      .eq("psicologo_id", user.id);
+
+    if (error) return null;
+
+    const notes = {};
+    (rows || []).forEach((row) => {
+      const text = String(row.conteudo || "").trim();
+      if (text) notes[appointmentNoteKey(row.consulta_id)] = text;
+      const mood = String(row.humor || "").trim();
+      if (mood) notes[appointmentMoodKey(row.consulta_id)] = mood;
+    });
+
+    saveNotes(notes);
+    return notes;
+  }
+
+  async function loadReportsFromDb() {
+    const client = getSupabaseClient();
+    if (!client) return null;
+
+    const user = await getAuthUser();
+    if (!user) return null;
+
+    const { data: rows, error } = await client
+      .from("relatorios")
+      .select(
+        "id, psicologo_id, paciente_id, consulta_id, humor, status, bloco_queixa,"
+        + " bloco_intervencao, bloco_evolucao, bloco_encaminhamentos, texto_livre,"
+        + " criado_em, atualizado_em,"
+        + " paciente:perfis!relatorios_paciente_id_fkey(nome_completo, nome_social)"
+      )
+      .eq("psicologo_id", user.id)
+      .order("atualizado_em", { ascending: false });
+
+    if (error) return null;
+
+    const items = (rows || []).map(normalizeReport);
+    saveReports(items);
+    return items;
+  }
+
+  async function syncRemoteData() {
+    const client = getSupabaseClient();
+    if (!client) return null;
+
+    const user = await getAuthUser();
+    if (!user) return null;
+
+    const papel = await fetchPapel(client, user.id);
+    if (!papel) return null;
+
+    const appointments = await loadAppointmentsFromDb();
+
+    let notes = null;
+    let reports = null;
+    if (papel === "psicologo") {
+      [notes, reports] = await Promise.all([loadNotesFromDb(), loadReportsFromDb()]);
+    }
+
+    return { papel, appointments, notes, reports };
+  }
+
+  /* =========================================================
+     ESCRITAS NO BANCO (Supabase)
+     Todas as mutações de dados clínicos passam por aqui. Sem
+     cliente/sessão, caem no fallback do localStorage (demo).
+     ========================================================= */
+
+  function modalidadeToDb(mode) {
+    return String(mode || "").toLowerCase().startsWith("presencial") ? "presencial" : "online";
+  }
+
+  async function persistAppointmentToDb(appointment) {
+    const client = getSupabaseClient();
+    if (!client) return null;
+
+    const user = await getAuthUser();
+    if (!user || !appointment.patientId) return null;
+
+    const payload = {
+      psicologo_id: user.id,
+      paciente_id: appointment.patientId,
+      data: appointment.date,
+      horario: appointment.time,
+      duracao_min: appointment.duration || 50,
+      modalidade: modalidadeToDb(appointment.mode),
+      status: appointment.status || "confirmed",
+      observacao: appointment.observation || "",
+      origem: appointment.source || "psychologist",
+      solicitacao_id: appointment.requestId || null
+    };
+
+    const { data, error } = await client.from("consultas").insert(payload).select("id").single();
+    if (error) return null;
+    return data.id;
+  }
+
+  async function cancelAppointmentInDb(appointmentId) {
+    const client = getSupabaseClient();
+    if (!client) return false;
+
+    const user = await getAuthUser();
+    if (!user) return false;
+
+    const { error, count } = await client
+      .from("consultas")
+      .update({ status: "cancelled" }, { count: "exact" })
+      .eq("id", appointmentId)
+      .eq("psicologo_id", user.id)
+      .neq("status", "cancelled");
+
+    return !error && Boolean(count);
+  }
+
+  async function saveNoteToDb(consultaId, conteudo, humor) {
+    const client = getSupabaseClient();
+    if (!client) return false;
+
+    const user = await getAuthUser();
+    if (!user) return false;
+
+    const { error } = await client.from("notas").upsert(
+      {
+        consulta_id: consultaId,
+        psicologo_id: user.id,
+        conteudo: String(conteudo || ""),
+        humor: humor || null
+      },
+      { onConflict: "consulta_id" }
+    );
+
+    return !error;
+  }
+
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+  async function saveReportToDb(report) {
+    const client = getSupabaseClient();
+    if (!client) return null;
+
+    const user = await getAuthUser();
+    if (!user) return null;
+
+    if (!report.patientId) return null;
+
+    const payload = {
+      psicologo_id: user.id,
+      paciente_id: report.patientId,
+      consulta_id: report.appointmentId || null,
+      humor: report.mood || null,
+      status: report.status === "final" ? "final" : "rascunho",
+      bloco_queixa: report.blocks?.queixa || "",
+      bloco_intervencao: report.blocks?.intervencao || "",
+      bloco_evolucao: report.blocks?.evolucao || "",
+      bloco_encaminhamentos: report.blocks?.proxima || "",
+      texto_livre: report.freeText || ""
+    };
+
+    if (UUID_RE.test(String(report.id))) payload.id = report.id;
+
+    const { data, error } = await client
+      .from("relatorios")
+      .upsert(payload, { onConflict: "id" })
+      .select("id")
+      .single();
+
+    if (error) return null;
+    return data.id;
+  }
+
+  async function deleteReportFromDb(reportId) {
+    const client = getSupabaseClient();
+    if (!client) return false;
+
+    const user = await getAuthUser();
+    if (!user) return false;
+
+    const { error, count } = await client
+      .from("relatorios")
+      .delete({ count: "exact" })
+      .eq("id", reportId)
+      .eq("psicologo_id", user.id);
+
+    return !error && Boolean(count);
+  }
+
   function formatRequestMoment(isoString, withSeconds = true) {
     const options = {
       day: "2-digit",
@@ -199,6 +497,11 @@
     };
     if (withSeconds) options.second = "2-digit";
     return new Intl.DateTimeFormat("pt-BR", options).format(new Date(isoString));
+  }
+
+  function capitalizeFirst(value) {
+    const text = String(value ?? "");
+    return text ? text.charAt(0).toLocaleUpperCase("pt-BR") + text.slice(1) : text;
   }
 
   function escapeHtml(value) {
@@ -238,6 +541,15 @@
     getSession,
     setSession,
     clearSession,
+    loadAppointmentsFromDb,
+    loadNotesFromDb,
+    loadReportsFromDb,
+    syncRemoteData,
+    persistAppointmentToDb,
+    cancelAppointmentInDb,
+    saveNoteToDb,
+    saveReportToDb,
+    deleteReportFromDb,
     formatRequestMoment,
     escapeHtml
   };

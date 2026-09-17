@@ -350,8 +350,9 @@ link.href =
 
 
 
-function init(){
+async function init(){
 
+await data.syncRemoteData();
 
 renderPatient();
 
@@ -370,4 +371,4 @@ renderReports();
 
 
 
-init();
+void init();

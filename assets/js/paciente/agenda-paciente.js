@@ -683,6 +683,8 @@ let requests =
 
 let usingRemoteRequests = false;
 
+let usingRemoteAppointments = false;
+
 
 const today =
   new Date();
@@ -2755,8 +2757,10 @@ if (
    ========================================================= */
 
 function refreshData() {
-  appointments =
-    patientData.getAppointments();
+  if (!usingRemoteAppointments) {
+    appointments =
+      patientData.getAppointments();
+  }
 
 
   if (!usingRemoteRequests) {
@@ -2866,6 +2870,39 @@ async function loadRemoteRequests() {
 }
 
 
+async function loadRemoteAppointments() {
+  const authUser =
+    await getAuthUser();
+
+  if (!authUser) {
+    return false;
+  }
+
+
+  const remote =
+    await patientData.loadAppointmentsFromDb();
+
+  if (!remote) {
+    return false;
+  }
+
+
+  currentPatient.id = authUser.id;
+
+  appointments = remote;
+
+  usingRemoteAppointments = true;
+
+
+  renderCalendar();
+
+  renderSummary();
+
+
+  return true;
+}
+
+
 /* =========================================================
    INICIALIZAÇÃO
    ========================================================= */
@@ -2875,5 +2912,9 @@ renderPatientProfile();
 renderCalendar();
 
 renderSummary();
+
+void loadRemoteAppointments();
+
+void loadRemoteRequests();
 
 void loadRemoteRequests();

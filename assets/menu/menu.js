@@ -29,6 +29,12 @@
 (function () {
   'use strict';
 
+  /* Caminho base dos assets resolvido a partir deste próprio menu.js, usado
+     para injetar o sidebar.js (carregador da foto de perfil do banco) sem
+     depender de cada página incluir a tag. */
+  var menuSrc = (document.currentScript && document.currentScript.src) || '';
+  var assetsBase = menuSrc ? menuSrc.slice(0, menuSrc.lastIndexOf('menu/')) : '../assets/';
+
   var ICON_AGENDA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"/></svg>';
   var ICON_CLIP = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>';
   var ICON_HOME = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.6 12 4l8 6.6V20a1 1 0 0 1-1 1h-4.6v-6.2H9.6V21H5a1 1 0 0 1-1-1v-10.4Z"/></svg>';
@@ -188,6 +194,18 @@
         event.preventDefault();
         sair();
       });
+    }
+
+    /* Carrega o sidebar.js, que troca o avatar ilustrado pela foto real do
+       perfil vinda do banco (perfis.avatar_url -> Supabase Storage). Como o
+       <psic-menu> aparece em todas as telas, a foto passa a carregar em
+       qualquer página, sem precisar incluir a tag em cada HTML. A flag evita
+       injetar o script mais de uma vez por documento. */
+    if (!window.__psicMenuSidebar) {
+      window.__psicMenuSidebar = true;
+      var sidebarScript = document.createElement('script');
+      sidebarScript.src = assetsBase + 'js/sidebar.js';
+      document.head.appendChild(sidebarScript);
     }
   };
 
