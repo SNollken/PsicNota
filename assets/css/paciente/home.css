@@ -66,16 +66,26 @@ svg {
     min-height: 100vh;
 }
 
-.main-content {
-    grid-column: 2;
+.main-content{
 
-    min-width: 0;
+    grid-column:2;
 
-    padding: 22px 32px 30px;
+    min-width:0;
 
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    min-height:100vh;
+
+    padding:40px 50px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.app-shell{
+    overflow:hidden;
 }
 
 .mobile-menu {
@@ -87,24 +97,23 @@ svg {
    PAINEL PRINCIPAL
 ========================= */
 
-.home-panel {
-    width: 100%;
-    max-width: 1020px;
+.home-panel{
 
-    min-height: 370px;
+    width:100%;
 
-    background: var(--bg);
+    max-width:none;
 
-    border: 1px solid var(--border);
+    height:720px;
 
-    border-radius: 24px;
+    background:var(--bg);
 
-    padding: 20px 40px 28px;
+    border:1px solid var(--border);
 
-    display: flex;
-    flex-direction: column;
+    border-radius:28px;
+
+    padding:40px 50px;
+
 }
-
 
 /* =========================
    CABEÇALHO
@@ -171,9 +180,15 @@ svg {
     background: var(--soft);
 }
 
-.header-actions svg {
-    width: 20px;
-    height: 20px;
+.header-actions svg{
+
+    width:24px;
+    height:24px;
+
+    overflow:visible;
+
+    stroke-width:2;
+
 }
 
 
@@ -181,18 +196,19 @@ svg {
    ÁREA DOS DOIS CARDS
 ========================= */
 
-.dashboard-content {
-    width: 100%;
+.dashboard-content{
 
-    display: grid;
+    width:100%;
 
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    display:grid;
 
-    gap: 16px;
+    grid-template-columns:1fr 1fr;
 
-    margin-top: 30px;
+    gap:24px;
+
+    margin-top:45px;
+
 }
-
 
 /* =========================
    CARDS
@@ -200,17 +216,19 @@ svg {
 
 .next-card,
 .future-card {
-    min-width: 0;
 
-    height: 145px;
+    min-width:0;
 
-    background: var(--card);
+    height:500px;
 
-    border: 1px solid var(--border);
+    background:var(--card);
 
-    border-radius: 18px;
+    border:1px solid var(--border);
 
-    padding: 17px 20px;
+    border-radius:18px;
+
+    padding:26px 30px;
+
 }
 
 
@@ -624,11 +642,11 @@ svg {
     }
 
     .home-header h1 {
-        font-size: 20px;
+        font-size: 28px;
     }
 
     .home-header p {
-        font-size: 11px;
+        font-size: 14px;
     }
 
     .header-actions {
@@ -641,12 +659,18 @@ svg {
     }
 
     .dashboard-content {
-        grid-template-columns: 1fr;
 
-        gap: 12px;
+    width:100%;
 
-        margin-top: 24px;
-    }
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:22px;
+
+    margin-top:40px;
+
+}
 
     .next-card,
     .future-card {

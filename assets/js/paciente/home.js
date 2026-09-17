@@ -43,7 +43,13 @@ item.patientId === profile?.id &&
 item.status !== "cancelled"
 );
 
+console.log("Perfil atual:", profile);
+console.log("ID paciente:", profile?.id);
 
+console.log(
+"Todas consultas:",
+data.getAppointments()
+);
 
 const today = data.toDateKey(new Date());
 
