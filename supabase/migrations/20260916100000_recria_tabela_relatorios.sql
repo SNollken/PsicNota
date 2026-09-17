@@ -33,8 +33,9 @@ alter table public.relatorios enable row level security;
 
 drop policy if exists relatorios_psicologo_all on public.relatorios;
 create policy relatorios_psicologo_all on public.relatorios
-  to authenticated
+  as permissive
   for all
+  to authenticated
   using (
     psicologo_id = auth.uid()
     and exists (

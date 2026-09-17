@@ -119,7 +119,7 @@ begin
   delete from public.disponibilidades where psicologo_id = psi;
 
   insert into public.disponibilidades (psicologo_id, dia_semana, horario)
-  select psi, d.dia, d.horario
+  select psi, d.dia::smallint, d.horario::time
   from (values
     (1, '09:00'), (1, '10:00'), (1, '14:00'), (1, '15:00'),
     (2, '09:00'), (2, '10:00'),
