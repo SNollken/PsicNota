@@ -7,10 +7,10 @@
 
   <meta
     name="description"
-    content="Lista de pacientes do psicólogo no PsicNota."
+    content="Pacientes do PsicNota."
   >
 
-  <title>PsicNota · Meus pacientes</title>
+  <title>PsicNota · Pacientes</title>
   <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
   <link rel="icon" type="image/x-icon" href="../favicon.ico">
 
@@ -24,7 +24,7 @@
 
   <link
     rel="stylesheet"
-    href="../assets/css/psicologo/pacientes.css?v=2"
+    href="../assets/css/psicologo/pacientes.css"
   >
 
   <script src="../assets/menu/menu.js"></script>
@@ -54,84 +54,70 @@
 
       <section class="patients-page">
 
+
         <header class="patients-header">
 
-          <div class="patients-heading">
-            <h1>Meus pacientes</h1>
-            <span id="patientTotal" class="patients-count">Carregando...</span>
-          </div>
+          <h1>PACIENTES</h1>
 
-          <div class="header-actions">
-
-            <div class="search-pill">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="11" cy="11" r="7"/>
-                <path d="m21 21-4.3-4.3"/>
-              </svg>
-
-              <label class="sr-only" for="patientSearch">
-                Buscar paciente
-              </label>
-
-              <input
-                id="patientSearch"
-                type="search"
-                autocomplete="off"
-                placeholder="Buscar paciente">
-            </div>
-
-            <a
-              class="btn-primary"
-              href="agenda-psicologo.html">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-              Novo paciente
-            </a>
-
-          </div>
+          <span
+            id="patientTotal"
+            class="patients-count">
+            0 pacientes
+          </span>
 
         </header>
 
 
-        <div
-          id="patientList"
-          class="patient-list"
-          aria-live="polite"
-          aria-busy="true">
+        <div class="patients-search-wrapper">
+
+          <label
+            class="sr-only"
+            for="patientSearch">
+            Buscar paciente
+          </label>
+
+          <input
+            id="patientSearch"
+            type="search"
+            autocomplete="off"
+            placeholder="Buscar paciente">
+
         </div>
 
-        <div id="loadingPatients" class="page-state" role="status">
-          Carregando pacientes...
+
+        <div
+          id="patientList"
+          class="patient-list">
         </div>
 
 
         <div
           id="emptyPatients"
-          class="page-state"
+          class="empty-state"
           hidden>
+
           Nenhum paciente cadastrado.
+
         </div>
 
 
         <div
           id="noMatch"
-          class="page-state"
+          class="empty-state"
           hidden>
-          Nenhum paciente encontrado para a busca.
-        </div>
 
-        <div id="patientError" class="page-state page-state-error" role="alert" hidden>
-          Não foi possível carregar os pacientes. Atualize a página e tente novamente.
+          Nenhum paciente encontrado.
+
         </div>
 
 
         <button
           id="loadMorePatients"
           class="load-more"
-          type="button"
-          hidden>
+          type="button">
+
           Carregar mais
+
         </button>
 
 
@@ -146,6 +132,7 @@
           hidden>
         </div>
 
+
       </section>
 
     </main>
@@ -153,10 +140,9 @@
   </div>
 
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/shared-data.js"></script>
   <script src="../assets/js/sidebar.js"></script>
-  <script src="../assets/js/psicologo/pacientes.js?v=2"></script>
+  <script src="../assets/js/psicologo/pacientes.js"></script>
 
 </body>
 

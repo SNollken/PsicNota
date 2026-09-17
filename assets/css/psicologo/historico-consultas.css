@@ -1,0 +1,261 @@
+@import url("./historico.css");
+
+
+/* =================================
+   CONSULTAS DO PACIENTE
+================================= */
+
+
+.consultas-container{
+
+  background:var(--blue-50);
+
+  border-radius:22px;
+
+  padding:18px;
+
+  margin-top:18px;
+
+  min-height:435px;
+
+}
+
+
+
+#appointmentsList{
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:16px;
+
+}
+
+
+
+
+.consulta-item{
+
+  height:92px;
+
+  background:#F8FCFE;
+
+  border:1px solid #DCE6EA;
+
+  border-radius:18px;
+
+  padding:14px 24px;
+
+  display:grid;
+
+  grid-template-columns:60px 1fr auto auto 35px;
+
+  align-items:center;
+
+  gap:25px;
+
+}
+
+
+
+
+.consulta-item > svg{
+
+  width:40px;
+
+  height:40px;
+
+  stroke:#111827;
+
+  stroke-width:2;
+
+}
+
+
+
+
+
+.consulta-data{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:14px;
+
+}
+
+
+
+
+
+.consulta-data strong{
+
+  color:var(--blue-700);
+
+  font-size:28px;
+
+  font-weight:700;
+
+}
+
+
+
+
+
+.consulta-data span{
+
+  color:var(--ink);
+
+  font-size:24px;
+
+}
+
+
+
+
+
+.consulta-action{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:10px;
+
+  font-size:20px;
+
+  white-space:nowrap;
+
+}
+
+
+
+
+
+.consulta-action svg{
+
+  width:32px;
+
+  height:32px;
+
+  stroke:#111827;
+
+}
+
+
+
+
+
+.consulta-arrow{
+
+  font-size:48px;
+
+  color:var(--blue-700);
+
+  line-height:1;
+
+  text-decoration:none;
+
+  display:flex;
+
+  align-items:center;
+
+}
+
+
+
+
+
+.consulta-data strong{
+
+  color:var(--blue-700);
+
+  font-size:22px;
+
+  font-weight:700;
+
+}
+
+
+
+
+
+.consulta-data span{
+
+  color:var(--ink);
+
+  font-size:20px;
+
+}
+
+
+
+
+
+.consulta-action{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:8px;
+
+  font-size:18px;
+
+  color:var(--ink);
+
+}
+
+
+
+
+
+.consulta-action svg{
+
+  width:28px;
+
+  height:28px;
+
+}
+
+
+
+
+
+.consulta-arrow{
+
+  text-decoration:none;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+}
+
+
+
+
+
+@media(max-width:1100px){
+
+
+  .consulta-item{
+
+    grid-template-columns:45px 1fr;
+
+  }
+
+
+  .consulta-action,
+  .consulta-arrow{
+
+    display:none;
+
+  }
+
+
+}

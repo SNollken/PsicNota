@@ -4,84 +4,323 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Histórico das consultas do paciente no PsicNota">
-  <title>PsicNota | Histórico das consultas</title>
-  <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
-  <link rel="icon" type="image/x-icon" href="../favicon.ico">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>PsicNota · Perfil do paciente</title>
 
   <link rel="stylesheet" href="../assets/css/psicologo/historico.css">
+
   <script src="../assets/menu/menu.js"></script>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
 
   <div class="app-shell">
 
-    <psic-menu tipo="psicologo" ativo="pacientes"></psic-menu>
+    <psic-menu tipo="psicologo" ativo=""></psic-menu>
+
 
     <main class="main-content">
 
-      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">
+      <button class="mobile-menu" type="button">
         ☰
       </button>
 
-      <header class="topbar">
-        <div class="page-heading">
-          <p class="eyebrow">Histórico</p>
-          <h1>Histórico das consultas</h1>
-        </div>
 
-        <div class="topbar-actions">
-          <div class="patient-chip" id="patientChip" hidden>
-            <span class="patient-chip-avatar" id="patientChipAvatar" aria-hidden="true"></span>
-            <div>
-              <strong id="patientChipName"></strong>
-              <span>Paciente</span>
-            </div>
-          </div>
-
-          <a class="button button-secondary button-compact" href="pacientes.html">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M15 6l-6 6 6 6" />
-            </svg>
-            Meus pacientes
-          </a>
-        </div>
+      <header class="page-title">
+        <h1 id="patientTitle">
+          PERFIL DE PACIENTE
+        </h1>
       </header>
 
-      <!-- LISTA DE CONSULTAS -->
-      <section class="history-card" id="historyCard" aria-labelledby="historyCardTitle">
 
-        <div class="history-card-head">
-          <h2 id="historyCardTitle">Consultas registradas</h2>
-          <span class="history-count" id="historyCount"></span>
+      <section class="patient-card">
+
+        <div class="patient-info">
+
+          <div class="patient-avatar">
+            <img id="patientAvatar" src="../assets/img/avatar-paciente.png" class="patient-photo">
+          </div>
+
+
+          <div>
+            <h2 id="patientName">
+              Janaina Silva
+            </h2>
+
+            <p id="patientMeta">
+              29 anos • Ela / Dela
+            </p>
+          </div>
+
         </div>
 
-        <div id="historyRows"></div>
 
-        <nav class="history-pager" id="historyPager" aria-label="Paginação do histórico"></nav>
+
+        <div class="patient-contact">
+
+          <p>
+            <i data-lucide="mail"></i>
+            <span id="patientEmail">janaina@gmail.com</span>
+          </p>
+
+
+          <p>
+            <i data-lucide="phone"></i>
+            <span id="patientPhone">+55 (61) 99999 - 0000</span>
+          </p>
+
+
+          <p>
+            <i data-lucide="map-pin"></i>
+            <span id="patientLocation">Brasília, DF, Brasil</span>
+          </p>
+
+        </div>
+
+
+
+        <div class="patient-actions">
+
+          <button class="primary">
+            Notas rápidas
+          </button>
+
+
+          <button class="outline">
+            Agendar consulta
+          </button>
+
+        </div>
+
 
       </section>
 
-      <!-- ESTADO VAZIO (variante -1 do design) -->
-      <section class="history-empty" id="historyEmpty" hidden>
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Z" />
-          <path d="M8 2v4m8-4v4M3 9h18" />
-        </svg>
-        <strong>Nenhuma consulta por aqui</strong>
-        <p id="historyEmptyText">
-          Quando houver consultas registradas para este paciente, elas aparecem nesta página em ordem cronológica.
-        </p>
+
+
+      <nav class="patient-tabs">
+
+  <a class="active" href="historico.html?paciente=Janaina%20Silva">
+    Visão Geral
+  </a>
+
+
+  <a href="historico-consultas.html?paciente=Janaina%20Silva">
+    Consultas
+  </a>
+
+
+  <a href="historico-notas.html?paciente=Janaina%20Silva">
+    Historico Notas
+  </a>
+
+
+  <a href="historico-relatorios.html?paciente=Janaina%20Silva">
+    Relatórios
+  </a>
+
+
+  <a href="paciente-perfil.html?paciente=Janaina%20Silva">
+    Dados completos
+  </a>
+
+</nav>
+
+
+
+      <section class="appointment-grid">
+
+
+        <article class="small-card">
+
+          <h3>
+            Próxima consulta
+          </h3>
+
+
+          <div class="appointment-box">
+
+            <div class="calendar-icon">
+              <i data-lucide="calendar"></i>
+            </div>
+
+            <div class="appointment-info">
+
+              <strong id="nextDate">
+                09/07/2026
+              </strong>
+
+              <span id="nextInfo">
+                14:30 • Online
+              </span>
+
+            </div>
+
+            <b class="appointment-arrow">
+              ›
+            </b>
+
+          </div>
+
+        </article>
+
+
+
+        <article class="small-card">
+
+          <h3>
+            Última consulta
+          </h3>
+
+
+          <div class="appointment-box">
+
+            <div class="calendar-icon">
+              <i data-lucide="calendar"></i>
+            </div>
+
+            <div class="appointment-info">
+
+              <strong id="lastDate">
+                09/07/2026
+              </strong>
+
+              <span id="lastInfo">
+                14:30 • Online
+              </span>
+
+            </div>
+
+            <b class="appointment-arrow">
+              ›
+            </b>
+
+          </div>
+
+        </article>
+
+
       </section>
+
+
+
+
+
+      <section class="content-grid">
+
+
+
+        <article class="list-card">
+
+
+          <h2>
+            Notas Rápidas
+          </h2>
+
+
+          <div id="notesList">
+
+
+            <div class="list-item">
+
+              <span class="icon">
+              </span>
+
+
+              <div>
+
+                <strong>
+                  09/07/2026
+                </strong>
+
+
+                <p>
+                  Paciente relatou que lorem ipsum lorem ipsum...
+                </p>
+
+              </div>
+
+
+              <b>
+                ›
+              </b>
+
+
+            </div>
+
+
+
+          </div>
+
+
+        </article>
+
+
+
+
+
+
+        <article class="list-card">
+
+
+          <h2>
+            Relatórios Recentes
+          </h2>
+
+
+          <div id="reportsList">
+
+
+            <div class="list-item">
+
+
+              <span class="icon">
+                📄
+              </span>
+
+
+              <div>
+
+                <strong>
+                  09/07/2026
+                </strong>
+
+
+                <p>
+                  Paciente relatou que lorem ipsum lorem ipsum...
+                </p>
+
+
+              </div>
+
+
+              <b>
+                ›
+              </b>
+
+
+            </div>
+
+
+
+          </div>
+
+
+        </article>
+
+
+
+      </section>
+
+
 
     </main>
 
+
   </div>
+
+
 
   <script src="../assets/js/shared-data.js"></script>
   <script src="../assets/js/sidebar.js"></script>
