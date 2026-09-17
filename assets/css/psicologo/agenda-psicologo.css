@@ -748,8 +748,10 @@ body.modal-open { overflow: hidden; }
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: -18px;
+  margin-right: -18px;
   padding: 0;
-  border-bottom: 1px solid #64727c;
+  border-bottom: 1px solid var(--line);
 }
 
 .psic-view .agenda-topbar h1 {
