@@ -365,6 +365,71 @@ body{
 
 }
 
+.patient-details{
+  margin-top:18px;
+  padding:26px;
+  background:var(--blue-50);
+  border-radius:22px;
+}
+
+.details-heading{
+  margin-bottom:22px;
+}
+
+.details-heading h2,
+.details-card h3{
+  margin:0;
+  color:var(--ink);
+}
+
+.details-heading h2{
+  font-size:30px;
+}
+
+.details-heading p{
+  margin:6px 0 0;
+  color:var(--muted);
+  font-size:17px;
+}
+
+.details-grid{
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  gap:18px;
+}
+
+.details-card{
+  padding:22px;
+  background:var(--white);
+  border:1px solid var(--line);
+  border-radius:18px;
+}
+
+.details-card h3{
+  font-size:21px;
+}
+
+.details-card dl{
+  margin:18px 0 0;
+}
+
+.details-card dl div + div{
+  margin-top:16px;
+}
+
+.details-card dt{
+  color:var(--muted);
+  font-size:14px;
+}
+
+.details-card dd{
+  margin:4px 0 0;
+  color:var(--ink);
+  font-size:17px;
+  font-weight:600;
+  overflow-wrap:anywhere;
+}
+
 
 
 
