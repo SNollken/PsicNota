@@ -1049,84 +1049,6 @@ input[readonly] {
   line-height: 1;
 }
 
-/* anexos do relatório */
-
-.attach-area {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  min-width: 0;
-}
-
-.attach-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.attach-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  max-width: 280px;
-  padding: 6px 10px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--white);
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #111827;
-}
-
-.attach-chip strong {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.attach-chip small {
-  color: #64727C;
-  font-weight: 600;
-}
-
-.attach-chip-icon {
-  flex: 0 0 auto;
-}
-
-.attach-chip-remove {
-  flex: 0 0 auto;
-  width: 20px;
-  height: 20px;
-  display: grid;
-  place-items: center;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: transparent;
-  color: #64727C;
-  font-size: 15px;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.attach-chip-remove:hover {
-  background: var(--danger-bg);
-  color: var(--danger);
-}
-
-.attach-chip-static {
-  margin: 0 8px 8px 0;
-}
-
-.attach-note {
-  width: 100%;
-  margin: 0;
-  color: #64727C;
-  font-size: 11px;
-  font-weight: 600;
-}
-
 .report-draft-badge {
   margin-left: 8px;
   vertical-align: middle;
@@ -1137,15 +1059,6 @@ input[readonly] {
   color: var(--blue-800);
   font-size: 14px;
   font-weight: 700;
-}
-
-.report-document-attachments {
-  margin-bottom: 18px;
-}
-
-.report-document-attachments .report-block-label {
-  display: block;
-  margin-bottom: 8px;
 }
 
 /* relatório renderizado (visualização) */
@@ -1301,7 +1214,7 @@ input[readonly] {
 /* ==========================================================================
    EDITOR DE RELATÓRIO (design "Relatorio Psicologo")
    Topbar com título centrado, linha consulta + humor, painel de escrita
-   azul-claro com toolbar rica, rodapé com dropbox tracejado de anexos.
+   azul-claro com toolbar rica e rodapé com ações.
    ========================================================================== */
 
 .report-editor-page { background: var(--blue-25); }
@@ -1566,7 +1479,7 @@ input[readonly] {
 .report-legacy-fields { display: none; }
 
 /* -------------------------
-   RODAPÉ: ANEXOS + AÇÕES
+   RODAPÉ: AÇÕES
 ------------------------- */
 
 .report-editor-footer {
@@ -1576,48 +1489,6 @@ input[readonly] {
   flex-wrap: wrap;
   margin-top: 20px;
 }
-
-.report-attachments-area {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  flex: 1;
-  min-width: 280px;
-}
-
-.report-attach-dropbox {
-  display: grid;
-  place-items: center;
-  gap: 8px;
-  width: 300px;
-  min-height: 96px;
-  border: 1.5px dashed var(--blue-800);
-  border-radius: 12px;
-  background: repeating-linear-gradient(45deg, rgba(228, 246, 252, 0.6) 0 6px, transparent 6px 12px);
-  color: var(--blue-800);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-.report-attach-dropbox svg {
-  width: 26px;
-  height: 26px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.report-editor-footer .attach-chips {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.report-editor-footer .attach-chip-icon { color: #6750A4; }
 
 .report-save-actions {
   display: flex;
@@ -1670,8 +1541,6 @@ input[readonly] {
     flex-direction: column;
     align-items: stretch;
   }
-
-  .report-attach-dropbox { width: 100%; }
 
   .report-save-actions { margin-left: 0; }
 

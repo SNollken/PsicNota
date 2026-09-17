@@ -442,89 +442,6 @@ h1 {
   white-space: nowrap;
 }
 
-/* Documentos */
-.doc-form {
-  display: grid;
-  grid-template-columns: 150px minmax(0, 1fr) auto;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-
-.doc-form select,
-.doc-form input {
-  min-height: 40px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--white);
-  color: var(--ink);
-  padding: 0 12px;
-  font-size: 13px;
-}
-
-.doc-list {
-  display: grid;
-  gap: 10px;
-}
-
-.doc-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  background: var(--white);
-  border-radius: 14px;
-  padding: 12px 16px;
-}
-
-.doc-item-info { min-width: 0; }
-
-.doc-item-info strong {
-  display: block;
-  color: var(--ink);
-  font-size: 13px;
-  font-weight: 700;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.doc-item-info span {
-  display: block;
-  margin-top: 2px;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 12px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
-.badge-laudos {
-  background: var(--blue-150);
-  color: var(--blue-800);
-}
-
-.badge-receita {
-  background: var(--ok-bg);
-  color: var(--ok-ink);
-}
-
-.doc-empty {
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 600;
-  background: var(--white);
-  border-radius: 14px;
-  padding: 12px 16px;
-}
-
 /* Rodapé do card */
 .consulta-footer {
   display: flex;
@@ -565,29 +482,6 @@ h1 {
 }
 
 /* =========================
-   TOAST
-========================= */
-
-.toast {
-  position: fixed;
-  right: 26px;
-  bottom: 26px;
-  z-index: 60;
-  max-width: 340px;
-  padding: 12px 18px;
-  border-radius: 14px;
-  background: var(--blue-800);
-  color: var(--white);
-  font-size: 13px;
-  font-weight: 700;
-  box-shadow: 0 12px 30px rgba(17, 24, 39, 0.22);
-}
-
-.toast.toast-error {
-  background: var(--cancel-ink);
-}
-
-/* =========================
    RESPONSIVO
 ========================= */
 
@@ -616,6 +510,5 @@ h1 {
   .consulta-card { padding: 6px 16px 20px; border-radius: 26px; }
   .consulta-section { grid-template-columns: 1fr; gap: 12px; }
   .info-grid { grid-template-columns: 1fr; }
-  .doc-form { grid-template-columns: 1fr; }
   .not-found-card { border-radius: 26px; }
 }

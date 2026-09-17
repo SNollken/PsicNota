@@ -286,7 +286,7 @@ function renderAppointments(){
 
 
 
-      <a 
+      <a
         class="consulta-arrow"
         href="consulta.html?id=${item.id}&paciente=${encodeURIComponent(patientName)}"
       >

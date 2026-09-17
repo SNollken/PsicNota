@@ -39,10 +39,6 @@ const elements = {
   blockProxima: document.querySelector('#blockProxima'),
   freeText: document.querySelector('#freeText'),
   moodPicker: document.querySelector('#moodPicker'),
-  attachButton: document.querySelector('#attachButton'),
-  attachInput: document.querySelector('#attachInput'),
-  attachChips: document.querySelector('#attachChips'),
-  attachNote: document.querySelector('#attachNote'),
   saveDraftButton: document.querySelector('#saveDraftButton'),
   draftStatus: document.querySelector('#draftStatus'),
   toast: document.querySelector('#toast'),
@@ -77,7 +73,6 @@ function moodInfo(key) {
 }
 
 let currentMood = null;
-let currentAttachments = [];
 
 function getFreeText() {
   return elements.freeText.isContentEditable
@@ -98,46 +93,6 @@ function renderMoodPicker() {
     const selected = option.dataset.mood === currentMood;
     option.classList.toggle('selected', selected);
     option.setAttribute('aria-checked', String(selected));
-  });
-}
-
-function formatFileSize(bytes) {
-  if (!Number.isFinite(bytes) || bytes <= 0) return '';
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-function renderAttachments() {
-  elements.attachChips.replaceChildren();
-  if (elements.attachNote) elements.attachNote.hidden = currentAttachments.length > 0;
-  currentAttachments.forEach((file) => {
-    const chip = document.createElement('span');
-    chip.className = 'attach-chip';
-    const icon = document.createElement('span');
-    icon.className = 'attach-chip-icon';
-    icon.setAttribute('aria-hidden', 'true');
-    icon.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"></path><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"></path></svg>';
-    const name = document.createElement('strong');
-    name.textContent = file.name;
-    const size = formatFileSize(file.size);
-    if (size) {
-      const sizeEl = document.createElement('small');
-      sizeEl.textContent = size;
-      name.append(' ', sizeEl);
-    }
-    const remove = document.createElement('button');
-    remove.type = 'button';
-    remove.className = 'attach-chip-remove';
-    remove.setAttribute('aria-label', `Remover anexo ${file.name}`);
-    remove.textContent = '×';
-    remove.addEventListener('click', () => {
-      currentAttachments = currentAttachments.filter((item) => item.id !== file.id);
-      renderAttachments();
-      scheduleDraftSave();
-    });
-    chip.append(icon, name, remove);
-    elements.attachChips.append(chip);
   });
 }
 
@@ -203,7 +158,6 @@ function saveDraft() {
     patient: elements.reportPatient.value,
     appointmentId: elements.reportAppointment.value,
     mood: currentMood,
-    attachments: currentAttachments,
     blocks: {
       queixa: elements.blockQueixa.value,
       intervencao: elements.blockIntervencao.value,
@@ -243,9 +197,7 @@ function loadDraftIfMatches() {
   if (!draft || draft.contextId !== draftContextId()) return false;
   elements.reportPatient.value = draft.patient || elements.reportPatient.value;
   currentMood = draft.mood || null;
-  currentAttachments = Array.isArray(draft.attachments) ? draft.attachments : [];
   renderMoodPicker();
-  renderAttachments();
   if (draft.blocks) {
     elements.blockQueixa.value = draft.blocks.queixa || '';
     elements.blockIntervencao.value = draft.blocks.intervencao || '';
@@ -310,9 +262,6 @@ function renderList() {
       : 'Sem consulta vinculada';
     const mood = moodInfo(report.mood);
     if (mood) metaText += ` · ${mood.emoji} ${mood.label}`;
-    const attachmentCount = Array.isArray(report.attachments) ? report.attachments.length : 0;
-    if (attachmentCount === 1) metaText += ' · 1 anexo';
-    if (attachmentCount > 1) metaText += ` · ${attachmentCount} anexos`;
     meta.textContent = metaText;
     titleWrap.append(meta);
 
@@ -383,11 +332,7 @@ function openEditor(report, appointmentId) {
   currentMood = report?.mood
     || (targetAppointmentId ? data.getAppointmentMood(targetAppointmentId) || null : null)
     || null;
-  currentAttachments = Array.isArray(report?.attachments)
-    ? report.attachments.map((item) => ({ ...item }))
-    : [];
   renderMoodPicker();
-  renderAttachments();
   elements.blockQueixa.value = report?.blocks?.queixa || '';
   elements.blockIntervencao.value = report?.blocks?.intervencao || '';
   elements.blockEvolucao.value = report?.blocks?.evolucao || '';
@@ -438,7 +383,6 @@ function persistReport(status) {
     patient,
     appointmentId,
     mood: currentMood,
-    attachments: currentAttachments.map((item) => ({ ...item })),
     blocks,
     freeText: getFreeText().trim(),
     status,
@@ -512,26 +456,7 @@ function init() {
         document.execCommand('fontSize', false, fontSizeSelect.value);
       });
     }
-    const toolbarAttachButton = toolbar.querySelector('#toolbarAttachButton');
-    if (toolbarAttachButton) {
-      toolbarAttachButton.addEventListener('click', () => elements.attachInput.click());
-    }
   }
-
-  elements.attachButton.addEventListener('click', () => elements.attachInput.click());
-  elements.attachInput.addEventListener('change', () => {
-    Array.from(elements.attachInput.files || []).forEach((file) => {
-      currentAttachments.push({
-        id: data.createId('anexo'),
-        name: file.name,
-        size: file.size,
-        addedAt: new Date().toISOString()
-      });
-    });
-    elements.attachInput.value = '';
-    renderAttachments();
-    scheduleDraftSave();
-  });
 
   const cancelEditButton = document.querySelector('#cancelEditButton');
   if (cancelEditButton) {
