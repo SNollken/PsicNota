@@ -1,44 +1,227 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PsicNota | Início</title>
-  <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/paciente/home.css">
-  <link rel="stylesheet" href="../assets/menu/menu.css">
-  <script src="../assets/menu/menu.js"></script>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PsicNota | Início</title>
+
+<link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="../assets/css/paciente/home.css">
+
+<link rel="stylesheet" href="../assets/menu/menu.css">
+
+
+<script src="../assets/menu/menu.js"></script>
+
 </head>
+
+
+
 <body>
-  <div class="app-shell">
-    <psic-menu tipo="paciente" ativo="inicio"></psic-menu>
-    <main class="main-content">
-      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
-      <div class="home-panel">
-        <header class="home-header">
-          <div><h1>Olá, <span id="patientFirstName">paciente</span>!</h1><p>Aqui você acompanha suas consultas, anotações e informações importantes.</p></div>
-          <div class="header-actions">
-            <a href="agenda-paciente.html" aria-label="Ver consultas e notificações"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M10 21h4"/></svg></a>
-            <a href="agenda-paciente.html" aria-label="Abrir agenda"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg></a>
-          </div>
-        </header>
-        <section class="stats-row" aria-label="Resumo das consultas">
-          <article class="stat-card"><span class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg></span><div><h2>Consultas hoje</h2><strong id="todayCount">0</strong><a href="agenda-paciente.html">Ver agenda <span aria-hidden="true">→</span></a></div></article>
-          <article class="stat-card"><span class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 5h14v14H5zM8 9h8M8 13h8"/></svg></span><div><h2>Anotações</h2><strong id="notesCount">0</strong><a href="agenda-paciente.html">Ver anotações <span aria-hidden="true">→</span></a></div></article>
-        </section>
-        <div class="appointments-grid">
-          <section class="appointment-card next-card" aria-labelledby="nextTitle"><h2 id="nextTitle">Próxima consulta</h2><div id="nextAppointment" class="next-content" aria-live="polite"></div></section>
-          <section class="appointment-card upcoming-card" aria-labelledby="upcomingTitle"><div class="card-heading"><h2 id="upcomingTitle">Consultas futuras</h2><a href="agenda-paciente.html">Ver todas</a></div><ul id="upcomingAppointments" aria-live="polite"></ul></section>
-        </div>
-        <section class="support-card" aria-labelledby="supportTitle"><h2 id="supportTitle">Dúvidas ou suporte?</h2><strong>Precisa de ajuda?</strong><p>Entre em contato com a clínica</p><button id="contactClinic" type="button">Falar com a clínica</button><p id="contactMessage" class="contact-message" role="status" hidden></p></section>
-      </div>
-    </main>
-  </div>
-  <script src="../assets/js/shared-data.js"></script>
-  <script src="../assets/js/sidebar.js"></script>
-  <script src="../assets/js/paciente/home.js"></script>
+
+
+<div class="app-shell">
+
+
+<psic-menu tipo="paciente" ativo="inicio"></psic-menu>
+
+
+
+<main class="main-content">
+
+
+<button class="mobile-menu">
+☰
+</button>
+
+
+
+
+<section class="home-panel">
+
+
+
+<header class="home-header">
+
+
+<div>
+
+
+<h1>
+Olá, <span id="patientFirstName">Janaina</span>!
+</h1>
+
+
+<p>
+Aqui você acompanha suas consultas, anotações e informações importantes.
+</p>
+
+
+</div>
+
+
+
+<div class="header-actions">
+
+
+<a href="agenda-paciente.html">
+
+
+<svg viewBox="0 0 24 24">
+
+<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18"/>
+<path d="M10 21h4"/>
+
+</svg>
+
+
+</a>
+
+
+
+
+<a href="agenda-paciente.html">
+
+
+<svg viewBox="0 0 24 24">
+
+<rect x="3" y="5" width="18" height="16" rx="2"/>
+
+<path d="M3 9h18M8 3v4M16 3v4"/>
+
+</svg>
+
+
+</a>
+
+
+</div>
+
+
+</header>
+
+
+
+
+
+
+
+<section class="dashboard-content">
+
+
+
+
+
+<div class="next-card">
+
+
+
+<h2>
+Próxima consulta
+</h2>
+
+
+
+
+<div id="nextAppointment" class="next-content">
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="future-card">
+
+
+
+<div class="future-header">
+
+
+<h2>
+Consultas futuras
+</h2>
+
+
+
+<a href="agenda-paciente.html">
+Ver todas
+</a>
+
+
+
+</div>
+
+
+
+
+
+<ul id="upcomingAppointments">
+
+
+</ul>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+</section>
+
+
+
+
+
+</section>
+
+
+
+
+
+</main>
+
+
+
+</div>
+
+
+
+
+
+
+<script src="../assets/js/shared-data.js"></script>
+
+<script src="../assets/js/sidebar.js"></script>
+
+<script src="../assets/js/paciente/home.js"></script>
+
+
 </body>
+
+
 </html>
