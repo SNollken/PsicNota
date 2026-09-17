@@ -79,3 +79,105 @@ button, input { font: inherit; }
   .search-pill, .patient-card { transition: none; }
   .patient-card:hover { transform: none; }
 }
+
+.patients-page {
+  max-width: 1180px;
+}
+
+.patients-header {
+  position: relative;
+  justify-content: center;
+  min-height: 90px;
+  margin-bottom: 55px;
+}
+
+.patients-heading {
+  display: contents;
+}
+
+.patients-header h1 {
+  font-size: 32px;
+  line-height: 1;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+}
+
+.patients-count {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  min-height: 34px;
+  padding: 0 18px;
+  border: 1px solid var(--patients-action);
+  border-radius: 8px;
+  background: var(--patients-highlight);
+  color: var(--patients-action-dark);
+  font-weight: 500;
+  line-height: 1;
+  transform: translateY(-50%);
+}
+
+.header-actions {
+  display: none;
+}
+
+.patient-list {
+  gap: 14px 18px;
+}
+
+.patient-card {
+  gap: 18px;
+  padding: 14px 18px;
+  border-radius: 18px;
+  box-shadow: none;
+}
+
+.patient-card:hover {
+  border-color: var(--patients-highlight);
+  box-shadow: none;
+  transform: none;
+}
+
+.patient-info {
+  flex-direction: row;
+  align-items: center;
+  gap: 28px;
+}
+
+.patient-info strong {
+  min-width: 130px;
+  overflow: visible;
+  font-size: 20px;
+  line-height: 1.1;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+.patient-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.patient-next {
+  order: -1;
+  color: var(--patients-action);
+  font-weight: 700;
+}
+
+.patient-arrow {
+  margin-left: auto;
+}
+
+.load-more {
+  height: 32px;
+  border-radius: 5px;
+  font-size: 11px;
+}
+
+@media (max-width: 1100px) {
+  .header-actions {
+    display: none;
+  }
+}
