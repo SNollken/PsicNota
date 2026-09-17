@@ -2,6 +2,7 @@
 
 (() => {
   const data = window.PsiNoteData;
+  const client = window.PsicNotaSupabase;
   const query = new URLSearchParams(location.search);
   const patientName = query.get("paciente") || "";
   const escape = data.escapeHtml;
@@ -10,8 +11,7 @@
   const now = new Date();
   const appointments = data.getAppointments().filter(item => item.patient === patientName && item.status !== "cancelled").sort((a, b) => new Date(`${b.date}T${b.time || "00:00"}`) - new Date(`${a.date}T${a.time || "00:00"}`));
   const reports = data.getReports().filter(item => item.patient === patientName).sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
-  const profiles = data.getProfiles();
-  const profile = profiles.find(item => [item.name, item.fullName, item.socialName].includes(patientName)) || {};
+  let profile = {};
   const notes = appointments.filter(item => data.hasAppointmentNote(item.id)).map(item => ({ appointment: item, text: data.getAppointmentNote(item.id) }));
 
   function formatDate(value) {
@@ -101,6 +101,38 @@
     selectTab(query.get("aba") || "overview");
   }
 
+  async function loadProfile() {
+    if (!client) throw new Error("Não foi possível iniciar a conexão com o banco de dados.");
+    const { data: patient, error } = await client
+      .from("perfis")
+      .select("*")
+      .eq("papel", "paciente")
+      .eq("nome_completo", patientName)
+      .maybeSingle();
+    if (error) throw error;
+    if (!patient) throw new Error("Paciente não encontrado.");
+    profile = {
+      fullName: patient.nome_completo,
+      socialName: patient.nome_social,
+      birthDate: patient.data_nascimento,
+      pronoun: patient.pronomes,
+      gender: patient.genero,
+      email: patient.email,
+      phone: patient.telefone,
+      city: patient.cidade,
+      state: patient.estado,
+      country: patient.cidade || patient.estado ? "Brasil" : "",
+      preferredFormat: patient.formato_preferido,
+      preferredPeriod: patient.periodo_preferido,
+      avatar_url: patient.avatar_url
+    };
+    render();
+  }
+
+  function showProfileError(error) {
+    document.querySelector(".profile-content").innerHTML = `<p class="empty">${escape(error.message || "Não foi possível carregar o perfil do paciente.")}</p>`;
+  }
+
   function selectTab(name) {
     const active = tabs.includes(name) ? name : "overview";
     document.querySelectorAll('[role="tab"]').forEach(button => {
@@ -123,6 +155,7 @@
       next.focus();
     });
   });
-  render();
+  if (!patientName) render();
+  else void loadProfile().catch(showProfileError);
 })();
 
