@@ -15,6 +15,14 @@ if (!patientData) {
 
 
 /* =========================================================
+   CLIENTE SUPABASE
+   ========================================================= */
+
+const supabaseClient =
+  window.PsicNotaSupabase || null;
+
+
+/* =========================================================
    ELEMENTOS DA INTERFACE
    ========================================================= */
 
@@ -673,6 +681,8 @@ let appointments =
 let requests =
   patientData.getRequests();
 
+let usingRemoteRequests = false;
+
 
 const today =
   new Date();
@@ -789,8 +799,8 @@ function dateTimeFromItem(item) {
 
 function isSamePatient(item) {
   return (
-    item.patientId ===
-    currentPatient.id
+    item.patientId === currentPatient.id ||
+    (session?.id && item.patientId === session.id)
   );
 }
 
@@ -1858,7 +1868,7 @@ function closeSchedulePopup() {
    SALVAR SOLICITAÇÃO
    ========================================================= */
 
-function submitScheduleRequest() {
+async function submitScheduleRequest() {
   if (
     !popupSelectedDate ||
     !popupSelectedTime ||
@@ -1881,7 +1891,7 @@ function submitScheduleRequest() {
    */
 
   const currentRequests =
-    patientData.getRequests();
+    requests;
 
 
   const currentAppointments =
@@ -1984,6 +1994,105 @@ function submitScheduleRequest() {
 
 
     updateScheduleSubmit();
+
+
+    return;
+  }
+
+
+  /*
+   * Caminho remoto: grava a solicitacao no banco.
+   * Sem cliente ou sem sessao GoTrue, cai no fluxo
+   * local (localStorage) abaixo.
+   */
+
+  const authUser =
+    await getAuthUser();
+
+  if (supabaseClient && authUser) {
+    const { data: psychologist } =
+      await supabaseClient
+        .from("perfis")
+        .select("id")
+        .eq("papel", "psicologo")
+        .limit(1)
+        .maybeSingle();
+
+
+    if (!psychologist?.id) {
+      showToast(
+        "Não há psicólogo disponível para receber a solicitação.",
+        true
+      );
+
+
+      return;
+    }
+
+
+    const { error: insertError } =
+      await supabaseClient
+        .from("solicitacoes")
+        .insert({
+          psicologo_id: psychologist.id,
+
+          paciente_id: authUser.id,
+
+          data_desejada: dateKey,
+
+          horario: `${popupSelectedTime}:00`,
+
+          duracao_min: 50,
+
+          modalidade:
+            popupSelectedMode.toLowerCase(),
+
+          observacao: null,
+
+          status: "pending"
+        });
+
+
+    if (insertError) {
+      if (insertError.code === "23505") {
+        showToast(
+          "Você já possui uma solicitação ou consulta nesse horário.",
+          true
+        );
+
+
+        return;
+      }
+
+
+      showToast(
+        "Não foi possível enviar a solicitação. Tente novamente.",
+        true
+      );
+
+
+      return;
+    }
+
+
+    await loadRemoteRequests();
+
+
+    closeSchedulePopup();
+
+
+    selectedDateKey =
+      "";
+
+
+    renderCalendar();
+
+    renderSummary();
+
+
+    showToast(
+      "Solicitação enviada com sucesso."
+    );
 
 
     return;
@@ -2119,12 +2228,12 @@ function renderPendingRequestsPopup() {
 
 
   const pending =
-    patientData
-      .getRequests()
+    requests
       .filter(
         (request) =>
-          request.patientId ===
-            currentPatient.id &&
+          isSamePatient(
+            request
+          ) &&
 
           request.status ===
             "pending"
@@ -2292,11 +2401,82 @@ function closeRequestsPopup() {
    CANCELAR PEDIDO
    ========================================================= */
 
-function cancelPendingRequest(
+async function cancelPendingRequest(
   requestId
 ) {
+  const authUser =
+    await getAuthUser();
+
+  if (supabaseClient && authUser) {
+    const { error: cancelError, count } =
+      await supabaseClient
+        .from("solicitacoes")
+        .update(
+          {
+            status: "cancelled",
+
+            revisado_em:
+              new Date().toISOString()
+          },
+          { count: "exact" }
+        )
+        .eq("id", requestId)
+        .eq("status", "pending");
+
+
+    if (cancelError) {
+      showToast(
+        "Não foi possível cancelar a solicitação.",
+        true
+      );
+
+
+      return;
+    }
+
+
+    if (!count) {
+      showToast(
+        "Esta solicitação não está mais pendente.",
+        true
+      );
+
+
+      await loadRemoteRequests();
+
+
+      renderCalendar();
+
+      renderSummary();
+
+      renderPendingRequestsPopup();
+
+
+      return;
+    }
+
+
+    await loadRemoteRequests();
+
+
+    renderCalendar();
+
+    renderSummary();
+
+    renderPendingRequestsPopup();
+
+
+    showToast(
+      "Solicitação cancelada."
+    );
+
+
+    return;
+  }
+
+
   const currentRequests =
-    patientData.getRequests();
+    requests;
 
 
   const updatedRequests =
@@ -2579,8 +2759,10 @@ function refreshData() {
     patientData.getAppointments();
 
 
-  requests =
-    patientData.getRequests();
+  if (!usingRemoteRequests) {
+    requests =
+      patientData.getRequests();
+  }
 
 
   renderCalendar();
@@ -2596,6 +2778,95 @@ window.addEventListener(
 
 
 /* =========================================================
+   SOLICITAÇÕES REMOTAS (Supabase)
+   ========================================================= */
+
+function normalizeRemoteRequest(row) {
+  return {
+    id: row.id,
+
+    patientId: row.paciente_id,
+
+    patient: currentPatient.name,
+
+    date: row.data_desejada,
+
+    time:
+      String(row.horario || "").slice(0, 5),
+
+    duration: row.duracao_min || 50,
+
+    mode: capitalizeFirst(row.modalidade),
+
+    note: row.observacao || "",
+
+    requestedAt: row.solicitado_em,
+
+    status: row.status
+  };
+}
+
+
+async function getAuthUser() {
+  if (!supabaseClient) {
+    return null;
+  }
+
+  try {
+    const { data, error } =
+      await supabaseClient.auth.getUser();
+
+    if (error || !data?.user) {
+      return null;
+    }
+
+    return data.user;
+  } catch {
+    return null;
+  }
+}
+
+
+async function loadRemoteRequests() {
+  const authUser =
+    await getAuthUser();
+
+  if (!authUser) {
+    return false;
+  }
+
+
+  const { data: rows, error } =
+    await supabaseClient
+      .from("solicitacoes")
+      .select(
+        "id, paciente_id, data_desejada, horario, duracao_min, modalidade, observacao, solicitado_em, status"
+      )
+      .eq("paciente_id", authUser.id)
+      .order("solicitado_em", { ascending: false });
+
+
+  if (error) {
+    return false;
+  }
+
+
+  requests =
+    (rows || []).map(normalizeRemoteRequest);
+
+  usingRemoteRequests = true;
+
+
+  renderCalendar();
+
+  renderSummary();
+
+
+  return true;
+}
+
+
+/* =========================================================
    INICIALIZAÇÃO
    ========================================================= */
 
@@ -2604,3 +2875,5 @@ renderPatientProfile();
 renderCalendar();
 
 renderSummary();
+
+void loadRemoteRequests();
