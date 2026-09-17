@@ -38,6 +38,10 @@
     return items.map(item => recordCard("note", formatDate(item.appointment.date), item.text, `notas.html?consulta=${encodeURIComponent(item.appointment.id)}`)).join("");
   }
 
+  function reportCards(items) {
+    return items.map(item => recordCard("report", formatDate(item.updatedAt || item.createdAt), item.title || item.tipo || "Relatório", `relatorio-view.html?id=${encodeURIComponent(item.id)}`)).join("");
+  }
+
 
   function empty(message) { return `<p class="empty">${escape(message)}</p>`; }
   function section(name, items, kind) {
@@ -91,6 +95,7 @@
     const appointmentPanel = document.querySelector("#panel-appointments");
     appointmentPanel.innerHTML = `<div class="records-panel appointments-panel">${appointments.map(item => `<div class="appointment-row"><span aria-hidden="true">▣</span><strong class="appointment-date">${formatDate(item.date)}</strong><span>${escape(item.time || "")} • ${escape(item.mode || "Não informada")}</span><div class="appointment-actions"><a href="notas.html?consulta=${encodeURIComponent(item.id)}">▢ Abrir Notas</a><a href="consulta.html?id=${encodeURIComponent(item.id)}" aria-label="Abrir consulta">›</a></div></div>`).join("")}${appointments.length ? "" : empty("Nenhuma consulta registrada para este paciente.")}</div>`;
     document.querySelector("#panel-notes").append(section("Nota", notes, "note"));
+    document.querySelector("#panel-reports").append(section("Relatório", reports, "report"));
     document.querySelector("#panel-details").innerHTML = `<div class="details-shell">${detailCard("♙ &nbsp; Informações pessoais", [field("Nome completo", profile.fullName || patientName), field("Nome social", profile.socialName), field("Data de Nascimento", profile.birthDate ? formatDate(profile.birthDate) : ""), field("Pronomes", profile.pronoun), field("Gênero", profile.gender)], "")}${detailCard("☎ &nbsp; Contato", [field("E-mail", profile.email), field("Celular", profile.phone), field("Cidade", profile.city), field("Estado", profile.state)], "four")}${detailCard("♢ &nbsp; Preferências de atendimento", [field("Formato preferido", profile.preferredFormat), field("Período preferido", profile.preferredPeriod), field("Sobre mim", profile.about)], "three")}${availability("Online", profile.availabilityOnline)}${availability("Presencial", profile.availabilityInPerson)}</div>`;
     document.querySelector("#quickNoteButton").addEventListener("click", () => { if (appointments[0]) location.href = `notas.html?consulta=${encodeURIComponent(appointments[0].id)}`; else selectTab("notes"); });
     selectTab(query.get("aba") || "overview");

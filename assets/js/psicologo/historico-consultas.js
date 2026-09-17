@@ -139,7 +139,7 @@ function updateTabsLinks(){
 
 
       link.href =
-        `${page}?paciente=${encodedPatient}`;
+        `${page}?paciente=${encodedPatient}${page === "paciente-perfil.html" ? "&aba=details" : ""}`;
 
 
     });

@@ -334,7 +334,7 @@ link.href.split("?")[0];
 
 
 link.href =
-`${page}?paciente=${encodeURIComponent(patientName)}`;
+`${page}?paciente=${encodeURIComponent(patientName)}${page === "paciente-perfil.html" ? "&aba=details" : ""}`;
 
 
 });
