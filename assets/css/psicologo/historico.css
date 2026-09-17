@@ -411,6 +411,42 @@ body{
   font-size:18px;
 }
 
+.availability-card p{
+  margin:0 0 16px;
+  color:var(--muted);
+  font-size:14px;
+}
+
+.availability-scroll{
+  overflow-x:auto;
+}
+
+.availability{
+  width:100%;
+  min-width:620px;
+  border-collapse:collapse;
+  border-radius:18px;
+  overflow:hidden;
+  background:#f8fdff;
+  text-align:center;
+}
+
+.availability th,
+.availability td{
+  padding:12px 8px;
+  border:1px solid #c9e7f3;
+}
+
+.availability th{
+  color:var(--ink);
+  font-size:15px;
+}
+
+.availability td{
+  color:var(--blue-700);
+  font-size:13px;
+}
+
 .detail-grid{
   display:grid;
   grid-template-columns:repeat(5, minmax(0, 1fr));
