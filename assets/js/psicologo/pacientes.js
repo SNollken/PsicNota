@@ -6,6 +6,7 @@
 
 
 const data = window.PsiNoteData;
+const client = window.PsicNotaSupabase;
 
 
 /* =========================
@@ -48,7 +49,10 @@ const elements = {
     document.querySelector(".mobile-menu"),
 
   loadMore:
-    document.querySelector("#loadMorePatients")
+    document.querySelector("#loadMorePatients"),
+
+  databaseError:
+    document.querySelector("#patientError")
 
 };
 
@@ -1163,4 +1167,47 @@ window.addEventListener(
    INICIALIZAÇÃO
 ========================= */
 
-renderAll();
+async function loadPatientsFromDatabase() {
+
+  if (!client) {
+    throw new Error("Cliente do Supabase indisponível.");
+  }
+
+  const { data: authData, error: authError } = await client.auth.getUser();
+
+  if (authError || !authData.user) {
+    window.location.replace("../auth/login.html");
+    return;
+  }
+
+  const { data: databasePatients, error } = await client
+    .from("perfis")
+    .select("id, nome_completo, nome_social, email")
+    .eq("papel", "paciente")
+    .order("nome_completo", { ascending: true });
+
+  if (error) {
+    throw error;
+  }
+
+  allPatients = (databasePatients || []).map((patient) => ({
+    name: patient.nome_social || patient.nome_completo || patient.email || "Paciente",
+    next: null,
+    last: null,
+    avatarDataUrl: null
+  }));
+
+  visiblePatients = PATIENTS_PER_PAGE;
+  renderPatients();
+}
+
+void loadPatientsFromDatabase().catch((error) => {
+  console.error("Falha ao carregar pacientes:", error.message);
+  elements.patientList.replaceChildren();
+  elements.emptyPatients.hidden = true;
+  elements.noMatch.hidden = true;
+
+  if (elements.databaseError) {
+    elements.databaseError.hidden = false;
+  }
+});
