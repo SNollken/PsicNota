@@ -100,7 +100,7 @@ body{
 
 .page-title{
 
-  height:60px;
+  height:98px;
 
   border-bottom:1px solid var(--line);
 
@@ -117,7 +117,7 @@ body{
 
   margin:0;
 
-  font-size:28px;
+  font-size:30px;
 
   font-weight:700;
 
@@ -140,21 +140,21 @@ body{
 
   margin-bottom:26px;
 
-  min-height:186px;
+  min-height:187px;
 
   background:var(--blue-50);
 
   border-radius:22px;
 
-  padding:18px 24px;
+  padding:14px 10px 14px 21px;
 
   display:grid;
 
-  grid-template-columns:1.35fr 1fr auto;
+  grid-template-columns:154px minmax(220px, 1fr) minmax(250px, 1fr) minmax(192px, 300px);
 
   align-items:center;
 
-  gap:30px;
+  gap:26px;
 
 }
 
@@ -162,11 +162,7 @@ body{
 
 .patient-info{
 
-  display:flex;
-
-  align-items:center;
-
-  gap:30px;
+  display:contents;
 
 }
 
@@ -178,7 +174,7 @@ body{
 
   height:150px;
 
-  border-radius:50%;
+  border-radius:12px;
 
   object-fit:cover;
 
@@ -206,7 +202,7 @@ body{
 
   color:var(--muted);
 
-  font-size:28px;
+  font-size:24px;
 
 
 
@@ -224,7 +220,7 @@ body{
 
   margin:8px 0;
 
-  font-size:28px;
+  font-size:20px;
 
   font-weight:600;
 
@@ -262,9 +258,9 @@ body{
 
 .patient-actions button{
 
-  width:300px;
+  width:100%;
 
-  height:50px;
+  min-height:49px;
 
   border-radius:6px;
 
@@ -304,11 +300,13 @@ body{
 
 .patient-tabs{
 
-  height:58px;
-
   display:flex;
 
   align-items:end;
+
+  overflow-x:auto;
+
+  margin-top:35px;
 
   border-bottom:1px solid var(--line);
 
@@ -318,15 +316,15 @@ body{
 .patient-tabs button,
 .patient-tabs a{
 
-  height:58px;
+  min-height:43px;
 
-  padding:0 40px;
+  padding:6px 35px 10px;
 
   border:0;
 
   background:none;
 
-  font-size:25px;
+  font-size:20px;
 
   font-weight:600;
 
@@ -363,6 +361,126 @@ body{
 
   border-bottom:2px solid var(--blue-700);
 
+}
+
+.patient-tabs a + a{
+
+  border-left:1px solid var(--line);
+
+}
+
+.patient-info > div:not(.patient-avatar){
+
+  grid-column:2;
+
+}
+
+.patient-details{
+  margin-top:18px;
+}
+
+.appointment-grid[hidden],
+.content-grid[hidden],
+.consultas-container[hidden],
+.notes-history[hidden],
+.reports-history[hidden]{
+  display:none;
+}
+
+.details-shell{
+  padding:30px 6px;
+  background:#cdeefb;
+  border:1px solid #d6e4e9;
+  border-radius:25px;
+}
+
+.detail-card{
+  margin:0 0 26px;
+  padding:20px 26px;
+  background:#e9f8fe;
+  border-radius:24px;
+}
+
+.detail-card:last-child{
+  margin-bottom:0;
+}
+
+.detail-card h2{
+  margin:0 0 22px;
+  color:var(--ink);
+  font-size:18px;
+}
+
+.availability-card p{
+  margin:0 0 16px;
+  color:var(--muted);
+  font-size:14px;
+}
+
+.availability-scroll{
+  overflow-x:auto;
+}
+
+.availability{
+  width:100%;
+  min-width:620px;
+  border-collapse:collapse;
+  border-radius:18px;
+  overflow:hidden;
+  background:#f8fdff;
+  text-align:center;
+}
+
+.availability th,
+.availability td{
+  padding:12px 8px;
+  border:1px solid #c9e7f3;
+}
+
+.availability th{
+  color:var(--ink);
+  font-size:15px;
+}
+
+.availability td{
+  color:var(--blue-700);
+  font-size:13px;
+}
+
+.detail-grid{
+  display:grid;
+  grid-template-columns:repeat(5, minmax(0, 1fr));
+  gap:12px;
+}
+
+.detail-grid.four{
+  grid-template-columns:repeat(4, minmax(0, 1fr));
+}
+
+.detail-grid.three{
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+}
+
+.detail-field label{
+  display:block;
+  margin-bottom:5px;
+  color:var(--ink);
+  font-size:12px;
+  font-weight:700;
+}
+
+.detail-field output{
+  display:block;
+  min-height:33px;
+  padding:7px 4px;
+  overflow-wrap:anywhere;
+  border:1px solid var(--blue-700);
+  border-radius:6px;
+  background:var(--white);
+  color:var(--blue-700);
+  font-size:14px;
+  font-weight:700;
+  text-align:center;
 }
 
 
@@ -733,6 +851,18 @@ body{
 
   }
 
+  .patient-info > div:not(.patient-avatar){
+
+    grid-column:auto;
+
+  }
+
+  .detail-grid,
+  .detail-grid.four,
+  .detail-grid.three{
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+  }
+
 
 }
 
@@ -768,6 +898,20 @@ body{
 
     overflow:auto;
 
+  }
+
+  .details-shell{
+    padding:10px;
+  }
+
+  .detail-card{
+    padding:16px;
+  }
+
+  .detail-grid,
+  .detail-grid.four,
+  .detail-grid.three{
+    grid-template-columns:1fr;
   }
 
 

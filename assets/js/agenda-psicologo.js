@@ -14,6 +14,9 @@ if (!data) {
   );
 }
 
+const supabaseClient =
+  window.PsicNotaSupabase || null;
+
 /* =========================================================
    ELEMENTOS DA INTERFACE
    ========================================================= */
@@ -77,6 +80,9 @@ const SHORT_MONTHS = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "s
 let appointments = data.getAppointments();
 let requests = data.getRequests();
 let patientOptions = [];
+
+let usingRemoteRequests = false;
+let psychologistUid = null;
 
 const now0 = new Date();
 let visibleMonth = new Date(now0.getFullYear(), now0.getMonth(), 1);
@@ -495,7 +501,7 @@ function renderRequestsPopup() {
   });
 }
 
-function approveRequest(requestId) {
+async function approveRequest(requestId) {
   const request = requests.find((item) => item.id === requestId);
   if (!request || request.status !== "pending") return;
 
@@ -521,6 +527,39 @@ function approveRequest(requestId) {
   );
   if (conflict) {
     showToast("Esse horário já foi ocupado por uma consulta confirmada.", true);
+    return;
+  }
+
+  if (supabaseClient && usingRemoteRequests) {
+    const { data: appointmentId, error: approveError } = await supabaseClient
+      .rpc("aprovar_solicitacao", { solicitacao_id: request.id });
+
+    if (approveError) {
+      const message = approveError.code === "23505"
+        ? "Esse horário já foi ocupado por uma consulta confirmada."
+        : "Não foi possível aprovar a solicitação.";
+      showToast(message, true);
+      await loadRemoteRequests();
+      return;
+    }
+
+    appointments.push({
+      id: appointmentId,
+      patient: request.patient,
+      patientId: request.patientId,
+      date: request.date,
+      time: request.time,
+      duration: request.duration,
+      mode: request.mode,
+      observation: request.note || "",
+      status: "confirmed",
+      source: "patient-request",
+      requestId: request.id
+    });
+    data.saveAppointments(appointments);
+
+    await loadRemoteRequests();
+    showToast(`Solicitação de ${request.patient} aprovada para ${request.time}.`);
     return;
   }
 
@@ -559,10 +598,34 @@ function approveRequest(requestId) {
   showToast(`Solicitação de ${request.patient} aprovada para ${request.time}.`);
 }
 
-function rejectRequest(requestId) {
+async function rejectRequest(requestId) {
   const request = requests.find((item) => item.id === requestId);
   if (!request || request.status !== "pending") return;
   if (!window.confirm(`Recusar a solicitação de ${request.patient} para ${request.time}?`)) return;
+
+  if (supabaseClient && usingRemoteRequests) {
+    const { error: rejectError, count } = await supabaseClient
+      .from("solicitacoes")
+      .update({ status: "rejected", revisado_em: new Date().toISOString() }, { count: "exact" })
+      .eq("id", request.id)
+      .eq("status", "pending");
+
+    if (rejectError) {
+      showToast("Não foi possível recusar a solicitação.", true);
+      return;
+    }
+
+    if (!count) {
+      showToast("Esta solicitação não está mais pendente.", true);
+      await loadRemoteRequests();
+      return;
+    }
+
+    await loadRemoteRequests();
+    showToast(`Solicitação de ${request.patient} recusada.`);
+    return;
+  }
+
   request.status = "rejected";
   request.reviewedAt = new Date().toISOString();
   data.saveRequests(requests);
@@ -672,12 +735,80 @@ function deleteAppointment(appointmentId) {
 }
 
 /* =========================================================
+   SOLICITAÇÕES REMOTAS (Supabase)
+   ========================================================= */
+
+function displayNameFromProfile(profile) {
+  return profile?.nome_social || profile?.nome_completo || "Paciente";
+}
+
+function normalizeRemoteRequest(row, names) {
+  return {
+    id: row.id,
+    patientId: row.paciente_id,
+    patient: displayNameFromProfile(names[row.paciente_id]) || "Paciente",
+    date: row.data_desejada,
+    time: String(row.horario || "").slice(0, 5),
+    duration: row.duracao_min || 50,
+    mode: capitalizeFirst(row.modalidade),
+    note: row.observacao || "",
+    requestedAt: row.solicitado_em,
+    status: row.status
+  };
+}
+
+async function loadRemoteRequests() {
+  if (!supabaseClient) return false;
+
+  let user = null;
+  try {
+    const { data: authData, error: authError } = await supabaseClient.auth.getUser();
+    if (authError || !authData?.user) return false;
+    user = authData.user;
+  } catch {
+    return false;
+  }
+
+  const { data: rows, error } = await supabaseClient
+    .from("solicitacoes")
+    .select("id, paciente_id, data_desejada, horario, duracao_min, modalidade, observacao, solicitado_em, status")
+    .eq("psicologo_id", user.id)
+    .eq("status", "pending")
+    .order("solicitado_em", { ascending: true });
+
+  if (error) return false;
+
+  const names = {};
+  const patientIds = [...new Set((rows || []).map((row) => row.paciente_id))];
+
+  if (patientIds.length) {
+    const { data: perfis } = await supabaseClient
+      .from("perfis")
+      .select("id, nome_completo, nome_social")
+      .in("id", patientIds);
+
+    (perfis || []).forEach((profile) => {
+      names[profile.id] = profile;
+    });
+  }
+
+  psychologistUid = user.id;
+  requests = (rows || []).map((row) => normalizeRemoteRequest(row, names));
+  usingRemoteRequests = true;
+
+  renderAll();
+  return true;
+}
+
+/* =========================================================
    RENDER GERAL
    ========================================================= */
 
 function renderAll() {
   appointments = data.getAppointments();
-  requests = data.getRequests();
+  if (!usingRemoteRequests) {
+    requests = data.getRequests();
+  }
   renderCalendar();
   renderSummary();
   renderRequestsPopup();
@@ -749,3 +880,5 @@ if (ui.mobileMenu && ui.sidebar) {
 window.addEventListener("storage", renderAll);
 
 renderAll();
+
+void loadRemoteRequests();

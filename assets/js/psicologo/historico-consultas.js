@@ -131,6 +131,8 @@ function updateTabsLinks(){
     .querySelectorAll(".patient-tabs a")
     .forEach(link=>{
 
+      if (link.dataset.patientDetails !== undefined) return;
+
 
       const page =
         link

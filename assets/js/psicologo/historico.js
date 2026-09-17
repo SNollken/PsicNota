@@ -15,6 +15,8 @@ const patientName =
 
   document.querySelectorAll(".patient-tabs a").forEach(link=>{
 
+    if (link.dataset.patientDetails !== undefined) return;
+
     const page = link.getAttribute("href").split("?")[0];
 
     link.href = `${page}?paciente=${encodedPatient}${page === "paciente-perfil.html" ? "&aba=details" : ""}`;
