@@ -4,3 +4,5 @@ docs/
 /*.md
 /*.txt
 .omo/
+
+node_modules/

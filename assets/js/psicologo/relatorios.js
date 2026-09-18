@@ -16,6 +16,7 @@ const usarNotas = params.get('usarNotas') === '1';
 
 const elements = {
   pageTitle: document.querySelector('#pageTitle'),
+  pageTopbar: document.querySelector('#pageTopbar'),
   listView: document.querySelector('#listView'),
   editorView: document.querySelector('#editorView'),
   reportList: document.querySelector('#reportList'),
@@ -52,6 +53,11 @@ const elements = {
 
 const shortDateFormatter = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 const fullDateFormatter = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+
+const DOCUMENT_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>';
+const CHEVRON_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+const EDIT_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>';
+const TRASH_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>';
 
 const BLOCKS = [
   { key: 'queixa', label: 'Queixa principal', el: () => elements.blockQueixa },
@@ -243,50 +249,70 @@ function renderList() {
   elements.emptyReports.hidden = reports.length > 0;
   elements.reportTotal.textContent = reports.length === 1 ? '1 relatório' : `${reports.length} relatórios`;
 
+  elements.pageTopbar.classList.remove('report-editor-topbar');
+  elements.pageTopbar.classList.add('reports-topbar');
+  elements.reportTotal.hidden = false;
+
   reports.forEach((report) => {
+    const appointment = report.appointmentId ? findAppointment(report.appointmentId) : null;
+
     const card = document.createElement('article');
     card.className = 'report-card';
 
-    const top = document.createElement('div');
-    top.className = 'report-card-top';
-    const titleWrap = document.createElement('div');
+    const main = document.createElement('a');
+    main.className = 'report-card-main';
+    main.href = `relatorio-view.html?id=${encodeURIComponent(report.id)}`;
+
+    const icon = document.createElement('span');
+    icon.className = 'report-card-icon';
+    icon.innerHTML = DOCUMENT_ICON;
+
+    const body = document.createElement('span');
+    body.className = 'report-card-body';
+
+    const titleline = document.createElement('span');
+    titleline.className = 'report-card-titleline';
     const title = document.createElement('strong');
     title.textContent = report.patient;
-    titleWrap.append(title);
+    titleline.append(title);
     if (report.status === 'rascunho') {
       const draftBadge = document.createElement('span');
-      draftBadge.className = 'badge badge-neutral report-draft-badge';
+      draftBadge.className = 'badge report-draft-badge';
       draftBadge.textContent = 'Rascunho';
-      titleWrap.append(draftBadge);
+      titleline.append(draftBadge);
     }
+    body.append(titleline);
+
     const meta = document.createElement('span');
     meta.className = 'report-card-meta';
-    const appointment = report.appointmentId ? findAppointment(report.appointmentId) : null;
-    let metaText = appointment
-      ? `Consulta de ${shortDateFormatter.format(data.fromDateKey(appointment.date))} às ${appointment.time}`
-      : 'Sem consulta vinculada';
-    const mood = moodInfo(report.mood);
-    if (mood) metaText += ` · ${mood.emoji} ${mood.label}`;
-    meta.textContent = metaText;
-    titleWrap.append(meta);
+    meta.textContent = appointment
+      ? `${shortDateFormatter.format(data.fromDateKey(appointment.date))} · ${appointment.time} · ${appointment.mode}`
+      : `Atualizado em ${shortDateFormatter.format(new Date(report.updatedAt || report.createdAt))}`;
+    body.append(meta);
+
+    const chevron = document.createElement('span');
+    chevron.className = 'report-card-chevron';
+    chevron.innerHTML = CHEVRON_ICON;
+
+    main.append(icon, body, chevron);
 
     const actions = document.createElement('div');
-    actions.className = 'action-row';
-    const viewButton = document.createElement('a');
-    viewButton.className = 'button button-secondary button-compact';
-    viewButton.href = `relatorio-view.html?id=${encodeURIComponent(report.id)}`;
-    viewButton.textContent = 'Ver';
+    actions.className = 'report-card-actions';
+
     const editButton = document.createElement('button');
     editButton.type = 'button';
-    editButton.className = 'button button-secondary button-compact';
-    editButton.textContent = 'Editar';
+    editButton.className = 'report-card-action';
+    editButton.setAttribute('aria-label', `Editar relatório de ${report.patient}`);
+    editButton.innerHTML = EDIT_ICON;
     editButton.addEventListener('click', () => {
       window.location.href = `relatorios.html?edit=${encodeURIComponent(report.id)}`;
     });
+
     const deleteButton = document.createElement('button');
     deleteButton.type = 'button';
-    deleteButton.className = 'button button-secondary button-compact';
-    deleteButton.textContent = 'Excluir';
+    deleteButton.className = 'report-card-action';
+    deleteButton.setAttribute('aria-label', `Excluir relatório de ${report.patient}`);
+    deleteButton.innerHTML = TRASH_ICON;
     deleteButton.addEventListener('click', async () => {
       if (!window.confirm(`Excluir o relatório de ${report.patient}? Essa ação não pode ser desfeita.`)) return;
       await data.deleteReportFromDb(report.id);
@@ -294,32 +320,10 @@ function renderList() {
       renderList();
       showToast('Relatório excluído.');
     });
-    actions.append(viewButton, editButton, deleteButton);
-    top.append(titleWrap, actions);
 
-    const filledBlocks = BLOCKS.filter((block) => (report.blocks?.[block.key] || '').trim());
-    const blocksWrap = document.createElement('div');
-    blocksWrap.className = 'report-blocks';
-    filledBlocks.forEach((block) => {
-      const tag = document.createElement('span');
-      tag.className = 'report-block-tag';
-      tag.textContent = block.label;
-      blocksWrap.append(tag);
-    });
+    actions.append(editButton, deleteButton);
 
-    const previewText = [
-      ...filledBlocks.map((block) => report.blocks[block.key].trim()),
-      (report.freeText || '').trim()
-    ].filter(Boolean).join(' ');
-    const preview = document.createElement('p');
-    preview.className = 'report-card-preview';
-    preview.textContent = previewText ? `${previewText.slice(0, 220)}${previewText.length > 220 ? '…' : ''}` : 'Sem conteúdo registrado.';
-
-    const updated = document.createElement('span');
-    updated.className = 'report-card-meta';
-    updated.textContent = `Atualizado em ${shortDateFormatter.format(new Date(report.updatedAt || report.createdAt))}`;
-
-    card.append(top, blocksWrap, preview, updated);
+    card.append(main, actions);
     elements.reportList.append(card);
   });
 }
@@ -328,6 +332,9 @@ function openEditor(report, appointmentId) {
   elements.listView.hidden = true;
   elements.editorView.hidden = false;
   elements.pageTitle.textContent = report ? 'Editar relatório da consulta' : 'Novo relatório da consulta';
+  elements.pageTopbar.classList.remove('reports-topbar');
+  elements.pageTopbar.classList.add('report-editor-topbar');
+  elements.reportTotal.hidden = true;
   elements.newReportButton.hidden = true;
   if (elements.backToListButton) elements.backToListButton.hidden = false;
 

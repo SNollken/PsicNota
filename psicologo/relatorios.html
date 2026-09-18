@@ -32,47 +32,32 @@
       </button>
 
 
-      <header class="topbar report-editor-topbar">
+      <header class="topbar reports-topbar" id="pageTopbar">
         <h1 id="pageTitle">Relatórios</h1>
+        <span class="badge report-total-badge" id="reportTotal">0 relatórios</span>
       </header>
 
 
       <!-- LISTA DE RELATÓRIOS -->
       <div id="listView">
 
-        <section class="panel" aria-labelledby="historyTitle">
-
-          <div class="card-heading">
-
-            <div>
-              <p class="eyebrow">Histórico</p>
-              <h2 id="historyTitle">Todos os relatórios</h2>
-              <p>Mais recentes primeiro.</p>
-            </div>
-
-            <div class="action-row">
-
-              <span class="badge badge-neutral" id="reportTotal">
-                0 relatórios
-              </span>
-
-              <a class="button button-primary" id="newReportButton" href="relatorios.html?novo=1">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M12 5v14M5 12h14" />
-                </svg>
-
-                Novo relatório
-              </a>
-
-            </div>
-
-          </div>
+        <section class="reports-panel" aria-labelledby="historyTitle">
+          <h2 id="historyTitle" class="sr-only">Todos os relatórios</h2>
 
           <div class="report-list" id="reportList"></div>
 
           <div class="notice-item notice-info" id="emptyReports" hidden>
             <strong>Nenhum relatório ainda.</strong>
-            Crie um relatório a partir de uma consulta na agenda ou pelo botão acima.
+            Crie um relatório a partir de uma consulta na agenda ou pelo botão abaixo.
+          </div>
+
+          <div class="reports-panel-actions">
+            <a class="reports-new-button" id="newReportButton" href="relatorios.html?novo=1">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+              Novo relatório
+            </a>
           </div>
 
         </section>
