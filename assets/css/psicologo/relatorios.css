@@ -1006,6 +1006,7 @@ input[readonly] {
   display: grid;
   gap: 3px;
   min-width: 0;
+  flex: 1;
 }
 
 .report-card-titleline {
