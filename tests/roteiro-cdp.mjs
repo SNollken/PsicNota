@@ -96,15 +96,13 @@ async function entrar(page, usuario) {
 }
 
 async function sair(page) {
-  const link = await page.$(".nav-item-sair a, a.nav-item-sair, .nav-item-sair");
-  if (link) {
-    await Promise.all([
-      page.waitForNavigation({ waitUntil: "networkidle0" }).catch(() => {}),
-      link.click()
-    ]);
-  } else {
-    await page.goto(`${BASE}/auth/login.html`, { waitUntil: "networkidle0" });
-  }
+  // Clique via JS: popups abertos podem bloquear o hit-test do clique real.
+  await page.evaluate(() => {
+    const link = document.querySelector("a.nav-item-sair");
+    if (link) link.click();
+    else window.location.href = "../auth/login.html";
+  });
+  await page.waitForNavigation({ waitUntil: "networkidle0" }).catch(() => {});
   return page.url();
 }
 
@@ -137,13 +135,16 @@ async function roteiroPsicologo(page, passada, dreno) {
   const nomePerfil = await texto(page, "#patientName");
   registrar(cenario, "perfil do paciente", nomePerfil ? "ok" : "falha", `nome="${nomePerfil}"`, dreno());
 
-  // 5. todas as abas do perfil
+  // 5. todas as abas do perfil (scroll + clique via JS para mobile)
   const abas = await page.$$('[role="tab"]');
   const abasVisitadas = [];
   for (const aba of abas) {
-    await aba.click();
+    await aba.evaluate((el) => {
+      el.scrollIntoView({ block: "center" });
+      el.click();
+    });
     await new Promise((r) => setTimeout(r, 400));
-    abasVisitadas.push(await page.evaluate((el) => el.textContent.trim(), aba));
+    abasVisitadas.push(await aba.evaluate((el) => el.textContent.trim()));
   }
   registrar(cenario, "abas do perfil", abasVisitadas.length === 5 ? "ok" : "falha", abasVisitadas.join(", "), dreno());
   await page.screenshot({ path: path.join(OUT, `${cenario.replace(" ", "-")}-03-perfil.png`) });
@@ -307,19 +308,34 @@ const VIEWPORTS = [
 async function main() {
   await fs.mkdir(OUT, { recursive: true });
   const browser = await puppeteer.launch({ headless: true, args: ["--no-sandbox", "--disable-gpu"] });
-  const page = await browser.newPage();
-  const dreno = coletorDeErros(page);
+  try {
+    const page = await browser.newPage();
+    const dreno = coletorDeErros(page);
 
-  for (const vp of VIEWPORTS) {
-    await page.setViewport({ width: vp.width, height: vp.height, isMobile: vp.isMobile });
-    console.log(`\n=== passada ${vp.resolucao} ${vp.width}x${vp.height} ===`);
-    await roteiroPsicologo(page, { ...vp }, dreno);
-    await roteiroPaciente(page, { ...vp }, dreno);
-    await aprovarSolicitacao(page, dreno);
+    for (const vp of VIEWPORTS) {
+      await page.setViewport({ width: vp.width, height: vp.height, isMobile: vp.isMobile });
+      console.log(`\n=== passada ${vp.resolucao} ${vp.width}x${vp.height} ===`);
+      await rodar(roteiroPsicologo, [page, { ...vp }, dreno], "psicologo", vp.resolucao);
+      await rodar(roteiroPaciente, [page, { ...vp }, dreno], "paciente", vp.resolucao);
+      await rodar(aprovarSolicitacao, [page, dreno], "fechamento", vp.resolucao);
+    }
+  } finally {
+    await browser.close();
   }
 
-  await browser.close();
+  await escreverRelatorio();
+}
 
+async function rodar(fn, args, cenario, resolucao) {
+  try {
+    await fn(...args);
+  } catch (erro) {
+    registrar(`${cenario} ${resolucao}`, "etapa abortou", "falha", erro.message, []);
+    console.error(`!! ${cenario} ${resolucao} abortou: ${erro.message}`);
+  }
+}
+
+async function escreverRelatorio() {
   const totalFalhas = resultado.filter((r) => r.status === "falha");
   const totalErros = resultado.reduce((soma, r) => soma + r.erros.length, 0);
   const linhas = resultado.map((r, i) => {

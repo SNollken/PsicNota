@@ -52,3 +52,23 @@ test("sem sessão autenticada o cache local permanece a fonte", () => {
   assert.match(source, /getAuthUser/, "falta resolução de sessão");
   assert.match(source, /if \(!user\) return null/, "falta fallback para cache local");
 });
+
+test("toda página com supabase-client.js carrega o CDN do Supabase antes", () => {
+  const pastas = ["", "auth", "paciente", "psicologo"];
+  const paginas = pastas.flatMap((pasta) => {
+    const dir = pasta ? path.join(root, pasta) : root;
+    return fs.readdirSync(dir, { withFileTypes: true })
+      .filter((entrada) => entrada.isFile() && entrada.name.endsWith(".html"))
+      .map((entrada) => (pasta ? path.join(pasta, entrada.name) : entrada.name));
+  });
+
+  paginas.forEach((arquivo) => {
+    const fonte = read(arquivo);
+    const temCliente = fonte.includes("assets/js/supabase-client.js");
+    if (!temCliente) return;
+    const posicaoCdn = fonte.indexOf("cdn.jsdelivr.net/npm/@supabase");
+    const posicaoCliente = fonte.indexOf("assets/js/supabase-client.js");
+    assert.notEqual(posicaoCdn, -1, `${arquivo} carrega supabase-client.js sem o CDN do Supabase`);
+    assert.ok(posicaoCdn < posicaoCliente, `${arquivo}: o CDN deve vir antes de supabase-client.js`);
+  });
+});

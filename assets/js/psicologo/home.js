@@ -142,8 +142,8 @@
       client.from("consultas").select("paciente_id").eq("psicologo_id", psychologistId).neq("status", "cancelled"),
       client.from("consultas").select("id, horario, modalidade, paciente:perfis!consultas_paciente_id_fkey(nome_completo, nome_social)").eq("psicologo_id", psychologistId).eq("data", today).neq("status", "cancelled").order("horario"),
       client.from("solicitacoes").select("horario, modalidade, paciente:perfis!solicitacoes_paciente_id_fkey(nome_completo, nome_social)").eq("psicologo_id", psychologistId).eq("status", "pending").order("data_desejada").order("horario"),
-      client.from("notas").select("consulta_id, conteudo, atualizado_em, consultas!inner(data, paciente:perfis!consultas_paciente_id_fkey(nome_completo, nome_social))").eq("psicologo_id", psychologistId).neq("conteudo", "").order("atualizado_em", { ascending: false }).limit(3),
-      client.from("notas").select("consulta_id", { count: "exact", head: true }).eq("psicologo_id", psychologistId).neq("conteudo", "")
+      client.from("notas").select("consulta_id, conteudo, atualizado_em, consultas!inner(data, paciente:perfis!consultas_paciente_id_fkey(nome_completo, nome_social))").eq("psicologo_id", psychologistId).not("conteudo", "is", null).order("atualizado_em", { ascending: false }).limit(3),
+      client.from("notas").select("consulta_id", { count: "exact", head: true }).eq("psicologo_id", psychologistId).not("conteudo", "is", null)
     ]);
 
     if ([profileResult, patientsResult, appointmentsResult, requestsResult, notesResult, notesCountResult].some((result) => result.error)) {

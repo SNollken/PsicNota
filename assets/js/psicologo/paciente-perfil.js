@@ -107,7 +107,7 @@
     document.querySelector("#patientPhone").textContent = profile.phone || "Telefone não informado";
     document.querySelector("#patientLocation").textContent = [profile.city, profile.state, profile.country].filter(Boolean).join(", ") || "Local não informado";
     const avatar = document.querySelector("#patientAvatar");
-    if (profile.avatarDataUrl || profile.avatar_url) avatar.style.backgroundImage = `url("${profile.avatarDataUrl || profile.avatar_url}")`;
+    if (profile.avatarDataUrl) avatar.style.backgroundImage = `url("${profile.avatarDataUrl}")`;
     else avatar.textContent = display.split(/\s+/).slice(0, 2).map(part => part[0]).join("").toUpperCase();
     const upcoming = appointments.filter(item => new Date(`${item.date}T${item.time || "00:00"}`) >= now).sort((a, b) => new Date(`${a.date}T${a.time || "00:00"}`) - new Date(`${b.date}T${b.time || "00:00"}`))[0];
     const last = appointments.find(item => new Date(`${item.date}T${item.time || "00:00"}`) < now);
@@ -132,6 +132,17 @@
       .maybeSingle();
     if (error) throw error;
     if (!patient) throw new Error("Paciente não encontrado.");
+
+    if (patient.avatar_url) {
+      try {
+        const { data: assinada, error: erroAvatar } = await client.storage.from("avatars").createSignedUrl(patient.avatar_url, 3600);
+        if (!erroAvatar && assinada?.signedUrl) profile.avatarDataUrl = assinada.signedUrl;
+        else console.warn("Avatar não encontrado no bucket; usando iniciais.");
+      } catch {
+        console.warn("Avatar não encontrado no bucket; usando iniciais.");
+      }
+    }
+
     profile = {
       fullName: patient.nome_completo,
       socialName: patient.nome_social,
