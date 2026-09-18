@@ -960,6 +960,7 @@ input[readonly] {
 }
 
 .report-card {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 14px;
@@ -1058,21 +1059,29 @@ input[readonly] {
 }
 
 .report-card-actions {
+  position: absolute;
+  right: 46px;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   align-items: center;
   gap: 2px;
-  flex: 0 0 auto;
+  padding: 4px;
+  border-radius: 10px;
+  background: rgba(243, 251, 254, 0.96);
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.16s;
 }
 
 .report-card:hover .report-card-actions,
 .report-card:focus-within .report-card-actions {
   opacity: 1;
+  pointer-events: auto;
 }
 
 @media (hover: none) {
-  .report-card-actions { opacity: 1; }
+  .report-card-actions { opacity: 1; pointer-events: auto; }
 }
 
 .report-card-action {
@@ -1102,7 +1111,7 @@ input[readonly] {
 .reports-panel-actions {
   display: grid;
   justify-items: center;
-  margin-top: 8px;
+  margin-top: 30px;
 }
 
 .reports-new-button {
@@ -1146,15 +1155,6 @@ input[readonly] {
   font-size: 12px;
   font-weight: 800;
   white-space: nowrap;
-}
-
-.report-footer-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  flex-wrap: wrap;
-  padding-top: 4px;
 }
 
 .draft-status {
@@ -1201,11 +1201,6 @@ input[readonly] {
 .mood-emoji {
   font-size: 16px;
   line-height: 1;
-}
-
-.report-draft-badge {
-  margin-left: 8px;
-  vertical-align: middle;
 }
 
 .report-document-mood {

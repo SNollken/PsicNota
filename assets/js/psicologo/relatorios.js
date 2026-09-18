@@ -66,18 +66,6 @@ const BLOCKS = [
   { key: 'proxima', label: 'Encaminhamentos', el: () => elements.blockProxima }
 ];
 
-const MOODS = [
-  { key: 'muito-bem', label: 'Muito bem', emoji: '😄' },
-  { key: 'bem', label: 'Bem', emoji: '🙂' },
-  { key: 'neutro', label: 'Estável', emoji: '😐' },
-  { key: 'mal', label: 'Mal', emoji: '🙁' },
-  { key: 'muito-mal', label: 'Muito mal', emoji: '😞' }
-];
-
-function moodInfo(key) {
-  return MOODS.find((mood) => mood.key === key) || null;
-}
-
 let currentMood = null;
 
 function getFreeText() {
@@ -286,7 +274,11 @@ function renderList() {
     const meta = document.createElement('span');
     meta.className = 'report-card-meta';
     meta.textContent = appointment
-      ? `${shortDateFormatter.format(data.fromDateKey(appointment.date))} · ${appointment.time} · ${appointment.mode}`
+      ? [
+          shortDateFormatter.format(data.fromDateKey(appointment.date)),
+          appointment.time,
+          appointment.mode
+        ].filter(Boolean).join(' · ')
       : `Atualizado em ${shortDateFormatter.format(new Date(report.updatedAt || report.createdAt))}`;
     body.append(meta);
 
