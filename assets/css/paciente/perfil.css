@@ -95,7 +95,7 @@ svg {
 
   min-height: 185px;
 
-  gap: 28px;
+  gap: 42px;
 
   padding: 14px 10px 14px 22px;
 
@@ -805,6 +805,10 @@ input::placeholder {
 @media (max-width: 900px) {
   .profile-header {
     flex-wrap: wrap;
+  }
+
+  .profile-contacts {
+    width: 100%;
   }
 
   .profile-actions {

@@ -14,6 +14,21 @@
   let profile = {};
   let notes = [];
 
+  const menuButton = document.querySelector(".mobile-menu");
+  const sidebar = document.querySelector(".sidebar");
+  if (menuButton && sidebar) {
+    menuButton.addEventListener("click", () => {
+      const isOpen = sidebar.classList.toggle("open");
+      menuButton.setAttribute("aria-expanded", String(isOpen));
+    });
+    document.addEventListener("click", (event) => {
+      if (window.innerWidth <= 720 && !sidebar.contains(event.target) && !menuButton.contains(event.target)) {
+        sidebar.classList.remove("open");
+        menuButton.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
   function loadLocalRecords() {
     appointments = data.getAppointments().filter(item => item.patient === patientName && item.status !== "cancelled").sort((a, b) => new Date(`${b.date}T${b.time || "00:00"}`) - new Date(`${a.date}T${a.time || "00:00"}`));
     reports = data.getReports().filter(item => item.patient === patientName).sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));

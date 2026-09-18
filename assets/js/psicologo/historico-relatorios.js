@@ -10,11 +10,27 @@ new URLSearchParams(window.location.search);
 
 
 const patientName =
-params.get("paciente") || "Paciente";
+  params.get("paciente") || "Paciente";
 
+
+const menuButton = document.querySelector(".mobile-menu");
+const sidebar = document.querySelector(".sidebar");
+if (menuButton && sidebar) {
+  menuButton.addEventListener("click", () => {
+    const isOpen = sidebar.classList.toggle("open");
+    menuButton.setAttribute("aria-expanded", String(isOpen));
+  });
+  document.addEventListener("click", (event) => {
+    if (window.innerWidth <= 720 && !sidebar.contains(event.target) && !menuButton.contains(event.target)) {
+      sidebar.classList.remove("open");
+      menuButton.setAttribute("aria-expanded", "false");
+    }
+  });
+}
 
 
 const elements = {
+
 
 
 title:
