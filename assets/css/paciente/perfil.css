@@ -93,11 +93,11 @@ svg {
   align-items: center;
   justify-content: space-between;
 
-  min-height: 185px;
+  min-height: 183px;
 
   gap: 42px;
 
-  padding: 14px 10px 14px 22px;
+  padding: 13px 10px 20px 22px;
 
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
@@ -140,8 +140,9 @@ svg {
 
 .profile-person-copy {
   min-width: 0;
+  max-width: 320px;
 
-  flex: 1 1 auto;
+  flex: 0 0 auto;
 
   display: grid;
   gap: 4px;
@@ -224,6 +225,8 @@ h1 {
   width: 190px;
 
   flex: 0 0 auto;
+
+  margin-left: auto;
 }
 
 /* O design do cabeçalho mostra apenas "Editar perfil" e "Alterar senha";
@@ -392,7 +395,7 @@ h1 {
 
   gap: 30px;
 
-  margin-top: 14px;
+  margin: 14px 18px 0 3px;
 
   padding: 38px 6px 28px;
 
