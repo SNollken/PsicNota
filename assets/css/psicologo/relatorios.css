@@ -1701,3 +1701,15 @@ input[readonly] {
     justify-content: center;
   }
 }
+
+/* Remove o bloco ao redor do título do relatório */
+.report-editor-topbar {
+  background: transparent;
+  border: none;
+  padding: 10px 0 20px;
+}
+
+/* Mantém apenas o título centralizado */
+.report-editor-topbar h1 {
+  border: none;
+}
