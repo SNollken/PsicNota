@@ -80,6 +80,7 @@
       '          <small>Psicólogo</small>\n' +
       '        </span>\n' +
       '      </a>\n' +
+      '      <span class="demo-badge" aria-label="Ambiente de demonstração">Demonstração</span>\n' +
       '    </aside>'
     );
   }
@@ -108,6 +109,7 @@
       '          <small>Paciente</small>\n' +
       '        </span>\n' +
       '      </a>\n' +
+      '      <span class="demo-badge" aria-label="Ambiente de demonstração">Demonstração</span>\n' +
       '    </aside>'
     );
   }
