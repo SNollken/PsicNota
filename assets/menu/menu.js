@@ -131,44 +131,32 @@
     return 'psicologo';
   }
 
-  /* Varredura defensiva: remove qualquer chave psinote* que tenha sobrado nos
-     dois storages. A clearSession do shared-data cobre só a sessão; aqui vai
-     tudo que começar com 'psinote' (conforme a correção recomendada do F-08). */
-  function limparChavesPsinote() {
-    var storages = [window.localStorage, window.sessionStorage];
-    for (var i = 0; i < storages.length; i += 1) {
-      var storage = storages[i];
-      var chavesParaRemover = [];
-      for (var j = 0; j < storage.length; j += 1) {
-        var chave = storage.key(j);
-        if (chave && chave.indexOf('psinote') === 0) chavesParaRemover.push(chave);
-      }
-      for (var k = 0; k < chavesParaRemover.length; k += 1) {
-        try { storage.removeItem(chavesParaRemover[k]); } catch (error) { /* segue o logout */ }
-      }
-    }
-  }
+  /* MVP-04: logout apaga só a sessão, preservando dados clínicos do demo
+     (consultas, notas, relatórios cacheados no localStorage). */
 
-  /* Logout global do <psic-menu>. Funciona com ou sem o PsicNotaBackend
-     (profile-backend.js só carrega nas páginas de perfil):
-       1) signOut do Supabase quando existir (melhor esforço, não bloqueia);
-       2) clearSession do shared-data (presente em todas as páginas);
-       3) varredura das chaves psinote* remanescentes;
-       4) redirect relativo para o login. */
+  /* Logout global do <psic-menu>. Funciona com ou sem backend/cliente Supabase:
+       1) signOut do Supabase global (melhor esforço);
+       2) signOut do PsicNotaBackend se existir (perfil.html);
+       3) clearSession do shared-data (remove só as chaves de sessão);
+       4) redirect para o login. */
   function sair() {
+    try {
+      if (window.PsicNotaSupabase && typeof window.PsicNotaSupabase.auth.signOut === 'function') {
+        window.PsicNotaSupabase.auth.signOut();
+      }
+    } catch (error) { /* melhor esforço: o logout local segue mesmo sem cliente Supabase */ }
+
     try {
       if (window.PsicNotaBackend && typeof window.PsicNotaBackend.signOut === 'function') {
         window.PsicNotaBackend.signOut();
       }
-    } catch (error) { /* melhor esforço: o logout local segue mesmo sem backend */ }
+    } catch (error) { /* melhor esforço: profile-backend.js só carrega nas páginas de perfil */ }
 
     try {
       if (window.PsiNoteData && typeof window.PsiNoteData.clearSession === 'function') {
         window.PsiNoteData.clearSession();
       }
     } catch (error) { /* melhor esforço */ }
-
-    limparChavesPsinote();
 
     window.location.href = LOGIN_HREF;
   }
