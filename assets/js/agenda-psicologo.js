@@ -931,7 +931,12 @@ if (ui.mobileMenu && ui.sidebar) {
 
 window.addEventListener("storage", renderAll);
 
-renderAll();
+void (async function () {
+  const _auth = await window.PsicNotaBackend.requireProfile("psicologo");
+  if (!_auth) return;
 
-void loadRemoteAppointments();
-void loadRemoteRequests();
+  renderAll();
+
+  void loadRemoteAppointments();
+  void loadRemoteRequests();
+}());

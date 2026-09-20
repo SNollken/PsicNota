@@ -351,6 +351,9 @@ function renderAppointments(){
 
 async function init(){
 
+  const _auth = await window.PsicNotaBackend.requireProfile("psicologo");
+  if (!_auth) return;
+
   await data.syncRemoteData();
 
   renderPatient();

@@ -1173,6 +1173,13 @@ async function loadPatientsFromDatabase() {
     throw new Error("Cliente do Supabase indisponível.");
   }
 
+  // Guarda de autenticação e papel
+  const backend = window.PsicNotaBackend;
+  if (backend) {
+    const allowed = await backend.requireProfile("psicologo");
+    if (!allowed) return;
+  }
+
   const { data: authData, error: authError } = await client.auth.getUser();
 
   if (authError || !authData.user) {

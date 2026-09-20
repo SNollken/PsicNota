@@ -156,6 +156,9 @@
   }
 
   async function loadHome() {
+    const _auth = await window.PsicNotaBackend.requireProfile("paciente");
+    if (!_auth) return;
+
     if (!client) {
       loadLocalFallback();
       return;

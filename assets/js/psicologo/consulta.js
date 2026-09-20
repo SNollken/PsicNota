@@ -117,6 +117,9 @@ async function saveNotes() {
 }
 
 async function init() {
+  const _auth = await window.PsicNotaBackend.requireProfile("psicologo");
+  if (!_auth) return;
+
   renderHeader();
 
   await data.syncRemoteData();

@@ -45,6 +45,9 @@ const BLOCKS = [
 ];
 
 async function render() {
+  const _auth = await window.PsicNotaBackend.requireProfile("psicologo");
+  if (!_auth) return;
+
   await data.syncRemoteData();
 
   const report = data.getReports().find((item) => item.id === reportId);

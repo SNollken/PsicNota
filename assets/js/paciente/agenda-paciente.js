@@ -2907,14 +2907,17 @@ async function loadRemoteAppointments() {
    INICIALIZAÇÃO
    ========================================================= */
 
-renderPatientProfile();
+void (async function () {
+  const _auth = await window.PsicNotaBackend.requireProfile("paciente");
+  if (!_auth) return;
 
-renderCalendar();
+  renderPatientProfile();
 
-renderSummary();
+  renderCalendar();
 
-void loadRemoteAppointments();
+  renderSummary();
 
-void loadRemoteRequests();
+  void loadRemoteAppointments();
 
-void loadRemoteRequests();
+  void loadRemoteRequests();
+}());
