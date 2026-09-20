@@ -412,7 +412,7 @@ function renderPatient(patient) {
   function openHistory() {
 
     window.location.href =
-      `historico.html?paciente=${encodeURIComponent(
+      `historico.html?${patient.id ? `id=${encodeURIComponent(patient.id)}&` : ""}paciente=${encodeURIComponent(
         patient.name
       )}`;
 
@@ -1203,6 +1203,7 @@ async function loadPatientsFromDatabase() {
     const name = patient.nome_social || patient.nome_completo || patient.email || "Paciente";
     const stats = statsByName.get(name) || {};
     return {
+      id: patient.id,
       name,
       next: stats.next || null,
       last: stats.last || null,

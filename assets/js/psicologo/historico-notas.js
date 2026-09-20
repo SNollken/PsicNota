@@ -8,6 +8,10 @@ const params =
   new URLSearchParams(window.location.search);
 
 
+const patientId =
+  params.get("id") || "";
+
+
 const patientName =
   params.get("paciente") || "Paciente";
 
@@ -94,6 +98,7 @@ function getPatient() {
     .getProfiles()
     .find(
       patient =>
+        (patientId && patient.id === patientId) ||
         patient.name === patientName ||
         patient.fullName === patientName
     );
@@ -179,6 +184,9 @@ function updateTabsLinks() {
   const encodedPatient =
     encodeURIComponent(patientName);
 
+  const idParam =
+    patientId ? `id=${encodeURIComponent(patientId)}&` : "";
+
 
   document
     .querySelectorAll(".patient-tabs a")
@@ -201,7 +209,7 @@ function updateTabsLinks() {
 
 
       link.href =
-        `${page}?paciente=${encodedPatient}${page === "paciente-perfil.html" ? "&aba=details" : ""}`;
+        `${page}?${idParam}paciente=${encodedPatient}${page === "paciente-perfil.html" ? "&aba=details" : ""}`;
 
     });
 
@@ -220,7 +228,7 @@ function getPatientNotes() {
 
     .filter(
       appointment =>
-        appointment.patient === patientName &&
+        (patientId ? appointment.patientId === patientId : appointment.patient === patientName) &&
         data.hasAppointmentNote(appointment.id)
     )
 

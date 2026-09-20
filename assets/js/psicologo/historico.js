@@ -6,12 +6,15 @@ const data = window.PsiNoteData;
 
 const params = new URLSearchParams(window.location.search);
 
+const patientId = params.get("id") || "";
+
 const patientName =
   params.get("paciente") || "Paciente";
 
-  function updateTabsLinks(){
+   function updateTabsLinks(){
 
   const encodedPatient = encodeURIComponent(patientName);
+  const idParam = patientId ? `id=${encodeURIComponent(patientId)}&` : "";
 
   document.querySelectorAll(".patient-tabs a").forEach(link=>{
 
@@ -19,7 +22,7 @@ const patientName =
 
     const page = link.getAttribute("href").split("?")[0];
 
-    link.href = `${page}?paciente=${encodedPatient}${page === "paciente-perfil.html" ? "&aba=details" : ""}`;
+    link.href = `${page}?${idParam}paciente=${encodedPatient}${page === "paciente-perfil.html" ? "&aba=details" : ""}`;
 
   });
 
@@ -126,6 +129,7 @@ function getPatient() {
     .getProfiles()
     .find(
       p =>
+        (patientId && p.id === patientId) ||
         p.name === patientName ||
         p.fullName === patientName
     );
@@ -239,7 +243,7 @@ function renderAppointments() {
 
         item =>
 
-          item.patient === patientName &&
+          (patientId ? item.patientId === patientId : item.patient === patientName) &&
 
           item.status !== "cancelled"
 
@@ -456,7 +460,7 @@ function renderNotes() {
 
         item =>
 
-          item.patient === patientName
+          (patientId ? item.patientId === patientId : item.patient === patientName)
 
       );
 
@@ -569,7 +573,7 @@ function renderReports() {
 
         item =>
 
-          item.patient === patientName
+          (patientId ? item.patientId === patientId : item.patient === patientName)
 
       )
 

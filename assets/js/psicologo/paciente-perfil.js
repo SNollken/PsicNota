@@ -4,6 +4,7 @@
   const data = window.PsiNoteData;
   const client = window.PsicNotaSupabase;
   const query = new URLSearchParams(location.search);
+  const patientId = query.get("id") || "";
   const patientName = query.get("paciente") || "";
   const escape = data.escapeHtml;
   const tabs = ["overview", "appointments", "notes", "reports", "details"];
@@ -30,8 +31,10 @@
   }
 
   function loadLocalRecords() {
-    appointments = data.getAppointments().filter(item => item.patient === patientName && item.status !== "cancelled").sort((a, b) => new Date(`${b.date}T${b.time || "00:00"}`) - new Date(`${a.date}T${a.time || "00:00"}`));
-    reports = data.getReports().filter(item => item.patient === patientName).sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
+    const matchId = profile.id || patientId;
+    const matchPatient = item => matchId ? item.patientId === matchId : item.patient === patientName;
+    appointments = data.getAppointments().filter(item => matchPatient(item) && item.status !== "cancelled").sort((a, b) => new Date(`${b.date}T${b.time || "00:00"}`) - new Date(`${a.date}T${a.time || "00:00"}`));
+    reports = data.getReports().filter(matchPatient).sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
     notes = appointments.filter(item => data.hasAppointmentNote(item.id)).map(item => ({ appointment: item, text: data.getAppointmentNote(item.id) }));
   }
 
@@ -94,7 +97,7 @@
   }
 
   function render() {
-    if (!patientName) {
+    if (!patientName && !patientId) {
       document.querySelector(".profile-content").innerHTML = `<p class="empty">Selecione um paciente em <a href="pacientes.html">Meus pacientes</a>.</p>`;
       return;
     }
@@ -115,8 +118,8 @@
     document.querySelector("#panel-overview").innerHTML = `<div class="overview-top">${appointmentPreview("Próxima consulta", upcoming)}${appointmentPreview("Última consulta", last)}</div><div class="overview-lists"><div class="overview-list"><h2>Notas Rápidas</h2><div class="record-list">${noteCards(notes.slice(0, 3)) || empty("Nenhuma nota registrada.")}</div></div></div>`;
     const appointmentPanel = document.querySelector("#panel-appointments");
     appointmentPanel.innerHTML = `<div class="records-panel appointments-panel">${appointments.map(item => `<div class="appointment-row"><span aria-hidden="true">▣</span><strong class="appointment-date">${formatDate(item.date)}</strong><span>${escape(item.time || "")} • ${escape(item.mode || "Não informada")}</span><div class="appointment-actions"><a href="notas.html?consulta=${encodeURIComponent(item.id)}">▢ Abrir Notas</a><a href="consulta.html?id=${encodeURIComponent(item.id)}" aria-label="Abrir consulta">›</a></div></div>`).join("")}${appointments.length ? "" : empty("Nenhuma consulta registrada para este paciente.")}</div>`;
-    document.querySelector("#panel-notes").append(section("Nota", notes, "note"));
-    document.querySelector("#panel-reports").append(section("Relatório", reports, "report"));
+    document.querySelector("#panel-notes").replaceChildren(section("Nota", notes, "note"));
+    document.querySelector("#panel-reports").replaceChildren(section("Relatório", reports, "report"));
     document.querySelector("#panel-details").innerHTML = `<div class="details-shell">${detailCard("♙ &nbsp; Informações pessoais", [field("Nome completo", profile.fullName || patientName), field("Nome social", profile.socialName), field("Data de Nascimento", profile.birthDate ? formatDate(profile.birthDate) : ""), field("Pronomes", profile.pronoun), field("Gênero", profile.gender)], "")}${detailCard("☎ &nbsp; Contato", [field("E-mail", profile.email), field("Celular", profile.phone), field("Cidade", profile.city), field("Estado", profile.state)], "four")}${detailCard("♢ &nbsp; Preferências de atendimento", [field("Formato preferido", profile.preferredFormat), field("Período preferido", profile.preferredPeriod), field("Sobre mim", profile.about)], "three")}${availability("Online", profile.availabilityOnline)}${availability("Presencial", profile.availabilityInPerson)}</div>`;
     document.querySelector("#quickNoteButton").addEventListener("click", () => { if (appointments[0]) location.href = `notas.html?consulta=${encodeURIComponent(appointments[0].id)}`; else selectTab("notes"); });
     selectTab(query.get("aba") || "overview");
@@ -124,13 +127,25 @@
 
   async function loadProfile() {
     if (!client) throw new Error("Não foi possível iniciar a conexão com o banco de dados.");
-    const { data: patient, error } = await client
-      .from("perfis")
-      .select("*")
-      .eq("papel", "paciente")
-      .eq("nome_completo", patientName)
-      .maybeSingle();
-    if (error) throw error;
+    let patient = null;
+    if (patientId) {
+      const { data: row, error } = await client
+        .from("perfis")
+        .select("*")
+        .eq("id", patientId)
+        .single();
+      if (error) throw error;
+      patient = row;
+    } else {
+      const { data: row, error } = await client
+        .from("perfis")
+        .select("*")
+        .eq("papel", "paciente")
+        .eq("nome_completo", patientName)
+        .maybeSingle();
+      if (error) throw error;
+      patient = row;
+    }
     if (!patient) throw new Error("Paciente não encontrado.");
 
     if (patient.avatar_url) {
@@ -144,6 +159,7 @@
     }
 
     profile = {
+      id: patient.id,
       fullName: patient.nome_completo,
       socialName: patient.nome_social,
       birthDate: patient.data_nascimento,
@@ -173,7 +189,8 @@
       button.tabIndex = selected ? 0 : -1;
     });
     tabs.forEach(tab => { document.querySelector(`#panel-${tab}`).hidden = tab !== active; });
-    history.replaceState(null, "", `?paciente=${encodeURIComponent(patientName)}&aba=${active}`);
+    const activeId = profile.id || patientId;
+    history.replaceState(null, "", `?${activeId ? `id=${encodeURIComponent(activeId)}&` : ""}paciente=${encodeURIComponent(patientName)}&aba=${active}`);
   }
 
   document.querySelectorAll('[role="tab"]').forEach((button, index) => {
@@ -190,7 +207,7 @@
   async function init() {
     await data.syncRemoteData();
     loadLocalRecords();
-    if (!patientName) render();
+    if (!patientName && !patientId) render();
     else void loadProfile().catch(showProfileError);
   }
 

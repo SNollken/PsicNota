@@ -7,6 +7,10 @@ const data = window.PsiNoteData;
 const params = new URLSearchParams(window.location.search);
 
 
+const patientId =
+  params.get("id") || "";
+
+
 const patientName =
   params.get("paciente") || "Paciente";
 
@@ -57,6 +61,7 @@ function renderPatient(){
   const patient =
     profiles.find(
       p =>
+        (patientId && p.id === patientId) ||
         p.name === patientName ||
         p.fullName === patientName
     );
@@ -141,6 +146,8 @@ function updateTabsLinks(){
   const encodedPatient =
     encodeURIComponent(patientName);
 
+  const idParam =
+    patientId ? `id=${encodeURIComponent(patientId)}&` : "";
 
 
   document
@@ -157,7 +164,7 @@ function updateTabsLinks(){
 
 
       link.href =
-        `${page}?paciente=${encodedPatient}${page === "paciente-perfil.html" ? "&aba=details" : ""}`;
+        `${page}?${idParam}paciente=${encodedPatient}${page === "paciente-perfil.html" ? "&aba=details" : ""}`;
 
 
     });
@@ -180,7 +187,7 @@ function renderAppointments(){
 
       .filter(
         item =>
-          item.patient === patientName &&
+          (patientId ? item.patientId === patientId : item.patient === patientName) &&
           item.status !== "cancelled"
       )
 

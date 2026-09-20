@@ -77,8 +77,9 @@ function renderAppointmentInfo() {
   elements.infoStatus.textContent = appointment.status === 'confirmed' ? 'Confirmada' : appointment.status === 'cancelled' ? 'Cancelada' : 'Pendente';
 
   const encodedPatient = encodeURIComponent(appointment.patient);
+  const idParam = appointment.patientId ? `id=${encodeURIComponent(appointment.patientId)}&` : "";
   elements.patientPillAvatar.textContent = getInitials(appointment.patient);
-  elements.historicoLink.href = `historico.html?paciente=${encodedPatient}`;
+  elements.historicoLink.href = `historico.html?${idParam}paciente=${encodedPatient}`;
 }
 
 function renderMoodPicker() {
@@ -138,7 +139,7 @@ async function init() {
   elements.saveNoteButton.addEventListener('click', () => void saveNotes());
   elements.finishAppointmentButton.addEventListener('click', async () => {
     await saveNotes();
-    window.location.href = `historico.html?paciente=${encodeURIComponent(appointment.patient)}`;
+    window.location.href = `historico.html?${appointment.patientId ? `id=${encodeURIComponent(appointment.patientId)}&` : ""}paciente=${encodeURIComponent(appointment.patient)}`;
   });
   elements.noteMoodPicker.querySelectorAll('.mood-option').forEach((option) => {
     option.addEventListener('click', () => {

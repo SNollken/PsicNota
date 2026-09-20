@@ -8,6 +8,9 @@ const params =
 new URLSearchParams(window.location.search);
 
 
+const patientId =
+  params.get("id") || "";
+
 
 const patientName =
   params.get("paciente") || "Paciente";
@@ -107,6 +110,7 @@ const patient =
 data.getProfiles()
 .find(
 p =>
+(patientId && p.id === patientId) ||
 p.name === patientName ||
 p.fullName === patientName
 );
@@ -163,7 +167,7 @@ return data.getReports()
 
 .filter(
 report =>
-report.patient === patientName
+(patientId ? report.patientId === patientId : report.patient === patientName)
 )
 
 .sort(
@@ -340,6 +344,8 @@ renderReports();
 function updateTabs(){
 
 
+const idParam = patientId ? `id=${encodeURIComponent(patientId)}&` : "";
+
 document
 .querySelectorAll(".patient-tabs a")
 .forEach(link=>{
@@ -352,7 +358,7 @@ link.href.split("?")[0];
 
 
 link.href =
-`${page}?paciente=${encodeURIComponent(patientName)}${page === "paciente-perfil.html" ? "&aba=details" : ""}`;
+`${page}?${idParam}paciente=${encodeURIComponent(patientName)}${page === "paciente-perfil.html" ? "&aba=details" : ""}`;
 
 
 });

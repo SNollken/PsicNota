@@ -3,13 +3,15 @@
 (() => {
   const data = window.PsiNoteData;
   const client = window.PsicNotaSupabase;
-  const patientName = new URLSearchParams(window.location.search).get("paciente") || "Paciente";
+  const queryParams = new URLSearchParams(window.location.search);
+  const patientId = queryParams.get("id") || "";
+  const patientName = queryParams.get("paciente") || "Paciente";
   const detailsTab = document.querySelector("[data-patient-details]");
   const tabs = document.querySelector(".patient-tabs");
 
   if (!detailsTab || !tabs) return;
 
-  let profile = data?.getProfiles?.().find(item => item.name === patientName || item.fullName === patientName) || {};
+  let profile = data?.getProfiles?.().find(item => (patientId && item.id === patientId) || item.name === patientName || item.fullName === patientName) || {};
   const text = value => String(value || "Não informado");
   const panel = document.createElement("section");
   const field = (label, value) => `<div class="detail-field"><label>${label}</label><output>${text(value)}</output></div>`;
@@ -35,13 +37,26 @@
 
   async function loadPatient() {
     if (!client) return;
-    const { data: patient, error } = await client
-      .from("perfis")
-      .select("*")
-      .eq("papel", "paciente")
-      .eq("nome_completo", patientName)
-      .maybeSingle();
-    if (error || !patient) return;
+    let patient = null;
+    if (patientId) {
+      const { data: row, error } = await client
+        .from("perfis")
+        .select("*")
+        .eq("id", patientId)
+        .single();
+      if (error || !row) return;
+      patient = row;
+    } else {
+      const { data: row, error } = await client
+        .from("perfis")
+        .select("*")
+        .eq("papel", "paciente")
+        .eq("nome_completo", patientName)
+        .maybeSingle();
+      if (error || !row) return;
+      patient = row;
+    }
+    if (!patient) return;
     profile = {
       fullName: patient.nome_completo,
       socialName: patient.nome_social,
