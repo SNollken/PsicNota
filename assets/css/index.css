@@ -515,12 +515,12 @@ svg {
 
 .visual-orbit-one {
   width: 74%;
-  height: 74%;
+  aspect-ratio: 1 / 1;
 }
 
 .visual-orbit-two {
   width: 50%;
-  height: 50%;
+  aspect-ratio: 1 / 1;
 }
 
 .security-section {
