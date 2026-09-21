@@ -105,7 +105,7 @@ fieldset {
 
   background: var(--left-bg);
 
-  border-right: 1px solid #e3edf1;
+  border-right: 1px solid #DCE6EA;
 }
 
 
@@ -209,7 +209,7 @@ fieldset {
 
   letter-spacing: -0.3px;
 
-  color: #162033;
+  color: #111827;
 
 }
 .register-brand .brand-content p {
@@ -228,7 +228,7 @@ fieldset {
 
   line-height: 1.55;
 
-  color: #405365;
+  color: #334155;
 
 }
 
@@ -384,7 +384,7 @@ fieldset {
 
   padding: 0 16px;
 
-  border: 1px solid #d8e4e9;
+  border: 1px solid #DCE6EA;
 
   border-radius: 8px;
 
@@ -399,9 +399,9 @@ fieldset {
 /* Perfil selecionado */
 
 .role-option > input:checked + .role-option-body {
-  border: 1.5px solid #2d7089;
+  border: 1.5px solid #1F637A;
 
-  background: #f1f9fc;
+  background: #F3FBFE;
 }
 
 
@@ -422,9 +422,9 @@ fieldset {
 
   border-radius: 50%;
 
-  background: #eff8fb;
+  background: #F3FBFE;
 
-  color: #36778e;
+  color: #1F637A;
 }
 
 .role-icon svg {
@@ -465,7 +465,7 @@ fieldset {
 
   line-height: 1.15;
 
-  color: #18212d;
+  color: #111827;
 }
 
 .role-text small {
@@ -477,7 +477,7 @@ fieldset {
 
   line-height: 1.2;
 
-  color: #657680;
+  color: #64727C;
 }
 
 
@@ -518,7 +518,7 @@ fieldset {
 
   text-transform: uppercase;
 
-  color: #34758c;
+  color: #1F637A;
 }
 
 .section-heading span {
@@ -595,7 +595,7 @@ fieldset {
 
   padding: 0 14px;
 
-  border: 1px solid #d5e4ea;
+  border: 1px solid #DCE6EA;
 
   border-radius: 999px;
 
@@ -611,7 +611,7 @@ fieldset {
 
   font-weight: 400;
 
-  color: #354650;
+  color: #334155;
 
   transition:
     border-color 0.2s ease,
@@ -620,14 +620,14 @@ fieldset {
 }
 
 .form-group input::placeholder {
-  color: #84949d;
+  color: #808F9A;
 
   opacity: 1;
 }
 
 .form-group input:focus,
 .form-group select:focus {
-  border-color: #7fafc0;
+  border-color: #1F637A;
 
   background: #ffffff;
 
@@ -644,7 +644,7 @@ fieldset {
 
   cursor: pointer;
 
-  color: #778892;
+  color: #808F9A;
 }
 
 
@@ -723,7 +723,7 @@ fieldset {
 
   line-height: 1.3;
 
-  color: #89979f;
+  color: #808F9A;
 }
 
 
@@ -762,7 +762,7 @@ fieldset {
 
   font-size: 8px;
 
-  color: #b42318;
+  color: #D90307;
 }
 
 .field-error:empty {
@@ -793,7 +793,7 @@ fieldset {
 
   line-height: 1.3;
 
-  color: #292f34;
+  color: #2C2C2C;
 
   cursor: pointer;
 }
@@ -808,7 +808,7 @@ fieldset {
 
   margin: 0;
 
-  accent-color: #333333;
+  accent-color: #2C2C2C;
 
   cursor: pointer;
 }
@@ -885,7 +885,7 @@ fieldset {
 
   font-weight: 400;
 
-  color: #828c92;
+  color: #808F9A;
 }
 
 .auth-switch a {
@@ -895,7 +895,7 @@ fieldset {
 
   font-weight: 700;
 
-  color: #27677e;
+  color: #1F637A;
 
   text-decoration: none;
 }
@@ -968,7 +968,7 @@ fieldset {
     padding: 24px 22px 32px;
 
     border-right: 0;
-    border-bottom: 1px solid #e3edf1;
+    border-bottom: 1px solid #DCE6EA;
   }
 
   .register-brand .brand {
