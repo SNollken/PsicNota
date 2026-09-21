@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Novo relatório da consulta no PsicNota" />
+  <title>PsicNota | Novo relatório da consulta</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/css/psicologo/relatorio-novo.css" />
+  <link rel="stylesheet" href="../assets/menu/menu.css" />
+  <script src="../assets/menu/menu.js"></script>
+</head>
+
+<body class="new-report-page">
+  <div class="app-shell">
+    <psic-menu tipo="psicologo" ativo="relatorios"></psic-menu>
+
+    <main class="main-content" id="mainContent">
+      <header class="page-header">
+        <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+        </button>
+        <h1>Novo relatório da consulta</h1>
+      </header>
+
+      <form class="report-form" action="#" method="post">
+        <section class="report-details" aria-labelledby="consultationLabel">
+          <div class="consultation-field">
+            <label id="consultationLabel" for="consultation">Consulta</label>
+            <div class="consultation-select">
+              <span class="patient-avatar" aria-hidden="true">JS</span>
+              <select id="consultation" name="consultation">
+                <option value="janaina-2026-07-09">Janaina Silva - 09/07/2026 às 14:30</option>
+              </select>
+              <svg class="select-chevron" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m7 9.5 5 5 5-5" />
+              </svg>
+            </div>
+          </div>
+
+          <fieldset class="mood-fieldset">
+            <legend class="sr-only">Humor</legend>
+            <div class="mood-options">
+              <label class="mood-option">
+                <input type="radio" name="mood" value="muito-bem" />
+                <span class="mood-pill">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9" />
+                    <circle cx="9" cy="10" r=".7" class="face-eye" />
+                    <circle cx="15" cy="10" r=".7" class="face-eye" />
+                    <path d="M7.8 14c1.2 3.8 7.2 3.8 8.4 0" />
+                  </svg>
+                  Muito bem
+                </span>
+              </label>
+
+              <label class="mood-option">
+                <input type="radio" name="mood" value="bem" />
+                <span class="mood-pill">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9" />
+                    <circle cx="9" cy="10" r=".7" class="face-eye" />
+                    <circle cx="15" cy="10" r=".7" class="face-eye" />
+                    <path d="M8.8 14.2c1.5 2 4.9 2 6.4 0" />
+                  </svg>
+                  Bem
+                </span>
+              </label>
+
+              <label class="mood-option">
+                <input type="radio" name="mood" value="estavel" checked />
+                <span class="mood-pill">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" class="mood-star">
+                    <path d="m12 2.6 2.9 5.9 6.5.95-4.7 4.6 1.1 6.45L12 17.5 6.2 20.5l1.1-6.45-4.7-4.6 6.5-.95z" />
+                  </svg>
+                  Estável
+                </span>
+              </label>
+
+              <label class="mood-option">
+                <input type="radio" name="mood" value="mal" />
+                <span class="mood-pill">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" class="mood-star">
+                    <path d="m12 2.6 2.9 5.9 6.5.95-4.7 4.6 1.1 6.45L12 17.5 6.2 20.5l1.1-6.45-4.7-4.6 6.5-.95z" />
+                  </svg>
+                  Mal
+                </span>
+              </label>
+
+              <label class="mood-option">
+                <input type="radio" name="mood" value="muito-mal" />
+                <span class="mood-pill">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" class="mood-star">
+                    <path d="m12 2.6 2.9 5.9 6.5.95-4.7 4.6 1.1 6.45L12 17.5 6.2 20.5l1.1-6.45-4.7-4.6 6.5-.95z" />
+                  </svg>
+                  Muito mal
+                </span>
+              </label>
+            </div>
+          </fieldset>
+        </section>
+
+        <section class="editor-card" aria-labelledby="sessionDescriptionLabel">
+          <div class="editor-toolbar" role="toolbar" aria-label="Formatação do relatório">
+            <div class="toolbar-group toolbar-selects" aria-label="Estilo do parágrafo">
+              <label class="sr-only" for="blockStyle">Estilo de bloco</label>
+              <select id="blockStyle" class="toolbar-select">
+                <option value="normal">Normal</option>
+                <option value="titulo">Título</option>
+                <option value="subtitulo">Subtítulo</option>
+              </select>
+              <span class="select-chevron-wrap">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9.5 5 5 5-5" /></svg>
+              </span>
+              <label class="sr-only" for="fontSize">Tamanho da fonte</label>
+              <select id="fontSize" class="toolbar-select">
+                <option value="12">12</option>
+                <option value="14" selected>14</option>
+                <option value="16">16</option>
+                <option value="18">18</option>
+              </select>
+              <span class="select-chevron-wrap">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9.5 5 5 5-5" /></svg>
+              </span>
+            </div>
+
+            <div class="toolbar-group" aria-label="Estilo do texto">
+              <button class="toolbar-button text-format bold" type="button" aria-label="Negrito">B</button>
+              <button class="toolbar-button text-format italic" type="button" aria-label="Itálico">I</button>
+              <button class="toolbar-button text-format underline" type="button" aria-label="Sublinhado">U</button>
+            </div>
+
+            <div class="toolbar-group" aria-label="Listas e alinhamento">
+              <button class="toolbar-button" type="button" aria-label="Lista com marcadores">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11" /><circle cx="4.5" cy="6" r=".7" class="icon-fill" /><circle cx="4.5" cy="12" r=".7" class="icon-fill" /><circle cx="4.5" cy="18" r=".7" class="icon-fill" /></svg>
+              </button>
+              <button class="toolbar-button" type="button" aria-label="Lista numerada">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6h10M10 12h10M10 18h10M4 5h1.5v3M4 8h2M4 13h1.4a1 1 0 0 1 0 2H4v2h2" /></svg>
+              </button>
+              <button class="toolbar-button" type="button" aria-label="Alinhar à esquerda">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h11M4 18h14" /></svg>
+              </button>
+            </div>
+
+            <div class="toolbar-group" aria-label="Histórico de edição">
+              <button class="toolbar-button" type="button" aria-label="Desfazer">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7-5 5 5 5M4 12h9a6 6 0 0 1 6 6" /></svg>
+              </button>
+              <button class="toolbar-button" type="button" aria-label="Refazer">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 7 5 5-5 5M20 12h-9a6 6 0 0 0-6 6" /></svg>
+              </button>
+              <button class="toolbar-button" type="button" aria-label="Anexar arquivo">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.4 11.6-8.9 8.9a6 6 0 0 1-8.5-8.5l9.6-9.6a4 4 0 0 1 5.7 5.7l-9.6 9.6a2 2 0 1 1-2.8-2.8l8.9-8.9" /></svg>
+              </button>
+            </div>
+          </div>
+
+          <label class="sr-only" id="sessionDescriptionLabel" for="sessionDescription">Descrição da sessão</label>
+          <div class="editor-wrap">
+            <textarea id="sessionDescription" name="sessionDescription" placeholder="Escreva aqui a descrição da sessão, observações, intervenções e próximos passos..."></textarea>
+            <button class="voice-button" type="button" aria-label="Inserir por voz">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3" /></svg>
+            </button>
+          </div>
+        </section>
+
+        <footer class="form-actions">
+          <div class="attachment-compact">
+            <label class="attachment-dropzone" for="attachments">
+              <input id="attachments" name="attachments" type="file" multiple />
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 16V4M7.5 8.5 12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" />
+              </svg>
+              <span>Anexar arquivo</span>
+            </label>
+            <ul class="attachment-list">
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.4 11.6-8.9 8.9a6 6 0 0 1-8.5-8.5l9.6-9.6a4 4 0 0 1 5.7 5.7l-9.6 9.6a2 2 0 1 1-2.8-2.8l8.9-8.9" /></svg>
+                receita remedio.pdf
+                <button type="button" aria-label="Remover receita remedio.pdf">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+                </button>
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.4 11.6-8.9 8.9a6 6 0 0 1-8.5-8.5l9.6-9.6a4 4 0 0 1 5.7 5.7l-9.6 9.6a2 2 0 1 1-2.8-2.8l8.9-8.9" /></svg>
+                receita remedio.pdf
+                <button type="button" aria-label="Remover receita remedio.pdf">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+                </button>
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.4 11.6-8.9 8.9a6 6 0 0 1-8.5-8.5l9.6-9.6a4 4 0 0 1 5.7 5.7l-9.6 9.6a2 2 0 1 1-2.8-2.8l8.9-8.9" /></svg>
+                receita remedio.pdf
+                <button type="button" aria-label="Remover receita remedio.pdf">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+                </button>
+              </li>
+            </ul>
+          </div>
+          <div class="form-buttons">
+            <button class="button button-secondary" type="button">Salvar como rascunho</button>
+            <button class="button button-primary" type="submit">Salvar relatório</button>
+          </div>
+        </footer>
+      </form>
+    </main>
+  </div>
+</body>
+
+</html>
