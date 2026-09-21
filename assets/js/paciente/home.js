@@ -79,7 +79,13 @@
 
     buttons.append(enter, details);
     info.append(strong, modeSpan, withSpan, buttons);
-    box.append(info);
+
+    const badge = document.createElement("span");
+    badge.className = "calendar-circle";
+    badge.setAttribute("aria-hidden", "true");
+    badge.innerHTML = `<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>`;
+
+    box.append(badge, info);
   }
 
   function renderUpcomingList(upcoming) {
