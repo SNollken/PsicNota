@@ -1004,7 +1004,7 @@ body.modal-open { overflow: hidden; }
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(17, 24, 39, 0.42);
+  background: #f8fafb;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;

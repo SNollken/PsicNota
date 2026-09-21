@@ -157,7 +157,7 @@ h1 { font-size: 27px; line-height: 1.15; margin: 0; letter-spacing: -.02em; }
 .note-actions > span { margin-right: auto; color: var(--muted); font-size: 10px; }
 .save-status { min-height: 17px; color: var(--success); font-size: 10px; font-weight: 750; }
 
-.modal-backdrop { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 20px; background: rgba(17, 24, 39, .42); }
+.modal-backdrop { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 20px; background: #f8fafb; }
 .modal { width: min(600px, 100%); max-height: calc(100vh - 40px); overflow-y: auto; border: 1px solid var(--line-strong); background: var(--white); box-shadow: 0 24px 60px rgba(17, 24, 39, .18); }
 .modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding: 24px 26px 20px; border-top: 4px solid var(--blue-300); border-bottom: 1px solid var(--line); }
 .modal-header h2 { margin: 0; font-size: 20px; }
