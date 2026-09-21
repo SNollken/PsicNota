@@ -87,17 +87,11 @@ svg {
   letter-spacing: 0.055em;
 }
 
-.brand-mark {
+.brand-icon {
   width: 32px;
   height: 36px;
   display: block;
   flex: 0 0 auto;
-}
-
-.brand-mark img {
-  width: 100%;
-  height: 100%;
-  display: block;
   object-fit: contain;
 }
 
@@ -779,7 +773,7 @@ svg {
     font-size: 1.02rem;
   }
 
-  .brand-mark {
+  .brand-icon {
     width: 32px;
     height: 32px;
   }

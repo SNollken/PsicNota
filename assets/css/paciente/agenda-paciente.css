@@ -51,7 +51,6 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 }
 
 .brand { display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-size: 21px; font-weight: 750; padding: 0 10px 28px; }
-.brand-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; color: var(--blue-800); background: var(--blue-200); font-family: Georgia, serif; font-size: 22px; }
 .nav-label { color: #64727c; font-size: 11px; font-weight: 750; letter-spacing: .13em; padding: 0 12px; margin: 7px 0 8px; }
 .nav-label-spaced { margin-top: 22px; }
 .main-nav { display: grid; gap: 4px; }
