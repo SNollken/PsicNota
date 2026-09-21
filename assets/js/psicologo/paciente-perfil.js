@@ -7,6 +7,15 @@
   const patientId = query.get("id") || "";
   const patientName = query.get("paciente") || "";
   const escape = data.escapeHtml;
+  const ICONS = {
+    user: `<path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7 8a7 7 0 0 0-14 0"/>`,
+    phone: `<path d="M5 4h3l2 5-2 1.5a15 15 0 0 0 5.5 5.5L15 14l5 2v3a2 2 0 0 1-2 2A15 15 0 0 1 3 6a2 2 0 0 1 2-2Z"/>`,
+    globe: `<path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9s1.3-6.4 3.8-9Z"/>`,
+    pin: `<path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Zm0-8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>`,
+    mail: `<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>`,
+    calendar: `<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/>`
+  };
+  const sectionIcon = (inner) => `<span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24">${inner}</svg></span>`;
   const tabs = ["overview", "appointments", "notes", "reports", "details"];
   const dateFormat = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
   const now = new Date();
@@ -86,14 +95,14 @@
   function field(label, value) {
     return `<div class="detail-field"><label>${escape(label)}</label><output>${escape(value || "Não informado")}</output></div>`;
   }
-  function detailCard(title, fields, columns) {
-    return `<section class="detail-card"><h2>${escape(title)}</h2><div class="detail-grid ${columns}">${fields.join("")}</div></section>`;
+  function detailCard(icon, title, fields, columns) {
+    return `<section class="detail-card"><h2>${sectionIcon(icon)}<span>${escape(title)}</span></h2><div class="detail-grid ${columns}">${fields.join("")}</div></section>`;
   }
-  function availability(title, value) {
+  function availability(icon, title, value) {
     const days = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"];
     const periods = ["Manhã", "Tarde", "Noite"];
     const selected = Array.isArray(value) ? value : [];
-    return `<section class="detail-card"><h2>◉ &nbsp; Disponibilidade semanal — ${title}</h2><p>Horários em que a paciente tem preferência para consultas ${title.toLowerCase()}.</p><table class="availability"><thead><tr><th>Dia da semana</th>${periods.map(period => `<th>${period}</th>`).join("")}</tr></thead><tbody>${days.map(day => `<tr><th>${day}</th>${periods.map(period => `<td>${selected.includes(`${day}:${period}`) ? '<span class="available">✓ Disponível</span>' : "—"}</td>`).join("")}</tr>`).join("")}</tbody></table></section>`;
+    return `<section class="detail-card"><h2>${sectionIcon(icon)}<span>Disponibilidade semanal — ${escape(title)}</span></h2><p>Horários em que a paciente tem preferência para consultas ${title.toLowerCase()}.</p><table class="availability"><thead><tr><th>Dia da semana</th>${periods.map(period => `<th>${period}</th>`).join("")}</tr></thead><tbody>${days.map(day => `<tr><th>${day}</th>${periods.map(period => `<td>${selected.includes(`${day}:${period}`) ? '<span class="available">✓ Disponível</span>' : "—"}</td>`).join("")}</tr>`).join("")}</tbody></table></section>`;
   }
 
   function render() {
@@ -120,7 +129,7 @@
     appointmentPanel.innerHTML = `<div class="records-panel appointments-panel">${appointments.map(item => `<div class="appointment-row"><span aria-hidden="true">▣</span><strong class="appointment-date">${formatDate(item.date)}</strong><span>${escape(item.time || "")} • ${escape(item.mode || "Não informada")}</span><div class="appointment-actions"><a href="notas.html?consulta=${encodeURIComponent(item.id)}">▢ Abrir Notas</a><a href="consulta.html?id=${encodeURIComponent(item.id)}" aria-label="Abrir consulta">›</a></div></div>`).join("")}${appointments.length ? "" : empty("Nenhuma consulta registrada para este paciente.")}</div>`;
     document.querySelector("#panel-notes").replaceChildren(section("Nota", notes, "note"));
     document.querySelector("#panel-reports").replaceChildren(section("Relatório", reports, "report"));
-    document.querySelector("#panel-details").innerHTML = `<div class="details-shell">${detailCard("♙ &nbsp; Informações pessoais", [field("Nome completo", profile.fullName || patientName), field("Nome social", profile.socialName), field("Data de Nascimento", profile.birthDate ? formatDate(profile.birthDate) : ""), field("Pronomes", profile.pronoun), field("Gênero", profile.gender)], "")}${detailCard("☎ &nbsp; Contato", [field("E-mail", profile.email), field("Celular", profile.phone), field("Cidade", profile.city), field("Estado", profile.state)], "four")}${detailCard("♢ &nbsp; Preferências de atendimento", [field("Formato preferido", profile.preferredFormat), field("Período preferido", profile.preferredPeriod), field("Sobre mim", profile.about)], "three")}${availability("Online", profile.availabilityOnline)}${availability("Presencial", profile.availabilityInPerson)}</div>`;
+    document.querySelector("#panel-details").innerHTML = `<div class="details-shell">${detailCard(ICONS.user, "Informações pessoais", [field("Nome completo", profile.fullName || patientName), field("Nome social", profile.socialName), field("Data de Nascimento", profile.birthDate ? formatDate(profile.birthDate) : ""), field("Pronomes", profile.pronoun), field("Gênero", profile.gender)], "")}${detailCard(ICONS.phone, "Contato", [field("E-mail", profile.email), field("Celular", profile.phone), field("Cidade", profile.city), field("Estado", profile.state)], "four")}${detailCard(ICONS.globe, "Preferências de atendimento", [field("Formato preferido", profile.preferredFormat), field("Período preferido", profile.preferredPeriod), field("Sobre mim", profile.about)], "three")}${availability(ICONS.calendar, "Online", profile.availabilityOnline)}${availability(ICONS.calendar, "Presencial", profile.availabilityInPerson)}</div>`;
     document.querySelector("#quickNoteButton").addEventListener("click", () => { if (appointments[0]) location.href = `notas.html?consulta=${encodeURIComponent(appointments[0].id)}`; else selectTab("notes"); });
     selectTab(query.get("aba") || "overview");
   }
