@@ -502,7 +502,8 @@ svg {
   position: relative;
   z-index: 2;
   width: 36%;
-  height: 36%;
+  height: auto;
+  aspect-ratio: 1 / 1;
   filter: drop-shadow(0 14px 12px rgba(23, 78, 97, 0.08));
 }
 
