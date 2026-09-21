@@ -34,7 +34,15 @@
 
       <header class="topbar reports-topbar" id="pageTopbar">
         <h1 id="pageTitle">Relatórios</h1>
-        <span class="badge report-total-badge" id="reportTotal">0 relatórios</span>
+        <div class="topbar-actions">
+          <span class="badge report-total-badge" id="reportTotal">0 relatórios</span>
+          <a class="button button-primary" id="newReportButton" href="relatorios.html?novo=1">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            Novo relatório
+          </a>
+        </div>
       </header>
 
 
@@ -48,16 +56,7 @@
 
           <div class="notice-item notice-info" id="emptyReports" hidden>
             <strong>Nenhum relatório ainda.</strong>
-            Crie um relatório a partir de uma consulta na agenda ou pelo botão abaixo.
-          </div>
-
-          <div class="reports-panel-actions">
-            <a class="reports-new-button" id="newReportButton" href="relatorios.html?novo=1">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 5v14M5 12h14" />
-              </svg>
-              Novo relatório
-            </a>
+            Crie um relatório a partir de uma consulta na agenda ou pelo botão acima.
           </div>
 
         </section>

@@ -51,7 +51,7 @@ h1 { font-size: 27px; line-height: 1.15; margin: 0; letter-spacing: -.02em; }
 .agenda-intro h2 { margin: 0 0 6px; font-size: 19px; letter-spacing: -.01em; }
 .agenda-intro p { max-width: 720px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
 
-.button { min-height: 40px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 6px; padding: 9px 15px; font-size: 13px; font-weight: 750; border: 1px solid transparent; white-space: nowrap; }
+.button { min-height: 40px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 6px; padding: 9px 15px; font-size: 13px; font-weight: 750; border: 1px solid transparent; white-space: nowrap; text-decoration: none; }
 .button-primary { background: var(--blue-700); color: var(--white); border-color: var(--blue-700); }
 .button-primary:hover { background: var(--blue-800); border-color: var(--blue-800); }
 .button-secondary { background: var(--white); color: #111827; border-color: var(--line-strong); }

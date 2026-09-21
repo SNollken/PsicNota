@@ -1107,43 +1107,6 @@ input[readonly] {
   height: 17px;
 }
 
-/* CTA centralizado na base do painel */
-
-.reports-panel-actions {
-  display: grid;
-  justify-items: center;
-  margin-top: 30px;
-}
-
-.reports-new-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  min-width: 190px;
-  height: 48px;
-  padding: 0 26px;
-  border: 1.5px solid #1F637A;
-  border-radius: 8px;
-  background: #FFFFFF;
-  color: #1F637A;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 700;
-  transition: background 0.16s, color 0.16s;
-}
-
-.reports-new-button:hover {
-  background: #1F637A;
-  color: #FFFFFF;
-}
-
-.reports-new-button svg {
-  width: 16px;
-  height: 16px;
-  stroke-width: 2.2;
-}
-
 /* Contador no topo da página */
 
 .reports-topbar { justify-content: space-between; }
@@ -1346,6 +1309,11 @@ input[readonly] {
   }
 
   h1 { font-size: 20px; }
+
+  .reports-topbar .topbar-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
 
 
 }
