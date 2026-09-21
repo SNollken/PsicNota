@@ -95,6 +95,15 @@ svg {
   object-fit: contain;
 }
 
+.brand-text {
+  font-family: "Laila", serif;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--blue-700);
+  letter-spacing: 0;
+}
+
 .main-nav {
   display: flex;
   align-items: center;
@@ -776,6 +785,10 @@ svg {
   .brand-icon {
     width: 32px;
     height: 32px;
+  }
+
+  .brand-text {
+    font-size: 20px;
   }
 
   .topbar-actions .button {
