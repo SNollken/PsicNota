@@ -413,7 +413,7 @@ svg {
 }
 
 .auth-switch a {
-  display: inline-block;
+  display: block;
   margin-top: 10px;
 
   color: var(--blue-800);
