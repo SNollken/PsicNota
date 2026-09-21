@@ -48,6 +48,7 @@
     successModal: document.getElementById("successModal"),
     successOk: document.getElementById("successOkBtn"),
     areasChips: document.querySelector("[data-areas-chips]"),
+    areasToggle: document.querySelector("[data-areas-toggle]"),
     areasAdd: document.querySelector("[data-areas-add]"),
     areasInput: document.querySelector("[data-areas-input]"),
     areasAddBtn: document.querySelector("[data-areas-add-btn]")
@@ -71,7 +72,13 @@
     const field = form.elements.namedItem(name);
     if (!field) return;
     if (field.type === "checkbox") field.checked = Boolean(fieldValue);
-    else field.value = fieldValue || "";
+    else {
+      const nextValue = fieldValue || "";
+      if (field instanceof HTMLSelectElement && nextValue && !Array.from(field.options).some((option) => option.value === nextValue)) {
+        field.add(new Option(nextValue, nextValue));
+      }
+      field.value = nextValue;
+    }
   }
 
   function initials(name) {
@@ -126,17 +133,16 @@
       chip.className = "area-chip";
       chip.appendChild(document.createTextNode(area));
 
-      if (editing) {
-        const remove = document.createElement("button");
-        remove.type = "button";
-        remove.textContent = "×";
-        remove.setAttribute("aria-label", "Remover " + area);
-        remove.addEventListener("click", () => {
-          areas.splice(index, 1);
-          renderAreas(true);
-        });
-        chip.appendChild(remove);
-      }
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.textContent = "×";
+      remove.disabled = !editing;
+      remove.setAttribute("aria-label", "Remover " + area);
+      remove.addEventListener("click", () => {
+        areas.splice(index, 1);
+        renderAreas(true);
+      });
+      chip.appendChild(remove);
 
       elements.areasChips.appendChild(chip);
     });
@@ -219,7 +225,8 @@
     });
     if (elements.edit) elements.edit.hidden = editing;
     if (elements.formActions) elements.formActions.hidden = !editing;
-    if (elements.areasAdd) elements.areasAdd.hidden = !editing;
+    if (elements.areasToggle) elements.areasToggle.disabled = !editing;
+    if (elements.areasAdd) elements.areasAdd.hidden = true;
     renderAreas(editing);
   }
 
@@ -348,6 +355,12 @@
     input.value = "";
     input.focus();
     renderAreas(true);
+  });
+
+  elements.areasToggle?.addEventListener("click", () => {
+    if (!editing || !elements.areasAdd) return;
+    elements.areasAdd.hidden = !elements.areasAdd.hidden;
+    if (!elements.areasAdd.hidden) elements.areasInput?.focus();
   });
 
   form.addEventListener("submit", (event) => {

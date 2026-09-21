@@ -655,8 +655,14 @@ input::placeholder {
   line-height: 1;
 }
 
-.area-chip button:hover {
+.area-chip button:hover:not(:disabled) {
   color: #D90307;
+}
+
+.area-chip button:disabled {
+  color: var(--muted);
+  opacity: .45;
+  cursor: default;
 }
 
 .areas-chips-empty {

@@ -131,7 +131,8 @@
     document.querySelector("#panel-reports").replaceChildren(section("Relatório", reports, "report"));
     document.querySelector("#panel-details").innerHTML = `<div class="details-shell">${detailCard(ICONS.user, "Informações pessoais", [field("Nome completo", profile.fullName || patientName), field("Nome social", profile.socialName), field("Data de Nascimento", profile.birthDate ? formatDate(profile.birthDate) : ""), field("Pronomes", profile.pronoun), field("Gênero", profile.gender)], "")}${detailCard(ICONS.phone, "Contato", [field("E-mail", profile.email), field("Celular", profile.phone), field("Cidade", profile.city), field("Estado", profile.state)], "four")}${detailCard(ICONS.globe, "Preferências de atendimento", [field("Formato preferido", profile.preferredFormat), field("Período preferido", profile.preferredPeriod), field("Sobre mim", profile.about)], "three")}${availability(ICONS.calendar, "Online", profile.availabilityOnline)}${availability(ICONS.calendar, "Presencial", profile.availabilityInPerson)}</div>`;
     document.querySelector("#quickNoteButton").addEventListener("click", () => { if (appointments[0]) location.href = `notas.html?consulta=${encodeURIComponent(appointments[0].id)}`; else selectTab("notes"); });
-    selectTab(query.get("aba") || "overview");
+    const aba = query.get("aba") || (location.hash ? location.hash.slice(1) : "overview");
+    selectTab(tabs.includes(aba) ? aba : "overview");
   }
 
   async function loadProfile() {
