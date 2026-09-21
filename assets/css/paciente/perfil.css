@@ -106,7 +106,7 @@ svg {
 }
 
 .profile-avatar {
-  width: 154px;
+  width: 150px;
   height: 150px;
 
   display: grid;
@@ -116,7 +116,7 @@ svg {
 
   overflow: hidden;
 
-  border-radius: 0;
+  border-radius: 50%;
 
   background: linear-gradient(145deg, #1F637A, #174E61);
   background-position: center;
@@ -570,15 +570,59 @@ input::placeholder {
    DISPONIBILIDADE SEMANAL
 ========================= */
 
-.availability-wrap {
-  padding: 10px 14px 14px;
+.availability-grid {
+  display: grid;
+  gap: 16px;
+}
 
+.availability-grid-stack {
+  grid-template-columns: 1fr;
+}
+
+.availability-card {
+  display: grid;
+  gap: 12px;
+  padding: 18px 20px 20px;
   border: 1px solid var(--line);
   border-radius: 20px;
+  background: var(--white);
+}
+
+.availability-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.availability-card-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border-radius: 9px;
+  color: var(--blue-800);
+  background: var(--blue-100);
+}
+
+.availability-card-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.availability-card-title {
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.availability-wrap {
+  overflow-x: auto;
+
+  border: 1px solid var(--line);
+  border-radius: 14px;
 
   background: var(--blue-50);
-
-  overflow-x: auto;
 }
 
 .availability-table {
@@ -592,7 +636,7 @@ input::placeholder {
 .availability-table td {
   padding: 12px 10px;
 
-  border-bottom: 1px solid var(--line);
+  border: 1px solid var(--line);
 
   text-align: center;
 }
@@ -637,32 +681,35 @@ input::placeholder {
   display: inline-flex;
   align-items: center;
 
-  gap: 6px;
+  gap: 7px;
 
-  padding: 6px 14px;
+  padding: 8px 16px;
 
   border-radius: 999px;
 
-  background: var(--blue-200);
+  background: var(--blue-100);
   color: var(--blue-800);
 
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 700;
 
   white-space: nowrap;
 }
 
 .cell-available svg {
-  width: 13px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
 
-  stroke-width: 2.4;
+  stroke-width: 2.6;
 }
 
 .cell-empty {
   color: var(--muted);
 
+  font-size: 13px;
   font-weight: 600;
+
+  letter-spacing: 0.06em;
 }
 
 /* =========================

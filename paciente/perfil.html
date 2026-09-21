@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -68,7 +68,7 @@
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="m4 16-1 5 5-1L19 9l-4-4L4 16Zm9-9 4 4"></path>
               </svg>
-              Editar perfil
+              Editar foto
             </button>
 
             <button class="button button-photo" id="changePhotoButton" type="button">
@@ -155,28 +155,12 @@
 
               <label class="field">
                 <span>Pronomes</span>
-                <select name="pronoun" disabled>
-                  <option value="">Não informado</option>
-                  <option value="Ela/Dela">Ela/Dela</option>
-                  <option value="Ele/Dele">Ele/Dele</option>
-                  <option value="Elu/Delu">Elu/Delu</option>
-                  <option value="Prefiro não informar">
-                    Prefiro não informar
-                  </option>
-                </select>
+                <input name="pronoun" type="text" placeholder="Não informado" disabled />
               </label>
 
               <label class="field">
                 <span>Gênero</span>
-                <select name="gender" disabled>
-                  <option value="">Não informado</option>
-                  <option value="Feminino">Feminino</option>
-                  <option value="Masculino">Masculino</option>
-                  <option value="Não-binário">Não-binário</option>
-                  <option value="Prefiro não informar">
-                    Prefiro não informar
-                  </option>
-                </select>
+                <input name="gender" type="text" placeholder="Não informado" disabled />
               </label>
             </div>
           </section>
@@ -220,60 +204,35 @@
 
               <label class="field">
                 <span>Estado</span>
-                <select name="state" disabled>
-                  <option value="">Selecione</option>
-                  <option value="AC">AC</option>
-                  <option value="AL">AL</option>
-                  <option value="AP">AP</option>
-                  <option value="AM">AM</option>
-                  <option value="BA">BA</option>
-                  <option value="CE">CE</option>
-                  <option value="DF">DF</option>
-                  <option value="ES">ES</option>
-                  <option value="GO">GO</option>
-                  <option value="MA">MA</option>
-                  <option value="MT">MT</option>
-                  <option value="MS">MS</option>
-                  <option value="MG">MG</option>
-                  <option value="PA">PA</option>
-                  <option value="PB">PB</option>
-                  <option value="PR">PR</option>
-                  <option value="PE">PE</option>
-                  <option value="PI">PI</option>
-                  <option value="RJ">RJ</option>
-                  <option value="RN">RN</option>
-                  <option value="RS">RS</option>
-                  <option value="RO">RO</option>
-                  <option value="RR">RR</option>
-                  <option value="SC">SC</option>
-                  <option value="SP">SP</option>
-                  <option value="SE">SE</option>
-                  <option value="TO">TO</option>
-                </select>
+                <input name="state" type="text" maxlength="2" placeholder="UF" disabled />
               </label>
             </div>
           </section>
 
-          <section class="profile-section">
-            <div class="section-heading">
-              <span class="section-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <circle cx="12" cy="12" r="9"></circle>
-                  <path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9s1.3-6.4 3.8-9Z"></path>
-                </svg>
-              </span>
-              <div class="section-heading-copy">
-                <h2>
-                  Disponibilidade semanal
-                  <span class="section-accent">— Online</span>
-                </h2>
-                <p class="section-subtitle">
-                  Horários em que o psicólogo tem para consultas online.
-                </p>
+          <div class="availability-group">
+            <section class="profile-section availability-section">
+              <div class="section-heading">
+                <span class="section-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9s1.3-6.4 3.8-9Z"></path>
+                  </svg>
+                </span>
+                <div class="section-heading-copy">
+                  <h2>Disponibilidade Semanal</h2>
+                  <p class="section-subtitle">Horários em que o psicólogo tem para consultas online e presenciais.</p>
+                </div>
               </div>
-            </div>
 
-            <div class="availability-wrap">
+              <div class="availability-grid availability-grid-stack">
+                <div class="availability-card">
+                  <div class="availability-card-head">
+                    <span class="availability-card-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9s1.3-6.4 3.8-9Z"></path></svg>
+                    </span>
+                    <span class="availability-card-title">Consultas online</span>
+                  </div>
+                  <div class="availability-wrap">
               <table class="availability-table">
                 <thead>
                   <tr>
@@ -295,7 +254,7 @@
                 <tbody>
                   <tr>
                     <th scope="row">Segunda-feira</th>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
                     <td>
                       <span class="cell-available">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -304,7 +263,7 @@
                         Disponível
                       </span>
                     </td>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
                   </tr>
                   <tr>
                     <th scope="row">Terça-feira</th>
@@ -316,12 +275,12 @@
                         Disponível
                       </span>
                     </td>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
                   </tr>
                   <tr>
                     <th scope="row">Quarta-feira</th>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
                     <td>
                       <span class="cell-available">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -357,11 +316,11 @@
                         Disponível
                       </span>
                     </td>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
                   </tr>
                   <tr>
                     <th scope="row">Sexta-feira</th>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
                     <td>
                       <span class="cell-available">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -381,40 +340,29 @@
                   </tr>
                   <tr>
                     <th scope="row">Sábado</th>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
                   </tr>
                   <tr>
                     <th scope="row">Domingo</th>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
                   </tr>
                 </tbody>
               </table>
             </div>
-          </section>
+                </div>
 
-          <section class="profile-section">
-            <div class="section-heading">
-              <span class="section-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Zm0-8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"></path>
-                </svg>
-              </span>
-              <div class="section-heading-copy">
-                <h2>
-                  Disponibilidade semanal
-                  <span class="section-accent">— Presencial</span>
-                </h2>
-                <p class="section-subtitle">
-                  Horários em que o psicólogo tem para consultas presenciais.
-                </p>
-              </div>
-            </div>
-
-            <div class="availability-wrap">
+                <div class="availability-card">
+                  <div class="availability-card-head">
+                    <span class="availability-card-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24"><path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Zm0-8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"></path></svg>
+                    </span>
+                    <span class="availability-card-title">Consultas presenciais</span>
+                  </div>
+                  <div class="availability-wrap">
               <table class="availability-table">
                 <thead>
                   <tr>
@@ -444,12 +392,12 @@
                         Disponível
                       </span>
                     </td>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
                   </tr>
                   <tr>
                     <th scope="row">Terça-feira</th>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
                     <td>
                       <span class="cell-available">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -458,7 +406,7 @@
                         Disponível
                       </span>
                     </td>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
                   </tr>
                   <tr>
                     <th scope="row">Quarta-feira</th>
@@ -478,11 +426,11 @@
                         Disponível
                       </span>
                     </td>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
                   </tr>
                   <tr>
                     <th scope="row">Quinta-feira</th>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
                     <td>
                       <span class="cell-available">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -502,7 +450,7 @@
                   </tr>
                   <tr>
                     <th scope="row">Sexta-feira</th>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
                     <td>
                       <span class="cell-available">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -511,7 +459,7 @@
                         Disponível
                       </span>
                     </td>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
                   </tr>
                   <tr>
                     <th scope="row">Sábado</th>
@@ -523,19 +471,22 @@
                         Disponível
                       </span>
                     </td>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
                   </tr>
                   <tr>
                     <th scope="row">Domingo</th>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
-                    <td><span class="cell-empty" aria-label="Indisponível">—</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
+                    <td><span class="cell-empty" aria-label="Indisponível">———</span></td>
                   </tr>
                 </tbody>
               </table>
             </div>
-          </section>
+                </div>
+              </div>
+            </section>
+          </div>
 
         </div>
 
