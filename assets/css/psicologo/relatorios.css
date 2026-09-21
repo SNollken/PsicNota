@@ -1516,7 +1516,7 @@ input[readonly] {
   flex-direction: column;
   min-height: 560px;
   padding: 16px;
-  background: #F1F9FC;
+  background: #F3FBFE;
   border: 1px solid var(--line);
   border-radius: 16px;
 }
