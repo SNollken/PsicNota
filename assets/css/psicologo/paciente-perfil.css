@@ -2,7 +2,7 @@
 @import url("../design-system.css");
 :root{--blue-700:#1f637a;--blue-800:#174e61;--ink:#111827;--line:#dce6ea;--sidebar-width:294px}
 body{background:#fff;color:var(--ink)}
-button,a{cursor:pointer}a{text-decoration:none}
+button,a{cursor:pointer}a{text-decoration:none;color:inherit}
 .main-content{grid-column:2;min-width:0;padding-bottom:54px}
 .mobile-menu{display:none}
 .page-heading{height:98px;border-bottom:1px solid #DCE6EA;display:grid;place-items:center}
