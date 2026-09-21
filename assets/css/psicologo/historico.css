@@ -389,15 +389,15 @@ body{
 
 .details-shell{
   padding:30px 6px;
-  background:#cdeefb;
-  border:1px solid #d6e4e9;
+  background:#BFE7F5;
+  border:1px solid #DCE6EA;
   border-radius:25px;
 }
 
 .detail-card{
   margin:0 0 26px;
   padding:20px 26px;
-  background:#e9f8fe;
+  background:#E4F6FC;
   border-radius:24px;
 }
 
@@ -427,14 +427,14 @@ body{
   border-collapse:collapse;
   border-radius:18px;
   overflow:hidden;
-  background:#f8fdff;
+  background:#F3FBFE;
   text-align:center;
 }
 
 .availability th,
 .availability td{
   padding:12px 8px;
-  border:1px solid #c9e7f3;
+  border:1px solid #BFE7F5;
 }
 
 .availability th{
@@ -742,7 +742,7 @@ body{
 
   height:92px;
 
-  background:#F8FCFE;
+  background:#F3FBFE;
 
   border:1px solid #DCE6EA;
 
