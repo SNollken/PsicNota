@@ -12,8 +12,10 @@
     phone: `<path d="M5 4h3l2 5-2 1.5a15 15 0 0 0 5.5 5.5L15 14l5 2v3a2 2 0 0 1-2 2A15 15 0 0 1 3 6a2 2 0 0 1 2-2Z"/>`,
     globe: `<path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9s1.3-6.4 3.8-9Z"/>`,
     pin: `<path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Zm0-8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>`,
-    mail: `<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>`,
-    calendar: `<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/>`
+    mail: `<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>`,
+    calendar: `<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/>`,
+    bubble: `<path d="M21 15a2 2 0 0 1-2 2H7l-4 4v-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>`,
+    document: `<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>`
   };
   const sectionIcon = (inner) => `<span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24">${inner}</svg></span>`;
   const tabs = ["overview", "appointments", "notes", "reports", "details"];
@@ -64,7 +66,7 @@
   }
 
   function recordCard(kind, title, description, href) {
-    return `<a class="record-card" href="${href}"><span class="record-icon" aria-hidden="true">${kind === "note" ? "▢" : "▤"}</span><span class="record-copy"><strong>${escape(title)}</strong><span>${escape(description || "Sem descrição")}</span></span><span class="record-arrow" aria-hidden="true">›</span></a>`;
+    return `<a class="record-card" href="${href}"><span class="record-icon" aria-hidden="true"><svg viewBox="0 0 24 24">${kind === "note" ? ICONS.bubble : ICONS.document}</svg></span><span class="record-copy"><strong>${escape(title)}</strong><span>${escape(description || "Sem descrição")}</span></span><span class="record-arrow" aria-hidden="true">›</span></a>`;
   }
 
   function noteCards(items) {
@@ -123,8 +125,8 @@
     else avatar.textContent = display.split(/\s+/).slice(0, 2).map(part => part[0]).join("").toUpperCase();
     const upcoming = appointments.filter(item => new Date(`${item.date}T${item.time || "00:00"}`) >= now).sort((a, b) => new Date(`${a.date}T${a.time || "00:00"}`) - new Date(`${b.date}T${b.time || "00:00"}`))[0];
     const last = appointments.find(item => new Date(`${item.date}T${item.time || "00:00"}`) < now);
-    const appointmentPreview = (title, item) => `<article class="overview-card"><h2>${title}</h2>${item ? `<a class="overview-link" href="consulta.html?id=${encodeURIComponent(item.id)}"><span>▣</span><span>${formatDate(item.date)}<small>${escape(item.time || "")} • ${escape(item.mode || "Não informada")}</small></span><span>›</span></a>` : empty("Nenhuma consulta")}</article>`;
-    document.querySelector("#panel-overview").innerHTML = `<div class="overview-top">${appointmentPreview("Próxima consulta", upcoming)}${appointmentPreview("Última consulta", last)}</div><div class="overview-lists"><div class="overview-list"><h2>Notas Rápidas</h2><div class="record-list">${noteCards(notes.slice(0, 3)) || empty("Nenhuma nota registrada.")}</div></div></div>`;
+    const appointmentPreview = (title, item) => `<article class="overview-card"><h2>${title}</h2>${item ? `<a class="overview-link" href="consulta.html?id=${encodeURIComponent(item.id)}"><span class="overview-icon" aria-hidden="true"><svg viewBox="0 0 24 24">${ICONS.calendar}</svg></span><span>${formatDate(item.date)}<small>${escape(item.time || "")} • ${escape(item.mode || "Não informada")}</small></span><span>›</span></a>` : empty("Nenhuma consulta")}</article>`;
+    document.querySelector("#panel-overview").innerHTML = `<div class="overview-top">${appointmentPreview("Próxima consulta", upcoming)}${appointmentPreview("Última consulta", last)}</div><div class="overview-lists"><div class="overview-list"><h2>Notas Rápidas</h2><div class="record-list">${noteCards(notes.slice(0, 3)) || empty("Nenhuma nota registrada.")}</div></div><div class="overview-list"><h2>Relatórios Recentes</h2><div class="record-list">${reportCards(reports.slice(0, 3)) || empty("Nenhum relatório registrado.")}</div></div></div>`;
     const appointmentPanel = document.querySelector("#panel-appointments");
     appointmentPanel.innerHTML = `<div class="records-panel appointments-panel">${appointments.map(item => `<div class="appointment-row"><span aria-hidden="true">▣</span><strong class="appointment-date">${formatDate(item.date)}</strong><span>${escape(item.time || "")} • ${escape(item.mode || "Não informada")}</span><div class="appointment-actions"><a href="notas.html?consulta=${encodeURIComponent(item.id)}">▢ Abrir Notas</a><a href="consulta.html?id=${encodeURIComponent(item.id)}" aria-label="Abrir consulta">›</a></div></div>`).join("")}${appointments.length ? "" : empty("Nenhuma consulta registrada para este paciente.")}</div>`;
     document.querySelector("#panel-notes").replaceChildren(section("Nota", notes, "note"));
