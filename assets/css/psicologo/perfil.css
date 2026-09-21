@@ -109,7 +109,7 @@ svg {
 
 .profile-avatar {
   width: 135px;
-  height: 137px;
+  height: 135px;
 
   display: grid;
   place-items: center;
@@ -118,7 +118,7 @@ svg {
 
   overflow: hidden;
 
-  border-radius: 0;
+  border-radius: 50%;
 
   background: linear-gradient(145deg, #1F637A, #174E61);
   background-position: center;
@@ -177,10 +177,13 @@ h1 {
 }
 
 .profile-contacts {
+  flex: 0 1 280px;
+  min-width: 0;
+
   display: grid;
   gap: 5px;
 
-  margin-top: 10px;
+  align-content: center;
 }
 
 .profile-contact {
@@ -583,11 +586,36 @@ input::placeholder {
   font-weight: 700;
 }
 
+.areas-controls,
 .areas-chips {
   display: flex;
   flex-wrap: wrap;
 
   gap: 8px;
+}
+
+.areas-controls {
+  align-items: center;
+}
+
+.areas-controls > .button-add {
+  width: fit-content;
+  min-height: 36px;
+  padding: 4px 16px;
+  border: 1.5px dashed var(--blue-700);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--blue-800);
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.areas-controls > .button-add:hover {
+  background: var(--blue-50);
+  border-color: var(--blue-800);
+  color: var(--blue-800);
+  text-decoration: none;
 }
 
 .area-chip {
@@ -596,12 +624,12 @@ input::placeholder {
 
   gap: 6px;
 
-  padding: 7px 10px 7px 14px;
+  padding: 8px 12px 8px 16px;
 
-  border: 1px solid var(--line);
+  border: 1.5px solid var(--blue-700);
   border-radius: 999px;
 
-  background: var(--blue-50);
+  background: var(--white);
   color: var(--blue-800);
 
   font-size: 12.5px;
@@ -668,15 +696,56 @@ input::placeholder {
    DISPONIBILIDADE SEMANAL
 ========================= */
 
-.availability-wrap {
-  padding: 10px 14px 14px;
+.availability-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
 
+.availability-card {
+  display: grid;
+  gap: 12px;
+  padding: 18px 20px 20px;
   border: 1px solid var(--line);
   border-radius: 20px;
+  background: var(--white);
+}
+
+.availability-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.availability-card-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border-radius: 9px;
+  color: var(--blue-800);
+  background: var(--blue-100);
+}
+
+.availability-card-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.availability-card-title {
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.availability-wrap {
+  overflow-x: auto;
+
+  border: 1px solid var(--line);
+  border-radius: 14px;
 
   background: var(--blue-50);
-
-  overflow-x: auto;
 }
 
 .availability-table {
@@ -690,7 +759,7 @@ input::placeholder {
 .availability-table td {
   padding: 12px 10px;
 
-  border-bottom: 1px solid var(--line);
+  border: 1px solid var(--line);
 
   text-align: center;
 }
@@ -735,26 +804,26 @@ input::placeholder {
   display: inline-flex;
   align-items: center;
 
-  gap: 6px;
+  gap: 7px;
 
-  padding: 6px 14px;
+  padding: 8px 16px;
 
   border-radius: 999px;
 
-  background: var(--blue-200);
+  background: var(--blue-100);
   color: var(--blue-800);
 
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 700;
 
   white-space: nowrap;
 }
 
 .cell-available svg {
-  width: 13px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
 
-  stroke-width: 2.4;
+  stroke-width: 2.6;
 }
 
 .cell-empty {
@@ -919,6 +988,10 @@ input::placeholder {
     flex-wrap: wrap;
   }
 
+  .profile-contacts {
+    flex: 1 1 240px;
+  }
+
   .profile-actions .button {
     flex: 1 1 160px;
   }
@@ -940,6 +1013,11 @@ input::placeholder {
   .profile-section {
     padding: 20px 18px 22px;
   }
+
+  .availability-grid {
+    grid-template-columns: 1fr;
+  }
+}
 
   .fields-grid-5,
   .fields-grid-4,
@@ -1013,6 +1091,10 @@ input::placeholder {
 
   .profile-actions {
     flex-direction: column;
+  }
+
+  .profile-contacts {
+    width: 100%;
   }
 
   .fields-grid-5,
