@@ -777,7 +777,7 @@ body.modal-open { overflow: hidden; }
 }
 
 .psic-dashboard {
-  width: min(100%, 1010px);
+  width: min(100%, 1080px);
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 36px;
@@ -791,7 +791,7 @@ body.modal-open { overflow: hidden; }
   min-height: 88px;
   padding: 11px 15px 11px 24px;
   border: 1px solid;
-  border-radius: 18px;
+  border-radius: 24px;
   background: #f8fafb;
   text-align: left;
   cursor: pointer;
@@ -878,10 +878,10 @@ body.modal-open { overflow: hidden; }
 .calendar-arrow {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   padding: 0;
-  border: 1px solid #1f637a;
+  border: 3px solid #111827;
   border-radius: 50%;
   background: #ffffff;
   cursor: pointer;
@@ -889,16 +889,16 @@ body.modal-open { overflow: hidden; }
 }
 
 .calendar-arrow svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   fill: none;
-  stroke: #1f637a;
-  stroke-width: 2.4;
+  stroke: #111827;
+  stroke-width: 3;
 }
 
 .calendar-arrow:hover {
   color: #ffffff;
-  background: #1f637a;
+  background: #111827;
 }
 
 .calendar-arrow:hover svg { stroke: #ffffff; }
@@ -931,11 +931,12 @@ body.modal-open { overflow: hidden; }
 
 .psic-day {
   position: relative;
-  display: block;
+  display: flex;
+  flex-direction: column;
   min-width: 0;
   min-height: 105px;
   padding: 12px;
-  border: 1px solid #64727c;
+  border: 1px solid #dce6ea;
   border-radius: 7px;
   color: #111827;
   background: rgba(255, 255, 255, 0.92);
@@ -955,8 +956,7 @@ body.modal-open { overflow: hidden; }
 .psic-day.other-month { color: #64727c; background: rgba(255, 255, 255, 0.65); }
 .psic-day.is-unavailable {
   border-color: #dce6ea;
-  color: #64727c;
-  background: #dce6ea;
+  background: rgba(255, 255, 255, 0.92);
 }
 
 .psic-day-number {
@@ -986,11 +986,36 @@ body.modal-open { overflow: hidden; }
 .psic-day.has-confirmed { border-color: #1f637a; }
 .psic-day.today { border-color: #174e61; }
 
-.psic-day.has-completed .psic-day-info,
-.psic-day.has-pending .psic-day-info,
-.psic-day.has-confirmed .psic-day-info,
+.psic-day.has-completed .psic-day-number,
+.psic-day.has-completed .psic-day-info {
+  color: #3bae24;
+}
+
+.psic-day.has-pending .psic-day-number,
+.psic-day.has-pending .psic-day-info {
+  color: #d90307;
+}
+
+.psic-day.has-confirmed .psic-day-number,
+.psic-day.has-confirmed .psic-day-info {
+  color: #1f637a;
+}
+
+.psic-day.today .psic-day-number,
 .psic-day.today .psic-day-info {
   color: #174e61;
+}
+
+.psic-day.today .psic-day-info::after {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-left: 3px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-1px);
+  vertical-align: middle;
 }
 
 .psic-schedule-popup,

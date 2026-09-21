@@ -1227,6 +1227,16 @@ function renderCalendar() {
       dateKey;
 
 
+    if (
+      date.getDay() === 0 ||
+      date.getDay() === 6
+    ) {
+      button.classList.add(
+        "weekend"
+      );
+    }
+
+
     if (isOtherMonth) {
       button.classList.add(
         "other-month"

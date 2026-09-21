@@ -2296,7 +2296,7 @@ input[readonly] {
 }
 
 .patient-dashboard {
-  width: min(100%, 1010px);
+  width: min(100%, 1080px);
   gap: 36px;
   margin: 0 auto 38px;
 }
@@ -2304,7 +2304,7 @@ input[readonly] {
 .patient-dashboard-card {
   min-height: 88px;
   padding: 11px 15px 11px 24px;
-  border-radius: 18px;
+  border-radius: 24px;
   background: #f8fafb;
   cursor: pointer;
   transition: background 0.15s ease, transform 0.15s ease;
@@ -2356,22 +2356,22 @@ input[readonly] {
 }
 
 .patient-calendar-card .calendar-arrow {
-  width: 36px;
-  height: 36px;
-  border: 1px solid #1f637a;
+  width: 40px;
+  height: 40px;
+  border: 3px solid #111827;
   background: #ffffff;
 }
 
 .patient-calendar-card .calendar-arrow svg {
-  width: 18px;
-  height: 18px;
-  stroke: #1f637a;
-  stroke-width: 2.4;
+  width: 20px;
+  height: 20px;
+  stroke: #111827;
+  stroke-width: 3;
 }
 
 .patient-calendar-card .calendar-arrow:hover {
   color: #ffffff;
-  background: #1f637a;
+  background: #111827;
 }
 
 .patient-calendar-card .calendar-arrow:hover svg {
@@ -2399,9 +2399,12 @@ input[readonly] {
 }
 
 .patient-day {
+  position: relative;
+  display: flex;
+  flex-direction: column;
   min-height: 105px;
   padding: 12px;
-  border: 1px solid #64727c;
+  border: 1px solid #dce6ea;
   border-radius: 7px;
   color: #111827;
   background: rgba(255, 255, 255, 0.92);
@@ -2423,36 +2426,48 @@ input[readonly] {
 
 .patient-day.is-unavailable {
   border-color: #dce6ea;
-  color: #64727c;
-  background: #dce6ea;
-}
-
-.patient-day.is-unavailable .patient-day-number,
-.patient-day.is-unavailable .patient-day-info {
-  color: #64727c;
+  background: rgba(255, 255, 255, 0.92);
 }
 
 .patient-day-number {
+  display: block;
   color: inherit;
   font-size: 11px;
   font-weight: 700;
 }
 
 .patient-day-info {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  max-width: calc(100% - 12px);
   color: #174e61;
   font-size: 11px;
   font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+  transform: translate(-50%, -28%);
 }
 
 .patient-day.has-pending { border-color: #d90307; }
 .patient-day.has-approved { border-color: #1f637a; }
-.patient-day.has-available { border-color: #1f637a; }
-.patient-day.today { border-color: #174e61; }
+.patient-day.has-available { border-color: #3bae24; }
+.patient-day.today:not(.has-approved):not(.has-pending) { border-color: #174e61; }
 
+.patient-day.has-pending .patient-day-number,
 .patient-day.has-pending .patient-day-info { color: #d90307; }
-.patient-day.has-approved .patient-day-info,
-.patient-day.has-available .patient-day-info,
+
+.patient-day.has-approved .patient-day-number,
+.patient-day.has-approved .patient-day-info { color: #1f637a; }
+
+.patient-day.has-available .patient-day-number,
+.patient-day.has-available .patient-day-info { color: #3bae24; }
+
+.patient-day.today .patient-day-number,
 .patient-day.today .patient-day-info { color: #174e61; }
+
+.patient-day.weekend { background: #e8ecef; }
 
 @media (max-width: 720px) {
   .patient-view .agenda-patient-page { padding: 0 20px 40px; }

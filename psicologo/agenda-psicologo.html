@@ -37,6 +37,50 @@
         </h2>
 
         <!-- =========================================================
+             CALENDÁRIO
+             ========================================================= -->
+
+        <section class="psic-calendar-card" aria-label="Calendário de consultas">
+          <div class="psic-calendar-header">
+
+            <div></div>
+
+            <h2 id="psicMonthTitle">
+              Mês
+            </h2>
+
+            <div class="psic-calendar-navigation">
+
+              <button id="psicPreviousMonth" class="calendar-arrow" type="button" aria-label="Mês anterior">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m15 18-6-6 6-6"></path>
+                </svg>
+              </button>
+
+              <button id="psicNextMonth" class="calendar-arrow" type="button" aria-label="Próximo mês">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m9 18 6-6-6-6"></path>
+                </svg>
+              </button>
+
+            </div>
+
+          </div>
+
+          <div class="weekdays psic-weekdays" aria-hidden="true">
+            <span>DOM</span>
+            <span>SEG</span>
+            <span>TER</span>
+            <span>QUA</span>
+            <span>QUI</span>
+            <span>SEX</span>
+            <span>SÁB</span>
+          </div>
+
+          <div class="calendar-grid psic-calendar-grid" id="psicCalendarGrid" role="grid"></div>
+        </section>
+
+        <!-- =========================================================
              CARDS DE RESUMO
              ========================================================= -->
 
@@ -81,50 +125,6 @@
             </svg>
           </button>
 
-        </section>
-
-        <!-- =========================================================
-             CALENDÁRIO
-             ========================================================= -->
-
-        <section class="psic-calendar-card" aria-label="Calendário de consultas">
-          <div class="psic-calendar-header">
-
-            <div></div>
-
-            <h2 id="psicMonthTitle">
-              Mês
-            </h2>
-
-            <div class="psic-calendar-navigation">
-
-              <button id="psicPreviousMonth" class="calendar-arrow" type="button" aria-label="Mês anterior">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="m15 18-6-6 6-6"></path>
-                </svg>
-              </button>
-
-              <button id="psicNextMonth" class="calendar-arrow" type="button" aria-label="Próximo mês">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="m9 18 6-6-6-6"></path>
-                </svg>
-              </button>
-
-            </div>
-
-          </div>
-
-          <div class="weekdays psic-weekdays" aria-hidden="true">
-            <span>DOM</span>
-            <span>SEG</span>
-            <span>TER</span>
-            <span>QUA</span>
-            <span>QUI</span>
-            <span>SEX</span>
-            <span>SÁB</span>
-          </div>
-
-          <div class="calendar-grid psic-calendar-grid" id="psicCalendarGrid" role="grid"></div>
         </section>
 
         <!-- =========================================================
