@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Cadastro de dias e horários disponíveis do psicólogo no PsicNota" />
+  <title>PsicNota | Disponibilidade</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/css/psicologo/disponibilidades.css" />
+  <link rel="stylesheet" href="../assets/menu/menu.css">
+  <script src="../assets/menu/menu.js"></script>
+</head>
+
+<body>
+  <div class="app-shell">
+    <psic-menu tipo="psicologo" ativo="inicio"></psic-menu>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="page-heading">
+          <span class="page-heading-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+              <path d="M3 9h18M8 3v4M16 3v4"></path>
+            </svg>
+          </span>
+          <div>
+            <h1>Disponibilidade</h1>
+            <p>Cadastre os dias e os horários em que você está disponível para atendimento.</p>
+          </div>
+        </div>
+      </header>
+
+      <div class="availability-layout">
+        <div class="availability-main">
+          <section class="surface add-card" aria-labelledby="addScheduleTitle">
+            <h2 id="addScheduleTitle">Adicionar horário disponível</h2>
+
+            <form class="schedule-form" id="scheduleForm">
+              <label class="field">
+                <span>Dia da semana</span>
+                <select id="weekday" name="weekday">
+                  <option>Segunda-feira</option>
+                  <option>Terça-feira</option>
+                  <option>Quarta-feira</option>
+                  <option>Quinta-feira</option>
+                  <option>Sexta-feira</option>
+                  <option>Sábado</option>
+                  <option>Domingo</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Horário de início</span>
+                <input id="startTime" name="startTime" type="time" value="08:00" required />
+              </label>
+
+              <label class="field">
+                <span>Horário de término</span>
+                <input id="endTime" name="endTime" type="time" value="12:00" required />
+              </label>
+
+              <button class="primary-button" type="submit">Adicionar</button>
+            </form>
+          </section>
+
+          <section class="surface schedules-card" aria-labelledby="registeredSchedulesTitle">
+            <div class="card-header">
+              <h2 id="registeredSchedulesTitle">Meus horários cadastrados</h2>
+              <button class="outline-button" id="deleteSelected" type="button">Excluir selecionados</button>
+            </div>
+
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="check-column" scope="col">
+                      <label class="check-control">
+                        <input id="selectAll" type="checkbox" aria-label="Selecionar todos os horários" />
+                        <span aria-hidden="true"></span>
+                      </label>
+                    </th>
+                    <th scope="col">Dia da semana</th>
+                    <th scope="col">Horário</th>
+                    <th scope="col">Status</th>
+                    <th class="actions-heading" scope="col">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="scheduleRows">
+                  <tr>
+                    <td><label class="check-control"><input class="row-check" type="checkbox" aria-label="Selecionar horário de segunda-feira, das 08:00 às 12:00" /><span aria-hidden="true"></span></label></td>
+                    <td data-label="Dia da semana">Segunda-feira</td>
+                    <td data-label="Horário">08:00 - 12:00</td>
+                    <td data-label="Status">
+                      <select class="status-select status-green" aria-label="Status do horário de segunda-feira">
+                        <option selected>Confirmado</option><option>Pendente</option><option>Indisponível</option>
+                      </select>
+                    </td>
+                    <td class="row-actions" data-label="Ações">
+                      <button class="action-button edit-schedule" type="button" aria-label="Editar horário de segunda-feira">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"></path></svg>
+                      </button>
+                      <button class="action-button delete-schedule" type="button" aria-label="Excluir horário de segunda-feira">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 11v6M14 11v6"></path></svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label class="check-control"><input class="row-check" type="checkbox" aria-label="Selecionar horário de terça-feira, das 14:00 às 18:00" /><span aria-hidden="true"></span></label></td>
+                    <td data-label="Dia da semana">Terça-feira</td>
+                    <td data-label="Horário">14:00 - 18:00</td>
+                    <td data-label="Status"><select class="status-select status-orange" aria-label="Status do horário de terça-feira"><option selected>Confirmado</option><option>Pendente</option><option>Indisponível</option></select></td>
+                    <td class="row-actions" data-label="Ações">
+                      <button class="action-button edit-schedule" type="button" aria-label="Editar horário de terça-feira"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"></path></svg></button>
+                      <button class="action-button delete-schedule" type="button" aria-label="Excluir horário de terça-feira"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 11v6M14 11v6"></path></svg></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label class="check-control"><input class="row-check" type="checkbox" aria-label="Selecionar horário de terça-feira, das 08:00 às 12:00" /><span aria-hidden="true"></span></label></td>
+                    <td data-label="Dia da semana">Terça-feira</td>
+                    <td data-label="Horário">08:00 - 12:00</td>
+                    <td data-label="Status"><select class="status-select status-green" aria-label="Status do horário de terça-feira"><option selected>Confirmado</option><option>Pendente</option><option>Indisponível</option></select></td>
+                    <td class="row-actions" data-label="Ações">
+                      <button class="action-button edit-schedule" type="button" aria-label="Editar horário de terça-feira"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"></path></svg></button>
+                      <button class="action-button delete-schedule" type="button" aria-label="Excluir horário de terça-feira"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 11v6M14 11v6"></path></svg></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label class="check-control"><input class="row-check" type="checkbox" aria-label="Selecionar horário de quarta-feira, das 13:00 às 17:00" /><span aria-hidden="true"></span></label></td>
+                    <td data-label="Dia da semana">Quarta-feira</td>
+                    <td data-label="Horário">13:00 - 17:00</td>
+                    <td data-label="Status"><select class="status-select status-orange" aria-label="Status do horário de quarta-feira"><option selected>Confirmado</option><option>Pendente</option><option>Indisponível</option></select></td>
+                    <td class="row-actions" data-label="Ações">
+                      <button class="action-button edit-schedule" type="button" aria-label="Editar horário de quarta-feira"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"></path></svg></button>
+                      <button class="action-button delete-schedule" type="button" aria-label="Excluir horário de quarta-feira"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 11v6M14 11v6"></path></svg></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label class="check-control"><input class="row-check" type="checkbox" aria-label="Selecionar horário de quinta-feira, das 08:00 às 12:00" /><span aria-hidden="true"></span></label></td>
+                    <td data-label="Dia da semana">Quinta-feira</td>
+                    <td data-label="Horário">08:00 - 12:00</td>
+                    <td data-label="Status"><select class="status-select status-green" aria-label="Status do horário de quinta-feira"><option selected>Confirmado</option><option>Pendente</option><option>Indisponível</option></select></td>
+                    <td class="row-actions" data-label="Ações">
+                      <button class="action-button edit-schedule" type="button" aria-label="Editar horário de quinta-feira"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"></path></svg></button>
+                      <button class="action-button delete-schedule" type="button" aria-label="Excluir horário de quinta-feira"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 11v6M14 11v6"></path></svg></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label class="check-control"><input class="row-check" type="checkbox" aria-label="Selecionar horário de quinta-feira, das 08:00 às 15:00" /><span aria-hidden="true"></span></label></td>
+                    <td data-label="Dia da semana">Quinta-feira</td>
+                    <td data-label="Horário">8:00 - 15:00</td>
+                    <td data-label="Status"><select class="status-select status-orange" aria-label="Status do horário de quinta-feira"><option selected>Confirmado</option><option>Pendente</option><option>Indisponível</option></select></td>
+                    <td class="row-actions" data-label="Ações">
+                      <button class="action-button edit-schedule" type="button" aria-label="Editar horário de quinta-feira"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"></path></svg></button>
+                      <button class="action-button delete-schedule" type="button" aria-label="Excluir horário de quinta-feira"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 11v6M14 11v6"></path></svg></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label class="check-control"><input class="row-check" type="checkbox" aria-label="Selecionar horário de sexta-feira, das 14:00 às 18:00" /><span aria-hidden="true"></span></label></td>
+                    <td data-label="Dia da semana">Sexta-feira</td>
+                    <td data-label="Horário">14:00 - 18:00</td>
+                    <td data-label="Status"><select class="status-select status-green" aria-label="Status do horário de sexta-feira"><option selected>Confirmado</option><option>Pendente</option><option>Indisponível</option></select></td>
+                    <td class="row-actions" data-label="Ações">
+                      <button class="action-button edit-schedule" type="button" aria-label="Editar horário de sexta-feira"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"></path></svg></button>
+                      <button class="action-button delete-schedule" type="button" aria-label="Excluir horário de sexta-feira"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 11v6M14 11v6"></path></svg></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label class="check-control"><input class="row-check" type="checkbox" aria-label="Selecionar horário de sábado, das 08:00 às 12:00" /><span aria-hidden="true"></span></label></td>
+                    <td data-label="Dia da semana">Sábado</td>
+                    <td data-label="Horário">08:00 - 12:00</td>
+                    <td data-label="Status"><select class="status-select status-orange" aria-label="Status do horário de sábado"><option selected>Confirmado</option><option>Pendente</option><option>Indisponível</option></select></td>
+                    <td class="row-actions" data-label="Ações">
+                      <button class="action-button edit-schedule" type="button" aria-label="Editar horário de sábado"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"></path></svg></button>
+                      <button class="action-button delete-schedule" type="button" aria-label="Excluir horário de sábado"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 11v6M14 11v6"></path></svg></button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+
+        <aside class="surface week-summary" aria-labelledby="weekSummaryTitle">
+          <h2 id="weekSummaryTitle">Resumo da semana</h2>
+          <ul>
+            <li><span>Segunda-feira</span><strong><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>8h</strong></li>
+            <li><span>Terça-feira</span><strong><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>8h</strong></li>
+            <li><span>Quarta-feira</span><strong><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>4h</strong></li>
+            <li><span>Quinta-feira</span><strong><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>11h</strong></li>
+            <li><span>Sexta-feira</span><strong><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>6h</strong></li>
+            <li><span>Sábado</span><strong><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>4h</strong></li>
+            <li><span>Domingo</span><strong class="unavailable"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Não disponível</strong></li>
+          </ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      var form = document.getElementById('scheduleForm');
+      var rows = document.getElementById('scheduleRows');
+      var selectAll = document.getElementById('selectAll');
+
+      selectAll.addEventListener('change', function () {
+        rows.querySelectorAll('.row-check').forEach(function (checkbox) {
+          checkbox.checked = selectAll.checked;
+        });
+      });
+
+      document.getElementById('deleteSelected').addEventListener('click', function () {
+        rows.querySelectorAll('.row-check:checked').forEach(function (checkbox) {
+          checkbox.closest('tr').remove();
+        });
+        selectAll.checked = false;
+      });
+
+      rows.addEventListener('click', function (event) {
+        var deleteButton = event.target.closest('.delete-schedule');
+        var editButton = event.target.closest('.edit-schedule');
+        if (deleteButton) deleteButton.closest('tr').remove();
+        if (editButton) {
+          var cells = editButton.closest('tr').cells;
+          var times = cells[2].textContent.trim().split(' - ');
+          document.getElementById('weekday').value = cells[1].textContent.trim();
+          document.getElementById('startTime').value = times[0].padStart(5, '0');
+          document.getElementById('endTime').value = times[1];
+          document.getElementById('weekday').focus();
+        }
+      });
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        var day = document.getElementById('weekday').value;
+        var start = document.getElementById('startTime').value;
+        var end = document.getElementById('endTime').value;
+        if (!start || !end || start >= end) {
+          document.getElementById('endTime').setCustomValidity('O horário de término deve ser posterior ao horário de início.');
+          document.getElementById('endTime').reportValidity();
+          return;
+        }
+        document.getElementById('endTime').setCustomValidity('');
+        var row = rows.rows[0].cloneNode(true);
+        row.cells[1].textContent = day;
+        row.cells[2].textContent = start + ' - ' + end;
+        row.querySelector('.row-check').checked = false;
+        row.querySelector('.row-check').setAttribute('aria-label', 'Selecionar horário de ' + day.toLowerCase() + ', das ' + start + ' às ' + end);
+        row.querySelectorAll('.action-button').forEach(function (button) {
+          button.setAttribute('aria-label', button.classList.contains('edit-schedule') ? 'Editar horário de ' + day.toLowerCase() : 'Excluir horário de ' + day.toLowerCase());
+        });
+        rows.prepend(row);
+      });
+    })();
+  </script>
+</body>
+
+</html>

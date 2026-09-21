@@ -153,6 +153,25 @@ svg {
   gap: 14px;
 }
 
+.availability-link {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--blue-700);
+  border-radius: 8px;
+  color: var(--blue-800);
+  background: var(--white);
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.availability-link:hover { background: var(--blue-100); }
+.availability-link:focus-visible { outline: 3px solid var(--blue-200); outline-offset: 2px; }
+.availability-link svg { width: 18px; height: 18px; }
+
 .icon-btn {
   display: grid;
   place-items: center;
@@ -445,6 +464,7 @@ svg {
     color: var(--blue-800);
   }
   .home-head { flex-direction: column; }
+  .home-head-actions { flex-wrap: wrap; }
   .stats-row { grid-template-columns: minmax(0, 1fr); max-width: none; }
   .slot-link { grid-template-columns: 50px minmax(0, 1fr) auto; }
   .slot-mode { display: none; }
