@@ -331,7 +331,7 @@ h1 {
 }
 
 .button-remove-photo:hover {
-  background: #FDECEC;
+  background: #FFF6F6;
 }
 
 .button-logout {
@@ -381,7 +381,7 @@ h1 {
 .feedback.is-error {
   border-color: #D90307;
 
-  background: #FDECEC;
+  background: #FFF6F6;
 
   color: #D90307;
 }

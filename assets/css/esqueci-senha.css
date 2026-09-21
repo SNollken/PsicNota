@@ -356,7 +356,7 @@ svg {
 
 .form-message.is-error {
   color: var(--error);
-  background: #FDECEC;
+  background: #FFF6F6;
   border: 1px solid var(--error);
 }
 
