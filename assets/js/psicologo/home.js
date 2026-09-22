@@ -86,12 +86,19 @@
     items.forEach((item) => list.appendChild(createSlot(item, badgeText, badgeClass)));
   }
 
+  const NOTE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4v-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+  const CHEVRON_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
+
   function createNote(note) {
     const listItem = document.createElement("li");
     const link = document.createElement("a");
     link.className = "note-row";
     const patient = displayName(note.consultas.paciente);
     link.href = `consulta.html?id=${encodeURIComponent(note.consulta_id)}&paciente=${encodeURIComponent(patient)}`;
+    const icon = document.createElement("span");
+    icon.className = "note-icon";
+    icon.setAttribute("aria-hidden", "true");
+    icon.innerHTML = NOTE_ICON;
     const body = document.createElement("span");
     body.className = "note-body";
     const date = document.createElement("span");
@@ -100,8 +107,12 @@
     const text = document.createElement("p");
     text.className = "note-text";
     text.textContent = note.conteudo;
-    body.append(date, text);
-    link.appendChild(body);
+    const chevron = document.createElement("span");
+    chevron.className = "note-chevron";
+    chevron.setAttribute("aria-hidden", "true");
+    chevron.innerHTML = CHEVRON_ICON;
+    body.append(text);
+    link.append(icon, body, date, chevron);
     listItem.appendChild(link);
     return listItem;
   }
