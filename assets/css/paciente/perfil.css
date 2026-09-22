@@ -546,6 +546,7 @@ select:focus {
     rgba(31, 99, 122, 0.14);
 }
 
+input:read-only,
 input:disabled,
 select:disabled {
   opacity: 1;
@@ -694,6 +695,28 @@ input::placeholder {
   font-weight: 700;
 
   white-space: nowrap;
+}
+
+.availability-toggle {
+  min-width: 112px;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.availability-toggle:focus-visible {
+  outline: 2px solid var(--blue-700);
+  outline-offset: 2px;
+}
+
+.availability-toggle:hover .cell-empty {
+  color: var(--blue-800);
 }
 
 .cell-available svg {

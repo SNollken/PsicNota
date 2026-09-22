@@ -37,13 +37,8 @@
     edit: document.getElementById("editButton"),
     changePassword: document.getElementById("changePasswordButton"),
     logout: document.getElementById("logoutLink"),
-    formActions: document.getElementById("formActions"),
-    cancel: document.getElementById("cancelButton"),
     feedback: document.getElementById("feedback"),
     feedbackText: document.getElementById("feedbackText"),
-    confirmModal: document.getElementById("confirmModal"),
-    confirmCancel: document.getElementById("confirmCancelBtn"),
-    confirmSave: document.getElementById("confirmSaveBtn"),
     successModal: document.getElementById("successModal"),
     successOk: document.getElementById("successOkBtn")
   };
@@ -108,17 +103,42 @@
 
   function setAvatar(src, name) {
     avatarDataUrl = src || "";
-    const markup = avatarDataUrl
-      ? '<img src="' + avatarDataUrl + '" alt="Foto de perfil">'
-      : initials(name);
+    if (elements.avatar) {
+      elements.avatar.classList.toggle("has-photo", Boolean(avatarDataUrl));
+      elements.avatar.replaceChildren();
 
-    if (elements.avatar) elements.avatar.innerHTML = markup;
+      if (avatarDataUrl) {
+        const image = document.createElement("img");
+        image.src = avatarDataUrl;
+        image.alt = "Foto de perfil";
+        image.addEventListener("error", () => {
+          avatarDataUrl = "";
+          elements.avatar.classList.remove("has-photo");
+          elements.avatar.textContent = initials(name);
+        }, { once: true });
+        elements.avatar.append(image);
+      } else {
+        elements.avatar.textContent = initials(name);
+      }
+    }
 
     const sidebarAvatar = document.getElementById("patientAvatar");
     if (sidebarAvatar) {
-      sidebarAvatar.innerHTML = avatarDataUrl
-        ? '<img src="' + avatarDataUrl + '" alt="">'
-        : initials(name);
+      sidebarAvatar.classList.toggle("has-photo", Boolean(avatarDataUrl));
+      sidebarAvatar.replaceChildren();
+
+      if (avatarDataUrl) {
+        const image = document.createElement("img");
+        image.src = avatarDataUrl;
+        image.alt = "";
+        image.addEventListener("error", () => {
+          sidebarAvatar.classList.remove("has-photo");
+          sidebarAvatar.textContent = initials(name);
+        }, { once: true });
+        sidebarAvatar.append(image);
+      } else {
+        sidebarAvatar.textContent = initials(name);
+      }
     }
 
     if (elements.removePhoto) elements.removePhoto.hidden = !avatarDataUrl;
@@ -190,10 +210,54 @@
     editing = next;
 
     form.querySelectorAll("input, select").forEach((field) => {
-      if (field.id !== "avatarInput") field.disabled = !editing;
+      if (field.id === "avatarInput") return;
+      if (field.type === "checkbox" || field.tagName === "SELECT") {
+        field.disabled = !editing;
+      } else {
+        field.disabled = false;
+        field.readOnly = !editing;
+      }
     });
     if (elements.edit) elements.edit.hidden = editing;
-    if (elements.formActions) elements.formActions.hidden = !editing;
+  }
+
+  function renderAvailability(button, isAvailable) {
+    button.setAttribute("aria-pressed", String(isAvailable));
+    button.setAttribute("aria-label", isAvailable ? "Disponível" : "Indisponível");
+
+    const status = document.createElement("span");
+    status.className = isAvailable ? "cell-available" : "cell-empty";
+
+    if (isAvailable) {
+      status.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L20 7"></path></svg>Disponível';
+    } else {
+      status.textContent = "———";
+    }
+
+    button.replaceChildren(status);
+  }
+
+  document.querySelectorAll(".availability-table tbody td").forEach((cell) => {
+    const isAvailable = Boolean(cell.querySelector(".cell-available"));
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "availability-toggle";
+    renderAvailability(button, isAvailable);
+    button.addEventListener("click", () => {
+      renderAvailability(button, button.getAttribute("aria-pressed") !== "true");
+    });
+    cell.replaceChildren(button);
+  });
+
+  function isProfileField(field) {
+    return field instanceof HTMLInputElement &&
+      field.id !== "avatarInput" &&
+      field.type !== "checkbox";
+  }
+
+  async function saveFromField() {
+    if (!form.reportValidity()) return;
+    await saveProfile();
   }
 
   function startEditing() {
@@ -212,8 +276,6 @@
 
   async function saveProfile() {
     const profile = collectForm();
-    elements.confirmSave.disabled = true;
-    elements.confirmSave.textContent = "Salvando...";
 
     try {
       avatarPath = await backend.saveProfile(
@@ -246,31 +308,70 @@
     } catch (error) {
       console.error(error);
       showFeedback("Não foi possível salvar o perfil. Tente novamente.", true);
+    }
+  }
+
+  async function saveSelectedAvatar(file, previousAvatarUrl) {
+    if (elements.edit) elements.edit.disabled = true;
+
+    try {
+      avatarPath = await backend.saveProfile(
+        userId,
+        ROLE,
+        collectForm(),
+        file,
+        false,
+        avatarPath
+      );
+      avatarDataUrl = await backend.avatarUrl(avatarPath);
+
+      session = {
+        ...session,
+        avatarDataUrl
+      };
+      const remember = Boolean(localStorage.getItem("psinote.auth.session") || localStorage.getItem("psinoteSession"));
+      data.setSession(session, remember);
+      snapshot = profileFromSession();
+      render(snapshot);
+      showFeedback("Foto de perfil atualizada.");
+    } catch (error) {
+      console.error(error);
+      setAvatar(previousAvatarUrl, value("fullName"));
+      showFeedback("Não foi possível salvar a foto. Tente novamente.", true);
     } finally {
-      elements.confirmSave.disabled = false;
-      elements.confirmSave.textContent = "Salvar";
+      pendingAvatarFile = null;
+      if (elements.edit) elements.edit.disabled = false;
+      if (elements.avatarInput) elements.avatarInput.value = "";
     }
   }
 
   setEditing(false);
 
-  elements.edit?.addEventListener("click", () => {
-    startEditing();
-    form.elements.namedItem("fullName")?.focus();
-  });
-
-  elements.cancel?.addEventListener("click", () => {
-    avatarDataUrl = session.avatarDataUrl || "";
-    pendingAvatarFile = null;
-    removeAvatar = false;
-    render(snapshot);
-    setEditing(false);
-  });
-
-  elements.changePhoto?.addEventListener("click", () => {
-    startEditing();
+  function openPhotoPicker() {
     elements.avatarInput?.click();
+  }
+
+  elements.edit?.addEventListener("click", openPhotoPicker);
+
+  form.querySelectorAll("input:not([type='checkbox'])").forEach((field) => {
+    if (!isProfileField(field)) return;
+
+    field.addEventListener("focus", () => {
+      if (!editing) startEditing();
+    });
+
+    field.addEventListener("click", () => {
+      if (!editing) startEditing();
+    });
+
+    field.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" || !editing) return;
+      event.preventDefault();
+      void saveFromField();
+    });
   });
+
+  elements.changePhoto?.addEventListener("click", openPhotoPicker);
 
   elements.changePassword?.addEventListener("click", () => {
     showFeedback("A alteração de senha estará disponível em breve.");
@@ -279,11 +380,13 @@
   elements.avatarInput?.addEventListener("change", () => {
     const file = elements.avatarInput.files?.[0];
     if (!file) return;
+    const previousAvatarUrl = avatarDataUrl;
     pendingAvatarFile = file;
     removeAvatar = false;
     const reader = new FileReader();
     reader.addEventListener("load", () => {
       setAvatar(String(reader.result || ""), value("fullName"));
+      void saveSelectedAvatar(file, previousAvatarUrl);
     });
     reader.readAsDataURL(file);
   });
@@ -298,14 +401,9 @@
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     if (!form.reportValidity()) return;
-    openModal(elements.confirmModal);
+    void saveProfile();
   });
 
-  elements.confirmCancel?.addEventListener("click", () => closeModal(elements.confirmModal));
-  elements.confirmSave?.addEventListener("click", async () => {
-    closeModal(elements.confirmModal);
-    await saveProfile();
-  });
   elements.successOk?.addEventListener("click", () => closeModal(elements.successModal));
 
   elements.logout?.addEventListener("click", async (event) => {
