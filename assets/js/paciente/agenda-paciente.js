@@ -1104,6 +1104,8 @@ function renderCalendar() {
       today
     );
 
+  const now = new Date();
+
 
   const myAppointments =
     getMyAppointments();
@@ -1191,6 +1193,12 @@ function renderCalendar() {
             item
           ) >=
           new Date()
+      );
+
+    const completedAppointment =
+      dayAppointments.find(
+        (item) =>
+          dateTimeFromItem(item) < now
       );
 
 
@@ -1294,10 +1302,7 @@ function renderCalendar() {
      * 4. Horário disponível
      */
 
-    if (
-      !isOtherMonth &&
-      pendingRequests.length
-    ) {
+    if (pendingRequests.length) {
       button.classList.add(
         "has-pending"
       );
@@ -1311,10 +1316,7 @@ function renderCalendar() {
         info
       );
 
-    } else if (
-      !isOtherMonth &&
-      futureAppointment
-    ) {
+    } else if (futureAppointment) {
       button.classList.add(
         "has-approved",
         "has-confirmed"
@@ -1329,27 +1331,19 @@ function renderCalendar() {
         info
       );
 
-    } else if (
-      dateKey ===
-      todayKey
-    ) {
+    } else if (completedAppointment) {
       button.classList.add(
-        "today"
+        "has-completed"
       );
 
-
       info.textContent =
-        "HOJE";
-
+        completedAppointment.time;
 
       button.append(
         info
       );
 
-    } else if (
-      !isOtherMonth &&
-      openSlots.length
-    ) {
+    } else if (openSlots.length) {
       button.classList.add(
         "has-available"
       );
@@ -1364,11 +1358,27 @@ function renderCalendar() {
       );
     }
 
+    if (dateKey === todayKey) {
+      button.classList.add("today");
+
+      if (info.textContent) {
+        const todayLabel = document.createElement("span");
+        todayLabel.className = "patient-day-today-label";
+        todayLabel.textContent = "HOJE";
+        button.append(todayLabel);
+      } else {
+        info.textContent = "HOJE";
+        button.append(info);
+      }
+    }
+
     if (
-      !isOtherMonth &&
       dateKey !== todayKey &&
+      date.getDay() !== 0 &&
+      date.getDay() !== 6 &&
       !pendingRequests.length &&
       !futureAppointment &&
+      !completedAppointment &&
       !openSlots.length
     ) {
       button.classList.add(

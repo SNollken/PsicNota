@@ -2059,9 +2059,8 @@ input[readonly] {
    ========================================================= */
 
 .patient-day.other-month {
-  color: var(--muted);
-
-  background: rgba(255, 255, 255, 0.65);
+  color: #64727c;
+  background: #ffffff;
 }
 
 
@@ -2160,6 +2159,16 @@ input[readonly] {
   color: var(--blue-700);
 
   font-size: 11px;
+}
+
+.patient-day-today-label {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  color: #174e61;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .04em;
 }
 
 
@@ -2418,9 +2427,8 @@ input[readonly] {
 }
 
 .patient-day.other-month {
-  border-color: #dce6ea;
   color: #64727c;
-  background: #dce6ea;
+  background: #ffffff;
 }
 
 .patient-day.is-unavailable {
@@ -2451,6 +2459,7 @@ input[readonly] {
 
 .patient-day.has-pending { border-color: #d90307; }
 .patient-day.has-approved { border-color: #1f637a; }
+.patient-day.has-completed { border-color: #3bae24; }
 .patient-day.has-available { border-color: #3bae24; }
 .patient-day.today:not(.has-approved):not(.has-pending) { border-color: #174e61; }
 
@@ -2460,13 +2469,22 @@ input[readonly] {
 .patient-day.has-approved .patient-day-number,
 .patient-day.has-approved .patient-day-info { color: #1f637a; }
 
+.patient-day.has-completed .patient-day-number,
+.patient-day.has-completed .patient-day-info { color: #3bae24; }
+
 .patient-day.has-available .patient-day-number,
 .patient-day.has-available .patient-day-info { color: #3bae24; }
 
 .patient-day.today .patient-day-number,
 .patient-day.today .patient-day-info { color: #174e61; }
 
-.patient-day.weekend { background: #e8ecef; }
+.patient-day-today-label { color: #174e61; }
+
+.patient-day.weekend {
+  border-color: #dce6ea;
+  color: #64727c;
+  background: #e8ecef;
+}
 
 @media (max-width: 720px) {
   .patient-view .agenda-patient-page { padding: 0 20px 40px; }
