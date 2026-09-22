@@ -911,16 +911,57 @@ fieldset {
 
 .form-message {
   display: none;
-}
 
-.form-message:not(:empty) {
-  display: block;
+  margin-bottom: 16px;
 
-  margin-bottom: 1.2vh;
+  padding: 12px 14px;
+
+  border-radius: 8px;
 
   font-family: "Inter", Arial, sans-serif;
 
-  font-size: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+
+.form-message:not(:empty) {
+  display: block;
+}
+
+
+.form-message.is-info {
+  color: var(--blue-hover);
+
+  background: #e4f6fc;
+
+  border: 1px solid var(--line);
+}
+
+
+/* =========================================================
+   FORMULÁRIO DESABILITADO
+   Estados visuais de campos/botão desabilitados (loading e
+  Feedback de erro mantém o botão travado até a resposta do banco).
+========================================================= */
+
+.auth-form input:disabled,
+.auth-form select:disabled {
+  cursor: not-allowed;
+
+  color: var(--muted);
+
+  background: var(--input-bg);
+
+  border-color: var(--line);
+}
+
+
+.auth-form .primary-button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.66;
 }
 
 
