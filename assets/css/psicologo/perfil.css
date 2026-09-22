@@ -550,6 +550,7 @@ select:focus {
     rgba(31, 99, 122, 0.14);
 }
 
+input:read-only,
 input:disabled,
 select:disabled {
   opacity: 1;

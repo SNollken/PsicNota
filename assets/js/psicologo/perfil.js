@@ -38,13 +38,8 @@
     edit: document.getElementById("editButton"),
     changePassword: document.getElementById("changePasswordButton"),
     logout: document.getElementById("logoutLink"),
-    formActions: document.getElementById("formActions"),
-    cancel: document.getElementById("cancelButton"),
     feedback: document.getElementById("feedback"),
     feedbackText: document.getElementById("feedbackText"),
-    confirmModal: document.getElementById("confirmModal"),
-    confirmCancel: document.getElementById("confirmCancelBtn"),
-    confirmSave: document.getElementById("confirmSaveBtn"),
     successModal: document.getElementById("successModal"),
     successOk: document.getElementById("successOkBtn"),
     areasChips: document.querySelector("[data-areas-chips]"),
@@ -221,10 +216,15 @@
     editing = next;
 
     form.querySelectorAll("input, select").forEach((field) => {
-      if (field.id !== "avatarInput" && !field.hasAttribute("data-areas-input")) field.disabled = !editing;
+      if (field.id === "avatarInput") return;
+      if (field.tagName === "SELECT" || field.type === "checkbox") {
+        field.disabled = false;
+      } else {
+        field.disabled = false;
+        field.readOnly = !editing;
+      }
     });
     if (elements.edit) elements.edit.hidden = editing;
-    if (elements.formActions) elements.formActions.hidden = !editing;
     if (elements.areasToggle) elements.areasToggle.disabled = !editing;
     if (elements.areasAdd) elements.areasAdd.hidden = true;
     renderAreas(editing);
@@ -245,11 +245,9 @@
     if (modal) modal.hidden = true;
   }
 
-  async function saveProfile() {
+  async function saveProfile(showSuccess = true) {
     const profile = collectForm();
     profile.areas = areas.slice();
-    elements.confirmSave.disabled = true;
-    elements.confirmSave.textContent = "Salvando...";
 
     try {
       avatarPath = await backend.saveProfile(
@@ -288,35 +286,41 @@
       snapshot.areas = areas.slice();
       render(snapshot);
       setEditing(false);
-      openModal(elements.successModal);
+      if (showSuccess) openModal(elements.successModal);
+      return true;
     } catch (error) {
       console.error(error);
       showFeedback("Não foi possível salvar o perfil. Tente novamente.", true);
-    } finally {
-      elements.confirmSave.disabled = false;
-      elements.confirmSave.textContent = "Salvar";
+      return false;
     }
   }
 
   setEditing(false);
 
-  elements.edit?.addEventListener("click", () => {
-    startEditing();
-    form.elements.namedItem("fullName")?.focus();
-  });
-
-  elements.cancel?.addEventListener("click", () => {
-    avatarDataUrl = session.avatarDataUrl || "";
-    pendingAvatarFile = null;
-    removeAvatar = false;
-    areas = (snapshot.areas || []).slice();
-    render(snapshot);
-    setEditing(false);
-  });
-
-  elements.changePhoto?.addEventListener("click", () => {
-    startEditing();
+  function openPhotoPicker() {
     elements.avatarInput?.click();
+  }
+
+  elements.edit?.addEventListener("click", openPhotoPicker);
+  elements.changePhoto?.addEventListener("click", openPhotoPicker);
+
+  form.querySelectorAll("input:not([type='file']), select").forEach((field) => {
+    if (field.hasAttribute("data-areas-input")) return;
+
+    field.addEventListener("focus", () => {
+      if (!editing) startEditing();
+    });
+
+    field.addEventListener("click", () => {
+      if (!editing) startEditing();
+    });
+
+    field.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" || !editing) return;
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      void saveProfile();
+    });
   });
 
   elements.changePassword?.addEventListener("click", () => {
@@ -326,20 +330,30 @@
   elements.avatarInput?.addEventListener("change", () => {
     const file = elements.avatarInput.files?.[0];
     if (!file) return;
+    const previousAvatarUrl = avatarDataUrl;
     pendingAvatarFile = file;
     removeAvatar = false;
     const reader = new FileReader();
     reader.addEventListener("load", () => {
       setAvatar(String(reader.result || ""), value("fullName"));
+      void saveProfile(false).then((saved) => {
+        if (saved) showFeedback("Foto de perfil atualizada.");
+        else setAvatar(previousAvatarUrl, value("fullName"));
+        if (elements.avatarInput) elements.avatarInput.value = "";
+      });
     });
     reader.readAsDataURL(file);
   });
 
   elements.removePhoto?.addEventListener("click", () => {
-    startEditing();
+    const previousAvatarUrl = avatarDataUrl;
     pendingAvatarFile = null;
     removeAvatar = true;
     setAvatar("", value("fullName"));
+    void saveProfile(false).then((saved) => {
+      if (saved) showFeedback("Foto de perfil removida.");
+      else setAvatar(previousAvatarUrl, value("fullName"));
+    });
   });
 
   elements.areasAddBtn?.addEventListener("click", () => {
@@ -366,14 +380,9 @@
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     if (!form.reportValidity()) return;
-    openModal(elements.confirmModal);
+    void saveProfile();
   });
 
-  elements.confirmCancel?.addEventListener("click", () => closeModal(elements.confirmModal));
-  elements.confirmSave?.addEventListener("click", async () => {
-    closeModal(elements.confirmModal);
-    await saveProfile();
-  });
   elements.successOk?.addEventListener("click", () => closeModal(elements.successModal));
 
   elements.logout?.addEventListener("click", async (event) => {
