@@ -152,10 +152,6 @@ svg {
 
   width: 100%;
 
-  zoom: 1.25;
-
-  transform-origin: top center;
-
   max-width: none;
 
   margin: 0 auto;
@@ -196,32 +192,6 @@ svg {
   margin-bottom: 55px;
 
   border-bottom: 1px solid #DCE6EA;
-}
-
-
-.patients-count {
-  position: absolute;
-
-  right: 0;
-  top: 50%;
-
-  transform: translateY(-50%);
-
-  min-height: 28px;
-
-  display: flex;
-  align-items: center;
-
-  padding: 4px 12px;
-
-  border: 1px solid #1F637A;
-  border-radius: 6px;
-
-  background: #FFFFFF;
-
-  color: #174E61;
-
-  font-size: 11px;
 }
 
 
@@ -316,8 +286,8 @@ svg {
 
 .patient-card {
   width: 100%;
-  min-height: 92px;
 
+  min-height: 76px;
   display: flex;
   align-items: center;
 
@@ -350,10 +320,10 @@ svg {
 
 .patient-avatar {
 
-  width: 62px;
-  height: 62px;
+  width: 52px;
+  height: 52px;
 
-  flex: 0 0 62px;
+  flex: 0 0 52px;
 
   border-radius: 50%;
 
@@ -384,7 +354,7 @@ svg {
 .patient-info {
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 20px;
   min-width: 0;
   flex: 1;
   overflow: hidden;
@@ -395,7 +365,9 @@ svg {
 
   display: block;
 
-  min-width: 130px;
+  flex: 0 1 auto;
+
+  min-width: 0;
 
   margin: 0;
 
@@ -418,6 +390,10 @@ svg {
   flex-direction: column;
 
   gap: 4px;
+
+  min-width: 0;
+
+  flex: 0 0 auto;
 
   color: #64727C;
 
