@@ -1,44 +1,80 @@
 "use strict";
 
 /* Tela de recuperação de senha (auth/esqueci-senha.html).
-   Validação de e-mail no frontend + feedback de erro/sucesso.
-   O envio real ainda não existe: o backend de auth do Supabase está
-   bloqueado até a decisão da Sofia sobre seed/ref. */
+   Validação de e-mail no frontend + resetPasswordForEmail no Supabase Auth. */
 (function () {
+  const client = window.PsicNotaSupabase;
   const form = document.getElementById("recoveryForm");
   const emailInput = document.getElementById("recoveryEmail");
   const message = document.getElementById("recoveryMessage");
 
-  if (!form || !emailInput || !message) return;
+  if (!form || !emailInput || !message || !client) return;
 
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   const SUBMIT_LABEL = "Enviar link de redefinição";
+
+  function setFieldError(text) {
+    const error = document.getElementById("recoveryEmailError");
+    emailInput.setAttribute("aria-invalid", text ? "true" : "false");
+    if (error) error.textContent = text;
+  }
 
   function showMessage(text, type = "") {
     message.textContent = text;
     message.className = "form-message" + (type ? " is-" + type : "");
   }
 
-  /* PONTO DE INTEGRAÇÃO DO SUPABASE AUTH.
-     Quando o auth for liberado, trocar o corpo desta função por:
+  async function handleSubmitRecuperacao(email) {
+    const { error } = await client.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + "/auth/login.html"
+    });
 
-       const { error } = await window.PsicNotaSupabase.auth.resetPasswordForEmail(email, {
-         redirectTo: window.location.origin + "/auth/login.html"
-       });
-       if (error) { showMessage("Não foi possível enviar o link. Tente novamente.", "error"); return; }
+    if (error) {
+      const mensagem = (error.message || "").toLowerCase();
+      if (mensagem.includes("network") || mensagem.includes("fetch")) {
+        showMessage("Sem conexão com o servidor. Verifique sua internet e tente novamente.", "error");
+      } else {
+        showMessage("Não foi possível enviar o link. Verifique o e-mail e tente novamente.", "error");
+      }
+      return;
+    }
 
-     e carregar no HTML, antes deste script:
-       <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-       <script src="../assets/js/supabase-client.js"></script>
-     Até lá, nenhum cliente Supabase é carregado nesta página. */
+    showMessage(
+      "Instruções enviadas! Verifique sua caixa de entrada para redefinir sua senha.",
+      "success"
+    );
+  }
 
-  /* MVP-04: formulário desabilitado — recuperação de senha indisponível na demo. */
-  const submit = form.querySelector('button[type="submit"]');
-  submit.disabled = true;
-  submit.textContent = SUBMIT_LABEL;
-  emailInput.disabled = true;
-  showMessage("Recuperação de senha não disponível nesta demonstração.", "info");
-
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
+
+    const email = emailInput.value.trim();
+    const submit = form.querySelector('button[type="submit"]');
+
+    if (!email) {
+      setFieldError("Informe seu e-mail.");
+      showMessage("Revise o campo indicado antes de continuar.", "error");
+      return;
+    }
+    if (!EMAIL_RE.test(email)) {
+      setFieldError("Digite um e-mail válido.");
+      showMessage("O e-mail informado não parece válido.", "error");
+      return;
+    }
+
+    setFieldError("");
+    showMessage("");
+    submit.disabled = true;
+    submit.textContent = "Enviando...";
+
+    await handleSubmitRecuperacao(email);
+
+    submit.disabled = false;
+    submit.textContent = SUBMIT_LABEL;
+  });
+
+  form.addEventListener("input", (event) => {
+    if (event.target.matches("input")) setFieldError("");
+    showMessage("");
   });
 }());
