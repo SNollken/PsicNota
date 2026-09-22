@@ -258,21 +258,6 @@
 }
 
 /* =========================
-   BADGE "DEMONSTRAÇÃO"
-   MVP-05: identifica discretamente o ambiente como demonstração.
-   Usa tokens do design-system.css; fallbacks para autossuficiência.
-========================= */
-
-.demo-badge {
-  display: block;
-  padding: 4px 0 2px;
-  text-align: center;
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  color: var(--text-secondary, #64727C);
-}
-
-/* =========================
    RESPONSIVIDADE DO MENU
 ========================= */
 

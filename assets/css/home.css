@@ -423,16 +423,6 @@ select[aria-invalid="true"]:focus {
   border-top: 1px solid var(--line);
 }
 
-.demo-note {
-  margin: 22px 0 0;
-  padding: 12px 14px;
-  color: #64727C;
-  background: var(--blue-50);
-  border-left: 3px solid var(--blue-300);
-  font-size: 0.78rem;
-  line-height: 1.55;
-}
-
 .field-help,
 .field-error {
   display: block;

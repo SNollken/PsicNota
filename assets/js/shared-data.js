@@ -193,7 +193,7 @@
      SINCRONIZAÇÃO COM O BANCO (Supabase)
      Em sessão autenticada o banco é a fonte de verdade e o
      localStorage vira cache (write-through). Sem cliente ou sem
-     sessão, o cache local continua a fonte (modo demonstração).
+     sessão, o cache local continua a fonte (offline).
      ========================================================= */
 
   function getSupabaseClient() {
