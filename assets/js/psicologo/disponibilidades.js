@@ -94,6 +94,10 @@
       timeCell.dataset.label = "Horário";
       timeCell.textContent = time;
 
+      const modalityCell = document.createElement("td");
+      modalityCell.dataset.label = "Modalidade";
+      modalityCell.textContent = slot.modalidade === "presencial" ? "Presencial" : "Online";
+
       const actionCell = document.createElement("td");
       actionCell.className = "row-actions";
       actionCell.dataset.label = "Ações";
@@ -110,7 +114,7 @@
         )
       );
 
-      row.append(selectCell, dayCell, timeCell, actionCell);
+      row.append(selectCell, dayCell, timeCell, modalityCell, actionCell);
       rows.append(row);
     });
     selectAll.checked = false;
@@ -123,7 +127,7 @@
     try {
       ({ data: result, error } = await client
         .from("disponibilidades")
-        .select("id, dia_semana, horario")
+        .select("id, dia_semana, horario, modalidade")
         .eq("psicologo_id", psychologistId)
         .order("dia_semana")
         .order("horario"));
@@ -154,12 +158,14 @@
     event.preventDefault();
     const day = Number(form.elements.weekday.value);
     const time = form.elements.startTime.value;
+    const modality = form.elements.modality.value;
     if (!time || !Number.isInteger(day) || day < 0 || day > 6) return;
 
     const values = {
       psicologo_id: psychologistId,
       dia_semana: day,
-      horario: `${time}:00`
+      horario: `${time}:00`,
+      modalidade: modality
     };
     submitButton.disabled = true;
     showMessage("");
@@ -228,6 +234,7 @@
       editingId = slot.id;
       form.elements.weekday.value = String(slot.dia_semana);
       form.elements.startTime.value = formatTime(slot.horario);
+      form.elements.modality.value = slot.modalidade || "online";
       submitButton.textContent = "Salvar alteração";
       document.getElementById("cancelScheduleEdit").hidden = false;
       form.elements.weekday.focus();

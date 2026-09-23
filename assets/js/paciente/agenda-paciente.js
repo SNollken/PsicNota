@@ -948,7 +948,7 @@ function getSelectableSlots(
       .filter((item) => item.date === dateKey && item.status !== "cancelled" && item.status !== "rejected")
       .map((item) => item.time)
   );
-  const freeSlots = slots.filter((time) => !occupied.has(time));
+  const freeSlots = slots.filter((slot) => !occupied.has(slot.time));
 
   const selectedDate =
     patientData.fromDateKey(
@@ -1009,12 +1009,12 @@ function getSelectableSlots(
 
 
   return freeSlots.filter(
-    (time) => {
+    (slot) => {
       const [
         hour,
         minute
       ] =
-        time
+        slot.time
           .split(":")
           .map(Number);
 
@@ -1702,27 +1702,9 @@ function renderScheduleTimes(
   presentialTimes.replaceChildren();
 
 
-  /*
-   * Por enquanto, os horários livres
-   * aparecem nas duas modalidades.
-   *
-   * A modalidade escolhida é salva
-   * junto com a solicitação.
-   */
-
-  if (onlineColumn) {
-    onlineColumn.hidden =
-      false;
-  }
-
-
-  if (presentialColumn) {
-    presentialColumn.hidden =
-      false;
-  }
-
-
   if (!slots.length) {
+    if (onlineColumn) onlineColumn.hidden = false;
+    if (presentialColumn) presentialColumn.hidden = false;
     onlineTimes.append(
       createNoSlotsMessage()
     );
@@ -1737,22 +1719,16 @@ function renderScheduleTimes(
   }
 
 
+  const onlineSlots = slots.filter((slot) => slot.mode === "online");
+  const presentialSlots = slots.filter((slot) => slot.mode === "presencial");
+  if (onlineColumn) onlineColumn.hidden = onlineSlots.length === 0;
+  if (presentialColumn) presentialColumn.hidden = presentialSlots.length === 0;
+
   slots.forEach(
-    (time) => {
-      onlineTimes.append(
-        createScheduleTimeButton(
-          time,
-          "Online"
-        )
-      );
-
-
-      presentialTimes.append(
-        createScheduleTimeButton(
-          time,
-          "Presencial"
-        )
-      );
+    (slot) => {
+      const mode = slot.mode === "presencial" ? "Presencial" : "Online";
+      const target = mode === "Presencial" ? presentialTimes : onlineTimes;
+      target.append(createScheduleTimeButton(slot.time, mode));
     }
   );
 }
@@ -1997,8 +1973,9 @@ async function submitScheduleRequest() {
 
 
   if (
-    !availableSlots.includes(
-      popupSelectedTime
+    !availableSlots.some((slot) =>
+      slot.time === popupSelectedTime
+      && slot.mode === popupSelectedMode.toLowerCase()
     )
   ) {
     showToast(
@@ -2869,7 +2846,7 @@ async function loadRemoteAvailability() {
 
     const { data: rows, error } = await supabaseClient
       .from("disponibilidades")
-      .select("dia_semana, horario")
+      .select("dia_semana, horario, modalidade")
       .eq("psicologo_id", psychologist.id)
       .order("dia_semana")
       .order("horario");
@@ -2886,7 +2863,7 @@ async function loadRemoteAvailability() {
       const time = String(row.horario || "").slice(0, 5);
       if (!Number.isInteger(day) || day < 0 || day > 6 || !time) return;
       const slots = availabilityByWeekday.get(day) || [];
-      slots.push(time);
+      slots.push({ time, mode: row.modalidade === "presencial" ? "presencial" : "online" });
       availabilityByWeekday.set(day, slots);
     });
     availabilityLoadFailed = false;

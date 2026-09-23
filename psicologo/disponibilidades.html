@@ -62,6 +62,14 @@
                 <input id="startTime" name="startTime" type="time" value="08:00" step="1200" required />
               </label>
 
+              <label class="field">
+                <span>Modalidade</span>
+                <select id="modality" name="modality" required>
+                  <option value="online">Online</option>
+                  <option value="presencial">Presencial</option>
+                </select>
+              </label>
+
               <button class="primary-button" type="submit">Adicionar</button>
               <button class="outline-button" id="cancelScheduleEdit" type="button" hidden>Cancelar edição</button>
             </form>
@@ -86,6 +94,7 @@
                     </th>
                     <th scope="col">Dia da semana</th>
                     <th scope="col">Horário</th>
+                    <th scope="col">Modalidade</th>
                     <th class="actions-heading" scope="col">Ações</th>
                   </tr>
                 </thead>
