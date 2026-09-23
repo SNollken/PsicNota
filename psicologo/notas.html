@@ -1,87 +1,93 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PsicNota | Anotações Rápidas</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Notas rápidas vinculadas às consultas no PsicNota" />
+  <title>PsicNota | Notas</title>
   <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/design-system.css">
-  <link rel="stylesheet" href="../assets/menu/menu.css">
-  <link rel="stylesheet" href="../assets/css/psicologo/notas.css">
+  <link rel="stylesheet" href="../assets/css/psicologo/relatorios.css" />
+  <link rel="stylesheet" href="../assets/css/psicologo/notas.css" />
   <script src="../assets/menu/menu.js"></script>
 </head>
-<body>
+<body class="report-editor-page notes-editor-page">
   <div class="app-shell">
     <psic-menu tipo="psicologo" ativo="agenda"></psic-menu>
-    <main class="notes-main">
-      <header class="notes-topbar">
-        <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
-        <h1>Anotações Rápidas</h1>
+
+    <main class="main-content">
+      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+      <header class="topbar report-editor-topbar">
+        <h1>Notas</h1>
       </header>
-      <div class="notes-content">
-        <div class="notes-controls">
-          <div class="consultation-field">
-            <label for="notesAppointment">Consulta</label>
-            <div class="consultation-select">
-              <img src="../assets/img/avatar-paciente.png" alt="" id="patientAvatar">
+
+      <form id="notesForm">
+        <section class="report-editor-header" aria-label="Consulta e emoção">
+          <div class="report-consultation">
+            <label class="report-editor-label" for="notesAppointment">Consulta</label>
+            <div class="report-consultation-select">
+              <img class="report-patient-avatar" id="patientAvatar" src="../assets/img/avatar-paciente.png" alt="">
               <select id="notesAppointment" aria-label="Consulta vinculada"></select>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 9 7 7 7-7"/></svg>
+              <span class="report-select-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg>
+              </span>
             </div>
           </div>
-          <div class="moods" role="radiogroup" aria-label="Emoção do dia">
-            <button type="button" role="radio" aria-checked="false" data-mood="muito-bem"><span class="mood-icon" aria-hidden="true"><svg viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="9"></circle>
-                    <circle cx="9" cy="10" r="1"></circle>
-                    <circle cx="15" cy="10" r="1"></circle>
-                    <path d="M8 14c1 3 7 3 8 0"></path>
-                  </svg></span> Muito bem</button>
-            <button type="button" role="radio" aria-checked="false" data-mood="bem"><span class="mood-icon" aria-hidden="true"><svg viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="9"></circle>
-                    <circle cx="9" cy="10" r="1"></circle>
-                    <circle cx="15" cy="10" r="1"></circle>
-                    <path d="M9 14c1.5 1.5 4.5 1.5 6 0"></path>
-                  </svg></span> Bem</button>
-            <button type="button" role="radio" aria-checked="false" data-mood="neutro"><span class="mood-icon" aria-hidden="true"><svg viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="9"></circle>
-                    <circle cx="9" cy="10" r="1"></circle>
-                    <circle cx="15" cy="10" r="1"></circle>
-                    <path d="M8.5 15h7"></path>
-                  </svg></span> Estável</button>
-            <button type="button" role="radio" aria-checked="false" data-mood="mal"><span class="mood-icon" aria-hidden="true"><svg viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="9"></circle>
-                    <path d="M8 10.5l2-.8"></path>
-                    <path d="M16 10.5l-2-.8"></path>
-                    <circle cx="9" cy="11" r="1"></circle>
-                    <circle cx="15" cy="11" r="1"></circle>
-                    <path d="M9 16c1.5-1.8 4.5-1.8 6 0"></path>
-                  </svg></span> Mal</button>
-            <button type="button" role="radio" aria-checked="false" data-mood="muito-mal"><span class="mood-icon" aria-hidden="true"><svg viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="9"></circle>
-                    <path d="M7.5 9.5l2.5 1"></path>
-                    <path d="M16.5 10.5l-2.5-1"></path>
-                    <circle cx="9" cy="11" r="1"></circle>
-                    <circle cx="15" cy="11" r="1"></circle>
-                    <path d="M8 16.5c2-2.5 6-2.5 8 0"></path>
-                  </svg></span> Muito mal</button>
+
+          <div class="mood-picker" id="notesMoodPicker" role="radiogroup" aria-label="Emoção do dia">
+            <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="muito-bem"><span class="mood-emoji" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><circle cx="9" cy="10" r="1"></circle><circle cx="15" cy="10" r="1"></circle><path d="M8 14c1 3 7 3 8 0"></path></svg></span><span>Muito bem</span></button>
+            <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="bem"><span class="mood-emoji" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><circle cx="9" cy="10" r="1"></circle><circle cx="15" cy="10" r="1"></circle><path d="M9 14c1.5 1.5 4.5 1.5 6 0"></path></svg></span><span>Bem</span></button>
+            <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="neutro"><span class="mood-emoji" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><circle cx="9" cy="10" r="1"></circle><circle cx="15" cy="10" r="1"></circle><path d="M8.5 15h7"></path></svg></span><span>Estável</span></button>
+            <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="mal"><span class="mood-emoji" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M8 10.5l2-.8M16 10.5l-2-.8"></path><circle cx="9" cy="11" r="1"></circle><circle cx="15" cy="11" r="1"></circle><path d="M9 16c1.5-1.8 4.5-1.8 6 0"></path></svg></span><span>Mal</span></button>
+            <button type="button" class="mood-option" role="radio" aria-checked="false" data-mood="muito-mal"><span class="mood-emoji" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M7.5 9.5l2.5 1M16.5 10.5l-2.5-1"></path><circle cx="9" cy="11" r="1"></circle><circle cx="15" cy="11" r="1"></circle><path d="M8 16.5c2-2.5 6-2.5 8 0"></path></svg></span><span>Muito mal</span></button>
           </div>
-        </div>
-        <label class="sr-only" for="noteText">Anotações da consulta</label>
-        <textarea id="noteText" aria-label="Anotações da consulta"></textarea>
-        <div class="notes-actions">
-          <button class="save-button" id="saveNote" type="button">Salvar</button>
-          <button class="finish-button" id="finishConsultation" type="button">Finalizar Consulta</button>
-        </div>
-        <p class="notes-status" id="notesStatus" role="status" aria-live="polite"></p>
-      </div>
+        </section>
+
+        <section class="report-writing-area" aria-label="Anotações da consulta">
+          <div class="report-toolbar" id="noteToolbar" role="toolbar" aria-label="Formatação das notas">
+            <div class="report-toolbar-group">
+              <select id="noteFormatBlock" aria-label="Estilo do parágrafo"><option value="p">Normal</option><option value="h2">Título</option><option value="blockquote">Citação</option></select>
+              <select id="noteFontSize" aria-label="Tamanho da fonte"><option value="2">12</option><option value="3" selected>14</option><option value="4">16</option><option value="5">18</option></select>
+            </div>
+            <div class="report-toolbar-group">
+              <button type="button" class="report-tool-btn" data-cmd="bold" aria-label="Negrito">B</button>
+              <button type="button" class="report-tool-btn report-tool-italic" data-cmd="italic" aria-label="Itálico">I</button>
+              <button type="button" class="report-tool-btn report-tool-underline" data-cmd="underline" aria-label="Sublinhado">U</button>
+            </div>
+            <div class="report-toolbar-group">
+              <button type="button" class="report-tool-btn" data-cmd="insertUnorderedList" aria-label="Lista com marcadores"><svg viewBox="0 0 24 24"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"></path></svg></button>
+              <button type="button" class="report-tool-btn" data-cmd="insertOrderedList" aria-label="Lista numerada"><svg viewBox="0 0 24 24"><path d="M10 6h11M10 12h11M10 18h11M4 5h1.5v4M4 9h2M4 14h2a1 1 0 0 1 0 2H4v2h2"></path></svg></button>
+              <button type="button" class="report-tool-btn" data-cmd="justifyLeft" aria-label="Alinhar à esquerda"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h14"></path></svg></button>
+            </div>
+            <div class="report-toolbar-group">
+              <button type="button" class="report-tool-btn" data-cmd="undo" aria-label="Desfazer"><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3"></path></svg></button>
+              <button type="button" class="report-tool-btn" data-cmd="redo" aria-label="Refazer"><svg viewBox="0 0 24 24"><path d="m15 14 5-5-5-5M20 9H10a6 6 0 0 0 0 12h3"></path></svg></button>
+            </div>
+          </div>
+
+          <div id="noteText" class="report-main-textarea" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Anotações da consulta" data-placeholder="Digite suas anotações da consulta..."></div>
+          <button class="report-microphone" type="button" aria-label="Gravar anotação por voz" title="Anotação por voz">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Z"></path><path d="M19 11a7 7 0 0 1-14 0M12 18v4M8 22h8"></path></svg>
+          </button>
+        </section>
+
+        <footer class="report-editor-footer">
+          <p class="draft-status" id="notesStatus" role="status" aria-live="polite"></p>
+          <div class="report-save-actions">
+            <button class="button button-secondary report-draft-button" id="saveNote" type="button">Salvar anotações</button>
+            <button class="button button-primary report-save-button" id="finishConsultation" type="button">Finalizar consulta</button>
+          </div>
+        </footer>
+      </form>
     </main>
   </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../assets/js/supabase-client.js"></script>
-<script src="../assets/js/profile-backend.js"></script>
-<script src="../assets/js/shared-data.js"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/profile-backend.js"></script>
+  <script src="../assets/js/shared-data.js"></script>
   <script src="../assets/js/psicologo/notas.js"></script>
 </body>
 </html>

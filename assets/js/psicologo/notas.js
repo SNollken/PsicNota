@@ -5,7 +5,7 @@
   const appointmentSelect = document.querySelector('#notesAppointment');
   const noteText = document.querySelector('#noteText');
   const status = document.querySelector('#notesStatus');
-  const moodButtons = [...document.querySelectorAll('.moods button')];
+  const moodButtons = [...document.querySelectorAll('#notesMoodPicker [data-mood]')];
   const params = new URLSearchParams(location.search);
   let selectedMood = '';
   let appointments = [];
@@ -38,11 +38,12 @@
     for (const button of moodButtons) {
       const checked = button.dataset.mood === selectedMood;
       button.setAttribute('aria-checked', String(checked));
+      button.classList.toggle('selected', checked);
     }
   }
 
   function loadAppointment() {
-    noteText.value = data.getAppointmentNote(selectedId());
+    noteText.textContent = data.getAppointmentNote(selectedId());
     selectedMood = data.getAppointmentMood(selectedId());
     renderMood();
     status.textContent = '';
@@ -51,18 +52,13 @@
   async function saveNote() {
     if (!selectedId()) return;
     const consultaId = selectedId();
-    const conteudo = noteText.value;
+    const conteudo = noteText.innerText.trim();
 
     data.setAppointmentNote(consultaId, conteudo);
     data.setAppointmentMood(consultaId, selectedMood);
 
-    if (conteudo.trim() || selectedMood) {
-      const saved = await data.saveNoteToDb(consultaId, conteudo, selectedMood || null);
-      status.textContent = saved ? 'Anotações salvas.' : 'Anotações salvas localmente (sem conexão).';
-      return;
-    }
-
-    status.textContent = 'Anotações salvas.';
+    const saved = await data.saveNoteToDb(consultaId, conteudo, selectedMood || null);
+    status.textContent = saved ? 'Anotações salvas.' : 'Anotações salvas localmente (sem conexão).';
   }
 
   appointmentSelect.addEventListener('change', loadAppointment);
@@ -72,6 +68,22 @@
     status.textContent = '';
   }));
   noteText.addEventListener('input', () => { status.textContent = ''; });
+  const toolbar = document.querySelector('#noteToolbar');
+  toolbar.querySelectorAll('button[data-cmd]').forEach((button) => {
+    button.addEventListener('mousedown', (event) => event.preventDefault());
+    button.addEventListener('click', () => {
+      noteText.focus();
+      document.execCommand(button.dataset.cmd, false, null);
+    });
+  });
+  document.querySelector('#noteFormatBlock').addEventListener('change', (event) => {
+    noteText.focus();
+    document.execCommand('formatBlock', false, event.currentTarget.value);
+  });
+  document.querySelector('#noteFontSize').addEventListener('change', (event) => {
+    noteText.focus();
+    document.execCommand('fontSize', false, event.currentTarget.value);
+  });
   document.querySelector('#saveNote').addEventListener('click', () => void saveNote());
   document.querySelector('#finishConsultation').addEventListener('click', async () => {
     await saveNote();
