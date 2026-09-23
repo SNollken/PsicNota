@@ -43,7 +43,7 @@
   }
 
   function loadAppointment() {
-    noteText.textContent = data.getAppointmentNote(selectedId());
+    noteText.value = data.getAppointmentNote(selectedId());
     selectedMood = data.getAppointmentMood(selectedId());
     renderMood();
     status.textContent = '';
@@ -52,7 +52,7 @@
   async function saveNote() {
     if (!selectedId()) return;
     const consultaId = selectedId();
-    const conteudo = noteText.innerText.trim();
+    const conteudo = noteText.value.trim();
 
     data.setAppointmentNote(consultaId, conteudo);
     data.setAppointmentMood(consultaId, selectedMood);
@@ -68,22 +68,6 @@
     status.textContent = '';
   }));
   noteText.addEventListener('input', () => { status.textContent = ''; });
-  const toolbar = document.querySelector('#noteToolbar');
-  toolbar.querySelectorAll('button[data-cmd]').forEach((button) => {
-    button.addEventListener('mousedown', (event) => event.preventDefault());
-    button.addEventListener('click', () => {
-      noteText.focus();
-      document.execCommand(button.dataset.cmd, false, null);
-    });
-  });
-  document.querySelector('#noteFormatBlock').addEventListener('change', (event) => {
-    noteText.focus();
-    document.execCommand('formatBlock', false, event.currentTarget.value);
-  });
-  document.querySelector('#noteFontSize').addEventListener('change', (event) => {
-    noteText.focus();
-    document.execCommand('fontSize', false, event.currentTarget.value);
-  });
   document.querySelector('#saveNote').addEventListener('click', () => void saveNote());
   document.querySelector('#finishConsultation').addEventListener('click', async () => {
     await saveNote();
