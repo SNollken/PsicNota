@@ -28,16 +28,52 @@
 
       <header class="topbar agenda-topbar">
         <h1>Agenda das Consultas</h1>
-        <a class="button button-secondary" href="historico-consultas.html" aria-label="Abrir histórico de consultas">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path>
-            <path d="M3 3v5h5M12 7v5l3 2"></path>
-          </svg>
-          <span>Histórico</span>
-        </a>
       </header>
 
       <section class="agenda-content">
+
+        <section class="psic-dashboard" aria-label="Resumo da agenda">
+
+          <button class="psic-dashboard-card dashboard-week" id="weekAppointmentsCard" type="button">
+            <span class="dashboard-copy">
+              <small>Esta semana</small>
+              <strong id="weekAppointmentsCount">
+                0 atendimentos
+              </strong>
+            </span>
+
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
+          </button>
+
+          <button class="psic-dashboard-card dashboard-next" id="nextAppointmentCard" type="button">
+            <span class="dashboard-copy">
+              <small>Próximo atendimento</small>
+              <strong id="nextAppointmentSummary">
+                Nenhum agendamento
+              </strong>
+            </span>
+
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
+          </button>
+
+          <button class="psic-dashboard-card dashboard-pending" id="pendingRequestsCard" type="button">
+            <span class="dashboard-copy">
+              <small>Pedidos Pendentes</small>
+              <strong id="pendingRequestsCount">
+                0 solicitações
+              </strong>
+            </span>
+
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
+          </button>
+
+        </section>
 
         <h2 class="agenda-subtitle">
           Escolha um dia e um horário para consultar
@@ -85,53 +121,6 @@
           </div>
 
           <div class="calendar-grid psic-calendar-grid" id="psicCalendarGrid" role="grid"></div>
-        </section>
-
-        <!-- =========================================================
-             CARDS DE RESUMO
-             ========================================================= -->
-
-        <section class="psic-dashboard" aria-label="Resumo da agenda">
-
-          <button class="psic-dashboard-card dashboard-week" id="weekAppointmentsCard" type="button">
-            <span class="dashboard-copy">
-              <small>Esta semana</small>
-              <strong id="weekAppointmentsCount">
-                0 atendimentos
-              </strong>
-            </span>
-
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m9 18 6-6-6-6"></path>
-            </svg>
-          </button>
-
-          <button class="psic-dashboard-card dashboard-next" id="nextAppointmentCard" type="button">
-            <span class="dashboard-copy">
-              <small>Próximo atendimento</small>
-              <strong id="nextAppointmentSummary">
-                Nenhum agendamento
-              </strong>
-            </span>
-
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m9 18 6-6-6-6"></path>
-            </svg>
-          </button>
-
-          <button class="psic-dashboard-card dashboard-pending" id="pendingRequestsCard" type="button">
-            <span class="dashboard-copy">
-              <small>Pedidos Pendentes</small>
-              <strong id="pendingRequestsCount">
-                0 solicitações
-              </strong>
-            </span>
-
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m9 18 6-6-6-6"></path>
-            </svg>
-          </button>
-
         </section>
 
         <!-- =========================================================
