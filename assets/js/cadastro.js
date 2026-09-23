@@ -272,22 +272,20 @@
       return;
     }
 
-    const confirmationRequired = !data.session;
-    showMessage(
-      confirmationRequired
-        ? "Cadastro iniciado. Confira seu e-mail e confirme a conta antes de entrar."
-        : "Cadastro realizado! Redirecionando para o login...",
-      "success"
-    );
-
-    if (!confirmationRequired) {
-      window.setTimeout(() => {
-        window.location.href = "login.html";
-      }, 1500);
-    } else {
+    if (!data.session) {
+      showMessage(
+        "O Supabase ainda exige confirmação de e-mail. Desative ‘Confirm email’ nas configurações de Auth para liberar o login imediato.",
+        "error"
+      );
       submitButton.disabled = false;
       submitButton.textContent = "Criar conta";
+      return;
     }
+
+    showMessage("Cadastro realizado! Redirecionando para o login...", "success");
+    window.setTimeout(() => {
+      window.location.href = "login.html";
+    }, 1500);
   });
 
   updateRoleFields();
