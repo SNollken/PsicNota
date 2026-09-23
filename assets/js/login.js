@@ -50,7 +50,7 @@
         ? identifier + USER_EMAIL_DOMAIN
         : null;
     if (!email) {
-      setFieldError(usernameInput, "Digite um e-mail válido ou seu usuário demo.");
+      setFieldError(usernameInput, "Digite um e-mail válido ou nome de usuário.");
       showMessage("Confira o e-mail ou usuário informado.", "error");
       return;
     }
