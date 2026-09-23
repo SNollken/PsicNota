@@ -346,6 +346,10 @@ svg {
   background-position: center;
 }
 
+.patient-avatar.has-photo {
+  color: transparent;
+}
+
 
 /* =========================
    INFORMAÇÕES

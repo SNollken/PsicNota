@@ -466,9 +466,6 @@ function renderPatient(patient) {
     getInitials(patient.name);
 
 
-  /* Caso futuramente o paciente
-     tenha uma foto no shared-data. */
-
   if (patient.avatarDataUrl) {
 
     avatar.classList.add(
@@ -1178,6 +1175,20 @@ async function loadPatientsFromDatabase() {
   if (backend) {
     const allowed = await backend.requireProfile("psicologo");
     if (!allowed) return;
+    currentPsychologist.fullName = allowed.profile.nome_social || allowed.profile.nome_completo;
+    currentPsychologist.avatarDataUrl = allowed.avatarUrl;
+
+    if (elements.psychologistAvatar) {
+      elements.psychologistAvatar.replaceChildren();
+      elements.psychologistAvatar.style.backgroundImage = "";
+      elements.psychologistAvatar.classList.toggle("has-photo", Boolean(allowed.avatarUrl));
+
+      if (allowed.avatarUrl) {
+        elements.psychologistAvatar.style.backgroundImage = `url("${allowed.avatarUrl}")`;
+      } else {
+        elements.psychologistAvatar.textContent = getInitials(currentPsychologist.fullName);
+      }
+    }
   }
 
   const { data: authData, error: authError } = await client.auth.getUser();
@@ -1190,7 +1201,7 @@ async function loadPatientsFromDatabase() {
   const [perfisQuery] = await Promise.all([
     client
       .from("perfis")
-      .select("id, nome_completo, nome_social, email")
+      .select("id, nome_completo, nome_social, email, avatar_url")
       .eq("papel", "paciente")
       .order("nome_completo", { ascending: true }),
     data.syncRemoteData()
@@ -1200,6 +1211,55 @@ async function loadPatientsFromDatabase() {
 
   if (error) {
     throw error;
+  }
+
+  const avatarPaths = Array.from(new Set(
+    (databasePatients || [])
+      .map((patient) => patient.avatar_url)
+      .filter(Boolean)
+  ));
+  const avatarUrlByPath = new Map();
+  const avatarPathsByPatient = new Map(
+    (databasePatients || []).map((patient) => [patient.id, patient.avatar_url])
+  );
+
+  if (avatarPaths.length) {
+    const { data: signedAvatars, error: avatarError } = await client
+      .storage
+      .from("avatars")
+      .createSignedUrls(avatarPaths, 3600);
+
+    if (avatarError) {
+      console.warn("Não foi possível carregar as fotos dos pacientes:", avatarError.message);
+    } else {
+      (signedAvatars || []).forEach((avatar, index) => {
+        const path = avatar.path || avatarPaths[index];
+        if (path && avatar.signedUrl && !avatar.error) {
+          avatarUrlByPath.set(path, avatar.signedUrl);
+        } else if (avatar.error) {
+          console.warn("Não foi possível assinar uma foto de paciente:", avatar.error);
+        }
+      });
+    }
+
+    const pathsWithoutUrl = avatarPaths.filter((path) => !avatarUrlByPath.has(path));
+    const individualUrls = await Promise.all(pathsWithoutUrl.map(async (path) => {
+      const { data: signedAvatar, error: signedAvatarError } = await client
+        .storage
+        .from("avatars")
+        .createSignedUrl(path, 3600);
+
+      if (signedAvatarError) {
+        console.warn("Não foi possível assinar uma foto de paciente:", signedAvatarError.message);
+        return null;
+      }
+
+      return signedAvatar?.signedUrl ? [path, signedAvatar.signedUrl] : null;
+    }));
+
+    individualUrls.filter(Boolean).forEach(([path, signedUrl]) => {
+      avatarUrlByPath.set(path, signedUrl);
+    });
   }
 
   const statsByName = new Map(
@@ -1217,7 +1277,7 @@ async function loadPatientsFromDatabase() {
       total: stats.total || 0,
       notes: stats.notes || 0,
       reports: stats.reports || 0,
-      avatarDataUrl: null
+      avatarDataUrl: avatarUrlByPath.get(avatarPathsByPatient.get(patient.id)) || null
     };
   });
 

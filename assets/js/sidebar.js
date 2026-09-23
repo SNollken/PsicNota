@@ -102,16 +102,24 @@
     img.src = (session && session.avatarDataUrl) || fallbackSrc;
 
     // Foto do banco: troca o avatar ilustrado pela foto real do perfil quando existir.
-    applyDatabasePhoto(avatarEl, img);
+    applyDatabasePhoto(avatarEl);
   }
 
-  async function applyDatabasePhoto(avatarEl, img) {
+  async function applyDatabasePhoto(avatarEl) {
     try {
       const client = await getSupabaseClient();
       if (!client) return;
       const photoUrl = await fetchProfilePhotoUrl(client);
-      if (!photoUrl) return;
-      img.src = photoUrl;
+      if (!photoUrl || !avatarEl.isConnected) return;
+
+      let currentImg = avatarEl.querySelector("img");
+      if (!currentImg) {
+        avatarEl.replaceChildren();
+        currentImg = document.createElement("img");
+        currentImg.alt = "";
+        avatarEl.appendChild(currentImg);
+      }
+      currentImg.src = photoUrl;
       avatarEl.classList.add("has-photo");
     } catch (error) {
       // Sem sessão/Supabase disponível: mantém o avatar ilustrado padrão.
