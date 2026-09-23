@@ -1387,15 +1387,10 @@ function renderCalendar() {
     }
 
 
-    /*
-     * Um dia só abre o popup
-     * se possuir horário livre.
-     */
-
     const selectable =
       !isOtherMonth &&
       !isPast &&
-      openSlots.length > 0;
+      (openSlots.length > 0 || dateKey === todayKey);
 
 
     button.disabled =
