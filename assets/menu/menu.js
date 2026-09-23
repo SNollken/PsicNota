@@ -14,9 +14,9 @@
    Atributos:
      tipo  = "psicologo" | "paciente"
              Se omitido, usa o tipo salvo na sessão.
-     ativo = qual item aparece destacado:
-             psicologo: "inicio" | "agenda" | "pacientes" | "relatorios" | "perfil" | ""
-             paciente : "inicio" | "agendar" | "perfil" | ""
+      ativo = qual item aparece destacado:
+              psicologo: "inicio" | "agenda" | "disponibilidades" | "pacientes" | "relatorios" | "perfil" | ""
+              paciente : "inicio" | "agendar" | "perfil" | ""
 
    O componente renderiza em LIGHT DOM de forma SÍNCRONA durante o parse,
    então os scripts de cada página (agenda-psicologo.js, pacientes.js, perfil.js...)
@@ -39,6 +39,7 @@
   var ICON_CLIP = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>';
   var ICON_HOME = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.6 12 4l8 6.6V20a1 1 0 0 1-1 1h-4.6v-6.2H9.6V21H5a1 1 0 0 1-1-1v-10.4Z"/></svg>';
   var ICON_PESSOA = '<svg class="nav-icon-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11.5a4.25 4.25 0 1 0-4.25-4.25A4.26 4.26 0 0 0 12 11.5Zm0 2.1c-3.88 0-8.05 1.95-8.05 5.4v1.6h16.1v-1.6c0-3.45-4.17-5.4-8.05-5.4Z"/></svg>';
+  var ICON_RELOGIO = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
   var ICON_SAIR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>';
 
   /* Destino do logout. Toda página com <psic-menu> fica um nível abaixo da raiz
@@ -69,6 +70,7 @@
       '        <p class="nav-label">MENU</p>\n' +
       '        ' + item(prefixoPagina + 'home.html', ICON_HOME, 'Início', ativo === 'inicio') + '\n' +
       '        ' + item(prefixoPagina + 'agenda-psicologo.html', ICON_AGENDA, 'Agendar consulta', ativo === 'agenda') + '\n' +
+      '        ' + item(prefixoPagina + 'disponibilidades.html', ICON_RELOGIO, 'Disponibilidades', ativo === 'disponibilidades') + '\n' +
       '        ' + item(prefixoPagina + 'pacientes.html', ICON_PESSOA, 'Meus pacientes', ativo === 'pacientes') + '\n' +
       '        ' + item(prefixoPagina + 'relatorios.html', ICON_CLIP, 'Relatórios', ativo === 'relatorios') + '\n' +
       '        ' + item(LOGIN_HREF, ICON_SAIR, 'Sair', false, 'nav-item-sair') + '\n' +
