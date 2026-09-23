@@ -356,9 +356,13 @@ if (link.dataset.patientDetails !== undefined) return;
 const page =
 link.href.split("?")[0];
 
+const isAppointmentsLink = page === "historico-consultas.html" || link.textContent.trim() === "Consultas";
+const targetPage = isAppointmentsLink ? "paciente-perfil.html" : page;
+const targetTab = isAppointmentsLink ? "appointments" : (page === "paciente-perfil.html" ? "details" : "");
+
 
 link.href =
-`${page}?${idParam}paciente=${encodeURIComponent(patientName)}${page === "paciente-perfil.html" ? "&aba=details" : ""}`;
+`${targetPage}?${idParam}paciente=${encodeURIComponent(patientName)}${targetTab ? `&aba=${targetTab}` : ""}`;
 
 
 });

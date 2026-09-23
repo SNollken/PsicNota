@@ -21,8 +21,11 @@ const patientName =
     if (link.dataset.patientDetails !== undefined) return;
 
     const page = link.getAttribute("href").split("?")[0];
+    const isAppointmentsLink = page === "historico-consultas.html" || link.textContent.trim() === "Consultas";
+    const targetPage = isAppointmentsLink ? "paciente-perfil.html" : page;
+    const targetTab = isAppointmentsLink ? "appointments" : (page === "paciente-perfil.html" ? "details" : "");
 
-    link.href = `${page}?${idParam}paciente=${encodedPatient}${page === "paciente-perfil.html" ? "&aba=details" : ""}`;
+    link.href = `${targetPage}?${idParam}paciente=${encodedPatient}${targetTab ? `&aba=${targetTab}` : ""}`;
 
   });
 
