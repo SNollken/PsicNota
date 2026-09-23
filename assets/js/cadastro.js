@@ -259,7 +259,7 @@
     submitButton.disabled = true;
     submitButton.textContent = "Criando conta...";
 
-    const { error } = await client.auth.signUp({
+    const { data, error } = await client.auth.signUp({
       email,
       password,
       options: { data: metadata }
@@ -272,11 +272,22 @@
       return;
     }
 
-    showMessage("Cadastro realizado! Redirecionando para o login...", "success");
+    const confirmationRequired = !data.session;
+    showMessage(
+      confirmationRequired
+        ? "Cadastro iniciado. Confira seu e-mail e confirme a conta antes de entrar."
+        : "Cadastro realizado! Redirecionando para o login...",
+      "success"
+    );
 
-    window.setTimeout(() => {
-      window.location.href = "login.html";
-    }, 1500);
+    if (!confirmationRequired) {
+      window.setTimeout(() => {
+        window.location.href = "login.html";
+      }, 1500);
+    } else {
+      submitButton.disabled = false;
+      submitButton.textContent = "Criar conta";
+    }
   });
 
   updateRoleFields();

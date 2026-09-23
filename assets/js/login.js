@@ -34,19 +34,24 @@
     event.preventDefault();
     const usernameInput = document.getElementById("loginEmail");
     const passwordInput = document.getElementById("loginPassword");
-    const username = usernameInput.value.trim().toLowerCase();
+    const identifier = usernameInput.value.trim().toLowerCase();
     const password = passwordInput.value;
     const submit = form.querySelector('button[type="submit"]');
 
-    setFieldError(usernameInput, username ? "" : "Informe seu usuário.");
+    setFieldError(usernameInput, identifier ? "" : "Informe seu usuário ou e-mail.");
     setFieldError(passwordInput, password ? "" : "Informe sua senha.");
-    if (!username || !password) {
+    if (!identifier || !password) {
       showMessage("Revise os campos indicados antes de continuar.", "error");
       return;
     }
-    if (!/^[a-z0-9._-]+$/.test(username)) {
-      setFieldError(usernameInput, "Use apenas o nome de usuário, sem e-mail.");
-      showMessage("Digite apenas seu usuário.", "error");
+    const email = identifier.includes("@")
+      ? identifier
+      : /^[a-z0-9._-]+$/.test(identifier)
+        ? identifier + USER_EMAIL_DOMAIN
+        : null;
+    if (!email) {
+      setFieldError(usernameInput, "Digite um e-mail válido ou seu usuário demo.");
+      showMessage("Confira o e-mail ou usuário informado.", "error");
       return;
     }
 
@@ -55,7 +60,7 @@
     showMessage("");
 
     const { data, error } = await client.auth.signInWithPassword({
-      email: username + USER_EMAIL_DOMAIN,
+      email,
       password
     });
 
