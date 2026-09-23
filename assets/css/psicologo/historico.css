@@ -916,3 +916,43 @@ body{
 
 
 }
+
+@media (max-width: 900px) {
+  .app-shell {
+    display: block;
+  }
+
+  .main-content {
+    grid-column: auto;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .sidebar {
+    width: min(280px, 85vw);
+    transform: translateX(-105%);
+    transition: transform 0.2s ease;
+    box-shadow: 8px 0 28px rgba(17, 24, 39, 0.14);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .mobile-menu {
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 30;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--blue-800);
+    cursor: pointer;
+  }
+}
