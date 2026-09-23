@@ -48,6 +48,7 @@ const ui = {
 
   requestsPopup: document.querySelector("#psicRequestsPopup"),
   requestsPopupClose: document.querySelector("#psicRequestsPopupClose"),
+  requestsPopupTitle: document.querySelector("#psicRequestsPopupTitle"),
   requestsList: document.querySelector("#psicRequestsPopupList"),
 
   appointmentsPopup: document.querySelector("#psicAppointmentsPopup"),
@@ -88,6 +89,7 @@ let usingRemoteRequests = false;
 let usingRemoteAppointments = false;
 let psychologistUid = null;
 let selectedDateKey = "";
+let requestsPopupDateKey = null;
 
 const now0 = new Date();
 let visibleMonth = new Date(now0.getFullYear(), now0.getMonth(), 1);
@@ -249,7 +251,18 @@ function renderCalendar() {
     const selectable = !isOtherMonth && !isPast;
     const completed = button.classList.contains("has-completed");
     if (!isOtherMonth) button.disabled = false;
-    if (completed) {
+    if (pending.length) {
+      button.setAttribute(
+        "aria-label",
+        `Ver ${pending.length} ${pending.length === 1 ? "solicitação pendente" : "solicitações pendentes"} de ${capitalizeFirst(popupDateFormatter.format(date))}`
+      );
+      button.addEventListener("click", () => {
+        selectedDateKey = dateKey;
+        renderCalendar();
+        renderRequestsPopup(dateKey);
+        openPopup(ui.requestsPopup);
+      });
+    } else if (completed) {
       button.setAttribute("aria-label", `Ver histórico de ${capitalizeFirst(popupDateFormatter.format(date))}`);
       button.addEventListener("click", () => {
         if (isPast) {
@@ -515,8 +528,12 @@ async function persistMarkedAppointment(newAppointment) {
    POPUP DE SOLICITAÇÕES (aprovar / recusar)
    ========================================================= */
 
-function renderRequestsPopup() {
-  const pending = getPendingRequests();
+function renderRequestsPopup(dateKey = requestsPopupDateKey) {
+  requestsPopupDateKey = dateKey;
+  const pending = getPendingRequests().filter((item) => !dateKey || item.date === dateKey);
+  ui.requestsPopupTitle.textContent = dateKey
+    ? `Solicitações de ${capitalizeFirst(popupDateFormatter.format(data.fromDateKey(dateKey)))}`
+    : "Pedidos pendentes";
   ui.requestsList.replaceChildren();
 
   if (!pending.length) {
@@ -931,7 +948,7 @@ ui.nextCard.addEventListener("click", () => {
 });
 
 ui.pendingCard.addEventListener("click", () => {
-  renderRequestsPopup();
+  renderRequestsPopup(null);
   openPopup(ui.requestsPopup);
 });
 
