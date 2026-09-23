@@ -87,6 +87,7 @@
   }
 
   const NOTE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4v-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+  const REPORT_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>';
   const CHEVRON_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
 
   function createNote(note) {
@@ -130,12 +131,45 @@
     notes.forEach((note) => list.appendChild(createNote(note)));
   }
 
-  function renderReports() {
+  function createReport(report) {
+    const listItem = document.createElement("li");
+    const link = document.createElement("a");
+    link.className = "report-row";
+    link.href = `relatorio-view.html?id=${encodeURIComponent(report.id)}`;
+
+    const icon = document.createElement("span");
+    icon.setAttribute("aria-hidden", "true");
+    icon.innerHTML = REPORT_ICON;
+    const body = document.createElement("span");
+    body.className = "report-body";
+    const date = document.createElement("span");
+    date.className = "report-date";
+    date.textContent = formatDate(String(report.atualizado_em || report.criado_em).slice(0, 10));
+    const summary = document.createElement("p");
+    const content = report.bloco_queixa || report.bloco_intervencao || report.bloco_evolucao || report.bloco_encaminhamentos || report.texto_livre;
+    const excerpt = String(content || "Relatório sem descrição.").trim();
+    summary.textContent = excerpt.length > 140 ? `${excerpt.slice(0, 137).trimEnd()}…` : excerpt;
+    const chevron = document.createElement("span");
+    chevron.className = "report-chevron";
+    chevron.setAttribute("aria-hidden", "true");
+    chevron.innerHTML = CHEVRON_ICON;
+
+    body.append(date, summary);
+    link.append(icon, body, chevron);
+    listItem.appendChild(link);
+    return listItem;
+  }
+
+  function renderReports(reports) {
     const list = document.getElementById("relatoriosRecentesList");
     if (!list) return;
     list.textContent = "";
+    if (reports.length) {
+      reports.forEach((report) => list.appendChild(createReport(report)));
+      return;
+    }
     const empty = document.createElement("li");
-    empty.textContent = "Relatórios ainda não são salvos no banco.";
+    empty.textContent = "Nenhum relatório registrado.";
     list.appendChild(empty);
   }
 
@@ -148,16 +182,17 @@
     }
 
     const psychologistId = authData.user.id;
-    const [profileResult, patientsResult, appointmentsResult, requestsResult, notesResult, notesCountResult] = await Promise.all([
+    const [profileResult, patientsResult, appointmentsResult, requestsResult, notesResult, notesCountResult, reportsResult] = await Promise.all([
       client.from("perfis").select("nome_completo, nome_social, papel").eq("id", psychologistId).single(),
       client.from("consultas").select("paciente_id").eq("psicologo_id", psychologistId).neq("status", "cancelled"),
       client.from("consultas").select("id, horario, modalidade, paciente:perfis!consultas_paciente_id_fkey(nome_completo, nome_social)").eq("psicologo_id", psychologistId).eq("data", today).neq("status", "cancelled").order("horario"),
       client.from("solicitacoes").select("horario, modalidade, paciente:perfis!solicitacoes_paciente_id_fkey(nome_completo, nome_social)").eq("psicologo_id", psychologistId).eq("status", "pending").order("data_desejada").order("horario"),
       client.from("notas").select("consulta_id, conteudo, atualizado_em, consultas!inner(data, paciente:perfis!consultas_paciente_id_fkey(nome_completo, nome_social))").eq("psicologo_id", psychologistId).not("conteudo", "is", null).order("atualizado_em", { ascending: false }).limit(3),
-      client.from("notas").select("consulta_id", { count: "exact", head: true }).eq("psicologo_id", psychologistId).not("conteudo", "is", null)
+      client.from("notas").select("consulta_id", { count: "exact", head: true }).eq("psicologo_id", psychologistId).not("conteudo", "is", null),
+      client.from("relatorios").select("id, bloco_queixa, bloco_intervencao, bloco_evolucao, bloco_encaminhamentos, texto_livre, criado_em, atualizado_em").eq("psicologo_id", psychologistId).order("atualizado_em", { ascending: false }).limit(2)
     ]);
 
-    if ([profileResult, patientsResult, appointmentsResult, requestsResult, notesResult, notesCountResult].some((result) => result.error)) {
+    if ([profileResult, patientsResult, appointmentsResult, requestsResult, notesResult, notesCountResult, reportsResult].some((result) => result.error)) {
       console.error("Falha ao carregar a página inicial.");
       return;
     }
@@ -177,9 +212,9 @@
     renderSlots("agendaHojeList", appointments, "Confirmado", "badge--ok", "Nenhuma consulta para hoje.");
     renderSlots("pendentesList", requests, "Pendente", "badge--pending", "Nenhuma consulta pendente.");
     renderNotes(notes);
-    renderReports();
+    renderReports(reportsResult.data || []);
   }
 
-  renderReports();
+  renderReports([]);
   void loadHome();
 }());
