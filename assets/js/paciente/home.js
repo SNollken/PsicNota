@@ -127,7 +127,12 @@
       mode.textContent = formatMode(item.mode);
 
       detail.append(when, mode);
-      li.append(badge, detail);
+
+      const link = document.createElement("a");
+      link.href = "agenda-paciente.html";
+      link.style.display = "contents";
+      link.append(badge, detail);
+      li.append(link);
       list.append(li);
     });
   }

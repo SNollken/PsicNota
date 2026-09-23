@@ -390,10 +390,36 @@ reports =
 getReports();
 
 
-updateTabs();
+  updateTabs();
 
+  const encodedPatient = encodeURIComponent(patientName);
+  const idParam = patientId ? `id=${encodeURIComponent(patientId)}&` : "";
 
-renderReports();
+  const primaryBtn = document.querySelector(".patient-actions .primary");
+  if (primaryBtn) {
+    primaryBtn.style.cursor = "pointer";
+    primaryBtn.addEventListener("click", () => {
+      const appts = data.getAppointments().filter(item =>
+        (patientId ? item.patientId === patientId : item.patient === patientName) &&
+        data.hasAppointmentNote(item.id)
+      );
+      if (appts.length) {
+        window.location.href = `notas.html?consulta=${encodeURIComponent(appts[0].id)}`;
+      } else {
+        window.location.href = `historico-notas.html?${idParam}paciente=${encodedPatient}`;
+      }
+    });
+  }
+
+  const outlineBtn = document.querySelector(".patient-actions .outline");
+  if (outlineBtn) {
+    outlineBtn.style.cursor = "pointer";
+    outlineBtn.addEventListener("click", () => {
+      window.location.href = "agenda-psicologo.html";
+    });
+  }
+
+  renderReports();
 
 
 }

@@ -137,6 +137,16 @@ async function init() {
 
   elements.consultaContent.hidden = false;
   renderAppointmentInfo();
+
+  const pill = document.querySelector('#patientPill');
+  if (pill) {
+    pill.style.cursor = 'pointer';
+    pill.addEventListener('click', () => {
+      const idP = appointment.patientId ? `id=${encodeURIComponent(appointment.patientId)}&` : '';
+      window.location.href = `paciente-perfil.html?${idP}paciente=${encodeURIComponent(appointment.patient)}`;
+    });
+  }
+
   renderNotes();
 
   elements.saveNoteButton.addEventListener('click', () => void saveNotes());

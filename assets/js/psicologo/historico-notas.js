@@ -480,6 +480,27 @@ async function init() {
 
   updateTabsLinks();
 
+  const encodedPatient = encodeURIComponent(patientName);
+  const idParam = patientId ? `id=${encodeURIComponent(patientId)}&` : "";
+
+  const quickBtn = document.querySelector("#quickNotesButton");
+  if (quickBtn) {
+    quickBtn.addEventListener("click", () => {
+      if (patientNotes.length) {
+        window.location.href = `notas.html?consulta=${encodeURIComponent(patientNotes[0].appointmentId)}`;
+      } else {
+        window.location.href = `historico-notas.html?${idParam}paciente=${encodedPatient}`;
+      }
+    });
+  }
+
+  const schedBtn = document.querySelector("#scheduleButton");
+  if (schedBtn) {
+    schedBtn.addEventListener("click", () => {
+      window.location.href = "agenda-psicologo.html";
+    });
+  }
+
   patientNotes =
     getPatientNotes();
 

@@ -709,8 +709,44 @@ async function init() {
 
   renderReports();
 
-  updateTabsLinks();
+   updateTabsLinks();
 
+  const encodedPatient = encodeURIComponent(patientName);
+  const idParam = patientId ? `id=${encodeURIComponent(patientId)}&` : "";
+
+  const primaryBtn = document.querySelector(".patient-actions .primary");
+  if (primaryBtn) {
+    primaryBtn.style.cursor = "pointer";
+    primaryBtn.addEventListener("click", () => {
+      const appts = data.getAppointments().filter(item =>
+        (patientId ? item.patientId === patientId : item.patient === patientName) &&
+        item.status !== "cancelled"
+      );
+      const withNote = appts.find(a => data.hasAppointmentNote(a.id));
+      if (withNote) {
+        window.location.href = `notas.html?consulta=${encodeURIComponent(withNote.id)}`;
+      } else {
+        window.location.href = `historico-notas.html?${idParam}paciente=${encodedPatient}`;
+      }
+    });
+  }
+
+  const outlineBtn = document.querySelector(".patient-actions .outline");
+  if (outlineBtn) {
+    outlineBtn.style.cursor = "pointer";
+    outlineBtn.addEventListener("click", () => {
+      window.location.href = "agenda-psicologo.html";
+    });
+  }
+
+  document.querySelectorAll(".small-card").forEach(card => {
+    const box = card.querySelector(".appointment-box");
+    if (!box) return;
+    box.style.cursor = "pointer";
+    box.addEventListener("click", () => {
+      window.location.href = `historico-consultas.html?${idParam}paciente=${encodedPatient}`;
+    });
+  });
 
   lucide.createIcons();
 
