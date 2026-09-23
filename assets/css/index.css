@@ -763,6 +763,7 @@ svg {
   .hero-inner {
     min-height: 610px;
     padding-top: 84px;
+    padding-left: 0;
   }
 
   .audience-panel {
@@ -788,6 +789,7 @@ svg {
   .split-layout-reverse {
     grid-template-columns: 1fr;
     gap: 50px;
+    padding-left: 0;
   }
 
   .decorative-visual {
@@ -920,7 +922,11 @@ svg {
 
   .footer-brand,
   .social-links {
-   margin-left: 180px;
+    margin-left: 0;
+  }
+
+  .footer-brand {
+    transform: none;
   }
 
   .footer-bottom {
