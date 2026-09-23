@@ -302,6 +302,48 @@
     </main>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+  <script>
+    // MVP demo: leitura apenas — gravar horários fica para pós-apresentação.
+    document.addEventListener('DOMContentLoaded', async function () {
+      var client = window.PsicNotaSupabase;
+      if (!client) return;
+      try {
+        var userResp = await client.auth.getUser();
+        var user = userResp.data && userResp.data.user;
+        if (!user) return; // sem sessão: mantém fallback estático
+        var res = await client.from('disponibilidades')
+          .select('dia_semana, horario')
+          .eq('psicologo_id', user.id)
+          .order('dia_semana')
+          .order('horario');
+        if (res.error || !res.data || res.data.length === 0) {
+          if (res.error) console.error('Erro ao carregar disponibilidades:', res.error);
+          return; // mantém fallback estático
+        }
+        var dias = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+        var tbody = document.getElementById('scheduleRows');
+        tbody.innerHTML = res.data.map(function (d) {
+          var nome = dias[d.dia_semana] || 'Dia ' + d.dia_semana;
+          var h = (d.horario || '').substring(0, 5); // "09:00:00" → "09:00"
+          var nomeLower = nome.toLowerCase();
+          return '<tr>' +
+            '<td><label class="check-control"><input class="row-check" type="checkbox" aria-label="Selecionar horário de ' + nomeLower + ', ' + h + '" /><span aria-hidden="true"></span></label></td>' +
+            '<td data-label="Dia da semana">' + nome + '</td>' +
+            '<td data-label="Horário">' + h + '</td>' +
+            '<td data-label="Status"><select class="status-select status-green" aria-label="Status do horário de ' + nomeLower + '"><option selected>Confirmado</option><option>Pendente</option><option>Indisponível</option></select></td>' +
+            '<td class="row-actions" data-label="Ações">' +
+              '<button class="action-button edit-schedule" type="button" aria-label="Editar horário de ' + nomeLower + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"></path></svg></button>' +
+              '<button class="action-button delete-schedule" type="button" aria-label="Excluir horário de ' + nomeLower + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 11v6M14 11v6"></path></svg></button>' +
+            '</td>' +
+          '</tr>';
+        }).join('');
+      } catch (err) {
+        console.error('Erro ao carregar disponibilidades:', err);
+      }
+    });
+  </script>
   <script>
     (function () {
       var form = document.getElementById('scheduleForm');
