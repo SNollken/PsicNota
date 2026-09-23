@@ -3,6 +3,8 @@
 
 const data = window.PsiNoteData;
 
+const supabaseClient = window.PsicNotaSupabase || null;
+
 
 const params = new URLSearchParams(window.location.search);
 
@@ -198,6 +200,37 @@ function renderPatient() {
   }
 
 
+}
+
+
+async function loadPatientAvatar() {
+  if (!supabaseClient || !patientId) return "";
+
+  try {
+    const { data: patient, error } = await supabaseClient
+      .from("perfis")
+      .select("avatar_url")
+      .eq("id", patientId)
+      .eq("papel", "paciente")
+      .maybeSingle();
+
+    if (error || !patient?.avatar_url) return "";
+
+    const { data: signedAvatar, error: avatarError } = await supabaseClient
+      .storage
+      .from("avatars")
+      .createSignedUrl(patient.avatar_url, 3600);
+
+    if (avatarError) {
+      console.warn("Não foi possível carregar a foto do paciente:", avatarError.message);
+      return "";
+    }
+
+    return signedAvatar?.signedUrl || "";
+  } catch (error) {
+    console.warn("Não foi possível carregar a foto do paciente:", error.message);
+    return "";
+  }
 }
 
 
@@ -699,9 +732,15 @@ async function init() {
 
   await data.syncRemoteData();
 
+  const patientAvatarUrl = await loadPatientAvatar();
+
   renderPsychologist();
 
   renderPatient();
+
+  if (patientAvatarUrl && elements.avatar) {
+    elements.avatar.src = patientAvatarUrl;
+  }
 
   renderAppointments();
 
