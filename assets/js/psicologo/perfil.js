@@ -224,7 +224,6 @@
         field.readOnly = !editing;
       }
     });
-    if (elements.edit) elements.edit.hidden = editing;
     if (elements.areasToggle) elements.areasToggle.disabled = !editing;
     if (elements.areasAdd) elements.areasAdd.hidden = true;
     renderAreas(editing);
