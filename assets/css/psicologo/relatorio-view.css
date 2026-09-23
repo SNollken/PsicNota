@@ -24,6 +24,10 @@ body { background: var(--blue-25); }
 /* Eyebrow usa o roxo de acento do design (não o azul padrão). */
 .page-heading .eyebrow { color: var(--accent); }
 
+.report-view-page .main-content { padding: 28px 43px 34px 25px; }
+
+.report-view-topbar { padding: 12px 0 20px; }
+
 /* =========================
    DOCUMENTO (RELATÓRIO)
 ========================= */
@@ -31,7 +35,7 @@ body { background: var(--blue-25); }
 .doc-card {
   max-width: 920px;
   margin: 0 auto;
-  padding: 36px 44px 40px;
+  padding: 38px 44px 40px;
   border: 1px solid #E4F6FC;
   border-top: 4px solid var(--accent);
   border-radius: var(--radius-lg);
@@ -110,10 +114,13 @@ body { background: var(--blue-25); }
 ========================= */
 
 @media (max-width: 900px) {
+  .report-view-page .main-content { padding: 28px 35px 34px 17px; }
   .doc-card { padding: 28px 26px; }
 }
 
 @media (max-width: 720px) {
+  .report-view-page .main-content { padding: 18px; }
+
   .doc-card {
     padding: 24px 18px;
     border-radius: 20px;
