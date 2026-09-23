@@ -953,6 +953,7 @@ body.modal-open { overflow: hidden; }
 }
 
 .psic-day:disabled { cursor: default; }
+.psic-day:not(:disabled) { cursor: pointer; }
 .psic-day.other-month { color: #64727c; background: rgba(255, 255, 255, 0.65); }
 .psic-day.is-unavailable {
   border-color: #dce6ea;
@@ -985,6 +986,16 @@ body.modal-open { overflow: hidden; }
 .psic-day.has-pending { border-color: #d90307; }
 .psic-day.has-confirmed { border-color: #1f637a; }
 .psic-day.today { border-color: #174e61; }
+.psic-day.selected { z-index: 3; box-shadow: inset 0 0 0 1px #1f637a; }
+.psic-day-today-label {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  color: #174e61;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
 
 .psic-day.has-completed .psic-day-number,
 .psic-day.has-completed .psic-day-info {
@@ -1001,21 +1012,8 @@ body.modal-open { overflow: hidden; }
   color: #1f637a;
 }
 
-.psic-day.today .psic-day-number,
-.psic-day.today .psic-day-info {
+.psic-day.today .psic-day-number {
   color: #174e61;
-}
-
-.psic-day.today .psic-day-info::after {
-  content: "";
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  margin-left: 3px;
-  border-top: 2px solid currentColor;
-  border-right: 2px solid currentColor;
-  transform: rotate(45deg) translateY(-1px);
-  vertical-align: middle;
 }
 
 .psic-schedule-popup,
@@ -1203,6 +1201,63 @@ body.modal-open { overflow: hidden; }
   color: #174e61;
 }
 
+.psic-schedule-exception {
+  display: grid;
+  grid-template-columns: minmax(130px, 1fr) minmax(120px, 0.7fr) minmax(180px, 1.2fr);
+  align-items: end;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 12px;
+  border: 1px solid #dce6ea;
+  border-radius: 10px;
+}
+
+.psic-schedule-exception legend {
+  padding: 0 6px;
+  color: #174e61;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.psic-schedule-exception label {
+  color: #64727c;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.psic-schedule-exception input {
+  min-height: 40px;
+  padding: 7px 10px;
+  border: 1px solid #dce6ea;
+  border-radius: 8px;
+  color: #111827;
+  background: #ffffff;
+  font: inherit;
+}
+
+.psic-schedule-exception-modes {
+  display: flex;
+  gap: 8px;
+}
+
+.psic-schedule-exception-modes button {
+  min-height: 40px;
+  flex: 1;
+  padding: 7px 10px;
+  border: 1px solid #1f637a;
+  border-radius: 8px;
+  color: #174e61;
+  background: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.psic-schedule-exception-modes button.selected {
+  color: #ffffff;
+  background: #1f637a;
+}
+
 .psic-schedule-times,
 .psic-requests-popup-list,
 .psic-appointments-popup-list,
@@ -1231,7 +1286,14 @@ body.modal-open { overflow: hidden; }
   background: #1f637a;
 }
 
-.psic-schedule-no-slots,
+.psic-schedule-no-slots {
+  margin: 16px 0;
+  color: #64727c;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
 .psic-popup-empty {
   margin: 70px 0;
   color: #64727c;
@@ -1372,6 +1434,8 @@ body.modal-open {
     grid-template-columns: 1fr;
     gap: 12px;
   }
+
+  .psic-schedule-exception { grid-template-columns: 1fr; }
 
   .psic-schedule-column:first-child {
     border-right: 0;

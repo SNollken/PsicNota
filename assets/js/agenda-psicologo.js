@@ -42,6 +42,9 @@ const ui = {
   presentialTimes: document.querySelector("#psicPresentialTimes"),
   scheduleTerms: document.querySelector("#psicScheduleTerms"),
   scheduleSubmit: document.querySelector("#psicScheduleSubmit"),
+  customTime: document.querySelector("#psicCustomTime"),
+  customOnline: document.querySelector("#psicCustomOnline"),
+  customPresential: document.querySelector("#psicCustomPresential"),
 
   requestsPopup: document.querySelector("#psicRequestsPopup"),
   requestsPopupClose: document.querySelector("#psicRequestsPopupClose"),
@@ -84,6 +87,7 @@ let patientOptions = [];
 let usingRemoteRequests = false;
 let usingRemoteAppointments = false;
 let psychologistUid = null;
+let selectedDateKey = "";
 
 const now0 = new Date();
 let visibleMonth = new Date(now0.getFullYear(), now0.getMonth(), 1);
@@ -213,6 +217,8 @@ function renderCalendar() {
     const info = document.createElement("span");
     info.className = "psic-day-info";
 
+    if (dateKey === todayKey) button.classList.add("today");
+
     if (isOtherMonth) {
       button.classList.add("other-month");
       button.disabled = true;
@@ -226,28 +232,41 @@ function renderCalendar() {
       info.textContent = (upcoming || confirmed[0]).time;
       button.append(info);
     } else if (dateKey === todayKey) {
-      button.classList.add("today");
-      info.textContent = "HOJE";
-      button.append(info);
+      info.textContent = "";
     } else if (isPast) {
       button.classList.add("is-unavailable");
     }
 
-    /*
-     * O psicólogo pode abrir o popup de marcação
-     * em qualquer dia do mês atual que não seja passado.
-     */
+    if (dateKey === todayKey) {
+      const todayLabel = document.createElement("span");
+      todayLabel.className = "psic-day-today-label";
+      todayLabel.textContent = "HOJE";
+      button.append(todayLabel);
+    }
+
+    if (dateKey === selectedDateKey) button.classList.add("selected");
+
     const selectable = !isOtherMonth && !isPast;
     const completed = button.classList.contains("has-completed");
-    button.disabled = !selectable && !completed;
+    if (!isOtherMonth) button.disabled = false;
     if (completed) {
       button.setAttribute("aria-label", `Ver histórico de ${capitalizeFirst(popupDateFormatter.format(date))}`);
       button.addEventListener("click", () => {
-        renderCompletedPopup(dateKey);
-        openPopup(ui.completedPopup);
+        if (isPast) {
+          renderCompletedPopup(dateKey);
+          openPopup(ui.completedPopup);
+        } else {
+          selectedDateKey = dateKey;
+          renderCalendar();
+          openSchedulePopup(date);
+        }
       });
-    } else if (selectable) {
-      button.addEventListener("click", () => openSchedulePopup(date));
+    } else if (!isOtherMonth) {
+      button.addEventListener("click", () => {
+        selectedDateKey = dateKey;
+        renderCalendar();
+        if (selectable) openSchedulePopup(date);
+      });
     }
 
     ui.grid.append(button);
@@ -356,18 +375,28 @@ function createTimeButton(time, mode) {
   button.setAttribute("aria-pressed", "false");
 
   button.addEventListener("click", () => {
-    ui.schedulePopup.querySelectorAll(".psic-schedule-time").forEach((item) => {
-      item.classList.remove("selected");
-      item.setAttribute("aria-pressed", "false");
-    });
-    button.classList.add("selected");
-    button.setAttribute("aria-pressed", "true");
-    popupSelectedTime = time;
-    popupSelectedMode = mode;
-    updateScheduleSubmit();
+    selectScheduleTime(time, mode, button);
   });
 
   return button;
+}
+
+function selectScheduleTime(time, mode, selectedButton = null) {
+  ui.schedulePopup.querySelectorAll(".psic-schedule-time").forEach((item) => {
+    item.classList.remove("selected");
+    item.setAttribute("aria-pressed", "false");
+  });
+  ui.customOnline.classList.remove("selected");
+  ui.customPresential.classList.remove("selected");
+  if (selectedButton) {
+    selectedButton.classList.add("selected");
+    selectedButton.setAttribute("aria-pressed", "true");
+  } else {
+    (mode === "Online" ? ui.customOnline : ui.customPresential).classList.add("selected");
+  }
+  popupSelectedTime = time;
+  popupSelectedMode = mode;
+  updateScheduleSubmit();
 }
 
 function createNoSlotsMessage() {
@@ -411,6 +440,9 @@ function openSchedulePopup(date) {
   popupSelectedTime = "";
   popupSelectedMode = "";
   ui.scheduleTerms.checked = false;
+  ui.customTime.value = "";
+  ui.customOnline.classList.remove("selected");
+  ui.customPresential.classList.remove("selected");
 
   renderPatientSelect();
   ui.schedulePopupDate.textContent = capitalizeFirst(popupDateFormatter.format(popupSelectedDate));
@@ -424,6 +456,12 @@ function handleMarkAppointment() {
   if (!option || !popupSelectedTime || !popupSelectedMode || !popupSelectedDate) return;
 
   const dateKey = data.toDateKey(popupSelectedDate);
+  const appointmentDateTime = new Date(`${dateKey}T${popupSelectedTime}:00`);
+  if (appointmentDateTime <= new Date()) {
+    showToast("Escolha um horário futuro.", true);
+    return;
+  }
+
   const conflict = appointments.some(
     (item) => item.date === dateKey && item.time === popupSelectedTime && item.status !== "cancelled"
   );
@@ -900,6 +938,25 @@ ui.pendingCard.addEventListener("click", () => {
 ui.schedulePopupClose.addEventListener("click", () => closePopup(ui.schedulePopup));
 ui.scheduleTerms.addEventListener("change", updateScheduleSubmit);
 ui.patientSelect.addEventListener("change", updateScheduleSubmit);
+ui.customOnline.addEventListener("click", () => {
+  if (ui.customTime.value) selectScheduleTime(ui.customTime.value, "Online");
+  else showToast("Informe o horário da exceção.", true);
+});
+ui.customPresential.addEventListener("click", () => {
+  if (ui.customTime.value) selectScheduleTime(ui.customTime.value, "Presencial");
+  else showToast("Informe o horário da exceção.", true);
+});
+ui.customTime.addEventListener("input", () => {
+  if (popupSelectedTime !== ui.customTime.value) {
+    ui.customOnline.classList.remove("selected");
+    ui.customPresential.classList.remove("selected");
+    if (popupSelectedTime && !ui.schedulePopup.querySelector(".psic-schedule-time.selected")) {
+      popupSelectedTime = "";
+      popupSelectedMode = "";
+    }
+    updateScheduleSubmit();
+  }
+});
 ui.scheduleSubmit.addEventListener("click", handleMarkAppointment);
 ui.schedulePopup.addEventListener("click", (event) => {
   if (event.target === ui.schedulePopup) closePopup(ui.schedulePopup);
