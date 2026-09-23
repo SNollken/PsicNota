@@ -685,6 +685,12 @@ let usingRemoteRequests = false;
 
 let usingRemoteAppointments = false;
 
+let schedulePsychologistId = null;
+
+let availabilityByWeekday = new Map();
+
+let availabilityLoadFailed = false;
+
 
 const today =
   new Date();
@@ -933,10 +939,16 @@ function showToast(
 function getSelectableSlots(
   dateKey
 ) {
-  const slots =
-    patientData.getOpenSlots(
-      dateKey
-    ) || [];
+  const slots = availabilityByWeekday.get(
+    patientData.fromDateKey(dateKey).getDay()
+  ) || [];
+
+  const occupied = new Set(
+    [...appointments, ...requests]
+      .filter((item) => item.date === dateKey && item.status !== "cancelled" && item.status !== "rejected")
+      .map((item) => item.time)
+  );
+  const freeSlots = slots.filter((time) => !occupied.has(time));
 
   const selectedDate =
     patientData.fromDateKey(
@@ -983,7 +995,7 @@ function getSelectableSlots(
     selectedDay.getTime() !==
     currentDay.getTime()
   ) {
-    return slots;
+    return freeSlots;
   }
 
 
@@ -996,7 +1008,7 @@ function getSelectableSlots(
     new Date();
 
 
-  return slots.filter(
+  return freeSlots.filter(
     (time) => {
       const [
         hour,
@@ -1019,10 +1031,7 @@ function getSelectableSlots(
         );
 
 
-      return (
-        slotDate >
-        now
-      );
+      return slotDate > now;
     }
   );
 }
@@ -1652,8 +1661,9 @@ function createNoSlotsMessage() {
     "schedule-no-slots";
 
 
-  message.textContent =
-    "Nenhum horário disponível.";
+  message.textContent = availabilityLoadFailed
+    ? "Não foi possível carregar os horários do psicólogo. Tente novamente mais tarde."
+    : "Nenhum horário disponível para esta data.";
 
 
   return message;
@@ -2027,16 +2037,7 @@ async function submitScheduleRequest() {
     await getAuthUser();
 
   if (supabaseClient && authUser) {
-    const { data: psychologist } =
-      await supabaseClient
-        .from("perfis")
-        .select("id")
-        .eq("papel", "psicologo")
-        .limit(1)
-        .maybeSingle();
-
-
-    if (!psychologist?.id) {
+    if (!schedulePsychologistId) {
       showToast(
         "Não há psicólogo disponível para receber a solicitação.",
         true
@@ -2051,7 +2052,7 @@ async function submitScheduleRequest() {
       await supabaseClient
         .from("solicitacoes")
         .insert({
-          psicologo_id: psychologist.id,
+          psicologo_id: schedulePsychologistId,
 
           paciente_id: authUser.id,
 
@@ -2846,6 +2847,57 @@ async function getAuthUser() {
 }
 
 
+async function loadRemoteAvailability() {
+  const authUser = await getAuthUser();
+  if (!supabaseClient || !authUser) {
+    availabilityLoadFailed = true;
+    return false;
+  }
+
+  try {
+    const { data: psychologist, error: psychologistError } = await supabaseClient
+      .from("perfis")
+      .select("id")
+      .eq("papel", "psicologo")
+      .limit(1)
+      .maybeSingle();
+
+    if (psychologistError || !psychologist?.id) {
+      availabilityLoadFailed = true;
+      return false;
+    }
+
+    const { data: rows, error } = await supabaseClient
+      .from("disponibilidades")
+      .select("dia_semana, horario")
+      .eq("psicologo_id", psychologist.id)
+      .order("dia_semana")
+      .order("horario");
+
+    if (error) {
+      availabilityLoadFailed = true;
+      return false;
+    }
+
+    schedulePsychologistId = psychologist.id;
+    availabilityByWeekday = new Map();
+    (rows || []).forEach((row) => {
+      const day = Number(row.dia_semana);
+      const time = String(row.horario || "").slice(0, 5);
+      if (!Number.isInteger(day) || day < 0 || day > 6 || !time) return;
+      const slots = availabilityByWeekday.get(day) || [];
+      slots.push(time);
+      availabilityByWeekday.set(day, slots);
+    });
+    availabilityLoadFailed = false;
+    return true;
+  } catch {
+    availabilityLoadFailed = true;
+    return false;
+  }
+}
+
+
 async function loadRemoteRequests() {
   const authUser =
     await getAuthUser();
@@ -2928,11 +2980,14 @@ void (async function () {
 
   renderPatientProfile();
 
+  await loadRemoteAvailability();
+
+  await Promise.all([
+    loadRemoteAppointments(),
+    loadRemoteRequests()
+  ]);
+
   renderCalendar();
 
   renderSummary();
-
-  void loadRemoteAppointments();
-
-  void loadRemoteRequests();
 }());

@@ -146,10 +146,20 @@ svg {
 
 .schedule-form {
   display: grid;
-  grid-template-columns: minmax(180px, 1.3fr) minmax(150px, 1fr) minmax(150px, 1fr) auto;
+  grid-template-columns: minmax(180px, 1.3fr) minmax(150px, 1fr) auto auto;
   gap: 16px;
   align-items: end;
   margin-top: 20px;
+}
+
+.schedule-message {
+  margin: 14px 0 0;
+  color: var(--teal);
+  font-size: 13px;
+}
+
+.schedule-message.is-error {
+  color: #d90307;
 }
 
 .field {
