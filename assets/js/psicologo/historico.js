@@ -673,7 +673,8 @@ function renderReports() {
         "Relatório pós-consulta disponível",
 
 
-        "report"
+        "report",
+        `relatorio-view.html?id=${encodeURIComponent(report.id)}`
 
       )
 
