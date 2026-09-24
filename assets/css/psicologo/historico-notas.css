@@ -288,6 +288,13 @@
 
 }
 
+.notes-empty[hidden],
+.load-more-button[hidden] {
+
+  display:none;
+
+}
+
 
 .notes-empty svg {
 
