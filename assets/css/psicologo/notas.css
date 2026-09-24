@@ -25,7 +25,6 @@ body { margin: 0; background: var(--notes-canvas); color: var(--notes-ink); font
 .finish-button { border: 1px solid var(--notes-primary); background: var(--notes-primary); color: #fff; }
 .notes-status { position: absolute; right: 19px; bottom: 20px; min-height: 20px; margin: 0; text-align: right; font-size: 13px; color: var(--notes-primary); }
 .mobile-menu { display: none; }
-.main-nav .nav-item[href="home.html"], .main-nav .nav-item[href="pacientes.html"], .main-nav .nav-item[href="../auth/login.html"] { display: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 @media (max-width: 1439px) {
   .notes-content { padding-right: 48px; }
