@@ -282,6 +282,13 @@ color:var(--muted);
 
 }
 
+.reports-empty[hidden],
+.load-more-button[hidden]{
+
+display:none;
+
+}
+
 
 
 
