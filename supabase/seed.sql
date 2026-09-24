@@ -4,10 +4,6 @@
 -- 1 psicóloga + 2 pacientes, tudo preenchido:
 --   * perfis completos (psicóloga + pacientes)
 --   * dados profissionais + disponibilidades da psicóloga
---   * cada paciente: 1 consulta realizada, 1 consulta confirmada e
---     1 solicitação pendente (o "pendente" do app: o paciente escolhe o
---     slot e a psicóloga aprova/recusa na agenda)
---   * psicóloga: 1 nota rápida e 1 relatório final por paciente
 --
 -- Projeto alvo: gjfqslgoplpqeqewytdn (o mesmo de assets/js/supabase-client.js)
 -- Pré-requisitos:
@@ -157,10 +153,6 @@ begin
     revisado_em   = excluded.revisado_em,
     motivo_recusa = excluded.motivo_recusa;
 
-  -- -----------------------------------------------------------------
-  -- 5) CONSULTAS: 1 realizada + 1 confirmada por paciente (datas
-  --    respeitam as disponibilidades; slots únicos por psicóloga)
-  -- -----------------------------------------------------------------
   insert into public.consultas
     (id, psicologo_id, paciente_id, data, horario, duracao_min, modalidade,
      status, observacao, origem, solicitacao_id)
@@ -180,7 +172,37 @@ begin
     -- Carlos: confirmada
     ('c4444444-4444-4444-8444-444444444444', psi, pac2,
      '2026-09-23', '10:00', 50, 'presencial', 'confirmed',
-     'Retorno após pausa; avaliar frequência do atendimento.', 'psychologist', null)
+     'Retorno após pausa; avaliar frequência do atendimento.', 'psychologist', null),
+    ('c5555555-5555-4555-8555-555555555555', psi, pac1,
+     '2026-08-25', '09:00', 50, 'online', 'completed',
+     'Acompanhamento semanal.', 'psychologist', null),
+    ('c6666666-6666-4666-8666-666666666666', psi, pac1,
+     '2026-09-04', '14:00', 50, 'online', 'completed',
+     'Acompanhamento semanal.', 'psychologist', null),
+    ('c7777777-7777-4777-8777-777777777777', psi, pac1,
+     '2026-09-08', '09:00', 50, 'online', 'completed',
+     'Acompanhamento semanal.', 'psychologist', null),
+    ('c8888888-8888-4888-8888-888888888888', psi, pac1,
+     '2026-09-11', '10:00', 50, 'online', 'completed',
+     'Acompanhamento semanal.', 'psychologist', null),
+    ('c9999999-9999-4999-8999-999999999999', psi, pac1,
+     '2026-09-15', '09:00', 50, 'online', 'completed',
+     'Acompanhamento semanal.', 'psychologist', null),
+    ('caaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', psi, pac2,
+     '2026-08-26', '14:00', 50, 'presencial', 'completed',
+     'Acompanhamento quinzenal.', 'psychologist', null),
+    ('cbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', psi, pac2,
+     '2026-09-07', '14:00', 50, 'presencial', 'completed',
+     'Acompanhamento quinzenal.', 'psychologist', null),
+    ('cccccccc-cccc-4ccc-8ccc-cccccccccccc', psi, pac2,
+     '2026-09-09', '14:00', 50, 'presencial', 'completed',
+     'Acompanhamento quinzenal.', 'psychologist', null),
+    ('cddddddd-dddd-4ddd-8ddd-dddddddddddd', psi, pac2,
+     '2026-09-16', '14:00', 50, 'presencial', 'completed',
+     'Acompanhamento quinzenal.', 'psychologist', null),
+    ('ceeeeeee-eeee-4eee-8eee-eeeeeeeeeeee', psi, pac2,
+     '2026-09-21', '14:00', 50, 'presencial', 'completed',
+     'Acompanhamento quinzenal.', 'psychologist', null)
   on conflict (id) do update set
     psicologo_id = excluded.psicologo_id,
     paciente_id  = excluded.paciente_id,
@@ -208,10 +230,6 @@ begin
     conteudo = excluded.conteudo,
     humor    = excluded.humor;
 
-  -- -----------------------------------------------------------------
-  -- 7) RELATÓRIOS (um final por paciente, vinculado à consulta
-  --    realizada; só a psicóloga vê — LGPD)
-  -- -----------------------------------------------------------------
   insert into public.relatorios
     (id, psicologo_id, paciente_id, consulta_id, humor, status,
      bloco_queixa, bloco_intervencao, bloco_evolucao, bloco_encaminhamentos,
@@ -230,7 +248,77 @@ begin
      'Acolhimento da demanda, mapeamento de gatilhos de estresse e introdução de registros de situação, emoção e comportamento.',
      'Abertura ao processo terapêutico em construção; resistência inicial a falar sobre emoções, com leve melhora ao final da sessão.',
      'Manter os registros de estresse por uma semana e trazer exemplos concretos para a próxima sessão.',
-     'Paciente assíduo; vale monitorar a frequência do atendimento para sustentar o vínculo.', now())
+     'Paciente assíduo; vale monitorar a frequência do atendimento para sustentar o vínculo.', now()),
+    ('d3333333-3333-4333-8333-333333333333', psi, pac1,
+     'c5555555-5555-4555-8555-555555555555', 'mal', 'final',
+     'Ansiedade elevada diante de uma apresentação no trabalho e receio de avaliação negativa.',
+     'Identificação de previsões catastróficas e construção de respostas alternativas; ensaio de respiração lenta para momentos de tensão.',
+     'Conseguiu reconhecer sinais físicos de ansiedade com mais antecedência e participou ativamente dos exercícios.',
+     'Praticar a respiração antes de reuniões e anotar previsões e resultados observados.',
+     'A sessão foi dedicada a estratégias práticas para situações profissionais de maior exposição.', now()),
+    ('d4444444-4444-4444-8444-444444444444', psi, pac1,
+     'c6666666-6666-4666-8666-666666666666', 'bem', 'final',
+     'Dificuldade em estabelecer limites entre demandas profissionais e tempo de descanso.',
+     'Mapeamento da rotina semanal e análise de crenças associadas à necessidade de estar sempre disponível.',
+     'Relatou ter reservado períodos de descanso em dois dias da semana e percebeu redução da tensão ao fim do dia.',
+     'Manter os períodos protegidos de descanso e observar obstáculos para sustentar os limites.',
+     'Reforçada a importância de mudanças graduais e compatíveis com a rotina atual.', now()),
+    ('d5555555-5555-4555-8555-555555555555', psi, pac1,
+     'c7777777-7777-4777-8777-777777777777', 'neutro', 'final',
+     'Sono irregular em semanas de maior carga de trabalho.',
+     'Revisão de hábitos noturnos e identificação de pensamentos que prolongam o estado de alerta.',
+     'Demonstrou compreensão da relação entre rotina, preocupação e qualidade do sono; adesão inicial às mudanças propostas.',
+     'Registrar horários de sono e testar uma rotina de desaceleração antes de dormir.',
+     'Acompanhar os efeitos das mudanças sem transformar o registro em uma cobrança adicional.', now()),
+    ('d6666666-6666-4666-8666-666666666666', psi, pac1,
+     'c8888888-8888-4888-8888-888888888888', 'bem', 'final',
+     'Autocrítica após receber retorno sobre uma entrega profissional.',
+     'Diferenciação entre avaliação de uma tarefa e avaliação pessoal; exercício de formulação de uma resposta mais equilibrada.',
+     'Conseguiu considerar aspectos positivos e pontos de melhoria sem invalidar o próprio esforço.',
+     'Praticar a análise equilibrada diante de novos feedbacks e trazer um exemplo para discussão.',
+     'Boa participação na revisão de padrões de pensamento autocrítico.', now()),
+    ('d7777777-7777-4777-8777-777777777777', psi, pac1,
+     'c9999999-9999-4999-8999-999999999999', 'muito-bem', 'final',
+     'Receio de retomar atividades sociais após um período de sobrecarga.',
+     'Planejamento de uma atividade de baixa exigência e exploração das expectativas associadas ao convívio social.',
+     'Relatou experiência positiva ao retomar contato com uma amiga, mantendo atenção aos próprios limites.',
+     'Escolher uma atividade social breve e avaliar como se sentiu antes e depois.',
+     'Paciente identifica com mais clareza o equilíbrio entre aproximação e autocuidado.', now()),
+    ('d8888888-8888-4888-8888-888888888888', psi, pac2,
+     'caaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'neutro', 'final',
+     'Sobrecarga após assumir novas responsabilidades no trabalho.',
+     'Priorização de demandas e investigação de dificuldades em negociar prazos.',
+     'Conseguiu distinguir tarefas urgentes das que poderiam ser renegociadas; relata apreensão em conversas com a equipe.',
+     'Preparar uma conversa objetiva sobre prioridades e registrar o resultado para a próxima sessão.',
+     'Trabalhada a comunicação assertiva com foco em necessidades concretas.', now()),
+    ('d9999999-9999-4999-8999-999999999999', psi, pac2,
+     'cbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', 'mal', 'final',
+     'Conflitos familiares recentes e dificuldade em expressar incômodos.',
+     'Exploração dos limites pessoais e ensaio de comunicação em primeira pessoa.',
+     'Manteve postura reflexiva e identificou situações em que costuma evitar conversas importantes.',
+     'Observar uma situação de incômodo e formular o que gostaria de comunicar, sem necessidade de iniciar a conversa imediatamente.',
+     'Respeitado o ritmo do paciente na elaboração de temas familiares.', now()),
+    ('daaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', psi, pac2,
+     'cccccccc-cccc-4ccc-8ccc-cccccccccccc', 'bem', 'final',
+     'Dificuldade em manter pausas durante jornadas prolongadas.',
+     'Análise de rotina e identificação de oportunidades realistas para pausas curtas ao longo do expediente.',
+     'Relatou testar uma pausa no meio do dia e perceber melhora na concentração durante a tarde.',
+     'Manter pausas planejadas em três dias da semana e observar impacto na disposição.',
+     'Foco em mudanças sustentáveis dentro das condições de trabalho atuais.', now()),
+    ('dbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', psi, pac2,
+     'cddddddd-dddd-4ddd-8ddd-dddddddddddd', 'neutro', 'final',
+     'Preocupação antecipatória com decisões profissionais de médio prazo.',
+     'Separação entre aspectos controláveis e incertos; levantamento de informações necessárias antes de decidir.',
+     'Mostrou maior clareza sobre critérios pessoais e reconheceu que não precisa tomar uma decisão imediata.',
+     'Listar dúvidas que podem ser esclarecidas e retomar o tema após reunir as informações.',
+     'A decisão foi abordada sem pressionar por uma resposta definitiva.', now()),
+    ('dccccccc-cccc-4ccc-8ccc-cccccccccccc', psi, pac2,
+     'ceeeeeee-eeee-4eee-8eee-eeeeeeeeeeee', 'muito-bem', 'final',
+     'Retomada gradual de atividades pessoais interrompidas durante período de esgotamento.',
+     'Revisão dos avanços recentes e planejamento de metas pequenas, alinhadas à disponibilidade de energia.',
+     'Relatou satisfação com uma atividade de lazer e maior confiança para organizar a própria rotina.',
+     'Manter uma atividade prazerosa na semana e ajustar o plano conforme a resposta do corpo.',
+     'Evolução favorável na percepção de autonomia e no reconhecimento de limites pessoais.', now())
   on conflict (id) do update set
     psicologo_id          = excluded.psicologo_id,
     paciente_id           = excluded.paciente_id,
