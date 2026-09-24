@@ -21,6 +21,11 @@
   let psychologistId = null;
   let editingId = null;
   let availability = [];
+  let modalityColumnAvailable = true;
+
+  function modalityMigrationMessage() {
+    return "Horários carregados. Para escolher entre online e presencial, aplique a migração 20260923120000_adiciona_modalidade_disponibilidades.sql no Supabase.";
+  }
 
   function showMessage(text, isError = false) {
     message.textContent = text;
@@ -131,6 +136,17 @@
         .eq("psicologo_id", psychologistId)
         .order("dia_semana")
         .order("horario"));
+
+      if (error?.code === "42703" && error.message?.includes("modalidade")) {
+        modalityColumnAvailable = false;
+        document.getElementById("modality").disabled = true;
+        ({ data: result, error } = await client
+          .from("disponibilidades")
+          .select("id, dia_semana, horario")
+          .eq("psicologo_id", psychologistId)
+          .order("dia_semana")
+          .order("horario"));
+      }
     } catch {
       showMessage("Não foi possível carregar seus horários. Tente novamente.", true);
       return false;
@@ -141,8 +157,9 @@
       return false;
     }
 
-    availability = result || [];
+    availability = (result || []).map((slot) => ({ ...slot, modalidade: slot.modalidade || "online" }));
     renderRows();
+    if (!modalityColumnAvailable) showMessage(modalityMigrationMessage(), true);
     return true;
   }
 
@@ -164,9 +181,9 @@
     const values = {
       psicologo_id: psychologistId,
       dia_semana: day,
-      horario: `${time}:00`,
-      modalidade: modality
+      horario: `${time}:00`
     };
+    if (modalityColumnAvailable) values.modalidade = modality;
     submitButton.disabled = true;
     showMessage("");
 
@@ -194,7 +211,7 @@
 
     resetForm();
     await loadAvailability();
-    showMessage("Horário salvo.");
+    if (modalityColumnAvailable) showMessage("Horário salvo.");
   }
 
   async function deleteAvailability(ids) {
