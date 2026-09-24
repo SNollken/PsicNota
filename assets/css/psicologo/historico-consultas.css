@@ -232,6 +232,13 @@ tbody tr:hover { background: var(--blue-50); }
 
 .patient-avatar.avatar-deep { background: var(--blue-100); }
 
+.patient-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+
 .patient-copy {
   min-width: 0;
 }

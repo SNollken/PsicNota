@@ -2,6 +2,8 @@
 
 
 const data = window.PsiNoteData;
+const supabaseClient = window.PsicNotaSupabase || null;
+let patientAvatarUrls = new Map();
 
 
 const params = new URLSearchParams(window.location.search);
@@ -41,6 +43,37 @@ if (menuButton && sidebar) {
 function formatDate(date){
   const p = date.split("-");
   return `${p[2]}/${p[1]}/${p[0]}`;
+}
+
+async function loadPatientAvatarUrls(patientIds) {
+  const avatars = new Map();
+  if (!supabaseClient || !patientIds.length) return avatars;
+
+  try {
+    const { data: profiles, error } = await supabaseClient
+      .from("perfis")
+      .select("id, avatar_url")
+      .eq("papel", "paciente")
+      .in("id", patientIds);
+
+    if (error || !profiles) return avatars;
+
+    const signedAvatars = await Promise.all(profiles.map(async profile => {
+      if (!profile.avatar_url) return null;
+      const { data: signed, error: signedError } = await supabaseClient
+        .storage
+        .from("avatars")
+        .createSignedUrl(profile.avatar_url, 3600);
+      if (signedError || !signed?.signedUrl) return null;
+      return [profile.id, signed.signedUrl];
+    }));
+
+    signedAvatars.filter(Boolean).forEach(([id, url]) => avatars.set(id, url));
+  } catch {
+    return avatars;
+  }
+
+  return avatars;
 }
 
 
@@ -180,11 +213,28 @@ function renderAppointments(){
     const tr = document.createElement("tr");
     tr.innerHTML =
       '<td><strong class="date">' + formatDate(item.date) + '</strong><span class="time">' + (item.time || "") + '</span></td>' +
-      '<td><div class="patient"><span class="patient-avatar">' + initials + '</span><span class="patient-copy"><strong>' + name + '</strong></span></div></td>' +
+      '<td><div class="patient"><span class="patient-copy"><strong>' + name + '</strong></span></div></td>' +
       '<td><span class="appointment-type">' + (isOnline ? svgOnline : svgPresencial) + (isOnline ? "Online" : "Presencial") + '</span></td>' +
       '<td>50 min</td>' +
       '<td><span class="status ' + statusClass + '">' + statusLabel + '</span></td>' +
       '<td><div class="row-actions"><a href="consulta.html?id=' + item.id + '" aria-label="Visualizar consulta de ' + name + '">' + svgEye + '</a></div></td>';
+
+    const avatar = document.createElement("span");
+    avatar.className = "patient-avatar";
+    const avatarUrl = patientAvatarUrls.get(item.patientId);
+    if (avatarUrl) {
+      const image = document.createElement("img");
+      image.alt = "";
+      image.src = avatarUrl;
+      image.addEventListener("error", () => {
+        avatar.replaceChildren();
+        avatar.textContent = initials;
+      }, { once: true });
+      avatar.append(image);
+    } else {
+      avatar.textContent = initials;
+    }
+    tr.querySelector(".patient").prepend(avatar);
 
     list.appendChild(tr);
   });
@@ -198,6 +248,14 @@ async function init(){
   if (!_auth) return;
 
   await data.syncRemoteData();
+
+  const appointments = data.getAppointments().filter(item => {
+    const matchesPatient = patientId
+      ? item.patientId === patientId
+      : (!patientName || patientName === "Paciente" || item.patient === patientName);
+    return matchesPatient && item.status !== "cancelled" && item.patientId;
+  });
+  patientAvatarUrls = await loadPatientAvatarUrls([...new Set(appointments.map(item => item.patientId))]);
 
   renderPatient();
   renderAppointments();
