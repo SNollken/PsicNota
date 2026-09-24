@@ -180,7 +180,7 @@ function renderAppointments(){
     const tr = document.createElement("tr");
     tr.innerHTML =
       '<td><strong class="date">' + formatDate(item.date) + '</strong><span class="time">' + (item.time || "") + '</span></td>' +
-      '<td><div class="patient"><span class="patient-avatar">' + initials + '</span><span class="patient-copy"><strong>' + name + '</strong><small>' + (item.patientId ? "ID: " + item.patientId : "") + '</small></span></div></td>' +
+      '<td><div class="patient"><span class="patient-avatar">' + initials + '</span><span class="patient-copy"><strong>' + name + '</strong></span></div></td>' +
       '<td><span class="appointment-type">' + (isOnline ? svgOnline : svgPresencial) + (isOnline ? "Online" : "Presencial") + '</span></td>' +
       '<td>50 min</td>' +
       '<td><span class="status ' + statusClass + '">' + statusLabel + '</span></td>' +
