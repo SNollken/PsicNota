@@ -275,9 +275,15 @@
 
   .brand-text { font-size: 25px; }
 
-  .main-nav { padding: 0 12px; }
+  .main-nav {
+    justify-items: stretch;
+    padding: 0 12px;
+  }
 
-  .nav-item { width: auto; }
+  .main-nav .nav-item {
+    width: 100%;
+    box-sizing: border-box;
+  }
 }
 
 @media (max-width: 720px) {
@@ -292,9 +298,15 @@
 
   .sidebar.open { transform: translateX(0); }
 
-  .main-nav { padding: 0 14px; }
+  .main-nav {
+    justify-items: stretch;
+    padding: 0 14px;
+  }
 
-  .nav-item { width: auto; }
+  .main-nav .nav-item {
+    width: 100%;
+    box-sizing: border-box;
+  }
 
   .mobile-menu {
     display: grid;
