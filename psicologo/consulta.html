@@ -125,29 +125,7 @@
 
             <textarea class="note-area" id="sessionNote" placeholder="Escreva aqui as anotações desta consulta..."></textarea>
 
-            <div class="note-footer">
-              <button class="button button-primary button-compact" id="saveNoteButton" type="button">
-                Salvar anotações
-              </button>
-
-              <span class="save-status" id="noteSaveStatus"></span>
-              <span class="note-updated" id="noteUpdatedAt" hidden></span>
-            </div>
-          </div>
-        </section>
-
-        <!-- HUMOR -->
-        <section class="consulta-section">
-          <span class="section-tile" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="9" />
-              <circle cx="9" cy="10" r="1" />
-              <circle cx="15" cy="10" r="1" />
-              <path d="M8 14c1 3 7 3 8 0" />
-            </svg>
-          </span>
-
-          <div class="section-body">
+            <div class="note-mood-group">
             <h3 class="section-title">Emoção do dia</h3>
             <p class="section-hint">
               Marque como o paciente chegou à sessão. Clique de novo para desmarcar.
@@ -219,6 +197,37 @@
                 <span class="mood-label">Muito mal</span>
               </button>
 
+            </div>
+            </div>
+            <div class="note-footer">
+              <button class="button button-primary button-compact" id="saveNoteButton" type="button">
+                Salvar anotações
+              </button>
+
+              <span class="save-status" id="noteSaveStatus"></span>
+              <span class="note-updated" id="noteUpdatedAt" hidden></span>
+            </div>
+          </div>
+        </section>
+
+        <section class="consulta-section">
+          <span class="section-tile" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <path d="M14 2v6h6M8 13h8M8 17h8" />
+            </svg>
+          </span>
+
+          <div class="section-body">
+            <h3 class="section-title">Relatório da consulta</h3>
+            <p class="section-hint">Registre o relatório desta consulta. O conteúdo também fica disponível em Relatórios.</p>
+            <textarea class="note-area" id="sessionReport" placeholder="Escreva aqui o relatório desta consulta..."></textarea>
+
+            <div class="note-footer">
+              <button class="button button-primary button-compact" id="saveReportButton" type="button">
+                Salvar relatório
+              </button>
+              <span class="save-status" id="reportSaveStatus" role="status"></span>
             </div>
           </div>
         </section>

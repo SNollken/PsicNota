@@ -170,6 +170,7 @@ h1 {
 .patient-pill-avatar {
   display: grid;
   place-items: center;
+  overflow: hidden;
   width: 39px;
   height: 39px;
   border-radius: 50%;
@@ -177,6 +178,14 @@ h1 {
   color: var(--blue-800);
   font-size: 13px;
   font-weight: 800;
+}
+
+.patient-pill-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .button {
@@ -375,6 +384,14 @@ h1 {
   outline: 2px solid var(--blue-200);
   border-color: var(--blue-700);
 }
+
+.note-mood-group {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.note-mood-group .section-hint { margin-bottom: 10px; }
 
 .note-footer {
   display: flex;

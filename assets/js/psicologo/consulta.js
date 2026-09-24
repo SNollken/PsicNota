@@ -16,6 +16,7 @@ if (!document.querySelector("#consultaContent")) {
   });
 } else {
 const data = window.PsiNoteData;
+const supabaseClient = window.PsicNotaSupabase || null;
 
 const params = new URLSearchParams(window.location.search);
 const appointmentId = params.get('id');
@@ -33,11 +34,14 @@ const elements = {
   infoMode: document.querySelector('#infoMode'),
   infoStatus: document.querySelector('#infoStatus'),
   sessionNote: document.querySelector('#sessionNote'),
+  sessionReport: document.querySelector('#sessionReport'),
   noteSaveStatus: document.querySelector('#noteSaveStatus'),
   noteUpdatedAt: document.querySelector('#noteUpdatedAt'),
+  reportSaveStatus: document.querySelector('#reportSaveStatus'),
   noteMoodPicker: document.querySelector('#noteMoodPicker'),
   finishAppointmentButton: document.querySelector('#finishAppointmentButton'),
   saveNoteButton: document.querySelector('#saveNoteButton'),
+  saveReportButton: document.querySelector('#saveReportButton'),
   psychologistName: document.querySelector('#psychologistName'),
   psychologistAvatar: document.querySelector('#psychologistAvatar'),
   sidebar: document.querySelector('.sidebar'),
@@ -82,6 +86,33 @@ function renderAppointmentInfo() {
   elements.historicoLink.href = `historico.html?${idParam}paciente=${encodedPatient}`;
 }
 
+async function loadPatientAvatar() {
+  if (!supabaseClient || !appointment.patientId) return;
+
+  try {
+    const { data: patient, error } = await supabaseClient
+      .from('perfis')
+      .select('avatar_url')
+      .eq('id', appointment.patientId)
+      .eq('papel', 'paciente')
+      .maybeSingle();
+    if (error || !patient?.avatar_url) return;
+
+    const { data: signed, error: signedError } = await supabaseClient
+      .storage
+      .from('avatars')
+      .createSignedUrl(patient.avatar_url, 3600);
+    if (signedError || !signed?.signedUrl) return;
+
+    const image = document.createElement('img');
+    image.alt = '';
+    image.addEventListener('load', () => elements.patientPillAvatar.replaceChildren(image), { once: true });
+    image.src = signed.signedUrl;
+  } catch {
+    console.error('Não foi possível carregar a foto do paciente.');
+  }
+}
+
 function renderMoodPicker() {
   elements.noteMoodPicker.querySelectorAll('.mood-option').forEach((option) => {
     const selected = option.dataset.mood === currentMood;
@@ -99,6 +130,18 @@ function renderNotes() {
   elements.noteUpdatedAt.hidden = !(note || currentMood);
 }
 
+function findAppointmentReport() {
+  return data.getReports().find((report) => report.appointmentId === appointment.id) || null;
+}
+
+function renderReport() {
+  const report = findAppointmentReport();
+  elements.sessionReport.value = report?.freeText || '';
+  elements.reportSaveStatus.textContent = report
+    ? report.status === 'final' ? 'Relatório salvo' : 'Rascunho salvo'
+    : '';
+}
+
 async function saveNotes() {
   const text = elements.sessionNote.value;
   data.setAppointmentNote(appointment.id, text);
@@ -114,6 +157,51 @@ async function saveNotes() {
   elements.noteUpdatedAt.textContent = 'Anotações salvas';
   elements.noteUpdatedAt.hidden = false;
   window.setTimeout(() => { elements.noteSaveStatus.textContent = ''; }, 1800);
+}
+
+async function saveReport() {
+  const freeText = elements.sessionReport.value.trim();
+  if (!freeText) {
+    elements.reportSaveStatus.textContent = 'Escreva o relatório antes de salvar.';
+    elements.sessionReport.focus();
+    return false;
+  }
+
+  const reports = data.getReports();
+  const existing = findAppointmentReport();
+  const now = new Date().toISOString();
+  const report = {
+    ...(existing || {}),
+    id: existing?.id || data.createId('report'),
+    patient: appointment.patient,
+    patientId: appointment.patientId,
+    appointmentId: appointment.id,
+    mood: currentMood,
+    blocks: existing?.blocks || {},
+    freeText,
+    status: 'final',
+    createdAt: existing?.createdAt || now,
+    updatedAt: now
+  };
+
+  let savedId = null;
+  try {
+    savedId = await data.saveReportToDb(report);
+  } catch {
+    savedId = null;
+  }
+  if (savedId) report.id = savedId;
+  if (existing) {
+    reports[reports.findIndex((item) => item.id === existing.id)] = report;
+  } else {
+    reports.push(report);
+  }
+  data.saveReports(reports);
+
+  elements.reportSaveStatus.textContent = savedId || !window.PsicNotaSupabase
+    ? 'Relatório salvo'
+    : 'Não foi possível salvar no banco; o relatório ficou salvo localmente.';
+  return true;
 }
 
 async function init() {
@@ -148,10 +236,14 @@ async function init() {
   }
 
   renderNotes();
+  renderReport();
+  void loadPatientAvatar();
 
   elements.saveNoteButton.addEventListener('click', () => void saveNotes());
+  elements.saveReportButton.addEventListener('click', () => void saveReport());
   elements.finishAppointmentButton.addEventListener('click', async () => {
     await saveNotes();
+    if (elements.sessionReport.value.trim()) await saveReport();
     window.location.href = `historico.html?${appointment.patientId ? `id=${encodeURIComponent(appointment.patientId)}&` : ""}paciente=${encodeURIComponent(appointment.patient)}`;
   });
   elements.noteMoodPicker.querySelectorAll('.mood-option').forEach((option) => {
@@ -159,6 +251,9 @@ async function init() {
       currentMood = currentMood === option.dataset.mood ? null : option.dataset.mood;
       renderMoodPicker();
     });
+  });
+  elements.sessionReport.addEventListener('input', () => {
+    elements.reportSaveStatus.textContent = '';
   });
 }
 
