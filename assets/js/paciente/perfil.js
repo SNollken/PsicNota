@@ -156,6 +156,9 @@
       state: session.state || "",
       preferredFormat: session.preferredFormat || "",
       preferredPeriod: session.preferredPeriod || "",
+      availabilityOnline: Array.isArray(session.availabilityOnline) ? [...session.availabilityOnline] : [],
+      availabilityInPerson: Array.isArray(session.availabilityInPerson) ? [...session.availabilityInPerson] : [],
+      availabilitySupported: session.availabilitySupported === true,
       appointmentReminders: Boolean(session.appointmentReminders),
       emailNotifications: Boolean(session.emailNotifications),
       gender: session.gender || ""
@@ -174,6 +177,8 @@
       state: value("state"),
       preferredFormat: value("preferredFormat"),
       preferredPeriod: value("preferredPeriod"),
+      ...collectAvailability(),
+      availabilitySupported: session.availabilitySupported === true,
       appointmentReminders: Boolean(form.elements.namedItem("appointmentReminders")?.checked),
       emailNotifications: Boolean(form.elements.namedItem("emailNotifications")?.checked),
       gender: value("gender")
@@ -237,14 +242,60 @@
     button.replaceChildren(status);
   }
 
+  function collectAvailability() {
+    const selections = { availabilityOnline: [], availabilityInPerson: [] };
+    const periods = ["Manhã", "Tarde", "Noite"];
+
+    form.querySelectorAll(".availability-table").forEach((table) => {
+      const title = table.closest(".availability-card")?.querySelector(".availability-card-title")?.textContent.toLowerCase() || "";
+      const key = title.includes("presenciais") ? "availabilityInPerson" : "availabilityOnline";
+
+      table.querySelectorAll("tbody tr").forEach((row) => {
+        const day = row.querySelector("th")?.textContent.trim();
+        row.querySelectorAll(".availability-toggle").forEach((button, index) => {
+          if (button.getAttribute("aria-pressed") === "true" && day && periods[index]) {
+            selections[key].push(`${day}:${periods[index]}`);
+          }
+        });
+      });
+    });
+
+    return selections;
+  }
+
+  function renderWeeklyAvailability(profile) {
+    const selections = {
+      availabilityOnline: Array.isArray(profile.availabilityOnline) ? profile.availabilityOnline : [],
+      availabilityInPerson: Array.isArray(profile.availabilityInPerson) ? profile.availabilityInPerson : []
+    };
+
+    form.querySelectorAll(".availability-table").forEach((table) => {
+      const title = table.closest(".availability-card")?.querySelector(".availability-card-title")?.textContent.toLowerCase() || "";
+      const key = title.includes("presenciais") ? "availabilityInPerson" : "availabilityOnline";
+
+      table.querySelectorAll("tbody tr").forEach((row) => {
+        const day = row.querySelector("th")?.textContent.trim();
+        row.querySelectorAll(".availability-toggle").forEach((button, index) => {
+          renderAvailability(button, Boolean(day && selections[key].includes(`${day}:${["Manhã", "Tarde", "Noite"][index]}`)));
+          button.disabled = profile.availabilitySupported !== true;
+        });
+      });
+    });
+  }
+
   document.querySelectorAll(".availability-table tbody td").forEach((cell) => {
     const isAvailable = Boolean(cell.querySelector(".cell-available"));
     const button = document.createElement("button");
     button.type = "button";
     button.className = "availability-toggle";
+    button.disabled = true;
     renderAvailability(button, isAvailable);
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       renderAvailability(button, button.getAttribute("aria-pressed") !== "true");
+      button.disabled = true;
+      const saved = await saveProfile(false);
+      button.disabled = false;
+      if (!saved) renderWeeklyAvailability(session);
     });
     cell.replaceChildren(button);
   });
@@ -274,7 +325,7 @@
     if (modal) modal.hidden = true;
   }
 
-  async function saveProfile() {
+  async function saveProfile(showSuccess = true) {
     const profile = collectForm();
 
     try {
@@ -303,11 +354,15 @@
       removeAvatar = false;
       snapshot = profileFromSession();
       render(snapshot);
+      renderWeeklyAvailability(snapshot);
       setEditing(false);
-      openModal(elements.successModal);
+      if (showSuccess) openModal(elements.successModal);
+      else showFeedback("Disponibilidade salva.");
+      return true;
     } catch (error) {
       console.error(error);
       showFeedback("Não foi possível salvar o perfil. Tente novamente.", true);
+      return false;
     }
   }
 
@@ -432,6 +487,9 @@
         state: loaded.profile.estado || "",
         preferredFormat: loaded.profile.formato_preferido || "",
         preferredPeriod: loaded.profile.periodo_preferido || "",
+        availabilityOnline: Array.isArray(loaded.profile.disponibilidade_online) ? loaded.profile.disponibilidade_online : [],
+        availabilityInPerson: Array.isArray(loaded.profile.disponibilidade_presencial) ? loaded.profile.disponibilidade_presencial : [],
+        availabilitySupported: "disponibilidade_online" in loaded.profile && "disponibilidade_presencial" in loaded.profile,
         appointmentReminders: loaded.profile.lembretes_consulta,
         emailNotifications: loaded.profile.notificacoes_email,
         birthDate: loaded.profile.data_nascimento || "",
@@ -441,7 +499,11 @@
       };
       snapshot = profileFromSession();
       render(snapshot);
+      renderWeeklyAvailability(snapshot);
       setEditing(false);
+      if (!session.availabilitySupported) {
+        showFeedback("A disponibilidade semanal ficará disponível após a atualização do banco.", true);
+      }
     } catch (error) {
       console.error(error);
       showFeedback("Não foi possível carregar seu perfil.", true);

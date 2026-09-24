@@ -89,6 +89,10 @@
         lembretes_consulta: values.appointmentReminders,
         notificacoes_email: values.emailNotifications
       });
+      if (values.availabilitySupported) {
+        profileRow.disponibilidade_online = Array.isArray(values.availabilityOnline) ? values.availabilityOnline : [];
+        profileRow.disponibilidade_presencial = Array.isArray(values.availabilityInPerson) ? values.availabilityInPerson : [];
+      }
     }
 
     const { error: profileError } = await client.from("perfis").update(profileRow).eq("id", userId);
