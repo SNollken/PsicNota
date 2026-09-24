@@ -78,15 +78,11 @@ svg {
   letter-spacing: -0.02em;
 }
 
-.header-actions,
 .row-actions {
   display: flex;
   align-items: center;
 }
 
-.header-actions { gap: 12px; }
-
-.header-icon,
 .row-actions button {
   display: inline-grid;
   place-items: center;
@@ -94,25 +90,6 @@ svg {
   color: var(--blue-800);
   text-decoration: none;
   transition: background 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
-}
-
-.header-icon {
-  width: 44px;
-  height: 44px;
-  border: 0;
-  border-radius: 12px;
-  background: transparent;
-}
-
-.header-icon:hover {
-  transform: translateY(-1px);
-  color: var(--blue-700);
-  background: var(--blue-50);
-}
-
-.header-icon:focus-visible {
-  outline: 3px solid var(--blue-200);
-  outline-offset: 2px;
 }
 
 .row-actions button {
@@ -404,14 +381,12 @@ tbody tr:hover { background: var(--blue-50); }
 
   .history-header { min-height: 88px; }
   .history-header h1 { font-size: 24px; }
-  .header-icon { width: 40px; height: 40px; }
   .history-card { margin-top: 24px; border-radius: 14px; }
 }
 
 @media (max-width: 480px) {
   .history-page { padding-inline: 16px; }
-  .history-header { align-items: flex-start; justify-content: flex-end; padding: 22px 0; }
+  .history-header { align-items: flex-start; justify-content: flex-start; padding: 22px 0; }
   .history-header h1 { position: static; transform: none; max-width: 100%; text-align: left; }
-  .header-actions { gap: 8px; }
   .table-footer { flex-direction: column-reverse; gap: 14px; padding: 16px 20px; }
 }
