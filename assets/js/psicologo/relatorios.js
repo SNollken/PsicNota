@@ -103,15 +103,10 @@ function showToast(message, isError = false) {
   toastTimeout = window.setTimeout(() => { elements.toast.hidden = true; }, 3800);
 }
 
-function getInitials(name) {
-  return String(name).split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toUpperCase();
-}
-
 function renderHeader() {
   const session = data.getSession();
   const displayName = (session && (session.fullName || session.name)) || 'Psicólogo PsiNote';
   elements.psychologistName.textContent = displayName;
-  elements.psychologistAvatar.textContent = getInitials(displayName);
 }
 
 function findAppointment(appointmentId) {
