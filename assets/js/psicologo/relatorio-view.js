@@ -16,6 +16,7 @@ if (!document.querySelector("#reportDocument")) {
   });
 } else {
 const data = window.PsiNoteData;
+const supabaseClient = window.PsicNotaSupabase || null;
 
 const params = new URLSearchParams(window.location.search);
 const reportId = params.get('id');
@@ -23,6 +24,7 @@ const reportId = params.get('id');
 const elements = {
   notFound: document.querySelector('#notFound'),
   reportDocument: document.querySelector('#reportDocument'),
+  docAvatar: document.querySelector('#docAvatar'),
   docPatient: document.querySelector('#docPatient'),
   docMeta: document.querySelector('#docMeta'),
   docMood: document.querySelector('#docMood'),
@@ -44,6 +46,14 @@ const BLOCKS = [
   { key: 'proxima', label: 'Encaminhamentos' }
 ];
 
+const MOODS = [
+  { key: 'muito-bem', label: 'Muito bem', face: 'M8 14s1.5 2 4 2 4-2 4-2' },
+  { key: 'bem', label: 'Bem', face: 'M8 14s1.5 1 4 1 4-1 4-1' },
+  { key: 'neutro', label: 'Estável', face: 'M8 14h8' },
+  { key: 'mal', label: 'Mal', face: 'M8 16s1.5-2 4-2 4 2 4 2' },
+  { key: 'muito-mal', label: 'Muito mal', face: 'M8 16s1.5-3 4-3 4 3 4 3' }
+];
+
 async function render() {
   const _auth = await window.PsicNotaBackend.requireProfile("psicologo");
   if (!_auth) return;
@@ -59,6 +69,31 @@ async function render() {
   }
 
   elements.docPatient.textContent = report.patient;
+  elements.docAvatar.textContent = report.patient.split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toLocaleUpperCase('pt-BR');
+  if (report.patientId && supabaseClient) {
+    try {
+      const { data: patient } = await supabaseClient
+        .from('perfis')
+        .select('avatar_url')
+        .eq('id', report.patientId)
+        .eq('papel', 'paciente')
+        .maybeSingle();
+      if (patient?.avatar_url) {
+        const { data: avatar } = await supabaseClient
+          .storage
+          .from('avatars')
+          .createSignedUrl(patient.avatar_url, 3600);
+        if (avatar?.signedUrl) {
+          const image = document.createElement('img');
+          image.alt = '';
+          image.src = avatar.signedUrl;
+          elements.docAvatar.replaceChildren(image);
+        }
+      }
+    } catch {
+      elements.docAvatar.textContent = report.patient.split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toLocaleUpperCase('pt-BR');
+    }
+  }
   elements.notFound.hidden = true;
   elements.reportDocument.hidden = false;
   elements.printButton.hidden = false;
@@ -72,18 +107,32 @@ async function render() {
 
   elements.docDraftBadge.hidden = report.status !== 'rascunho';
 
-  const MOODS = {
-    'muito-bem': { label: 'Muito bem', emoji: '😄' },
-    bem: { label: 'Bem', emoji: '🙂' },
-    neutro: { label: 'Estável', emoji: '😐' },
-    mal: { label: 'Mal', emoji: '🙁' },
-    'muito-mal': { label: 'Muito mal', emoji: '😞' }
-  };
-  const mood = MOODS[report.mood];
-  elements.docMood.hidden = !mood;
-  if (mood) {
-    elements.docMood.textContent = `Emoção do dia: ${mood.emoji} ${mood.label}`;
-  }
+  elements.docMood.replaceChildren();
+  MOODS.forEach((mood) => {
+    const pill = document.createElement('div');
+    pill.className = `mood-pill${report.mood === mood.key ? ' is-selected' : ''}`;
+    pill.setAttribute('aria-label', mood.label);
+    const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    icon.setAttribute('viewBox', '0 0 24 24');
+    icon.setAttribute('fill', 'none');
+    icon.setAttribute('stroke', 'currentColor');
+    icon.setAttribute('stroke-width', '1.8');
+    icon.setAttribute('stroke-linecap', 'round');
+    icon.setAttribute('stroke-linejoin', 'round');
+    const face = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    face.setAttribute('cx', '12');
+    face.setAttribute('cy', '12');
+    face.setAttribute('r', '9');
+    const expression = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    expression.setAttribute('d', mood.face);
+    const eyes = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    eyes.setAttribute('d', 'M9 10h.01M15 10h.01');
+    icon.append(face, expression, eyes);
+    const label = document.createElement('span');
+    label.textContent = mood.label;
+    pill.append(icon, label);
+    elements.docMood.append(pill);
+  });
 
   elements.docBlocks.replaceChildren();
   BLOCKS.forEach((block) => {

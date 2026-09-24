@@ -25,38 +25,12 @@
     <psic-menu tipo="psicologo" ativo="relatorios"></psic-menu>
 
 
-    <main class="main-content">
-
-      <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">
-        ☰
-      </button>
-
-
-      <header class="topbar report-view-topbar">
-
-        <div class="page-heading">
-          <p class="eyebrow">Relatório</p>
-          <h1>Visualização de relatório</h1>
-        </div>
-
-        <div class="topbar-actions">
-          <a class="button button-secondary button-compact" href="relatorios.html">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M15 6l-6 6 6 6" />
-            </svg>
-            Voltar
-          </a>
-
-          <button class="button button-primary button-compact" id="printButton" type="button" hidden>
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M6 9V4h12v5" />
-              <rect x="4" y="9" width="16" height="8" rx="2" />
-              <path d="M8 17h8v4H8z" />
-            </svg>
-            Imprimir
-          </button>
-        </div>
-
+    <main class="main-content report-view-content">
+      <header class="page-header report-view-header">
+        <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+        </button>
+        <h1>Relatório da consulta</h1>
       </header>
 
 
@@ -78,20 +52,54 @@
 
 
       <!-- DOCUMENTO DO RELATÓRIO -->
-      <article class="doc-card" id="reportDocument" hidden>
-
-        <header class="doc-head">
-          <div class="doc-head-main">
-            <h2 class="doc-patient" id="docPatient"></h2>
-            <p class="doc-meta" id="docMeta"></p>
-            <p class="doc-mood" id="docMood" hidden></p>
+      <article class="report-view-document" id="reportDocument" hidden>
+        <section class="report-details report-view-details" aria-label="Dados da consulta">
+          <div class="consultation-field">
+            <span class="consultation-label">Consulta</span>
+            <div class="consultation-select report-consultation">
+              <span class="patient-avatar" id="docAvatar" aria-hidden="true"></span>
+              <span class="consultation-copy">
+                <strong id="docPatient"></strong>
+                <small id="docMeta"></small>
+              </span>
+              <svg class="select-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9.5 5 5 5-5" /></svg>
+            </div>
+            <span class="badge badge-draft" id="docDraftBadge" hidden>Rascunho</span>
           </div>
 
-          <span class="badge badge-draft" id="docDraftBadge" hidden>Rascunho</span>
-        </header>
+          <div class="mood-fieldset report-mood-fieldset" aria-label="Humor registrado na consulta">
+            <div class="mood-options report-mood-options" id="docMood"></div>
+          </div>
+        </section>
 
-        <div class="doc-blocks" id="docBlocks"></div>
+        <section class="editor-card report-view-editor" aria-label="Conteúdo do relatório">
+          <div class="editor-toolbar" role="presentation" aria-hidden="true">
+            <div class="toolbar-group toolbar-selects">
+              <span class="toolbar-select toolbar-style">Normal</span><span class="select-chevron-wrap"><svg viewBox="0 0 24 24"><path d="m7 9.5 5 5 5-5" /></svg></span>
+              <span class="toolbar-select toolbar-size">14</span><span class="select-chevron-wrap"><svg viewBox="0 0 24 24"><path d="m7 9.5 5 5 5-5" /></svg></span>
+            </div>
+            <div class="toolbar-group"><span class="toolbar-button text-format bold">B</span><span class="toolbar-button text-format italic">I</span><span class="toolbar-button text-format underline">U</span></div>
+            <div class="toolbar-group">
+              <span class="toolbar-button"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11" /><circle cx="4.5" cy="6" r=".7" /><circle cx="4.5" cy="12" r=".7" /><circle cx="4.5" cy="18" r=".7" /></svg></span>
+              <span class="toolbar-button"><svg viewBox="0 0 24 24"><path d="M10 6h10M10 12h10M10 18h10M4 5h1.5v3M4 8h2M4 13h1.4a1 1 0 0 1 0 2H4v2h2" /></svg></span>
+              <span class="toolbar-button"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h11M4 18h14" /></svg></span>
+            </div>
+            <div class="toolbar-group">
+              <span class="toolbar-button"><svg viewBox="0 0 24 24"><path d="m9 7-5 5 5 5M4 12h9a6 6 0 0 1 6 6" /></svg></span>
+              <span class="toolbar-button is-muted"><svg viewBox="0 0 24 24"><path d="m15 7 5 5-5 5M20 12h-9a6 6 0 0 0-6 6" /></svg></span>
+              <span class="toolbar-button"><svg viewBox="0 0 24 24"><path d="m21.4 11.6-8.9 8.9a6 6 0 0 1-8.5-8.5l9.6-9.6a4 4 0 0 1 5.7 5.7l-9.6 9.6a2 2 0 1 1-2.8-2.8l8.9-8.9" /></svg></span>
+            </div>
+          </div>
+          <div class="report-view-body" id="docBlocks"></div>
+        </section>
 
+        <footer class="report-view-footer">
+          <a class="button button-secondary" href="relatorios.html">Voltar para relatórios</a>
+          <button class="button button-primary" id="printButton" type="button" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 17v3h14v-3" /></svg>
+            Baixar PDF
+          </button>
+        </footer>
       </article>
 
     </main>
