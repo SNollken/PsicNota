@@ -418,15 +418,20 @@ function renderAppointments() {
 
 
 
-function createItem(date, text, type) {
+function createItem(date, text, type, href) {
 
 
   const item =
-    document.createElement("div");
+    document.createElement(href ? "a" : "div");
 
 
   item.className =
     "list-item";
+
+  if (href) {
+    item.href = href;
+    item.classList.add("list-item-link");
+  }
 
 
 
@@ -568,7 +573,8 @@ function renderNotes() {
           ),
 
 
-          "note"
+          "note",
+          `notas.html?consulta=${encodeURIComponent(item.id)}`
 
         )
 

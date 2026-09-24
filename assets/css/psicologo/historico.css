@@ -112,6 +112,21 @@ body{
 
 }
 
+.list-item-link {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.list-item-link:hover {
+  background: #E4F6FC;
+}
+
+.list-item-link:focus-visible {
+  outline: 3px solid #0878F9;
+  outline-offset: 2px;
+}
+
 
 .page-title h1{
 
