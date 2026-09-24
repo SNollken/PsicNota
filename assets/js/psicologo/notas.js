@@ -5,6 +5,9 @@
   const appointmentSelect = document.querySelector('#notesAppointment');
   const noteText = document.querySelector('#noteText');
   const status = document.querySelector('#notesStatus');
+  const patientAvatar = document.querySelector('#patientAvatar');
+  const defaultPatientAvatar = patientAvatar.src;
+  const supabaseClient = window.PsicNotaSupabase;
   const moodButtons = [...document.querySelectorAll('#notesMoodPicker [data-mood]')];
   const params = new URLSearchParams(location.search);
   let selectedMood = '';
@@ -45,8 +48,35 @@
   function loadAppointment() {
     noteText.value = data.getAppointmentNote(selectedId());
     selectedMood = data.getAppointmentMood(selectedId());
+    patientAvatar.src = defaultPatientAvatar;
+    void loadPatientAvatar(selectedId());
     renderMood();
     status.textContent = '';
+  }
+
+  async function loadPatientAvatar(appointmentId) {
+    const appointment = appointments.find((item) => item.id === appointmentId);
+    if (!appointment?.patientId || !supabaseClient) return;
+
+    try {
+      const { data: patient, error } = await supabaseClient
+        .from('perfis')
+        .select('avatar_url')
+        .eq('id', appointment.patientId)
+        .eq('papel', 'paciente')
+        .maybeSingle();
+      if (error || !patient?.avatar_url) return;
+
+      const { data: avatar, error: avatarError } = await supabaseClient
+        .storage
+        .from('avatars')
+        .createSignedUrl(patient.avatar_url, 3600);
+      if (avatarError || !avatar?.signedUrl || selectedId() !== appointmentId) return;
+
+      patientAvatar.src = avatar.signedUrl;
+    } catch {
+      patientAvatar.src = defaultPatientAvatar;
+    }
   }
 
   async function saveNote() {
