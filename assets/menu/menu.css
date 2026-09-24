@@ -29,7 +29,11 @@
 .app-shell {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  grid-template-columns: minmax(0, var(--sidebar-width)) minmax(0, 1fr);
+}
+
+.app-shell > main {
+  min-width: 0;
 }
 
 /* =========================
@@ -288,6 +292,13 @@
 
 @media (max-width: 720px) {
   .app-shell { display: block; }
+
+  .app-shell > main {
+    grid-column: auto;
+    min-width: 0;
+    max-width: 100%;
+    margin-left: 0;
+  }
 
   .sidebar {
     width: 260px;

@@ -309,3 +309,31 @@ grid-template-columns:1fr;
 
 
 }
+
+@media(max-width:720px){
+  .reports-history{
+    min-height:350px;
+    padding:14px;
+  }
+
+  .report-history-item{
+    height:auto;
+    min-height:84px;
+    grid-template-columns:42px minmax(0, 1fr) 26px;
+    gap:8px;
+    padding:12px;
+  }
+
+  .report-history-icon svg{
+    width:30px;
+    height:30px;
+  }
+
+  .report-history-date{
+    font-size:16px;
+  }
+
+  .report-history-text{
+    font-size:13px;
+  }
+}
