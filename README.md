@@ -27,8 +27,7 @@ assets/img/           Imagens e identidade visual
 supabase/migrations/  Migrações SQL versionadas
 supabase/seed.sql     Dados de exemplo para desenvolvimento
 tests/                Testes Node.js e roteiro de navegador
-index.html            Página de entrada pública
-home.html             Página adicional na raiz
+index.html            Landing page pública (única entrada em `/`)
 ```
 
 ## Executar localmente

@@ -51,8 +51,7 @@ svg {
 }
 
 .container {
-  width: calc(100% - 32px);
-  max-width: none;
+  width: min(100% - 32px, 1280px);
   margin-inline: auto;
 }
 
@@ -219,9 +218,8 @@ svg {
 }
 
 .hero-inner {
-  min-height: 650px;
-  padding: 19px 0 116px;
-  padding-left: 220px;
+  min-height: 560px;
+  padding: 64px 0 96px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -253,12 +251,12 @@ svg {
 }
 
 .hero-inner > p {
-  max-width: 760px;
-  margin: 30px 0 0;
+  max-width: 640px;
+  margin: 24px 0 0;
   color: var(--muted);
-  font-size: 40px;
+  font-size: clamp(1rem, 1.2vw + 0.85rem, 1.25rem);
   font-weight: 400;
-  line-height: 1.75;
+  line-height: 1.7;
 }
 
 .hero-actions {
@@ -434,10 +432,9 @@ svg {
 
 .split-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(440px, 0.95fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
   align-items: center;
-  gap: clamp(56px, 8vw, 110px);
-  padding-left: 120px;
+  gap: clamp(48px, 6vw, 96px);
 }
 
 .benefits-copy h2,
@@ -504,7 +501,6 @@ svg {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: translateX(-130px);
   display: block;
   border-radius: var(--radius-lg);
 }
@@ -538,7 +534,7 @@ svg {
 }
 
 .split-layout-reverse {
-  grid-template-columns: minmax(440px, 0.95fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
 }
 
 .visual-security {
@@ -663,7 +659,7 @@ svg {
 }
 
 .footer-brand {
-  transform: translateX(30px);
+  max-width: 320px;
 }
 
 .footer-links {
@@ -705,13 +701,15 @@ svg {
 
 .footer-bottom {
 
-  margin-top: -50px;
+  margin-top: 40px;
 
   padding-top: 20px;
 
   display: flex;
 
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
 
   border-top: 1px solid var(--line);
 
@@ -918,15 +916,6 @@ svg {
   .footer-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 40px 24px;
-  }
-
-  .footer-brand,
-  .social-links {
-    margin-left: 0;
-  }
-
-  .footer-brand {
-    transform: none;
   }
 
   .footer-bottom {
