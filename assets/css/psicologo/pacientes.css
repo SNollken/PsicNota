@@ -286,6 +286,7 @@ svg {
 
 .patient-card {
   width: 100%;
+  container-type: inline-size;
 
   min-height: 76px;
   display: flex;
@@ -417,6 +418,29 @@ svg {
 }
 
 
+
+@container (max-width: 520px) {
+  .patient-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .patient-info strong,
+  .patient-meta {
+    width: 100%;
+  }
+
+  .patient-meta {
+    flex: 0 1 auto;
+    white-space: normal;
+  }
+
+  .patient-meta span {
+    overflow: visible;
+    text-overflow: clip;
+  }
+}
 
 .patient-next {
 
