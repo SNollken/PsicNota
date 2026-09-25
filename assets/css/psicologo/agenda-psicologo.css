@@ -927,6 +927,8 @@ body.modal-open { overflow: hidden; }
   background: transparent;
   font-size: 9px;
   font-weight: 800;
+  letter-spacing: 0;
+  white-space: nowrap;
 }
 
 .psic-day {
@@ -1014,6 +1016,32 @@ body.modal-open { overflow: hidden; }
 
 .psic-day.today .psic-day-number {
   color: #174e61;
+}
+
+@media (max-width: 520px) {
+  .psic-calendar-card { padding-right: 10px; padding-left: 10px; }
+  .psic-view .psic-weekdays,
+  .psic-view .psic-calendar-grid { gap: 3px; }
+  .psic-day { min-height: 96px; padding: 8px 3px; }
+  .psic-day-info {
+    top: auto;
+    bottom: 10px;
+    left: 2px;
+    max-width: calc(100% - 4px);
+    transform: none;
+    font-size: 9px;
+    line-height: 1.2;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .psic-day-today-label {
+    top: 24px;
+    right: 2px;
+    left: 2px;
+    font-size: 7px;
+    letter-spacing: 0;
+    text-align: center;
+  }
 }
 
 .psic-schedule-popup,
@@ -1609,7 +1637,8 @@ body.modal-open {
 }
 
 @media (max-width: 720px) {
-  .psic-view .agenda-psic-page { padding: 0 16px 24px; }
+  body.psic-view { min-width: 0; }
+  .psic-view .agenda-psic-page { width: 100%; min-width: 0; padding: 0 16px 24px; }
   .psic-view .agenda-topbar { min-height: 86px; }
   .psic-view .agenda-topbar h1 { font-size: 24px; }
   .psic-view .agenda-subtitle { font-size: 22px; }
@@ -1633,6 +1662,8 @@ body.modal-open {
 
 @media (max-width: 520px) {
   .psic-view .agenda-subtitle { text-align: left; }
+  .psic-view .psic-calendar-card { width: 100%; }
+  .psic-view .psic-day-info { white-space: nowrap; overflow-wrap: normal; }
   .psic-dashboard-card {
     grid-template-columns: minmax(0, 1fr) 36px;
     padding-left: 18px;
