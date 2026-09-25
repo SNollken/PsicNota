@@ -147,32 +147,6 @@ svg {
   font-size: 13px;
 }
 
-.home-head-actions {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.icon-btn {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border: 0;
-  border-radius: 10px;
-  background: transparent;
-  color: var(--blue-800);
-}
-
-.icon-btn svg {
-  width: 22px;
-  height: 22px;
-}
-
-.icon-btn:hover {
-  background: var(--blue-200);
-}
-
 /* ---- Cards de indicador ---- */
 
 .stats-row {
@@ -476,7 +450,6 @@ svg {
     color: var(--blue-800);
   }
   .home-head { flex-direction: column; }
-  .home-head-actions { flex-wrap: wrap; }
   .stats-row { grid-template-columns: minmax(0, 1fr); max-width: none; }
   .slot-link { grid-template-columns: 50px minmax(0, 1fr) auto; }
   .slot-mode { display: none; }
