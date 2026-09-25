@@ -597,6 +597,12 @@ input::placeholder {
 
 .areas-controls {
   align-items: center;
+  min-width: 0;
+}
+
+.areas-chips {
+  flex: 1 1 320px;
+  min-width: 0;
 }
 
 .areas-controls > .button-add {
@@ -675,14 +681,39 @@ input::placeholder {
 
 .areas-add {
   display: flex;
+  flex-wrap: wrap;
 
-  gap: 10px;
+  max-width: 100%;
+
+  gap: 8px;
 }
 
-.areas-add select {
-  max-width: 320px;
+.area-option {
+  max-width: 100%;
+  min-height: 36px;
+  padding: 7px 12px;
 
-  text-align-last: left;
+  border: 1px solid var(--blue-700);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--blue-800);
+
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: normal;
+}
+
+.area-option:hover:not(:disabled) {
+  background: var(--blue-50);
+}
+
+.area-option[aria-pressed="true"] {
+  background: var(--blue-100);
+}
+
+.area-option:disabled {
+  cursor: default;
 }
 
 .button-add {
@@ -1007,14 +1038,6 @@ input::placeholder {
     padding: 16px;
 
     gap: 16px;
-  }
-
-  .areas-add {
-    display: grid;
-  }
-
-  .areas-add select {
-    max-width: none;
   }
 
   .profile-section {

@@ -38,9 +38,7 @@
     successOk: document.getElementById("successOkBtn"),
     areasChips: document.querySelector("[data-areas-chips]"),
     areasToggle: document.querySelector("[data-areas-toggle]"),
-    areasAdd: document.querySelector("[data-areas-add]"),
-    areasInput: document.querySelector("[data-areas-input]"),
-    areasAddBtn: document.querySelector("[data-areas-add-btn]")
+    areasAdd: document.querySelector("[data-areas-add]")
   };
 
   let session = data.getSession() || {};
@@ -232,11 +230,11 @@
     }
 
     const selectedAreas = new Set(areas.map(normalizeArea));
-    Array.from(elements.areasInput.options).forEach((option) => {
-      option.disabled = Boolean(option.value) && selectedAreas.has(normalizeArea(option.value));
+    elements.areasAdd.querySelectorAll("[data-area-option]").forEach((option) => {
+      const isSelected = selectedAreas.has(normalizeArea(option.dataset.areaOption));
+      option.disabled = !editing || isSelected;
+      option.setAttribute("aria-pressed", String(isSelected));
     });
-    if (selectedAreas.has(normalizeArea(elements.areasInput.value))) elements.areasInput.value = "";
-    elements.areasAddBtn.disabled = !editing || !elements.areasInput.value;
   }
 
   function profileFromSession() {
@@ -328,7 +326,10 @@
         field.readOnly = !editing;
       }
     });
-    if (elements.areasToggle) elements.areasToggle.disabled = !editing;
+    if (elements.areasToggle) {
+      elements.areasToggle.disabled = !editing;
+      elements.areasToggle.setAttribute("aria-expanded", "false");
+    }
     if (elements.areasAdd) elements.areasAdd.hidden = true;
     renderAreas(editing);
   }
@@ -463,29 +464,24 @@
     });
   });
 
-  elements.areasAddBtn?.addEventListener("click", () => {
-    const input = elements.areasInput;
-    if (!input) return;
-    const area = input.value;
-    if (!area) return;
+  elements.areasAdd?.addEventListener("click", (event) => {
+    const option = event.target.closest("[data-area-option]");
+    const area = option?.dataset.areaOption;
+    if (!area || !editing) return;
     if (areas.some((item) => normalizeArea(item) === normalizeArea(area))) {
-      showFeedback("Essa área já foi adicionada.", true);
       return;
     }
     areas.push(area);
-    input.value = "";
-    input.focus();
     renderAreas(true);
-  });
-
-  elements.areasInput?.addEventListener("change", () => {
-    if (elements.areasAddBtn) elements.areasAddBtn.disabled = !editing || !elements.areasInput.value;
   });
 
   elements.areasToggle?.addEventListener("click", () => {
     if (!editing || !elements.areasAdd) return;
     elements.areasAdd.hidden = !elements.areasAdd.hidden;
-    if (!elements.areasAdd.hidden) elements.areasInput?.focus();
+    elements.areasToggle.setAttribute("aria-expanded", String(!elements.areasAdd.hidden));
+    if (!elements.areasAdd.hidden) {
+      elements.areasAdd.querySelector("[data-area-option]:not(:disabled)")?.focus();
+    }
   });
 
   form.addEventListener("submit", (event) => {

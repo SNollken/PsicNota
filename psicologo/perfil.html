@@ -333,31 +333,25 @@
               <span class="areas-label">Áreas de atuação</span>
               <div class="areas-controls">
                 <div class="areas-chips" data-areas-chips></div>
-                <button class="button button-add" type="button" data-areas-toggle>+ Adicionar</button>
+                <button class="button button-add" type="button" data-areas-toggle aria-expanded="false" aria-controls="areasOptions">+ Adicionar</button>
               </div>
-              <div class="areas-add" data-areas-add hidden>
-                <select data-areas-input aria-label="Selecionar área de atuação">
-                  <option value="">Selecione uma área</option>
-                  <option value="Ansiedade">Ansiedade</option>
-                  <option value="Depressão">Depressão</option>
-                  <option value="Autoestima">Autoestima</option>
-                  <option value="Burnout">Burnout</option>
-                  <option value="Estresse">Estresse</option>
-                  <option value="Luto">Luto</option>
-                  <option value="Relacionamentos">Relacionamentos</option>
-                  <option value="Terapia de casal">Terapia de casal</option>
-                  <option value="Fobias">Fobias</option>
-                  <option value="Trauma e TEPT">Trauma e TEPT</option>
-                  <option value="Transtornos alimentares">Transtornos alimentares</option>
-                  <option value="TDAH">TDAH</option>
-                  <option value="TEA">TEA</option>
-                  <option value="Transtornos do sono">Transtornos do sono</option>
-                  <option value="Orientação profissional">Orientação profissional</option>
-                  <option value="Desenvolvimento pessoal">Desenvolvimento pessoal</option>
-                </select>
-                <button class="button button-add" type="button" data-areas-add-btn disabled>
-                  + Adicionar
-                </button>
+              <div class="areas-add" id="areasOptions" data-areas-add role="group" aria-label="Opções fixas de áreas de atuação" hidden>
+                <button class="area-option" type="button" data-area-option="Ansiedade" aria-pressed="false">Ansiedade</button>
+                <button class="area-option" type="button" data-area-option="Depressão" aria-pressed="false">Depressão</button>
+                <button class="area-option" type="button" data-area-option="Autoestima" aria-pressed="false">Autoestima</button>
+                <button class="area-option" type="button" data-area-option="Burnout" aria-pressed="false">Burnout</button>
+                <button class="area-option" type="button" data-area-option="Estresse" aria-pressed="false">Estresse</button>
+                <button class="area-option" type="button" data-area-option="Luto" aria-pressed="false">Luto</button>
+                <button class="area-option" type="button" data-area-option="Relacionamentos" aria-pressed="false">Relacionamentos</button>
+                <button class="area-option" type="button" data-area-option="Terapia de casal" aria-pressed="false">Terapia de casal</button>
+                <button class="area-option" type="button" data-area-option="Fobias" aria-pressed="false">Fobias</button>
+                <button class="area-option" type="button" data-area-option="Trauma e TEPT" aria-pressed="false">Trauma e TEPT</button>
+                <button class="area-option" type="button" data-area-option="Transtornos alimentares" aria-pressed="false">Transtornos alimentares</button>
+                <button class="area-option" type="button" data-area-option="TDAH" aria-pressed="false">TDAH</button>
+                <button class="area-option" type="button" data-area-option="TEA" aria-pressed="false">TEA</button>
+                <button class="area-option" type="button" data-area-option="Transtornos do sono" aria-pressed="false">Transtornos do sono</button>
+                <button class="area-option" type="button" data-area-option="Orientação profissional" aria-pressed="false">Orientação profissional</button>
+                <button class="area-option" type="button" data-area-option="Desenvolvimento pessoal" aria-pressed="false">Desenvolvimento pessoal</button>
               </div>
             </div>
           </section>
