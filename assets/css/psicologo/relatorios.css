@@ -1384,10 +1384,11 @@ input[readonly] {
 .report-consultation-select {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 5px 16px 5px 5px;
-  background: var(--white);
-  border: 1px solid var(--blue-200);
+  gap: 0;
+  min-height: 47px;
+  padding: 5px 16px 5px 9px;
+  background: var(--blue-50);
+  border: none;
   border-radius: 999px;
 }
 
@@ -1397,11 +1398,17 @@ input[readonly] {
   background: transparent;
   color: var(--ink);
   font: inherit;
-  font-size: 14px;
+  font-size: 0.82rem;
   font-weight: 700;
   outline: none;
   cursor: pointer;
   appearance: none;
+}
+
+.report-consultation-select select option {
+  font: inherit;
+  color: var(--ink);
+  background: var(--white);
 }
 
 .report-select-arrow {
@@ -1420,14 +1427,11 @@ input[readonly] {
   stroke-linejoin: round;
 }
 
-.report-context-note { margin: 0; color: var(--muted); font-size: 12px; }
-.report-context-note:empty { display: none; }
-
 .report-patient-avatar {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   background: var(--blue-200);
   color: var(--blue-800);
@@ -1435,6 +1439,7 @@ input[readonly] {
   font-weight: 700;
   overflow: hidden;
   flex: 0 0 auto;
+  flex-basis: 35px;
 }
 
 .report-patient-avatar img {

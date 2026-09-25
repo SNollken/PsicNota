@@ -26,7 +26,6 @@ const elements = {
   newReportButton: document.querySelector('#newReportButton'),
   backToListButton: document.querySelector('#backToListButton'),
   reportForm: document.querySelector('#reportForm'),
-  editorContext: document.querySelector('#editorContext'),
   reportPatient: document.querySelector('#reportPatient'),
   reportAppointment: document.querySelector('#reportAppointment'),
   reportPatientAvatar: document.querySelector('#reportPatientAvatar'),
@@ -388,10 +387,6 @@ function openEditor(report, appointmentId) {
     }
   }
 
-  elements.editorContext.textContent = appointment
-    ? `Consulta de ${appointment.patient} em ${fullDateFormatter.format(data.fromDateKey(appointment.date))} às ${appointment.time}.`
-    : 'Nenhuma consulta vinculada ainda.';
-
   if (!elements.reportPatient.value && appointment) {
     elements.reportPatient.value = appointment.patient;
   }
@@ -531,9 +526,6 @@ async function init() {
     const appointment = elements.reportAppointment.value ? findAppointment(elements.reportAppointment.value) : null;
     renderAppointmentInfo(appointment);
     renderPatientAvatar(appointment);
-    elements.editorContext.textContent = appointment
-      ? `Consulta de ${appointment.patient} em ${fullDateFormatter.format(data.fromDateKey(appointment.date))} às ${appointment.time}.`
-      : 'Nenhuma consulta vinculada ainda.';
     if (appointment && !elements.reportPatient.value.trim()) {
       elements.reportPatient.value = appointment.patient;
     }
