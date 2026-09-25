@@ -1,6 +1,7 @@
 "use strict";
 
 const data = window.PsiNoteData;
+const supabaseClient = window.PsicNotaSupabase || null;
 
 if (!data) {
   throw new Error(
@@ -28,6 +29,7 @@ const elements = {
   editorContext: document.querySelector('#editorContext'),
   reportPatient: document.querySelector('#reportPatient'),
   reportAppointment: document.querySelector('#reportAppointment'),
+  reportPatientAvatar: document.querySelector('#reportPatientAvatar'),
   appointmentInfoGrid: document.querySelector('#appointmentInfoGrid'),
   reportInfoPatient: document.querySelector('#reportInfoPatient'),
   reportInfoDate: document.querySelector('#reportInfoDate'),
@@ -116,6 +118,41 @@ function findAppointment(appointmentId) {
 function findPatientIdByName(name) {
   const normalized = String(name).trim().toLowerCase();
   return data.getAppointments().find((item) => String(item.patient).trim().toLowerCase() === normalized)?.patientId || null;
+}
+
+function getInitials(name) {
+  return String(name || '').split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toUpperCase() || 'PS';
+}
+
+function renderPatientAvatar(appointment) {
+  if (!elements.reportPatientAvatar) return;
+  const name = appointment?.patient || '';
+  elements.reportPatientAvatar.replaceChildren();
+  const fallback = document.createElement('span');
+  fallback.textContent = getInitials(name);
+  elements.reportPatientAvatar.append(fallback);
+
+  if (!supabaseClient || !appointment?.patientId) return;
+  const patientId = appointment.patientId;
+  supabaseClient
+    .from('perfis')
+    .select('avatar_url')
+    .eq('id', patientId)
+    .eq('papel', 'paciente')
+    .maybeSingle()
+    .then(({ data: patient, error }) => {
+      if (error || !patient?.avatar_url) return null;
+      return supabaseClient.storage.from('avatars').createSignedUrl(patient.avatar_url, 3600);
+    })
+    .then((signed) => {
+      if (!signed?.data?.signedUrl) return;
+      if (elements.reportAppointment.value !== appointment.id) return;
+      const image = document.createElement('img');
+      image.alt = '';
+      image.addEventListener('load', () => elements.reportPatientAvatar.replaceChildren(image), { once: true });
+      image.src = signed.data.signedUrl;
+    })
+    .catch(() => {});
 }
 
 function appointmentLabel(appointment) {
@@ -341,6 +378,7 @@ function openEditor(report, appointmentId) {
 
   const appointment = targetAppointmentId ? findAppointment(targetAppointmentId) : null;
   renderAppointmentInfo(appointment);
+  renderPatientAvatar(appointment);
 
   if (usarNotas && appointmentId) {
     const note = data.getAppointmentNote(appointmentId);
@@ -492,6 +530,7 @@ async function init() {
   elements.reportAppointment.addEventListener('change', () => {
     const appointment = elements.reportAppointment.value ? findAppointment(elements.reportAppointment.value) : null;
     renderAppointmentInfo(appointment);
+    renderPatientAvatar(appointment);
     elements.editorContext.textContent = appointment
       ? `Consulta de ${appointment.patient} em ${fullDateFormatter.format(data.fromDateKey(appointment.date))} às ${appointment.time}.`
       : 'Nenhuma consulta vinculada ainda.';
