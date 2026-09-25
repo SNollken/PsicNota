@@ -1266,6 +1266,29 @@ body.modal-open { overflow: hidden; }
   gap: 12px;
 }
 
+.psic-request-exception {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 14px;
+  padding: 10px 14px;
+  border: 1px solid #d90307;
+  border-radius: 10px;
+  color: #d90307;
+  background: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.psic-request-exception:hover {
+  transform: translateY(-1px);
+  background: #f3fbfe;
+}
+
 .psic-schedule-time {
   min-height: 44px;
   padding: 8px 10px;

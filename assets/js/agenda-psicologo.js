@@ -50,6 +50,7 @@ const ui = {
   requestsPopupClose: document.querySelector("#psicRequestsPopupClose"),
   requestsPopupTitle: document.querySelector("#psicRequestsPopupTitle"),
   requestsList: document.querySelector("#psicRequestsPopupList"),
+  requestsOpenException: document.querySelector("#psicRequestsOpenException"),
 
   appointmentsPopup: document.querySelector("#psicAppointmentsPopup"),
   appointmentsPopupClose: document.querySelector("#psicAppointmentsPopupClose"),
@@ -221,10 +222,9 @@ function renderCalendar() {
 
     if (dateKey === todayKey) button.classList.add("today");
 
-    if (isOtherMonth) {
-      button.classList.add("other-month");
-      button.disabled = true;
-    } else if (pending.length) {
+    if (isOtherMonth) button.classList.add("other-month");
+
+    if (pending.length) {
       button.classList.add("has-pending");
       info.textContent = pending[0].time;
       button.append(info);
@@ -248,39 +248,41 @@ function renderCalendar() {
 
     if (dateKey === selectedDateKey) button.classList.add("selected");
 
-    const selectable = !isOtherMonth && !isPast;
-    const completed = button.classList.contains("has-completed");
-    if (!isOtherMonth) button.disabled = false;
     if (pending.length) {
       button.setAttribute(
         "aria-label",
         `Ver ${pending.length} ${pending.length === 1 ? "solicitação pendente" : "solicitações pendentes"} de ${capitalizeFirst(popupDateFormatter.format(date))}`
       );
-      button.addEventListener("click", () => {
-        selectedDateKey = dateKey;
-        renderCalendar();
+    } else if (isPast && confirmed.length) {
+      button.setAttribute("aria-label", `Ver histórico de ${capitalizeFirst(popupDateFormatter.format(date))}`);
+    } else {
+      button.setAttribute("aria-label", `Selecionar ${capitalizeFirst(popupDateFormatter.format(date))}`);
+    }
+
+    button.disabled = false;
+    button.addEventListener("click", () => {
+      if (isOtherMonth) {
+        visibleMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+      }
+      selectedDateKey = dateKey;
+      renderCalendar();
+
+      if (pending.length) {
         renderRequestsPopup(dateKey);
         openPopup(ui.requestsPopup);
-      });
-    } else if (completed) {
-      button.setAttribute("aria-label", `Ver histórico de ${capitalizeFirst(popupDateFormatter.format(date))}`);
-      button.addEventListener("click", () => {
-        if (isPast) {
+        return;
+      }
+
+      if (isPast) {
+        if (confirmed.length) {
           renderCompletedPopup(dateKey);
           openPopup(ui.completedPopup);
-        } else {
-          selectedDateKey = dateKey;
-          renderCalendar();
-          openSchedulePopup(date);
         }
-      });
-    } else if (!isOtherMonth) {
-      button.addEventListener("click", () => {
-        selectedDateKey = dateKey;
-        renderCalendar();
-        if (selectable) openSchedulePopup(date);
-      });
-    }
+        return;
+      }
+
+      openSchedulePopup(date);
+    });
 
     ui.grid.append(button);
   }
@@ -402,6 +404,7 @@ function selectScheduleTime(time, mode, selectedButton = null) {
   ui.customOnline.classList.remove("selected");
   ui.customPresential.classList.remove("selected");
   if (selectedButton) {
+    ui.customTime.value = "";
     selectedButton.classList.add("selected");
     selectedButton.setAttribute("aria-pressed", "true");
   } else {
@@ -531,6 +534,10 @@ async function persistMarkedAppointment(newAppointment) {
 function renderRequestsPopup(dateKey = requestsPopupDateKey) {
   requestsPopupDateKey = dateKey;
   const pending = getPendingRequests().filter((item) => !dateKey || item.date === dateKey);
+  const requestedDate = dateKey ? data.fromDateKey(dateKey) : null;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  ui.requestsOpenException.hidden = !requestedDate || requestedDate < today;
   ui.requestsPopupTitle.textContent = dateKey
     ? `Solicitações de ${capitalizeFirst(popupDateFormatter.format(data.fromDateKey(dateKey)))}`
     : "Pedidos pendentes";
@@ -964,15 +971,20 @@ ui.customPresential.addEventListener("click", () => {
   else showToast("Informe o horário da exceção.", true);
 });
 ui.customTime.addEventListener("input", () => {
-  if (popupSelectedTime !== ui.customTime.value) {
+  if (
+    popupSelectedTime !== ui.customTime.value ||
+    ui.schedulePopup.querySelector(".psic-schedule-time.selected")
+  ) {
+    ui.schedulePopup.querySelectorAll(".psic-schedule-time").forEach((item) => {
+      item.classList.remove("selected");
+      item.setAttribute("aria-pressed", "false");
+    });
     ui.customOnline.classList.remove("selected");
     ui.customPresential.classList.remove("selected");
-    if (popupSelectedTime && !ui.schedulePopup.querySelector(".psic-schedule-time.selected")) {
-      popupSelectedTime = "";
-      popupSelectedMode = "";
-    }
-    updateScheduleSubmit();
+    popupSelectedTime = "";
+    popupSelectedMode = "";
   }
+  updateScheduleSubmit();
 });
 ui.scheduleSubmit.addEventListener("click", handleMarkAppointment);
 ui.schedulePopup.addEventListener("click", (event) => {
@@ -980,6 +992,12 @@ ui.schedulePopup.addEventListener("click", (event) => {
 });
 
 ui.requestsPopupClose.addEventListener("click", () => closePopup(ui.requestsPopup));
+ui.requestsOpenException.addEventListener("click", () => {
+  if (!requestsPopupDateKey) return;
+  const date = data.fromDateKey(requestsPopupDateKey);
+  closePopup(ui.requestsPopup);
+  openSchedulePopup(date);
+});
 ui.appointmentsPopupClose.addEventListener("click", () => closePopup(ui.appointmentsPopup));
 ui.completedPopupClose.addEventListener("click", () => closePopup(ui.completedPopup));
 
