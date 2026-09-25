@@ -1639,7 +1639,11 @@ body.modal-open {
 @media (max-width: 720px) {
   body.psic-view { min-width: 0; }
   .psic-view .agenda-psic-page { width: 100%; min-width: 0; padding: 0 16px 24px; }
-  .psic-view .agenda-topbar { min-height: 86px; }
+  .psic-view .agenda-topbar {
+    min-height: 86px;
+    margin-inline: -16px;
+    padding-inline: 16px;
+  }
   .psic-view .agenda-topbar h1 { font-size: 24px; }
   .psic-view .agenda-subtitle { font-size: 22px; }
   .psic-calendar-header {
@@ -1672,4 +1676,18 @@ body.modal-open {
   .psic-schedule-times { gap: 8px; }
   .psic-schedule-time { min-height: 40px; }
   .psic-patient-options { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 360px) {
+  .psic-view .agenda-psic-page { padding-inline: 8px; }
+  .psic-view .agenda-topbar {
+    margin-inline: -8px;
+    padding-inline: 8px;
+  }
+  .psic-calendar-card { padding: 12px 8px; }
+  .psic-view .psic-weekdays,
+  .psic-view .psic-calendar-grid { gap: 2px; }
+  .psic-day { min-height: 72px; padding: 8px 2px; }
+  .psic-day-info { font-size: 8px; }
+  .psic-day-today-label { font-size: 6px; }
 }
