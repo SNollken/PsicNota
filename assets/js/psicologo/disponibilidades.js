@@ -78,7 +78,13 @@
       editor.append(element);
     });
     editor.value = value;
+    if (type === "modality") setModalityColor(editor, value);
     return editor;
+  }
+
+  function setModalityColor(editor, modality) {
+    editor.classList.toggle("modality-online", modality === "online");
+    editor.classList.toggle("modality-presencial", modality === "presencial");
   }
 
   function renderSummary() {
@@ -289,6 +295,7 @@
         : slot.modalidade || "online";
     const value = editor.value;
     if (value === previousValue) return;
+    if (field === "modality") setModalityColor(editor, value);
 
     const update = field === "weekday"
       ? { dia_semana: Number(value) }
@@ -313,6 +320,7 @@
     if (error) {
       editor.disabled = false;
       editor.value = previousValue;
+      if (field === "modality") setModalityColor(editor, previousValue);
       showMessage(error.code === "23505"
         ? "Esse horário já está cadastrado para esse dia."
         : "Não foi possível salvar a alteração. Tente novamente.", true);
@@ -322,7 +330,6 @@
     Object.assign(slot, update);
     availability.sort((first, second) => first.dia_semana - second.dia_semana || formatTime(first.horario).localeCompare(formatTime(second.horario)));
     renderRows();
-    showMessage("Alteração salva.");
   });
 
   selectAll.addEventListener("change", () => {
