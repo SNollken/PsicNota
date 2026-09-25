@@ -31,12 +31,6 @@
       mobileMenu.setAttribute("aria-expanded", String(isOpen));
     });
 
-    document.addEventListener("click", (event) => {
-      if (window.innerWidth <= 1024 && !sidebar.contains(event.target) && !mobileMenu.contains(event.target)) {
-        sidebar.classList.remove("open");
-        mobileMenu.setAttribute("aria-expanded", "false");
-      }
-    });
   }
 
   function modalityMigrationMessage() {

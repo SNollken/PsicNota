@@ -265,6 +265,8 @@
    RESPONSIVIDADE DO MENU
 ========================= */
 
+body .mobile-menu { display: none; }
+
 @media (max-width: 1180px) {
   :root { --sidebar-width: 230px; }
 

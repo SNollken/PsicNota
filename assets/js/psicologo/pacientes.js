@@ -1115,37 +1115,6 @@ if (
     );
 
 
-  document.addEventListener(
-    "click",
-    (event) => {
-
-      if (
-
-        window.innerWidth <= 1024 &&
-
-        !elements.sidebar
-          .contains(event.target) &&
-
-        !elements.mobileMenu
-          .contains(event.target)
-
-      ) {
-
-        elements.sidebar
-          .classList
-          .remove("open");
-
-
-        elements.mobileMenu
-          .setAttribute(
-            "aria-expanded",
-            "false"
-          );
-
-      }
-
-    }
-  );
 
 }
 

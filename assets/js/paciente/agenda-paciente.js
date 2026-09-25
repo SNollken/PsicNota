@@ -2708,40 +2708,6 @@ if (
   );
 
 
-  document.addEventListener(
-    "click",
-    (event) => {
-      if (
-        window.innerWidth >
-        1024
-      ) {
-        return;
-      }
-
-
-      if (
-        ui.sidebar.contains(
-          event.target
-        ) ||
-        ui.mobileMenu.contains(
-          event.target
-        )
-      ) {
-        return;
-      }
-
-
-      ui.sidebar.classList.remove(
-        "open"
-      );
-
-
-      ui.mobileMenu.setAttribute(
-        "aria-expanded",
-        "false"
-      );
-    }
-  );
 }
 
 

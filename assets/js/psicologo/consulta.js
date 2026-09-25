@@ -7,13 +7,6 @@ if (!document.querySelector("#consultaContent")) {
     const isOpen = sidebar.classList.toggle("open");
     menuButton.setAttribute("aria-expanded", String(isOpen));
   });
-  document.addEventListener("click", (event) => {
-    if (window.innerWidth <= 1024 && sidebar && menuButton
-      && !sidebar.contains(event.target) && !menuButton.contains(event.target)) {
-      sidebar.classList.remove("open");
-      menuButton.setAttribute("aria-expanded", "false");
-    }
-  });
 } else {
 const data = window.PsiNoteData;
 const supabaseClient = window.PsicNotaSupabase || null;
