@@ -142,12 +142,18 @@
               <strong id="psicSchedulePopupDate">Data</strong>
             </div>
 
-            <label class="psic-patient-field">
-              <span class="sr-only">Paciente</span>
-              <select id="psicPatientSelect" class="psic-patient-select">
-                <option value="">Clique para escolher seu paciente</option>
-              </select>
-            </label>
+            <div class="psic-patient-picker" id="psicPatientPicker">
+              <button class="psic-patient-trigger" id="psicPatientTrigger" type="button"
+                aria-haspopup="listbox" aria-expanded="false" aria-controls="psicPatientOptions">
+                <span class="psic-patient-trigger-avatar" id="psicPatientTriggerAvatar" aria-hidden="true" hidden></span>
+                <span class="psic-patient-trigger-label" id="psicPatientTriggerLabel">Clique para escolher seu paciente</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m6 9 6 6 6-6"></path>
+                </svg>
+              </button>
+              <div class="psic-patient-options" id="psicPatientOptions" role="listbox"
+                aria-label="Escolher paciente" hidden></div>
+            </div>
 
             <div class="psic-schedule-popup-columns">
 

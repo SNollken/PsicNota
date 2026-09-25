@@ -37,7 +37,11 @@ const ui = {
   schedulePopup: document.querySelector("#psicSchedulePopup"),
   schedulePopupClose: document.querySelector("#psicSchedulePopupClose"),
   schedulePopupDate: document.querySelector("#psicSchedulePopupDate"),
-  patientSelect: document.querySelector("#psicPatientSelect"),
+  patientPicker: document.querySelector("#psicPatientPicker"),
+  patientTrigger: document.querySelector("#psicPatientTrigger"),
+  patientTriggerAvatar: document.querySelector("#psicPatientTriggerAvatar"),
+  patientTriggerLabel: document.querySelector("#psicPatientTriggerLabel"),
+  patientOptionsList: document.querySelector("#psicPatientOptions"),
   onlineTimes: document.querySelector("#psicOnlineTimes"),
   presentialTimes: document.querySelector("#psicPresentialTimes"),
   scheduleTerms: document.querySelector("#psicScheduleTerms"),
@@ -85,6 +89,7 @@ const SHORT_MONTHS = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "s
 let appointments = data.getAppointments();
 let requests = data.getRequests();
 let patientOptions = [];
+let selectedPatientIndex = "";
 
 let usingRemoteRequests = false;
 let usingRemoteAppointments = false;
@@ -359,7 +364,11 @@ function getPatientOptions() {
     if (profile.role === "paciente" || profile.role === "patient") {
       const name = profile.socialName || profile.fullName || profile.name;
       if (name) {
-        map.set(String(name).toLowerCase(), { id: profile.id || null, name });
+        map.set(String(name).toLowerCase(), {
+          id: profile.id || null,
+          name,
+          avatarUrl: profile.avatarDataUrl || profile.avatarUrl || profile.avatar_url || profile.photoUrl || profile.photo || ""
+        });
       }
     }
   });
@@ -368,7 +377,11 @@ function getPatientOptions() {
     if (item.patient) {
       const key = String(item.patient).toLowerCase();
       if (!map.has(key)) {
-        map.set(key, { id: item.patientId || null, name: item.patient });
+        map.set(key, {
+          id: item.patientId || null,
+          name: item.patient,
+          avatarUrl: item.avatarDataUrl || item.patientAvatar || ""
+        });
       }
     }
   });
@@ -378,19 +391,89 @@ function getPatientOptions() {
 
 function renderPatientSelect() {
   patientOptions = getPatientOptions();
-  ui.patientSelect.replaceChildren();
+  selectedPatientIndex = "";
+  ui.schedulePopup.classList.remove("patient-picker-open");
+  ui.patientTriggerLabel.textContent = "Clique para escolher seu paciente";
+  ui.patientTriggerAvatar.replaceChildren();
+  ui.patientTriggerAvatar.hidden = true;
+  ui.patientTrigger.classList.remove("has-selection");
+  ui.patientTrigger.setAttribute("aria-expanded", "false");
+  ui.patientOptionsList.hidden = true;
+  ui.patientOptionsList.replaceChildren();
 
-  const placeholder = document.createElement("option");
-  placeholder.value = "";
-  placeholder.textContent = "Clique para escolher seu paciente";
-  ui.patientSelect.append(placeholder);
+  if (!patientOptions.length) {
+    const emptyMessage = document.createElement("p");
+    emptyMessage.className = "psic-patient-empty";
+    emptyMessage.textContent = "Nenhum paciente disponível.";
+    ui.patientOptionsList.append(emptyMessage);
+    return;
+  }
 
   patientOptions.forEach((option, index) => {
-    const optionElement = document.createElement("option");
-    optionElement.value = String(index);
-    optionElement.textContent = option.name;
-    ui.patientSelect.append(optionElement);
+    const optionButton = document.createElement("button");
+    optionButton.className = "psic-patient-option";
+    optionButton.type = "button";
+    optionButton.setAttribute("role", "option");
+    optionButton.setAttribute("aria-selected", "false");
+    optionButton.dataset.patientIndex = String(index);
+
+    const avatar = createPatientAvatar(option);
+    avatar.classList.add("psic-patient-option-avatar");
+    const name = document.createElement("span");
+    name.className = "psic-patient-option-name";
+    name.textContent = option.name;
+
+    optionButton.append(avatar, name);
+    ui.patientOptionsList.append(optionButton);
   });
+}
+
+function createPatientAvatar(option) {
+  const avatar = document.createElement("span");
+  avatar.className = "psic-patient-avatar";
+  avatar.textContent = option.name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toLocaleUpperCase("pt-BR");
+
+  const imageUrl = String(option.avatarUrl || "").trim();
+  if (/^(https?:|data:image\/|blob:)/i.test(imageUrl)) {
+    const image = document.createElement("img");
+    image.src = imageUrl;
+    image.alt = "";
+    image.addEventListener("error", () => image.remove(), { once: true });
+    avatar.append(image);
+  }
+
+  return avatar;
+}
+
+function setPatientPickerOpen(isOpen) {
+  ui.patientOptionsList.hidden = !isOpen;
+  ui.patientTrigger.setAttribute("aria-expanded", String(isOpen));
+  ui.schedulePopup.classList.toggle("patient-picker-open", isOpen);
+}
+
+function selectPatient(index) {
+  const option = patientOptions[index];
+  if (!option) return;
+
+  selectedPatientIndex = String(index);
+  ui.patientTriggerLabel.textContent = option.name;
+  ui.patientTriggerAvatar.replaceChildren(createPatientAvatar(option));
+  ui.patientTriggerAvatar.hidden = false;
+  ui.patientTrigger.classList.add("has-selection");
+  ui.patientOptionsList.querySelectorAll("[role='option']").forEach((item) => {
+    const isSelected = item.dataset.patientIndex === selectedPatientIndex;
+    item.setAttribute("aria-selected", String(isSelected));
+    item.classList.toggle("selected", isSelected);
+  });
+  setPatientPickerOpen(false);
+  ui.patientTrigger.focus();
+  updateScheduleSubmit();
 }
 
 function createTimeButton(time, mode) {
@@ -474,7 +557,7 @@ function updateScheduleSubmit() {
   const ready = Boolean(
     popupSelectedTime &&
     popupSelectedMode &&
-    ui.patientSelect.value !== "" &&
+    selectedPatientIndex !== "" &&
     ui.scheduleTerms.checked
   );
   ui.scheduleSubmit.disabled = !ready;
@@ -497,7 +580,7 @@ function openSchedulePopup(date) {
 }
 
 function handleMarkAppointment() {
-  const option = patientOptions[Number(ui.patientSelect.value)];
+  const option = patientOptions[Number(selectedPatientIndex)];
   if (!option || !popupSelectedTime || !popupSelectedMode || !popupSelectedDate) return;
 
   const dateKey = data.toDateKey(popupSelectedDate);
@@ -1042,7 +1125,42 @@ ui.pendingCard.addEventListener("click", () => {
 
 ui.schedulePopupClose.addEventListener("click", () => closePopup(ui.schedulePopup));
 ui.scheduleTerms.addEventListener("change", updateScheduleSubmit);
-ui.patientSelect.addEventListener("change", updateScheduleSubmit);
+ui.patientTrigger.addEventListener("click", () => {
+  setPatientPickerOpen(ui.patientOptionsList.hidden);
+});
+ui.patientTrigger.addEventListener("keydown", (event) => {
+  if (event.key === "ArrowDown") {
+    event.preventDefault();
+    setPatientPickerOpen(true);
+    ui.patientOptionsList.querySelector("[role='option']")?.focus();
+  }
+});
+ui.patientOptionsList.addEventListener("click", (event) => {
+  const option = event.target.closest("[data-patient-index]");
+  if (option) selectPatient(Number(option.dataset.patientIndex));
+});
+ui.patientOptionsList.addEventListener("keydown", (event) => {
+  const options = [...ui.patientOptionsList.querySelectorAll("[role='option']")];
+  const currentIndex = options.indexOf(event.target.closest("[role='option']"));
+  if (currentIndex < 0) return;
+
+  let nextIndex = currentIndex;
+  if (event.key === "ArrowDown") nextIndex = Math.min(currentIndex + 1, options.length - 1);
+  else if (event.key === "ArrowUp") nextIndex = Math.max(currentIndex - 1, 0);
+  else if (event.key === "Home") nextIndex = 0;
+  else if (event.key === "End") nextIndex = options.length - 1;
+  else return;
+
+  event.preventDefault();
+  options[nextIndex].focus();
+});
+ui.patientPicker.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !ui.patientOptionsList.hidden) {
+    event.stopPropagation();
+    setPatientPickerOpen(false);
+    ui.patientTrigger.focus();
+  }
+});
 ui.customOnline.addEventListener("click", () => {
   if (ui.customTime.value) selectScheduleTime(ui.customTime.value, "Online");
   else showToast("Informe o horário da exceção.", true);
@@ -1069,6 +1187,7 @@ ui.customTime.addEventListener("input", () => {
 });
 ui.scheduleSubmit.addEventListener("click", handleMarkAppointment);
 ui.schedulePopup.addEventListener("click", (event) => {
+  if (!ui.patientPicker.contains(event.target)) setPatientPickerOpen(false);
   if (event.target === ui.schedulePopup) closePopup(ui.schedulePopup);
 });
 
