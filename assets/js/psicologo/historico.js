@@ -24,8 +24,8 @@ const patientName =
 
     const page = link.getAttribute("href").split("?")[0];
     const isAppointmentsLink = page === "historico-consultas.html" || link.textContent.trim() === "Consultas";
-    const targetPage = isAppointmentsLink ? "historico-consultas.html" : page;
-    const targetTab = !isAppointmentsLink && page === "paciente-perfil.html" ? "details" : "";
+    const targetPage = isAppointmentsLink ? "paciente-perfil.html" : page;
+    const targetTab = isAppointmentsLink ? "appointments" : (page === "paciente-perfil.html" ? "details" : "");
 
     link.href = `${targetPage}?${idParam}paciente=${encodedPatient}${targetTab ? `&aba=${targetTab}` : ""}`;
 
@@ -790,7 +790,7 @@ async function init() {
     if (!box) return;
     box.style.cursor = "pointer";
     box.addEventListener("click", () => {
-      window.location.href = `historico-consultas.html?${idParam}paciente=${encodedPatient}`;
+      window.location.href = `paciente-perfil.html?${idParam}paciente=${encodedPatient}&aba=appointments`;
     });
   });
 

@@ -141,15 +141,29 @@ function updateTabsLinks(){
   const idParam =
     patientId ? `id=${encodeURIComponent(patientId)}&` : "";
 
+  const hasPatient = !!(patientId || (patientName && patientName !== "Paciente"));
+
   document
     .querySelectorAll(".patient-tabs a")
     .forEach(link=>{
       if (link.dataset.patientDetails !== undefined) return;
 
+      const rawHref = link.getAttribute("href");
+      if (!rawHref) return;
+
       const page =
-        link
-        .getAttribute("href")
+        rawHref
         .split("?")[0];
+
+      const isAppointmentsLink =
+        page === "historico-consultas.html" ||
+        link.textContent.trim() === "Consultas";
+
+      if (hasPatient && isAppointmentsLink) {
+        link.href =
+          `paciente-perfil.html?${idParam}paciente=${encodedPatient}&aba=appointments`;
+        return;
+      }
 
       link.href =
         `${page}?${idParam}paciente=${encodedPatient}${page === "paciente-perfil.html" ? "&aba=details" : ""}`;
