@@ -51,6 +51,8 @@
   let removeAvatar = false;
   let areas = [];
   let snapshot = {};
+  const citiesByState = new Map();
+  let citiesRequest = 0;
 
   function value(name, fallback = "") {
     const field = form.elements.namedItem(name);
@@ -63,10 +65,96 @@
     if (field.type === "checkbox") field.checked = Boolean(fieldValue);
     else {
       const nextValue = fieldValue || "";
-      if (field instanceof HTMLSelectElement && nextValue && !Array.from(field.options).some((option) => option.value === nextValue)) {
-        field.add(new Option(nextValue, nextValue));
+      if (field instanceof HTMLSelectElement) {
+        if (!nextValue) {
+          field.value = "";
+          return;
+        }
+        const matchingOption = Array.from(field.options).find((option) =>
+          option.value.toLocaleLowerCase("pt-BR") === String(nextValue).toLocaleLowerCase("pt-BR")
+        );
+        if (matchingOption) field.value = matchingOption.value;
+        else {
+          field.add(new Option(nextValue, nextValue));
+          field.value = nextValue;
+        }
+        return;
       }
       field.value = nextValue;
+    }
+  }
+
+  function normalizeState(value) {
+    const state = String(value || "").trim();
+    if (!state) return "";
+    const upperState = state.toLocaleUpperCase("pt-BR");
+    const stateField = form.elements.namedItem("state");
+    const matchingOption = Array.from(stateField.options).find((option) => {
+      const optionLabel = option.textContent.replace(/^[A-Z]{2}\s-\s/, "");
+      return option.value === upperState || optionLabel.localeCompare(state, "pt-BR", { sensitivity: "base" }) === 0;
+    });
+    return matchingOption?.value || upperState;
+  }
+
+  function normalizeCity(value) {
+    return String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .toLocaleLowerCase("pt-BR");
+  }
+
+  async function loadCities(state, selectedCity = "") {
+    const cityField = form.elements.namedItem("city");
+    const stateField = form.elements.namedItem("state");
+    const stateCode = normalizeState(state);
+    const request = ++citiesRequest;
+
+    cityField.replaceChildren(new Option(stateCode ? "Carregando cidades..." : "Selecione o estado primeiro", ""));
+    cityField.disabled = true;
+    cityField.dataset.loadedFor = "";
+    if (stateField.value !== stateCode) stateField.value = stateCode;
+    if (!stateCode) {
+      if (selectedCity) {
+        cityField.add(new Option(selectedCity, selectedCity));
+        cityField.value = selectedCity;
+      }
+      return;
+    }
+
+    try {
+      let cities = citiesByState.get(stateCode);
+      if (!cities) {
+        const response = await fetch(
+          `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${encodeURIComponent(stateCode)}/municipios?orderBy=nome`
+        );
+        if (!response.ok) throw new Error("Não foi possível carregar municípios do IBGE.");
+        const municipalities = await response.json();
+        if (!Array.isArray(municipalities)) throw new Error("Resposta inválida ao carregar municípios.");
+        cities = municipalities.map((municipality) => municipality.nome).filter(Boolean);
+        citiesByState.set(stateCode, cities);
+      }
+
+      if (request !== citiesRequest) return;
+      cityField.replaceChildren(new Option("Selecione uma cidade", ""));
+      cities.forEach((city) => cityField.add(new Option(city, city)));
+
+      const matchingCity = cities.find((city) => normalizeCity(city) === normalizeCity(selectedCity));
+      if (selectedCity && !matchingCity) {
+        cityField.add(new Option(selectedCity, selectedCity));
+      }
+      cityField.value = matchingCity || selectedCity || "";
+      cityField.dataset.loadedFor = stateCode;
+      cityField.disabled = false;
+    } catch (error) {
+      if (request !== citiesRequest) return;
+      console.error(error);
+      cityField.replaceChildren(new Option("Não foi possível carregar as cidades", ""));
+      if (selectedCity) {
+        cityField.add(new Option(selectedCity, selectedCity));
+        cityField.value = selectedCity;
+      }
+      showFeedback("Não foi possível carregar as cidades. Verifique sua conexão.", true);
     }
   }
 
@@ -180,8 +268,13 @@
     };
   }
 
-  function render(profile) {
-    Object.entries(profile).forEach(([name, fieldValue]) => setValue(name, fieldValue));
+  async function render(profile) {
+    const state = normalizeState(profile.state);
+    setValue("state", state);
+    await loadCities(state, profile.city);
+    Object.entries(profile).forEach(([name, fieldValue]) => {
+      if (name !== "state" && name !== "city") setValue(name, fieldValue);
+    });
 
     const displayName = profile.socialName || profile.fullName || ROLE_LABEL + " PsicNota";
     if (elements.profileName) elements.profileName.textContent = displayName;
@@ -211,7 +304,10 @@
 
     form.querySelectorAll("input, select").forEach((field) => {
       if (field.id === "avatarInput") return;
-      if (field.tagName === "SELECT" || field.type === "checkbox") {
+      if (field.name === "city") {
+        field.disabled = !form.elements.namedItem("state").value ||
+          field.dataset.loadedFor !== form.elements.namedItem("state").value;
+      } else if (field.tagName === "SELECT" || field.type === "checkbox") {
         field.disabled = false;
       } else {
         field.disabled = false;
@@ -277,7 +373,7 @@
       removeAvatar = false;
       snapshot = profileFromSession();
       snapshot.areas = areas.slice();
-      render(snapshot);
+      await render(snapshot);
       setEditing(false);
       if (showSuccess) openModal(elements.successModal);
       return true;
@@ -314,6 +410,10 @@
       if (!form.reportValidity()) return;
       void saveProfile();
     });
+  });
+
+  form.elements.namedItem("state").addEventListener("change", (event) => {
+    void loadCities(event.currentTarget.value);
   });
 
   elements.changePassword?.addEventListener("click", () => {
@@ -422,7 +522,7 @@
       };
       snapshot = profileFromSession();
       snapshot.areas = areas.slice();
-      render(snapshot);
+      await render(snapshot);
       setEditing(false);
     } catch (error) {
       console.error(error);
