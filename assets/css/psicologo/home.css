@@ -223,7 +223,26 @@ svg {
 }
 
 .home-col > * {
+  flex: none;
+}
+
+.list-card,
+.notes-card,
+.reports-card {
+  display: flex;
+  flex-direction: column;
+  height: 320px;
+  max-height: 320px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.slot-list,
+.notes-list,
+.reports-list {
   flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .list-card,
@@ -315,7 +334,7 @@ svg {
 .card-footer-link {
   display: inline-block;
   width: 100%;
-  margin-top: 6px;
+  margin-top: auto;
   padding: 10px 0 4px;
   color: var(--blue-700);
   font-size: 12px;
