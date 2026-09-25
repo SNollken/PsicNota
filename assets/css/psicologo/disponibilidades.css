@@ -11,6 +11,7 @@
   --divider: #e2eef2;
   --green: #22a053;
   --orange: #f28522;
+  --yellow: #946300;
   --white: #ffffff;
   --sidebar-width: 294px;
   --radius-card: 12px;
@@ -420,7 +421,7 @@ select.schedule-inline-editor {
 .schedule-inline-editor:hover,
 .schedule-inline-editor:focus {
   border-color: var(--line);
-  background: var(--white);
+  background-color: var(--white);
 }
 
 .schedule-inline-editor:focus-visible {
@@ -431,6 +432,24 @@ select.schedule-inline-editor {
 .schedule-inline-editor:disabled { opacity: 0.65; cursor: wait; }
 
 input.schedule-inline-editor { color-scheme: light; }
+
+.schedule-inline-editor.modality-online,
+.schedule-inline-editor.modality-online:hover,
+.schedule-inline-editor.modality-online:focus {
+  border-color: var(--green);
+  color: var(--green);
+  font-weight: 600;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='9' viewBox='0 0 12 9' fill='none'%3E%3Cpath d='M1.5 2.25 6 6.75l4.5-4.5' stroke='%2322a053' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.schedule-inline-editor.modality-presencial,
+.schedule-inline-editor.modality-presencial:hover,
+.schedule-inline-editor.modality-presencial:focus {
+  border-color: var(--yellow);
+  color: var(--yellow);
+  font-weight: 600;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='9' viewBox='0 0 12 9' fill='none'%3E%3Cpath d='M1.5 2.25 6 6.75l4.5-4.5' stroke='%23946300' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
 
 .action-button {
   display: grid;
