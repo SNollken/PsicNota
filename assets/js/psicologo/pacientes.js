@@ -1121,7 +1121,7 @@ if (
 
       if (
 
-        window.innerWidth <= 720 &&
+        window.innerWidth <= 1024 &&
 
         !elements.sidebar
           .contains(event.target) &&

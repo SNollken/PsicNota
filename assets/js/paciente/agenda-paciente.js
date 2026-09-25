@@ -2713,7 +2713,7 @@ if (
     (event) => {
       if (
         window.innerWidth >
-        720
+        1024
       ) {
         return;
       }

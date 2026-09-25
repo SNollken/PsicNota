@@ -34,7 +34,7 @@
       menuButton.setAttribute("aria-expanded", String(isOpen));
     });
     document.addEventListener("click", (event) => {
-      if (window.innerWidth <= 720 && !sidebar.contains(event.target) && !menuButton.contains(event.target)) {
+      if (window.innerWidth <= 1024 && !sidebar.contains(event.target) && !menuButton.contains(event.target)) {
         sidebar.classList.remove("open");
         menuButton.setAttribute("aria-expanded", "false");
       }

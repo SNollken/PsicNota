@@ -167,6 +167,15 @@
     window.location.href = LOGIN_HREF;
   }
 
+  document.addEventListener('click', function (event) {
+    var sidebar = document.querySelector('.sidebar');
+    var mobileMenu = document.querySelector('.mobile-menu');
+    if (window.innerWidth > 1024 || !sidebar || !mobileMenu || !sidebar.classList.contains('open')) return;
+    if (sidebar.contains(event.target) || mobileMenu.contains(event.target)) return;
+    sidebar.classList.remove('open');
+    mobileMenu.setAttribute('aria-expanded', 'false');
+  }, true);
+
   var PsicMenu = function () {
     return Reflect.construct(HTMLElement, [], PsicMenu);
   };

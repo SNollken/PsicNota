@@ -8,7 +8,7 @@ if (!document.querySelector("#consultaContent")) {
     menuButton.setAttribute("aria-expanded", String(isOpen));
   });
   document.addEventListener("click", (event) => {
-    if (window.innerWidth <= 720 && sidebar && menuButton
+    if (window.innerWidth <= 1024 && sidebar && menuButton
       && !sidebar.contains(event.target) && !menuButton.contains(event.target)) {
       sidebar.classList.remove("open");
       menuButton.setAttribute("aria-expanded", "false");

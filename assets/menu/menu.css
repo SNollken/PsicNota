@@ -290,7 +290,7 @@
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 1024px) {
   .app-shell { display: block; }
 
   .app-shell > main {
@@ -319,9 +319,10 @@
     box-sizing: border-box;
   }
 
-  .mobile-menu {
+  body .mobile-menu {
     display: grid;
     place-items: center;
+    align-self: flex-start;
     width: 38px;
     height: 38px;
     margin-bottom: 8px;

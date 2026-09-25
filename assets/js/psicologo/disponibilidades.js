@@ -18,10 +18,26 @@
   const deleteSelected = document.getElementById("deleteSelected");
   const weekList = document.querySelector(".week-summary ul");
   const submitButton = form.querySelector('button[type="submit"]');
+  const sidebar = document.querySelector(".sidebar");
+  const mobileMenu = document.querySelector(".mobile-menu");
   let psychologistId = null;
   let editingId = null;
   let availability = [];
   let modalityColumnAvailable = true;
+
+  if (sidebar && mobileMenu) {
+    mobileMenu.addEventListener("click", () => {
+      const isOpen = sidebar.classList.toggle("open");
+      mobileMenu.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    document.addEventListener("click", (event) => {
+      if (window.innerWidth <= 1024 && !sidebar.contains(event.target) && !mobileMenu.contains(event.target)) {
+        sidebar.classList.remove("open");
+        mobileMenu.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
 
   function modalityMigrationMessage() {
     return "Horários carregados. Para escolher entre online e presencial, aplique a migração 20260923120000_adiciona_modalidade_disponibilidades.sql no Supabase.";

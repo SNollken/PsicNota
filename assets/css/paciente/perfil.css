@@ -866,6 +866,24 @@ input::placeholder {
     --sidebar-width: 230px;
   }
 
+  .profile-header {
+    flex-wrap: wrap;
+  }
+
+  .profile-contacts,
+  .profile-actions {
+    width: 100%;
+  }
+
+  .profile-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .profile-actions .button {
+    flex: 1 1 160px;
+  }
+
   .fields-grid-5 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
