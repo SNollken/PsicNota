@@ -39,8 +39,8 @@
     appointmentSelect.disabled = false;
     if (appointments.some((item) => item.id === params.get('consulta'))) {
       appointmentSelect.value = params.get('consulta');
-    } else if (appointments.length) {
-      appointmentSelect.value = appointments[0].id;
+    } else {
+      appointmentSelect.value = '';
     }
     document.querySelector('#finishConsultation').disabled = !selectedId();
   }
