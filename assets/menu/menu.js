@@ -38,6 +38,7 @@
   var ICON_AGENDA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Zm2-2v4m10-4v4M3 9h18"/></svg>';
   var ICON_CLIP = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>';
   var ICON_HOME = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.6 12 4l8 6.6V20a1 1 0 0 1-1 1h-4.6v-6.2H9.6V21H5a1 1 0 0 1-1-1v-10.4Z"/></svg>';
+  var ICON_CLOSE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m18 6-12 12M6 6l12 12"/></svg>';
   var ICON_PESSOA = '<svg class="nav-icon-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11.5a4.25 4.25 0 1 0-4.25-4.25A4.26 4.26 0 0 0 12 11.5Zm0 2.1c-3.88 0-8.05 1.95-8.05 5.4v1.6h16.1v-1.6c0-3.45-4.17-5.4-8.05-5.4Z"/></svg>';
   var ICON_RELOGIO = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
   var ICON_HISTORICO = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>';
@@ -68,6 +69,7 @@
       '        <img src="' + prefixoAsset + 'img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />\n' +
       '        <span class="brand-text">PsicNota</span>\n' +
       '      </a>\n' +
+      '      <button class="sidebar-close" type="button" aria-label="Fechar menu">' + ICON_CLOSE + '</button>\n' +
       '      <nav class="main-nav">\n' +
       '        <p class="nav-label">MENU</p>\n' +
       '        ' + item(prefixoPagina + 'home.html', ICON_HOME, 'Início', ativo === 'inicio') + '\n' +
@@ -101,6 +103,7 @@
       '        <img src="' + prefixoAsset + 'img/logo_psicnota.png" alt="Ícone PsicNota" class="brand-icon" />\n' +
       '        <span class="brand-text">PsicNota</span>\n' +
       '      </a>\n' +
+      '      <button class="sidebar-close" type="button" aria-label="Fechar menu">' + ICON_CLOSE + '</button>\n' +
       '      <nav class="main-nav">\n' +
       '        <p class="nav-label">MENU</p>\n' +
       '        ' + item(prefixoPagina + 'home.html', ICON_HOME, '<span>Início</span>', ativo === 'inicio') + '\n' +
@@ -167,14 +170,42 @@
     window.location.href = LOGIN_HREF;
   }
 
-  document.addEventListener('click', function (event) {
+  function setMobileMenuOpen(isOpen) {
     var sidebar = document.querySelector('.sidebar');
-    var mobileMenu = document.querySelector('.mobile-menu');
-    if (window.innerWidth > 1024 || !sidebar || !mobileMenu || !sidebar.classList.contains('open')) return;
-    if (sidebar.contains(event.target) || mobileMenu.contains(event.target)) return;
-    sidebar.classList.remove('open');
-    mobileMenu.setAttribute('aria-expanded', 'false');
+    if (!sidebar) return;
+    sidebar.classList.toggle('open', isOpen);
+    var menuButtons = document.querySelectorAll('.mobile-menu');
+    for (var i = 0; i < menuButtons.length; i += 1) {
+      menuButtons[i].setAttribute('aria-expanded', String(isOpen));
+      menuButtons[i].setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
+    }
+  }
+
+  document.addEventListener('click', function (event) {
+    var target = event.target;
+    var closeButton = target && target.closest ? target.closest('.sidebar-close') : null;
+    if (closeButton) {
+      event.preventDefault();
+      setMobileMenuOpen(false);
+      var menuTrigger = document.querySelector('.mobile-menu');
+      if (menuTrigger) menuTrigger.focus();
+      return;
+    }
+
+    var sidebar = document.querySelector('.sidebar');
+    if (window.innerWidth > 1024 || !sidebar || !sidebar.classList.contains('open')) return;
+    if (sidebar.contains(target) || (target && target.closest && target.closest('.mobile-menu'))) return;
+    setMobileMenuOpen(false);
   }, true);
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key !== 'Escape' || window.innerWidth > 1024) return;
+    var sidebar = document.querySelector('.sidebar');
+    if (!sidebar || !sidebar.classList.contains('open')) return;
+    setMobileMenuOpen(false);
+    var menuTrigger = document.querySelector('.mobile-menu');
+    if (menuTrigger) menuTrigger.focus();
+  });
 
   var PsicMenu = function () {
     return Reflect.construct(HTMLElement, [], PsicMenu);

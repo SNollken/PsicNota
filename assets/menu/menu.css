@@ -52,6 +52,37 @@
   z-index: 20;
 }
 
+.sidebar > .sidebar-close {
+  display: none;
+  position: absolute;
+  top: 16px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--blue-800);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.sidebar > .sidebar-close svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.sidebar > .sidebar-close:hover { background: #E4F6FC; }
+
+.sidebar > .sidebar-close:focus-visible {
+  outline: 2px solid #1F637A;
+  outline-offset: 2px;
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -308,6 +339,8 @@ body .mobile-menu { display: none; }
     transition: transform 0.2s;
     box-shadow: 8px 0 28px rgba(17, 24, 39, 0.14);
   }
+
+  .sidebar > .sidebar-close { display: grid; }
 
   .sidebar.open { transform: translateX(0); }
 
