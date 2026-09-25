@@ -21,9 +21,9 @@
   const sidebar = document.querySelector(".sidebar");
   const mobileMenu = document.querySelector(".mobile-menu");
   let psychologistId = null;
-  let editingId = null;
   let availability = [];
   let modalityColumnAvailable = true;
+  const savingSlots = new Set();
 
   if (sidebar && mobileMenu) {
     mobileMenu.addEventListener("click", () => {
@@ -54,6 +54,31 @@
     button.setAttribute("aria-label", label);
     button.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${iconPath}"></path></svg>`;
     return button;
+  }
+
+  function createInlineEditor(type, value, label, slotId) {
+    const editor = document.createElement(type === "time" ? "input" : "select");
+    editor.className = "schedule-inline-editor";
+    editor.dataset.field = type;
+    editor.dataset.slotId = slotId;
+    editor.setAttribute("aria-label", `${label}, editar`);
+    if (type === "time") {
+      editor.type = "time";
+      editor.value = value;
+      return editor;
+    }
+
+    const options = type === "weekday"
+      ? DAYS.map((day, index) => ({ value: String(index), label: day }))
+      : [{ value: "online", label: "Online" }, { value: "presencial", label: "Presencial" }];
+    options.forEach((option) => {
+      const element = document.createElement("option");
+      element.value = option.value;
+      element.textContent = option.label;
+      editor.append(element);
+    });
+    editor.value = value;
+    return editor;
   }
 
   function renderSummary() {
@@ -103,25 +128,22 @@
 
       const dayCell = document.createElement("td");
       dayCell.dataset.label = "Dia da semana";
-      dayCell.textContent = dayName;
+      dayCell.append(createInlineEditor("weekday", String(slot.dia_semana), dayName, slot.id));
 
       const timeCell = document.createElement("td");
       timeCell.dataset.label = "Horário";
-      timeCell.textContent = time;
+      timeCell.append(createInlineEditor("time", time, time, slot.id));
 
       const modalityCell = document.createElement("td");
       modalityCell.dataset.label = "Modalidade";
-      modalityCell.textContent = slot.modalidade === "presencial" ? "Presencial" : "Online";
+      const modalityEditor = createInlineEditor("modality", slot.modalidade || "online", slot.modalidade === "presencial" ? "Presencial" : "Online", slot.id);
+      modalityEditor.disabled = !modalityColumnAvailable;
+      modalityCell.append(modalityEditor);
 
       const actionCell = document.createElement("td");
       actionCell.className = "row-actions";
       actionCell.dataset.label = "Ações";
       actionCell.append(
-        createActionButton(
-          "edit-schedule",
-          `Editar horário de ${dayName.toLowerCase()}, ${time}`,
-          "M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"
-        ),
         createActionButton(
           "delete-schedule",
           `Excluir horário de ${dayName.toLowerCase()}, ${time}`,
@@ -174,11 +196,8 @@
   }
 
   function resetForm() {
-    editingId = null;
     form.reset();
     submitButton.textContent = "Adicionar";
-    const cancelButton = document.getElementById("cancelScheduleEdit");
-    if (cancelButton) cancelButton.hidden = true;
   }
 
   async function saveAvailability(event) {
@@ -199,9 +218,7 @@
 
     let result;
     try {
-      result = editingId
-        ? await client.from("disponibilidades").update(values).eq("id", editingId).eq("psicologo_id", psychologistId)
-        : await client.from("disponibilidades").insert(values);
+      result = await client.from("disponibilidades").insert(values);
     } catch {
       submitButton.disabled = false;
       showMessage("Não foi possível salvar o horário. Tente novamente.", true);
@@ -255,17 +272,57 @@
       void deleteAvailability([row.dataset.id]);
     }
 
-    if (event.target.closest(".edit-schedule")) {
-      const slot = availability.find((item) => item.id === row.dataset.id);
-      if (!slot) return;
-      editingId = slot.id;
-      form.elements.weekday.value = String(slot.dia_semana);
-      form.elements.startTime.value = formatTime(slot.horario);
-      form.elements.modality.value = slot.modalidade || "online";
-      submitButton.textContent = "Salvar alteração";
-      document.getElementById("cancelScheduleEdit").hidden = false;
-      form.elements.weekday.focus();
+  });
+
+  rows.addEventListener("change", async (event) => {
+    const editor = event.target.closest(".schedule-inline-editor");
+    if (!editor) return;
+    const { field, slotId } = editor.dataset;
+    if (savingSlots.has(slotId)) return;
+    const slot = availability.find((item) => item.id === slotId);
+    if (!slot) return;
+
+    const previousValue = field === "weekday"
+      ? String(slot.dia_semana)
+      : field === "time"
+        ? formatTime(slot.horario)
+        : slot.modalidade || "online";
+    const value = editor.value;
+    if (value === previousValue) return;
+
+    const update = field === "weekday"
+      ? { dia_semana: Number(value) }
+      : field === "time"
+        ? { horario: `${value}:00` }
+        : { modalidade: value };
+    savingSlots.add(slotId);
+    editor.disabled = true;
+    showMessage("");
+
+    let error;
+    try {
+      ({ error } = await client.from("disponibilidades")
+        .update(update)
+        .eq("id", slotId)
+        .eq("psicologo_id", psychologistId));
+    } catch {
+      error = true;
     }
+
+    savingSlots.delete(slotId);
+    if (error) {
+      editor.disabled = false;
+      editor.value = previousValue;
+      showMessage(error.code === "23505"
+        ? "Esse horário já está cadastrado para esse dia."
+        : "Não foi possível salvar a alteração. Tente novamente.", true);
+      return;
+    }
+
+    Object.assign(slot, update);
+    availability.sort((first, second) => first.dia_semana - second.dia_semana || formatTime(first.horario).localeCompare(formatTime(second.horario)));
+    renderRows();
+    showMessage("Alteração salva.");
   });
 
   selectAll.addEventListener("change", () => {
@@ -281,7 +338,6 @@
   });
 
   form.addEventListener("submit", saveAvailability);
-  document.getElementById("cancelScheduleEdit").addEventListener("click", resetForm);
 
   document.addEventListener("DOMContentLoaded", async () => {
     if (!client) {
