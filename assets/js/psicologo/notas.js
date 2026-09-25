@@ -10,35 +10,39 @@
   const supabaseClient = window.PsicNotaSupabase;
   const moodButtons = [...document.querySelectorAll('#notesMoodPicker [data-mood]')];
   const params = new URLSearchParams(location.search);
+  let psychologistId = '';
   let selectedMood = '';
   let appointments = [];
   let saveTimer = 0;
-  let activeAppointmentId = '';
+  let activeAppointmentId;
   let pendingSave = null;
   const saveQueues = new Map();
   const latestSaves = new Map();
 
   const formatDate = (key) => new Intl.DateTimeFormat('pt-BR').format(data.fromDateKey(key));
-  const selectedId = () => appointmentSelect.value;
+  const selectedId = () => appointmentSelect.value || null;
+  const storageId = (consultaId) => consultaId || `__sem_consulta__:${psychologistId}`;
 
   function buildAppointmentOptions() {
     appointments.sort((a, b) => `${b.date} ${b.time}`.localeCompare(`${a.date} ${a.time}`));
     appointmentSelect.replaceChildren();
+    const unlinkedOption = document.createElement('option');
+    unlinkedOption.value = '';
+    unlinkedOption.textContent = 'Sem consulta vinculada';
+    appointmentSelect.append(unlinkedOption);
     for (const appointment of appointments) {
       const option = document.createElement('option');
       option.value = appointment.id;
       option.textContent = `${appointment.patient} - ${formatDate(appointment.date)} as ${appointment.time}`;
       appointmentSelect.append(option);
     }
-    if (!appointments.length) {
-      const option = document.createElement('option');
-      option.textContent = 'Nenhuma consulta disponível';
-      appointmentSelect.append(option);
-      appointmentSelect.disabled = true;
-      document.querySelector('#finishConsultation').disabled = true;
-    } else if (appointments.some((item) => item.id === params.get('consulta'))) {
+    appointmentSelect.disabled = false;
+    if (appointments.some((item) => item.id === params.get('consulta'))) {
       appointmentSelect.value = params.get('consulta');
+    } else if (appointments.length) {
+      appointmentSelect.value = appointments[0].id;
     }
+    document.querySelector('#finishConsultation').disabled = !selectedId();
   }
 
   function renderMood() {
@@ -50,7 +54,7 @@
   }
 
   function loadAppointment() {
-    if (activeAppointmentId && activeAppointmentId !== selectedId()) {
+    if (activeAppointmentId !== undefined && activeAppointmentId !== selectedId()) {
       const hasPendingSave = pendingSave?.consultaId === activeAppointmentId;
       void flushPendingSave();
       if (!hasPendingSave) {
@@ -60,10 +64,11 @@
     clearTimeout(saveTimer);
     pendingSave = null;
     activeAppointmentId = selectedId();
-    noteText.value = data.getAppointmentNote(selectedId());
-    selectedMood = data.getAppointmentMood(selectedId());
+    noteText.value = data.getAppointmentNote(storageId(activeAppointmentId));
+    selectedMood = data.getAppointmentMood(storageId(activeAppointmentId));
     patientAvatar.src = defaultPatientAvatar;
     void loadPatientAvatar(selectedId());
+    document.querySelector('#finishConsultation').disabled = !selectedId();
     renderMood();
     status.textContent = '';
   }
@@ -94,9 +99,9 @@
   }
 
   function persistNote(consultaId, conteudo, humor) {
-    if (!consultaId) return Promise.resolve(false);
-    data.setAppointmentNote(consultaId, conteudo);
-    data.setAppointmentMood(consultaId, humor);
+    const noteId = storageId(consultaId);
+    data.setAppointmentNote(noteId, conteudo);
+    data.setAppointmentMood(noteId, humor);
 
     const saveId = (latestSaves.get(consultaId) || 0) + 1;
     latestSaves.set(consultaId, saveId);
@@ -118,10 +123,9 @@
 
   function scheduleSave() {
     const consultaId = selectedId();
-    if (!consultaId) return;
     pendingSave = { consultaId, conteudo: noteText.value.trim(), humor: selectedMood };
-    data.setAppointmentNote(consultaId, pendingSave.conteudo);
-    data.setAppointmentMood(consultaId, pendingSave.humor);
+    data.setAppointmentNote(storageId(consultaId), pendingSave.conteudo);
+    data.setAppointmentMood(storageId(consultaId), pendingSave.humor);
     status.textContent = 'Salvando…';
     clearTimeout(saveTimer);
     saveTimer = window.setTimeout(() => { void flushPendingSave(); }, 650);
@@ -153,13 +157,14 @@
   });
 
   async function init() {
-    const _auth = await window.PsicNotaBackend.requireProfile("psicologo");
-    if (!_auth) return;
+    const auth = await window.PsicNotaBackend.requireProfile("psicologo");
+    if (!auth) return;
+    psychologistId = auth.user.id;
 
     await data.syncRemoteData();
     appointments = data.getAppointments().filter((item) => item.status !== 'cancelled');
     buildAppointmentOptions();
-    if (appointments.length) loadAppointment();
+    loadAppointment();
   }
 
   void init();

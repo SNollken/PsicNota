@@ -10,6 +10,7 @@
     latestProfile: "psinoteProfileDemo",
     session: "psinote.auth.session"
   };
+  const UNLINKED_NOTE_PREFIX = "__sem_consulta__:";
 
   function createId(prefix = "item") {
     if (window.crypto && typeof window.crypto.randomUUID === "function") {
@@ -122,7 +123,10 @@
   }
 
   function appointmentNoteKey(appointmentId) {
-    return `appt:${appointmentId}`;
+    const noteId = String(appointmentId || "");
+    return noteId.startsWith(UNLINKED_NOTE_PREFIX)
+      ? `note:unlinked:${noteId.slice(UNLINKED_NOTE_PREFIX.length)}`
+      : `appt:${appointmentId}`;
   }
 
   function getAppointmentNote(appointmentId) {
@@ -308,9 +312,10 @@
     const notes = {};
     (rows || []).forEach((row) => {
       const text = String(row.conteudo || "").trim();
-      if (text) notes[appointmentNoteKey(row.consulta_id)] = text;
+      const noteId = row.consulta_id || `${UNLINKED_NOTE_PREFIX}${user.id}`;
+      if (text) notes[appointmentNoteKey(noteId)] = text;
       const mood = String(row.humor || "").trim();
-      if (mood) notes[appointmentMoodKey(row.consulta_id)] = mood;
+      if (mood) notes[appointmentMoodKey(noteId)] = mood;
     });
 
     saveNotes(notes);
@@ -422,17 +427,29 @@
     const user = await getAuthUser();
     if (!user) return false;
 
-    const { error } = await client.from("notas").upsert(
-      {
-        consulta_id: consultaId,
-        psicologo_id: user.id,
-        conteudo: String(conteudo || ""),
-        humor: humor || null
-      },
-      { onConflict: "consulta_id" }
-    );
+    const nota = {
+      consulta_id: consultaId,
+      psicologo_id: user.id,
+      conteudo: String(conteudo || ""),
+      humor: humor || null
+    };
+    if (consultaId) {
+      const { error } = await client.from("notas").upsert(nota, { onConflict: "consulta_id" });
+      return !error;
+    }
 
-    return !error;
+    const { data: existing, error: lookupError } = await client.from("notas")
+      .select("id")
+      .eq("psicologo_id", user.id)
+      .is("consulta_id", null)
+      .maybeSingle();
+    if (lookupError) return false;
+
+    const result = existing
+      ? await client.from("notas").update(nota).eq("id", existing.id).eq("psicologo_id", user.id)
+      : await client.from("notas").insert(nota);
+
+    return !result.error;
   }
 
   const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
