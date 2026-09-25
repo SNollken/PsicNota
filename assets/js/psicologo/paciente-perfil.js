@@ -160,16 +160,6 @@
     }
     if (!patient) throw new Error("Paciente não encontrado.");
 
-    if (patient.avatar_url) {
-      try {
-        const { data: assinada, error: erroAvatar } = await client.storage.from("avatars").createSignedUrl(patient.avatar_url, 3600);
-        if (!erroAvatar && assinada?.signedUrl) profile.avatarDataUrl = assinada.signedUrl;
-        else console.warn("Avatar não encontrado no bucket; usando iniciais.");
-      } catch {
-        console.warn("Avatar não encontrado no bucket; usando iniciais.");
-      }
-    }
-
     profile = {
       id: patient.id,
       fullName: patient.nome_completo,
@@ -184,8 +174,20 @@
       country: patient.cidade || patient.estado ? "Brasil" : "",
       preferredFormat: patient.formato_preferido,
       preferredPeriod: patient.periodo_preferido,
-      avatar_url: patient.avatar_url
+      avatar_url: patient.avatar_url,
+      avatarDataUrl: ""
     };
+
+    if (patient.avatar_url) {
+      try {
+        const { data: assinada, error: erroAvatar } = await client.storage.from("avatars").createSignedUrl(patient.avatar_url, 3600);
+        if (!erroAvatar && assinada?.signedUrl) profile.avatarDataUrl = assinada.signedUrl;
+        else console.warn("Avatar não encontrado no bucket; usando iniciais.");
+      } catch {
+        console.warn("Avatar não encontrado no bucket; usando iniciais.");
+      }
+    }
+
     render();
   }
 
