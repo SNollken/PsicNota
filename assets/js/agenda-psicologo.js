@@ -89,6 +89,9 @@ let patientOptions = [];
 let usingRemoteRequests = false;
 let usingRemoteAppointments = false;
 let psychologistUid = null;
+let availabilityByWeekday = new Map();
+let availabilityLoaded = false;
+let availabilityLoadFailed = false;
 let selectedDateKey = "";
 let requestsPopupDateKey = null;
 
@@ -143,13 +146,23 @@ function getPendingForDate(dateKey) {
 }
 
 function getSelectableSlots(dateKey) {
-  const slots = data.getOpenSlots(dateKey) || [];
   const selected = data.fromDateKey(dateKey);
   const day = new Date(selected.getFullYear(), selected.getMonth(), selected.getDate());
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  if (day < today) return [];
-  return slots;
+  if (day < today || !availabilityLoaded || availabilityLoadFailed) return [];
+
+  const occupied = new Set(
+    appointments
+      .filter((item) => item.date === dateKey && item.status !== "cancelled")
+      .map((item) => String(item.time || "").slice(0, 5))
+  );
+  const currentTime = new Date();
+
+  return (availabilityByWeekday.get(day.getDay()) || []).filter((slot) => {
+    const slotDateTime = new Date(`${dateKey}T${slot.time}:00`);
+    return !occupied.has(slot.time) && slotDateTime > currentTime;
+  });
 }
 
 function formatCompactDate(date, time) {
@@ -415,30 +428,46 @@ function selectScheduleTime(time, mode, selectedButton = null) {
   updateScheduleSubmit();
 }
 
-function createNoSlotsMessage() {
+function createNoSlotsMessage(text = "Nenhum horário disponível.") {
   const message = document.createElement("p");
   message.className = "psic-schedule-no-slots";
-  message.textContent = "Nenhum horário disponível.";
+  message.textContent = text;
   return message;
 }
 
 function renderScheduleTimes(date) {
   const dateKey = data.toDateKey(date);
-  const slots = getSelectableSlots(dateKey);
 
   ui.onlineTimes.replaceChildren();
   ui.presentialTimes.replaceChildren();
 
-  if (!slots.length) {
-    ui.onlineTimes.append(createNoSlotsMessage());
-    ui.presentialTimes.append(createNoSlotsMessage());
+  if (availabilityLoadFailed) {
+    const message = "Não foi possível carregar a disponibilidade do psicólogo.";
+    ui.onlineTimes.append(createNoSlotsMessage(message));
+    ui.presentialTimes.append(createNoSlotsMessage(message));
     return;
   }
 
-  slots.forEach((time) => {
-    ui.onlineTimes.append(createTimeButton(time, "Online"));
-    ui.presentialTimes.append(createTimeButton(time, "Presencial"));
+  if (!availabilityLoaded) {
+    ui.onlineTimes.append(createNoSlotsMessage("Carregando horários disponíveis…"));
+    ui.presentialTimes.append(createNoSlotsMessage("Carregando horários disponíveis…"));
+    return;
+  }
+
+  const slots = getSelectableSlots(dateKey);
+  const onlineSlots = slots.filter((slot) => slot.mode === "Online");
+  const presentialSlots = slots.filter((slot) => slot.mode === "Presencial");
+
+  if (!onlineSlots.length) ui.onlineTimes.append(createNoSlotsMessage());
+  if (!presentialSlots.length) ui.presentialTimes.append(createNoSlotsMessage());
+
+  onlineSlots.forEach((slot) => {
+    ui.onlineTimes.append(createTimeButton(slot.time, slot.mode));
   });
+  presentialSlots.forEach((slot) => {
+    ui.presentialTimes.append(createTimeButton(slot.time, slot.mode));
+  });
+
 }
 
 function updateScheduleSubmit() {
@@ -841,6 +870,58 @@ function displayNameFromProfile(profile) {
   return profile?.nome_social || profile?.nome_completo || "Paciente";
 }
 
+async function loadRemoteAvailability(userId) {
+  if (!supabaseClient || !userId) {
+    availabilityLoadFailed = true;
+    return false;
+  }
+
+  try {
+    let { data: rows, error } = await supabaseClient
+      .from("disponibilidades")
+      .select("dia_semana, horario, modalidade")
+      .eq("psicologo_id", userId)
+      .order("dia_semana")
+      .order("horario");
+
+    if (error?.code === "42703" && error.message?.toLowerCase().includes("modalidade")) {
+      ({ data: rows, error } = await supabaseClient
+        .from("disponibilidades")
+        .select("dia_semana, horario")
+        .eq("psicologo_id", userId)
+        .order("dia_semana")
+        .order("horario"));
+    }
+
+    if (error) {
+      availabilityLoadFailed = true;
+      return false;
+    }
+
+    psychologistUid = userId;
+    availabilityByWeekday = new Map();
+    (rows || []).forEach((row) => {
+      const day = Number(row.dia_semana);
+      const time = String(row.horario || "").slice(0, 5);
+      if (!Number.isInteger(day) || day < 0 || day > 6 || !/^\d{2}:\d{2}$/.test(time)) return;
+
+      const slots = availabilityByWeekday.get(day) || [];
+      slots.push({
+        time,
+        mode: row.modalidade === "presencial" ? "Presencial" : "Online"
+      });
+      availabilityByWeekday.set(day, slots);
+    });
+
+    availabilityLoaded = true;
+    availabilityLoadFailed = false;
+    return true;
+  } catch {
+    availabilityLoadFailed = true;
+    return false;
+  }
+}
+
 function normalizeRemoteRequest(row, names) {
   return {
     id: row.id,
@@ -1027,6 +1108,8 @@ void (async function () {
   const _auth = await window.PsicNotaBackend.requireProfile("psicologo");
   if (!_auth) return;
 
+  psychologistUid = _auth.user.id;
+  await loadRemoteAvailability(psychologistUid);
   renderAll();
 
   void loadRemoteAppointments();
