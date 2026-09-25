@@ -193,6 +193,14 @@
     if (elements.removePhoto) elements.removePhoto.hidden = !avatarDataUrl;
   }
 
+  function normalizeArea(area) {
+    return String(area || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .toLocaleLowerCase("pt-BR");
+  }
+
   function renderAreas(editing) {
     if (!elements.areasChips) return;
     elements.areasChips.innerHTML = "";
@@ -202,27 +210,33 @@
       empty.className = "areas-chips-empty";
       empty.textContent = "Nenhuma área adicionada.";
       elements.areasChips.appendChild(empty);
-      return;
+    } else {
+      areas.forEach((area, index) => {
+        const chip = document.createElement("span");
+        chip.className = "area-chip";
+        chip.appendChild(document.createTextNode(area));
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.textContent = "×";
+        remove.disabled = !editing;
+        remove.setAttribute("aria-label", "Remover " + area);
+        remove.addEventListener("click", () => {
+          areas.splice(index, 1);
+          renderAreas(true);
+        });
+        chip.appendChild(remove);
+
+        elements.areasChips.appendChild(chip);
+      });
     }
 
-    areas.forEach((area, index) => {
-      const chip = document.createElement("span");
-      chip.className = "area-chip";
-      chip.appendChild(document.createTextNode(area));
-
-      const remove = document.createElement("button");
-      remove.type = "button";
-      remove.textContent = "×";
-      remove.disabled = !editing;
-      remove.setAttribute("aria-label", "Remover " + area);
-      remove.addEventListener("click", () => {
-        areas.splice(index, 1);
-        renderAreas(true);
-      });
-      chip.appendChild(remove);
-
-      elements.areasChips.appendChild(chip);
+    const selectedAreas = new Set(areas.map(normalizeArea));
+    Array.from(elements.areasInput.options).forEach((option) => {
+      option.disabled = Boolean(option.value) && selectedAreas.has(normalizeArea(option.value));
     });
+    if (selectedAreas.has(normalizeArea(elements.areasInput.value))) elements.areasInput.value = "";
+    elements.areasAddBtn.disabled = !editing || !elements.areasInput.value;
   }
 
   function profileFromSession() {
@@ -452,9 +466,9 @@
   elements.areasAddBtn?.addEventListener("click", () => {
     const input = elements.areasInput;
     if (!input) return;
-    const area = input.value.trim();
+    const area = input.value;
     if (!area) return;
-    if (areas.some((item) => item.toLowerCase() === area.toLowerCase())) {
+    if (areas.some((item) => normalizeArea(item) === normalizeArea(area))) {
       showFeedback("Essa área já foi adicionada.", true);
       return;
     }
@@ -462,6 +476,10 @@
     input.value = "";
     input.focus();
     renderAreas(true);
+  });
+
+  elements.areasInput?.addEventListener("change", () => {
+    if (elements.areasAddBtn) elements.areasAddBtn.disabled = !editing || !elements.areasInput.value;
   });
 
   elements.areasToggle?.addEventListener("click", () => {

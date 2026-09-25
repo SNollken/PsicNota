@@ -679,10 +679,10 @@ input::placeholder {
   gap: 10px;
 }
 
-.areas-add input {
+.areas-add select {
   max-width: 320px;
 
-  text-align: left;
+  text-align-last: left;
 }
 
 .button-add {
@@ -1013,7 +1013,7 @@ input::placeholder {
     display: grid;
   }
 
-  .areas-add input {
+  .areas-add select {
     max-width: none;
   }
 

@@ -336,14 +336,26 @@
                 <button class="button button-add" type="button" data-areas-toggle>+ Adicionar</button>
               </div>
               <div class="areas-add" data-areas-add hidden>
-                <input
-                  type="text"
-                  data-areas-input
-                  maxlength="40"
-                  placeholder="Nova área de atuação"
-                  aria-label="Nova área de atuação"
-                />
-                <button class="button button-add" type="button" data-areas-add-btn>
+                <select data-areas-input aria-label="Selecionar área de atuação">
+                  <option value="">Selecione uma área</option>
+                  <option value="Ansiedade">Ansiedade</option>
+                  <option value="Depressão">Depressão</option>
+                  <option value="Autoestima">Autoestima</option>
+                  <option value="Burnout">Burnout</option>
+                  <option value="Estresse">Estresse</option>
+                  <option value="Luto">Luto</option>
+                  <option value="Relacionamentos">Relacionamentos</option>
+                  <option value="Terapia de casal">Terapia de casal</option>
+                  <option value="Fobias">Fobias</option>
+                  <option value="Trauma e TEPT">Trauma e TEPT</option>
+                  <option value="Transtornos alimentares">Transtornos alimentares</option>
+                  <option value="TDAH">TDAH</option>
+                  <option value="TEA">TEA</option>
+                  <option value="Transtornos do sono">Transtornos do sono</option>
+                  <option value="Orientação profissional">Orientação profissional</option>
+                  <option value="Desenvolvimento pessoal">Desenvolvimento pessoal</option>
+                </select>
+                <button class="button button-add" type="button" data-areas-add-btn disabled>
                   + Adicionar
                 </button>
               </div>
