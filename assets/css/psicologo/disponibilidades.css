@@ -142,7 +142,10 @@ svg {
   letter-spacing: -0.01em;
 }
 
-.add-card { padding: 23px 26px 26px; }
+.add-card {
+  min-width: 0;
+  padding: 23px 26px 26px;
+}
 
 .schedule-form {
   display: grid;
@@ -156,6 +159,7 @@ svg {
   margin: 14px 0 0;
   color: var(--teal);
   font-size: 13px;
+  overflow-wrap: anywhere;
 }
 
 .schedule-message.is-error {
@@ -448,11 +452,14 @@ td:nth-child(5) { width: 104px; }
   font-weight: 500;
 }
 
+@media (max-width: 1440px) {
+  .availability-layout { grid-template-columns: minmax(0, 1fr) 290px; }
+  .schedule-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 @media (max-width: 1180px) {
   :root { --sidebar-width: 230px; }
   .main-content { padding-inline: 26px; }
-  .availability-layout { grid-template-columns: minmax(0, 1fr) 290px; }
-  .schedule-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .primary-button { align-self: end; }
 }
 
