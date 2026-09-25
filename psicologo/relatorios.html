@@ -84,7 +84,11 @@
                   <span>PS</span>
                 </span>
 
-                <select id="reportAppointment" aria-label="Consulta vinculada"></select>
+                <select id="reportAppointment" aria-label="Consulta vinculada" aria-hidden="true" tabindex="-1"></select>
+
+                <button type="button" id="appointmentDropdownBtn" class="appointment-dropdown-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Consulta vinculada"><span class="dropdown-pill-avatar" id="dropdownPillAvatar"><span>PS</span></span><span class="dropdown-pill-label" id="dropdownPillLabel">Sem consulta vinculada</span></button>
+
+                <ul id="appointmentDropdownList" role="listbox" class="appointment-dropdown-list" hidden></ul>
 
                 <span class="report-select-arrow" aria-hidden="true">
                   <svg viewBox="0 0 24 24">

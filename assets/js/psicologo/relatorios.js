@@ -52,6 +52,94 @@ const elements = {
   logoutLink: document.querySelector('#logoutLink')
 };
 
+const dropdownBtn = document.querySelector('#appointmentDropdownBtn');
+const dropdownList = document.querySelector('#appointmentDropdownList');
+const dropdownPillAvatar = document.querySelector('#dropdownPillAvatar');
+const dropdownPillLabel = document.querySelector('#dropdownPillLabel');
+
+function dropdownItems() {
+  return dropdownList ? Array.from(dropdownList.querySelectorAll('[role="option"]')) : [];
+}
+
+function toggleDropdown(open) {
+  if (!dropdownBtn || !dropdownList) return;
+  const willOpen = open === undefined ? dropdownList.hidden : open;
+  dropdownList.hidden = !willOpen;
+  dropdownBtn.setAttribute('aria-expanded', String(willOpen));
+  if (willOpen) {
+    const sel = dropdownList.querySelector('[aria-selected="true"]') || dropdownList.querySelector('[role="option"]');
+    if (sel) sel.focus();
+  }
+}
+
+function updateDropdownTrigger(appointment) {
+  if (!dropdownBtn) return;
+  const label = appointment ? appointmentLabel(appointment) : 'Sem consulta vinculada';
+  const initials = appointment ? getInitials(appointment.patient) : 'PS';
+  if (dropdownPillLabel) dropdownPillLabel.textContent = label;
+  if (dropdownPillAvatar) dropdownPillAvatar.replaceChildren(Object.assign(document.createElement('span'), { textContent: initials }));
+}
+
+function selectAppointmentInDropdown(value) {
+  const target = value == null ? '' : String(value);
+  if (elements.reportAppointment) elements.reportAppointment.value = target;
+  if (dropdownList) {
+    dropdownList.querySelectorAll('[role="option"]').forEach((el) => {
+      el.setAttribute('aria-selected', String(el.dataset.value === target));
+    });
+  }
+  const appointment = target ? findAppointment(target) : null;
+  updateDropdownTrigger(appointment);
+  if (elements.reportAppointment) elements.reportAppointment.dispatchEvent(new Event('change'));
+  toggleDropdown(false);
+}
+
+if (dropdownBtn && dropdownList) {
+  dropdownBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleDropdown();
+  });
+  dropdownBtn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleDropdown(true);
+    } else if (e.key === 'Escape') {
+      toggleDropdown(false);
+    }
+  });
+  dropdownList.addEventListener('click', (e) => {
+    const item = e.target.closest('[role="option"]');
+    if (item) selectAppointmentInDropdown(item.dataset.value);
+  });
+  dropdownList.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const item = e.target.closest('[role="option"]');
+      if (item) {
+        e.preventDefault();
+        selectAppointmentInDropdown(item.dataset.value);
+      }
+    }
+  });
+  dropdownList.addEventListener('keydown', (e) => {
+    const items = dropdownItems();
+    const idx = items.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      (items[idx + 1] || items[0])?.focus();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      (items[idx - 1] || items[items.length - 1])?.focus();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      toggleDropdown(false);
+      dropdownBtn.focus();
+    }
+  });
+  document.addEventListener('click', (e) => {
+    if (!dropdownList.hidden && !e.target.closest('.report-consultation-select')) toggleDropdown(false);
+  });
+}
+
 const shortDateFormatter = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 const fullDateFormatter = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
 
@@ -258,6 +346,51 @@ function buildAppointmentOptions(selectedAppointmentId) {
     if (appointment.id === selectedAppointmentId) option.selected = true;
     elements.reportAppointment.append(option);
   });
+
+  if (dropdownList) {
+    dropdownList.replaceChildren();
+
+    const noneItem = document.createElement('li');
+    noneItem.setAttribute('role', 'presentation');
+    const noneBtn = document.createElement('button');
+    noneBtn.type = 'button';
+    noneBtn.setAttribute('role', 'option');
+    noneBtn.className = 'appointment-dropdown-item';
+    noneBtn.dataset.value = '';
+    const noneAv = document.createElement('span');
+    noneAv.className = 'dropdown-pill-avatar';
+    noneAv.textContent = '—';
+    const noneLb = document.createElement('span');
+    noneLb.className = 'dropdown-pill-label';
+    noneLb.textContent = 'Sem consulta vinculada';
+    noneBtn.append(noneAv, noneLb);
+    noneBtn.setAttribute('aria-selected', selectedAppointmentId ? 'false' : 'true');
+    noneItem.append(noneBtn);
+    dropdownList.append(noneItem);
+
+    appointments.forEach((appointment) => {
+      const li = document.createElement('li');
+      li.setAttribute('role', 'presentation');
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('role', 'option');
+      b.className = 'appointment-dropdown-item';
+      b.dataset.value = appointment.id;
+      const av = document.createElement('span');
+      av.className = 'dropdown-pill-avatar';
+      av.textContent = getInitials(appointment.patient);
+      const lb = document.createElement('span');
+      lb.className = 'dropdown-pill-label';
+      lb.textContent = appointmentLabel(appointment);
+      b.append(av, lb);
+      b.setAttribute('aria-selected', String(appointment.id === selectedAppointmentId));
+      li.append(b);
+      dropdownList.append(li);
+    });
+
+    const selected = selectedAppointmentId ? findAppointment(selectedAppointmentId) : null;
+    updateDropdownTrigger(selected);
+  }
 }
 
 function renderList() {
