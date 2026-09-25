@@ -912,6 +912,9 @@ body.modal-open { overflow: hidden; }
   border: 0;
 }
 
+.psic-calendar-scroll { min-width: 0; }
+.calendar-scroll-hint { display: none; }
+
 .psic-view .psic-weekdays {
   margin-bottom: 5px;
 }
@@ -1690,4 +1693,33 @@ body.modal-open {
   .psic-day { min-height: 72px; padding: 8px 2px; }
   .psic-day-info { font-size: 8px; }
   .psic-day-today-label { font-size: 6px; }
+}
+
+@media (max-width: 520px) {
+  .calendar-scroll-hint {
+    display: block;
+    margin: 0 0 8px;
+    color: var(--muted);
+    font-size: 11px;
+    text-align: center;
+  }
+  .psic-calendar-scroll {
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .psic-view .psic-weekdays,
+  .psic-view .psic-calendar-grid {
+    min-width: 420px;
+  }
+  .psic-day { min-height: 84px; padding: 10px 6px; }
+  .psic-day-info { font-size: 10px; }
+  .psic-day-today-label { font-size: 8px; }
+}
+
+@media (max-width: 360px) {
+  .psic-day { min-height: 80px; padding: 9px 5px; }
+  .psic-day-info { font-size: 9px; }
+  .psic-day-today-label { font-size: 7px; }
 }
