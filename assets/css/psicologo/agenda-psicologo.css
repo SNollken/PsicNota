@@ -1319,9 +1319,23 @@ body.modal-open { overflow: hidden; }
 .psic-schedule-terms input {
   width: 16px;
   height: 16px;
+  min-height: 16px;
   margin: 0;
+  padding: 0;
   flex: 0 0 auto;
   accent-color: #1f637a;
+  cursor: pointer;
+}
+
+.psic-schedule-terms input:focus {
+  border-color: transparent;
+  box-shadow: none;
+  outline: 2px solid #1f637a;
+  outline-offset: 0;
+}
+
+.psic-schedule-terms input:focus:not(:focus-visible) {
+  outline: none;
 }
 
 .psic-schedule-submit {

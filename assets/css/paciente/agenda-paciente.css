@@ -2758,6 +2758,17 @@ input[readonly] {
   accent-color: var(--blue-700);
 }
 
+.schedule-terms input:focus {
+  border-color: transparent;
+  box-shadow: none;
+  outline: 2px solid var(--blue-700);
+  outline-offset: 0;
+}
+
+.schedule-terms input:focus:not(:focus-visible) {
+  outline: none;
+}
+
 
 /* botão */
 
