@@ -1711,21 +1711,16 @@ body.modal-open {
 
 @media (max-width: 520px) {
   .calendar-scroll-hint {
-    display: block;
-    margin: 0 0 8px;
-    color: var(--muted);
-    font-size: 11px;
-    text-align: center;
+    display: none;
   }
   .psic-calendar-scroll {
-    overflow-x: auto;
-    overscroll-behavior-inline: contain;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
+    width: 100%;
+    overflow-x: hidden;
   }
   .psic-view .psic-weekdays,
   .psic-view .psic-calendar-grid {
-    min-width: 420px;
+    width: 100%;
+    min-width: 0;
   }
   .psic-day { min-height: 84px; padding: 10px 6px; }
   .psic-day-info { font-size: 10px; }
