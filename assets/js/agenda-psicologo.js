@@ -89,6 +89,7 @@ const SHORT_MONTHS = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "s
 let appointments = data.getAppointments();
 let requests = data.getRequests();
 let patientOptions = [];
+let remotePatientProfiles = [];
 let selectedPatientIndex = "";
 
 let usingRemoteRequests = false;
@@ -360,29 +361,56 @@ function closePopup(popup) {
 function getPatientOptions() {
   const map = new Map();
 
-  data.getProfiles().forEach((profile) => {
-    if (profile.role === "paciente" || profile.role === "patient") {
-      const name = profile.socialName || profile.fullName || profile.name;
-      if (name) {
-        map.set(String(name).toLowerCase(), {
-          id: profile.id || null,
-          name,
-          avatarUrl: profile.avatarDataUrl || profile.avatarUrl || profile.avatar_url || profile.photoUrl || profile.photo || ""
-        });
-      }
-    }
+  function renderableAvatarUrl(...values) {
+    return values
+      .map((value) => String(value || "").trim())
+      .find((value) => /^(https?:|data:image\/|blob:)/i.test(value)) || "";
+  }
+
+  function upsertPatientOption(name, id, avatarUrl) {
+    const nameKey = String(name).toLowerCase();
+    const identityKey = id ? `id:${String(id)}` : `name:${nameKey}`;
+    const previous = map.get(identityKey);
+
+    map.set(identityKey, {
+      id: id || previous?.id || null,
+      name: previous?.name || name,
+      avatarUrl: previous?.avatarUrl || avatarUrl || ""
+    });
+  }
+
+  [...remotePatientProfiles, ...data.getProfiles()].forEach((profile) => {
+    const role = profile.role || profile.papel;
+    if (role !== "paciente" && role !== "patient") return;
+
+    const name = profile.socialName
+      || profile.fullName
+      || profile.name
+      || profile.nome_social
+      || profile.nome_completo
+      || profile.email;
+    if (!name) return;
+
+    upsertPatientOption(
+      name,
+      profile.id || null,
+      renderableAvatarUrl(
+        profile.avatarDataUrl,
+        profile.avatarUrl,
+        profile.avatar_url,
+        profile.photoUrl,
+        profile.photo
+      )
+    );
   });
 
   [...requests, ...appointments].forEach((item) => {
     if (item.patient) {
-      const key = String(item.patient).toLowerCase();
-      if (!map.has(key)) {
-        map.set(key, {
-          id: item.patientId || null,
-          name: item.patient,
-          avatarUrl: item.avatarDataUrl || item.patientAvatar || ""
-        });
-      }
+      upsertPatientOption(
+        item.patient,
+        item.patientId || null,
+        renderableAvatarUrl(item.avatarDataUrl, item.patientAvatar)
+      );
     }
   });
 
@@ -431,20 +459,20 @@ function renderPatientSelect() {
 function createPatientAvatar(option) {
   const avatar = document.createElement("span");
   avatar.className = "psic-patient-avatar";
-  avatar.textContent = option.name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join("")
-    .toLocaleUpperCase("pt-BR");
+  const nameParts = String(option.name || "Paciente").trim().split(/\s+/).filter(Boolean);
+  const initials = nameParts.length > 1
+    ? `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`
+    : (nameParts[0]?.[0] || "P");
+  avatar.textContent = initials.toLocaleUpperCase("pt-BR");
 
   const imageUrl = String(option.avatarUrl || "").trim();
   if (/^(https?:|data:image\/|blob:)/i.test(imageUrl)) {
     const image = document.createElement("img");
-    image.src = imageUrl;
     image.alt = "";
+    image.hidden = true;
+    image.addEventListener("load", () => { image.hidden = false; }, { once: true });
     image.addEventListener("error", () => image.remove(), { once: true });
+    image.src = imageUrl;
     avatar.append(image);
   }
 
@@ -1005,6 +1033,55 @@ async function loadRemoteAvailability(userId) {
   }
 }
 
+async function resolvePatientAvatarUrl(value) {
+  const source = String(value || "").trim();
+  if (!source || /^(https?:|data:image\/|blob:)/i.test(source)) return source;
+  if (!supabaseClient?.storage) return "";
+
+  try {
+    const { data: signed, error } = await supabaseClient.storage
+      .from("avatars")
+      .createSignedUrl(source, 3600);
+    if (error) {
+      console.error("[agenda-psicologo] Falha ao assinar foto de paciente.", error);
+      return "";
+    }
+    return signed?.signedUrl || "";
+  } catch (error) {
+    console.error("[agenda-psicologo] Falha ao assinar foto de paciente.", error);
+    return "";
+  }
+}
+
+async function loadRemotePatientProfiles() {
+  if (!supabaseClient) return false;
+
+  try {
+    const { data: profiles, error } = await supabaseClient
+      .from("perfis")
+      .select("id, nome_completo, nome_social, email, avatar_url")
+      .eq("papel", "paciente")
+      .order("nome_completo", { ascending: true });
+
+    if (error) {
+      console.error("[agenda-psicologo] Falha ao carregar perfis de pacientes.", error);
+      return false;
+    }
+
+    remotePatientProfiles = await Promise.all((profiles || []).map(async (profile) => ({
+      id: profile.id || null,
+      role: "paciente",
+      fullName: profile.nome_completo || profile.email || "",
+      socialName: profile.nome_social || "",
+      avatarUrl: await resolvePatientAvatarUrl(profile.avatar_url)
+    })));
+    return true;
+  } catch (error) {
+    console.error("[agenda-psicologo] Falha ao carregar perfis de pacientes.", error);
+    return false;
+  }
+}
+
 function normalizeRemoteRequest(row, names) {
   return {
     id: row.id,
@@ -1229,6 +1306,7 @@ void (async function () {
 
   psychologistUid = _auth.user.id;
   await loadRemoteAvailability(psychologistUid);
+  await loadRemotePatientProfiles();
   renderAll();
 
   void loadRemoteAppointments();
