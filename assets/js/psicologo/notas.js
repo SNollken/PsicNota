@@ -19,6 +19,12 @@
   const saveQueues = new Map();
   const latestSaves = new Map();
 
+  patientAvatar.addEventListener('error', () => {
+    if (patientAvatar.src !== defaultPatientAvatar) {
+      patientAvatar.src = defaultPatientAvatar;
+    }
+  });
+
   const formatDate = (key) => new Intl.DateTimeFormat('pt-BR').format(data.fromDateKey(key));
   const selectedId = () => appointmentSelect.value || null;
   const storageId = (consultaId) => consultaId || `__sem_consulta__:${psychologistId}`;
