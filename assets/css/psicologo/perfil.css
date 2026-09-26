@@ -870,6 +870,17 @@ input::placeholder {
   font-weight: 600;
 }
 
+.availability-status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.availability-status.is-error {
+  color: #b42318;
+}
+
 /* =========================
    MODAIS
 ========================= */

@@ -5,7 +5,22 @@
   const ROLE_LABEL = "Psicólogo";
   const data = window.PsiNoteData;
   const backend = window.PsicNotaBackend;
+  const supabaseClient = window.PsicNotaSupabase;
   const form = document.getElementById("profileForm");
+  const availabilityDays = [
+    { value: 1, label: "Segunda-feira" },
+    { value: 2, label: "Terça-feira" },
+    { value: 3, label: "Quarta-feira" },
+    { value: 4, label: "Quinta-feira" },
+    { value: 5, label: "Sexta-feira" },
+    { value: 6, label: "Sábado" },
+    { value: 0, label: "Domingo" }
+  ];
+  const availabilityPeriods = [
+    { value: "manha", start: 6 * 60, end: 12 * 60 },
+    { value: "tarde", start: 12 * 60, end: 18 * 60 },
+    { value: "noite", start: 18 * 60, end: 22 * 60 }
+  ];
 
   if (!form || !data || !backend) return;
 
@@ -38,7 +53,8 @@
     successOk: document.getElementById("successOkBtn"),
     areasChips: document.querySelector("[data-areas-chips]"),
     areasToggle: document.querySelector("[data-areas-toggle]"),
-    areasAdd: document.querySelector("[data-areas-add]")
+    areasAdd: document.querySelector("[data-areas-add]"),
+    availabilityStatus: document.querySelector("[data-availability-status]")
   };
 
   let session = data.getSession() || {};
@@ -235,6 +251,134 @@
       option.disabled = !editing || isSelected;
       option.setAttribute("aria-pressed", String(isSelected));
     });
+  }
+
+  function setAvailabilityStatus(message, isError = false) {
+    if (!elements.availabilityStatus) return;
+    elements.availabilityStatus.textContent = message;
+    elements.availabilityStatus.classList.toggle("is-error", isError);
+    elements.availabilityStatus.hidden = !message;
+  }
+
+  function timeInMinutes(value) {
+    const match = String(value || "").match(/^(\d{2}):(\d{2})/);
+    if (!match) return null;
+    const hours = Number(match[1]);
+    const minutes = Number(match[2]);
+    if (hours > 23 || minutes > 59) return null;
+    return hours * 60 + minutes;
+  }
+
+  function createAvailabilityCell(isAvailable) {
+    const cell = document.createElement("td");
+    const label = document.createElement("span");
+
+    if (isAvailable) {
+      label.className = "cell-available";
+      const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      icon.setAttribute("viewBox", "0 0 24 24");
+      icon.setAttribute("aria-hidden", "true");
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", "m5 12 5 5L20 7");
+      icon.appendChild(path);
+      label.append(icon, document.createTextNode("Disponível"));
+    } else {
+      label.className = "cell-empty";
+      label.setAttribute("aria-label", "Indisponível");
+      label.textContent = "—";
+    }
+
+    cell.appendChild(label);
+    return cell;
+  }
+
+  function renderWeeklyAvailability(slots) {
+    const availablePeriods = new Set();
+    slots.forEach((slot) => {
+      if (!slot) return;
+      const rawDay = slot.dia_semana;
+      if (rawDay === null || rawDay === undefined || String(rawDay).trim() === "") return;
+      const day = Number(rawDay);
+      const time = timeInMinutes(slot.horario);
+      const modality = String(slot.modalidade || "online").trim().toLocaleLowerCase("pt-BR");
+      if (!Number.isInteger(day) || day < 0 || day > 6 || time === null) return;
+      if (modality !== "online" && modality !== "presencial") return;
+
+      const period = availabilityPeriods.find(({ start, end }) => time >= start && time < end);
+      if (period) availablePeriods.add(`${modality}:${day}:${period.value}`);
+    });
+
+    document.querySelectorAll("[data-availability-body]").forEach((body) => {
+      const modality = body.dataset.availabilityBody;
+      const rows = availabilityDays.map(({ value: day, label }) => {
+        const row = document.createElement("tr");
+        const dayCell = document.createElement("th");
+        dayCell.scope = "row";
+        dayCell.textContent = label;
+        row.appendChild(dayCell);
+
+        availabilityPeriods.forEach(({ value: period }) => {
+          row.appendChild(createAvailabilityCell(availablePeriods.has(`${modality}:${day}:${period}`)));
+        });
+
+        return row;
+      });
+      body.replaceChildren(...rows);
+    });
+  }
+
+  async function loadWeeklyAvailability() {
+    setAvailabilityStatus("Carregando disponibilidade...");
+
+    if (!supabaseClient) {
+      renderWeeklyAvailability([]);
+      setAvailabilityStatus("Não foi possível carregar a disponibilidade do banco.", true);
+      return;
+    }
+
+    let slots;
+    let legacyModality = false;
+    try {
+      let result = await supabaseClient
+        .from("disponibilidades")
+        .select("dia_semana, horario, modalidade")
+        .eq("psicologo_id", userId);
+
+      const errorText = [result.error?.code, result.error?.message, result.error?.details, result.error?.hint]
+        .filter(Boolean)
+        .join(" ")
+        .toLocaleLowerCase("pt-BR");
+      const missingModalityColumn = errorText.includes("modalidade") && (
+        errorText.includes("42703") ||
+        errorText.includes("pgrst204") ||
+        errorText.includes("column") ||
+        errorText.includes("schema cache")
+      );
+
+      if (missingModalityColumn) {
+        legacyModality = true;
+        result = await supabaseClient
+          .from("disponibilidades")
+          .select("dia_semana, horario")
+          .eq("psicologo_id", userId);
+      }
+
+      if (result.error) throw result.error;
+      slots = (result.data || []).map((slot) => ({
+        ...slot,
+        modalidade: slot.modalidade || "online"
+      }));
+    } catch (error) {
+      console.error(error);
+      renderWeeklyAvailability([]);
+      setAvailabilityStatus("Não foi possível carregar a disponibilidade do banco.", true);
+      return;
+    }
+
+    renderWeeklyAvailability(slots);
+    setAvailabilityStatus(legacyModality
+      ? "A modalidade ainda não está configurada no banco; os horários existentes são considerados online."
+      : "");
   }
 
   function profileFromSession() {
@@ -538,9 +682,12 @@
       snapshot.areas = areas.slice();
       await render(snapshot);
       setEditing(false);
+      await loadWeeklyAvailability();
     } catch (error) {
       console.error(error);
       showFeedback("Não foi possível carregar seu perfil.", true);
+      renderWeeklyAvailability([]);
+      setAvailabilityStatus("Não foi possível carregar a disponibilidade do banco.", true);
     }
   }
 
