@@ -151,48 +151,6 @@ svg {
 
 
 /* =========================
-   ÍCONES DO CABEÇALHO
-========================= */
-
-.header-actions {
-    display: flex;
-    align-items: center;
-
-    gap: 18px;
-
-    color: var(--primary);
-}
-
-.header-actions a {
-    width: 32px;
-    height: 32px;
-
-    display: grid;
-    place-items: center;
-
-    border-radius: 8px;
-
-    transition: background-color 0.15s ease;
-}
-
-.header-actions a:hover,
-.header-actions a:focus-visible {
-    background: var(--soft);
-}
-
-.header-actions svg{
-
-    width:24px;
-    height:24px;
-
-    overflow:visible;
-
-    stroke-width:2;
-
-}
-
-
-/* =========================
    ÁREA DOS DOIS CARDS
 ========================= */
 
@@ -652,15 +610,6 @@ svg {
 
     .home-header p {
         font-size: 14px;
-    }
-
-    .header-actions {
-        gap: 5px;
-    }
-
-    .header-actions a {
-        width: 30px;
-        height: 30px;
     }
 
     .dashboard-content {
