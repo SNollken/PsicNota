@@ -365,133 +365,118 @@ function renderUpcomingAppointmentsPopup() {
     return;
   }
 
-
   appointmentsPopupList.replaceChildren();
 
-
-  const now =
-    new Date();
-
-
-  const upcoming =
-    getMyAppointments()
-      .map(
-        (appointment) => ({
-          ...appointment,
-
-          dateTime:
-            dateTimeFromItem(
-              appointment
-            )
-        })
-      )
-      .filter(
-        (appointment) =>
-          appointment.dateTime >= now
-      )
-      .sort(
-        (a, b) =>
-          a.dateTime -
-          b.dateTime
-      );
-
+  const now = new Date();
+  const upcoming = getMyAppointments()
+    .map((appointment) => ({
+      ...appointment,
+      dateTime: dateTimeFromItem(appointment)
+    }))
+    .filter((appointment) =>
+      ["scheduled", "confirmed"].includes(appointment.status) &&
+      appointment.dateTime >= now
+    )
+    .sort((a, b) => a.dateTime - b.dateTime);
 
   if (!upcoming.length) {
-    const empty =
-      document.createElement(
-        "p"
-      );
-
-    empty.className =
-      "appointments-empty";
-
-    empty.textContent =
-      "Nenhuma consulta agendada.";
-
-    appointmentsPopupList.append(
-      empty
-    );
-
+    const empty = document.createElement("p");
+    empty.className = "appointments-empty";
+    empty.textContent = "Nenhuma consulta agendada.";
+    appointmentsPopupList.append(empty);
     return;
   }
 
+  upcoming.forEach((appointment) => {
+    const item = document.createElement("article");
+    item.className = "upcoming-appointment-item";
 
-  upcoming.forEach(
-    (appointment) => {
+    const copy = document.createElement("div");
+    copy.className = "upcoming-appointment-copy";
 
-      const item =
-        document.createElement(
-          "article"
-        );
+    const date = document.createElement("strong");
+    date.className = "upcoming-appointment-date";
+    date.textContent =
+      formatRequestDate(appointment.date) + " · " + appointment.time;
 
-      item.className =
-        "upcoming-appointment-item";
+    const details = document.createElement("div");
+    details.className = "upcoming-appointment-details";
 
+    const duration = document.createElement("span");
+    duration.textContent = (appointment.duration || 50) + " min";
 
-      const date =
-        document.createElement(
-          "strong"
-        );
+    const mode = document.createElement("span");
+    mode.className = "upcoming-appointment-mode";
+    mode.textContent = appointment.mode || "Modalidade não informada";
 
-      date.className =
-        "upcoming-appointment-date";
+    details.append(duration, mode);
+    copy.append(date, details);
 
-      date.textContent =
-        `${formatRequestDate(
-          appointment.date
-        )} · ${appointment.time}`;
+    const cancelButton = document.createElement("button");
+    cancelButton.type = "button";
+    cancelButton.className =
+      "upcoming-appointment-cancel pending-request-cancel";
+    cancelButton.textContent = "Cancelar consulta";
+    cancelButton.setAttribute(
+      "aria-label",
+      "Cancelar consulta marcada para " +
+        formatRequestDate(appointment.date) +
+        " às " +
+        appointment.time
+    );
+    cancelButton.addEventListener("click", () =>
+      cancelUpcomingAppointment(appointment, cancelButton)
+    );
 
-
-      const details =
-        document.createElement(
-          "div"
-        );
-
-      details.className =
-        "upcoming-appointment-details";
-
-
-      const duration =
-        document.createElement(
-          "span"
-        );
-
-      duration.textContent =
-        `${appointment.duration || 50} min`;
-
-
-      const mode =
-        document.createElement(
-          "span"
-        );
-
-      mode.className =
-        "upcoming-appointment-mode";
-
-      mode.textContent =
-        appointment.mode ||
-        "Modalidade não informada";
-
-
-      details.append(
-        duration,
-        mode
-      );
-
-
-      item.append(
-        date,
-        details
-      );
-
-
-      appointmentsPopupList.append(
-        item
-      );
-    }
-  );
+    item.append(copy, cancelButton);
+    appointmentsPopupList.append(item);
+  });
 }
 
+
+async function cancelUpcomingAppointment(appointment, button) {
+  const appointmentLabel =
+    formatRequestDate(appointment.date) + " às " + appointment.time;
+  if (
+    !window.confirm(
+      "Deseja cancelar a consulta marcada para " + appointmentLabel + "?"
+    )
+  ) {
+    return;
+  }
+
+  button.disabled = true;
+  button.setAttribute("aria-busy", "true");
+  button.textContent = "Cancelando...";
+
+  let cancelled = false;
+  try {
+    cancelled = await patientData.cancelPatientAppointmentInDb(
+      appointment.id
+    );
+  } catch {
+    cancelled = false;
+  }
+
+  if (!cancelled) {
+    button.disabled = false;
+    button.removeAttribute("aria-busy");
+    button.textContent = "Cancelar consulta";
+    showToast("Não foi possível cancelar a consulta. Tente novamente.", true);
+    return;
+  }
+
+  appointments = appointments.map((item) =>
+    item.id === appointment.id && isSamePatient(item)
+      ? { ...item, status: "cancelled" }
+      : item
+  );
+  patientData.saveAppointments(appointments);
+  renderCalendar();
+  renderSummary();
+  renderUpcomingAppointmentsPopup();
+  showToast("Consulta cancelada com sucesso.");
+}
 
 /* =========================================================
    ABRIR POPUP

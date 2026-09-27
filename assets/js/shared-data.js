@@ -420,6 +420,20 @@
     return !error && Boolean(count);
   }
 
+  async function cancelPatientAppointmentInDb(appointmentId) {
+    const client = getSupabaseClient();
+    if (!client || !appointmentId) return false;
+
+    const user = await getAuthUser();
+    if (!user) return false;
+
+    const { data, error } = await client.rpc(
+      "cancelar_consulta_paciente",
+      { p_consulta_id: appointmentId }
+    );
+    return !error && data === true;
+  }
+
   async function saveNoteToDb(consultaId, conteudo, humor) {
     const client = getSupabaseClient();
     if (!client) return false;
@@ -564,6 +578,7 @@
     syncRemoteData,
     persistAppointmentToDb,
     cancelAppointmentInDb,
+    cancelPatientAppointmentInDb,
     saveNoteToDb,
     saveReportToDb,
     deleteReportFromDb,

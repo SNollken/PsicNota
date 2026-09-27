@@ -3124,14 +3124,35 @@ input[readonly] {
 }
 
 .upcoming-appointment-item {
-  min-height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 
+  min-height: 78px;
   padding: 14px 16px;
 
   border: 1px solid var(--blue-300);
   border-radius: 14px;
 
   background: var(--white);
+}
+
+.upcoming-appointment-copy {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.upcoming-appointment-cancel {
+  min-height: 40px;
+  flex: 0 0 auto;
+  padding: 9px 12px;
+  font-size: 12px;
+}
+
+.upcoming-appointment-cancel:disabled {
+  cursor: wait;
+  opacity: 0.65;
 }
 
 .upcoming-appointment-date {
@@ -3530,6 +3551,16 @@ input[readonly] {
   }
 
   .pending-request-cancel {
+    width: 100%;
+  }
+
+  .upcoming-appointment-item {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .upcoming-appointment-cancel {
     width: 100%;
   }
 
