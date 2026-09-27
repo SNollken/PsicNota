@@ -54,7 +54,6 @@ const elements = {
 
 const dropdownBtn = document.querySelector('#appointmentDropdownBtn');
 const dropdownList = document.querySelector('#appointmentDropdownList');
-const dropdownPillAvatar = document.querySelector('#dropdownPillAvatar');
 const dropdownPillLabel = document.querySelector('#dropdownPillLabel');
 
 function dropdownItems() {
@@ -75,9 +74,7 @@ function toggleDropdown(open) {
 function updateDropdownTrigger(appointment) {
   if (!dropdownBtn) return;
   const label = appointment ? appointmentLabel(appointment) : 'Sem consulta vinculada';
-  const initials = appointment ? getInitials(appointment.patient) : 'PS';
   if (dropdownPillLabel) dropdownPillLabel.textContent = label;
-  if (dropdownPillAvatar) dropdownPillAvatar.replaceChildren(Object.assign(document.createElement('span'), { textContent: initials }));
 }
 
 function selectAppointmentInDropdown(value) {
