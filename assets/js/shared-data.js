@@ -405,19 +405,31 @@
 
   async function cancelAppointmentInDb(appointmentId) {
     const client = getSupabaseClient();
-    if (!client) return false;
+    if (!client || !appointmentId) return false;
 
-    const user = await getAuthUser();
-    if (!user) return false;
+    try {
+      const user = await getAuthUser();
+      if (!user) return false;
 
-    const { error, count } = await client
-      .from("consultas")
-      .update({ status: "cancelled" }, { count: "exact" })
-      .eq("id", appointmentId)
-      .eq("psicologo_id", user.id)
-      .neq("status", "cancelled");
+      const { data, error } = await client
+        .from("consultas")
+        .update({ status: "cancelled" })
+        .eq("id", appointmentId)
+        .eq("psicologo_id", user.id)
+        .neq("status", "cancelled")
+        .select("id")
+        .maybeSingle();
 
-    return !error && Boolean(count);
+      if (error) {
+        console.error("Não foi possível cancelar a consulta no Supabase.", error);
+        return false;
+      }
+
+      return Boolean(data?.id);
+    } catch (error) {
+      console.error("Não foi possível conectar ao Supabase para cancelar a consulta.", error);
+      return false;
+    }
   }
 
   async function cancelPatientAppointmentInDb(appointmentId) {

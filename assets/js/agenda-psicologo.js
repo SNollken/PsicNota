@@ -94,6 +94,7 @@ let selectedPatientIndex = "";
 
 let usingRemoteRequests = false;
 let usingRemoteAppointments = false;
+let remoteAppointmentsLoadPromise = null;
 let psychologistUid = null;
 let availabilityByWeekday = new Map();
 let availabilityLoaded = false;
@@ -950,13 +951,25 @@ function renderCompletedPopup(dateKey = null) {
 }
 
 async function deleteAppointment(appointmentId) {
-  const appointment = appointments.find((item) => item.id === appointmentId);
-  if (!appointment) return;
-  if (!window.confirm(`Cancelar a consulta de ${appointment.patient} às ${appointment.time}?`)) return;
+  const visibleAppointment = appointments.find((item) => item.id === appointmentId);
+  if (!visibleAppointment) return;
+  if (!window.confirm(`Cancelar a consulta de ${visibleAppointment.patient} às ${visibleAppointment.time}?`)) return;
 
-  if (supabaseClient && usingRemoteAppointments) {
+  if (supabaseClient) {
+    if (!await loadRemoteAppointments()) {
+      showToast("Não foi possível carregar as consultas para cancelar. Tente novamente.", true);
+      return;
+    }
+
+    const appointment = appointments.find((item) => item.id === appointmentId);
+    if (!appointment || appointment.status === "cancelled") {
+      showToast("Esta consulta não está mais agendada.", true);
+      return;
+    }
+
     const cancelled = await data.cancelAppointmentInDb(appointmentId);
     if (!cancelled) {
+      await loadRemoteAppointments();
       showToast("Não foi possível cancelar a consulta no banco.", true);
       return;
     }
@@ -1142,15 +1155,29 @@ async function loadRemoteRequests() {
 
 async function loadRemoteAppointments() {
   if (!supabaseClient) return false;
+  if (remoteAppointmentsLoadPromise) return remoteAppointmentsLoadPromise;
 
-  const remote = await data.loadAppointmentsFromDb();
-  if (!remote) return false;
+  remoteAppointmentsLoadPromise = (async () => {
+    try {
+      const remote = await data.loadAppointmentsFromDb();
+      if (!remote) return false;
 
-  appointments = remote;
-  usingRemoteAppointments = true;
+      appointments = remote;
+      usingRemoteAppointments = true;
 
-  renderAll();
-  return true;
+      renderAll();
+      return true;
+    } catch (error) {
+      console.error("Não foi possível carregar as consultas do Supabase.", error);
+      return false;
+    }
+  })();
+
+  try {
+    return await remoteAppointmentsLoadPromise;
+  } finally {
+    remoteAppointmentsLoadPromise = null;
+  }
 }
 
 /* =========================================================
