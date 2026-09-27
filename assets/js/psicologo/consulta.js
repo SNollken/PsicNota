@@ -31,6 +31,7 @@ const elements = {
   noteSaveStatus: document.querySelector('#noteSaveStatus'),
   noteUpdatedAt: document.querySelector('#noteUpdatedAt'),
   reportSaveStatus: document.querySelector('#reportSaveStatus'),
+  reportMoodSummary: document.querySelector('#reportMoodSummary'),
   noteMoodPicker: document.querySelector('#noteMoodPicker'),
   finishAppointmentButton: document.querySelector('#finishAppointmentButton'),
   saveNoteButton: document.querySelector('#saveNoteButton'),
@@ -44,6 +45,13 @@ const elements = {
 
 const fullDateFormatter = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
 const shortDateFormatter = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+const MOOD_LABELS = {
+  'muito-bem': 'Muito bem',
+  bem: 'Bem',
+  neutro: 'Estável',
+  mal: 'Mal',
+  'muito-mal': 'Muito mal'
+};
 
 let appointment = null;
 let currentMood = null;
@@ -130,9 +138,16 @@ function findAppointmentReport() {
 function renderReport() {
   const report = findAppointmentReport();
   elements.sessionReport.value = report?.freeText || '';
+  renderReportMood(report?.mood);
   elements.reportSaveStatus.textContent = report
     ? report.status === 'final' ? 'Relatório salvo' : 'Rascunho salvo'
     : '';
+}
+
+function renderReportMood(mood) {
+  const label = MOOD_LABELS[mood];
+  elements.reportMoodSummary.hidden = !label;
+  elements.reportMoodSummary.textContent = label ? `Emoção registrada: ${label}` : '';
 }
 
 async function saveNotes() {
@@ -169,7 +184,7 @@ async function saveReport() {
     patient: appointment.patient,
     patientId: appointment.patientId,
     appointmentId: appointment.id,
-    mood: currentMood,
+    mood: existing?.mood || currentMood,
     blocks: existing?.blocks || {},
     freeText,
     status: 'final',
@@ -190,6 +205,7 @@ async function saveReport() {
     reports.push(report);
   }
   data.saveReports(reports);
+  renderReportMood(report.mood);
 
   elements.reportSaveStatus.textContent = savedId || !window.PsicNotaSupabase
     ? 'Relatório salvo'

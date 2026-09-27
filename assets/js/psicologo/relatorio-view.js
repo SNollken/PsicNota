@@ -21,6 +21,7 @@ const elements = {
   docPatient: document.querySelector('#docPatient'),
   docMeta: document.querySelector('#docMeta'),
   docMood: document.querySelector('#docMood'),
+  docMoodSummary: document.querySelector('#docMoodSummary'),
   docDraftBadge: document.querySelector('#docDraftBadge'),
   docBlocks: document.querySelector('#docBlocks'),
   printButton: document.querySelector('#printButton'),
@@ -99,6 +100,12 @@ async function render() {
     : `Atualizado em ${shortDateFormatter.format(new Date(report.updatedAt || report.createdAt))}`;
 
   elements.docDraftBadge.hidden = report.status !== 'rascunho';
+
+  const selectedMood = MOODS.find((mood) => report.mood === mood.key);
+  elements.docMoodSummary.hidden = !selectedMood;
+  elements.docMoodSummary.textContent = selectedMood
+    ? `Emoção registrada: ${selectedMood.label}`
+    : '';
 
   elements.docMood.replaceChildren();
   MOODS.forEach((mood) => {

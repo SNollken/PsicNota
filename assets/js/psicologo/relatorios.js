@@ -569,14 +569,22 @@ async function persistReport(status) {
     reports.push(report);
   }
 
-  const savedId = await data.saveReportToDb(report);
+  let savedId = null;
+  try {
+    savedId = await data.saveReportToDb(report);
+  } catch {
+    savedId = null;
+  }
   if (savedId) {
     report.id = savedId;
-  } else if (window.PsicNotaSupabase) {
-    showToast('Não foi possível salvar no banco. O relatório ficou salvo localmente.', true);
   }
 
   data.saveReports(reports);
+  if (!savedId && window.PsicNotaSupabase) {
+    showToast('Não foi possível salvar o texto e a emoção no banco. Os dados continuam no navegador; tente salvar novamente.', true);
+    return false;
+  }
+
   clearDraft();
   return true;
 }

@@ -223,6 +223,13 @@ body { background: var(--blue-25); }
 }
 
 .report-mood-fieldset { min-width: 0; }
+.report-mood-fieldset .report-emotion-summary {
+  margin: 0 0 8px;
+  color: var(--blue-800);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.report-mood-fieldset .report-emotion-summary[hidden] { display: none; }
 .report-mood-options { gap: 4px; }
 
 .report-mood-options .mood-pill {
