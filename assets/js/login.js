@@ -5,7 +5,7 @@
   const message = document.getElementById("loginMessage");
   const client = window.PsicNotaSupabase;
   const data = window.PsiNoteData;
-  const DEMO_USERS = new Set(["psicologo", "paciente"]);
+  const DEMO_USERS = new Set(["psicologo", "paciente", "paciente2"]);
 
   if (!form || !client || !data) return;
 
@@ -39,15 +39,15 @@
     const password = passwordInput.value;
     const submit = form.querySelector('button[type="submit"]');
 
-    setFieldError(usernameInput, identifier ? "" : "Informe psicologo ou paciente.");
+    setFieldError(usernameInput, identifier ? "" : "Informe psicologo, paciente ou paciente2.");
     setFieldError(passwordInput, password ? "" : "Informe sua senha.");
     if (!identifier || !password) {
       showMessage("Revise os campos indicados antes de continuar.", "error");
       return;
     }
     if (!DEMO_USERS.has(identifier)) {
-      setFieldError(usernameInput, "Digite psicologo ou paciente.");
-      showMessage("Use psicologo ou paciente para entrar.", "error");
+      setFieldError(usernameInput, "Digite psicologo, paciente ou paciente2.");
+      showMessage("Use psicologo, paciente ou paciente2 para entrar.", "error");
       return;
     }
 
