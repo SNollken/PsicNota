@@ -3144,10 +3144,34 @@ input[readonly] {
 }
 
 .upcoming-appointment-cancel {
-  min-height: 40px;
-  flex: 0 0 auto;
-  padding: 9px 12px;
-  font-size: 12px;
+  display: grid;
+  place-items: center;
+
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  flex: 0 0 36px;
+  padding: 0;
+
+  border: 1px solid #dce6ea;
+  border-radius: 10px;
+
+  color: #d90307;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.upcoming-appointment-cancel:hover:not(:disabled) {
+  background: #f8fafb;
+}
+
+.upcoming-appointment-cancel svg {
+  width: 18px;
+  height: 18px;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
 }
 
 .upcoming-appointment-cancel:disabled {
@@ -3555,13 +3579,14 @@ input[readonly] {
   }
 
   .upcoming-appointment-item {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 10px;
+    align-items: center;
+    flex-direction: row;
+    gap: 12px;
   }
 
   .upcoming-appointment-cancel {
-    width: 100%;
+    width: 36px;
+    flex: 0 0 36px;
   }
 
   .appointments-popup {

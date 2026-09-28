@@ -436,14 +436,24 @@
     const client = getSupabaseClient();
     if (!client || !appointmentId) return false;
 
-    const user = await getAuthUser();
-    if (!user) return false;
+    try {
+      const user = await getAuthUser();
+      if (!user) return false;
 
-    const { data, error } = await client.rpc(
-      "cancelar_consulta_paciente",
-      { p_consulta_id: appointmentId }
-    );
-    return !error && data === true;
+      const { data, error } = await client.rpc(
+        "cancelar_consulta_paciente",
+        { p_consulta_id: appointmentId }
+      );
+      if (error) {
+        console.error("Não foi possível cancelar a consulta do paciente no Supabase.", error);
+        return false;
+      }
+
+      return data === true;
+    } catch (error) {
+      console.error("Não foi possível conectar ao Supabase para cancelar a consulta do paciente.", error);
+      return false;
+    }
   }
 
   async function saveNoteToDb(consultaId, conteudo, humor) {

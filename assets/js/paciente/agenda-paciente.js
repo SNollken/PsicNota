@@ -414,15 +414,18 @@ function renderUpcomingAppointmentsPopup() {
 
     const cancelButton = document.createElement("button");
     cancelButton.type = "button";
-    cancelButton.className =
-      "upcoming-appointment-cancel pending-request-cancel";
-    cancelButton.textContent = "Cancelar consulta";
+    cancelButton.className = "upcoming-appointment-cancel";
+    cancelButton.title = "Cancelar consulta";
+    cancelButton.innerHTML =
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+    const cancelButtonLabel =
+      "Cancelar consulta marcada para " +
+      formatRequestDate(appointment.date) +
+      " às " +
+      appointment.time;
     cancelButton.setAttribute(
       "aria-label",
-      "Cancelar consulta marcada para " +
-        formatRequestDate(appointment.date) +
-        " às " +
-        appointment.time
+      cancelButtonLabel
     );
     cancelButton.addEventListener("click", () =>
       cancelUpcomingAppointment(appointment, cancelButton)
@@ -437,45 +440,72 @@ function renderUpcomingAppointmentsPopup() {
 async function cancelUpcomingAppointment(appointment, button) {
   const appointmentLabel =
     formatRequestDate(appointment.date) + " às " + appointment.time;
-  if (
-    !window.confirm(
-      "Deseja cancelar a consulta marcada para " + appointmentLabel + "?"
-    )
-  ) {
-    return;
-  }
-
   button.disabled = true;
   button.setAttribute("aria-busy", "true");
-  button.textContent = "Cancelando...";
+  button.title = "Cancelando consulta";
+  button.setAttribute(
+    "aria-label",
+    "Cancelando consulta marcada para " + appointmentLabel
+  );
 
   let cancelled = false;
+  let remoteAppointments = null;
   try {
     cancelled = await patientData.cancelPatientAppointmentInDb(
       appointment.id
     );
+    remoteAppointments = await patientData.loadAppointmentsFromDb();
   } catch {
-    cancelled = false;
+    remoteAppointments = null;
+  }
+
+  if (Array.isArray(remoteAppointments)) {
+    appointments = remoteAppointments;
+    const latestAppointment = remoteAppointments.find(
+      (item) => item.id === appointment.id
+    );
+    cancelled =
+      cancelled || latestAppointment?.status === "cancelled";
+    if (
+      cancelled &&
+      latestAppointment &&
+      latestAppointment.status !== "cancelled"
+    ) {
+      appointments = remoteAppointments.map((item) =>
+        item.id === appointment.id ? { ...item, status: "cancelled" } : item
+      );
+    }
+  } else if (cancelled) {
+    appointments = appointments.map((item) =>
+      item.id === appointment.id && isSamePatient(item)
+        ? { ...item, status: "cancelled" }
+        : item
+    );
   }
 
   if (!cancelled) {
-    button.disabled = false;
-    button.removeAttribute("aria-busy");
-    button.textContent = "Cancelar consulta";
+    if (Array.isArray(remoteAppointments)) {
+      renderCalendar();
+      renderSummary();
+      renderUpcomingAppointmentsPopup();
+    } else {
+      button.disabled = false;
+      button.removeAttribute("aria-busy");
+      button.title = "Cancelar consulta";
+      button.setAttribute(
+        "aria-label",
+        "Cancelar consulta marcada para " + appointmentLabel
+      );
+    }
     showToast("Não foi possível cancelar a consulta. Tente novamente.", true);
     return;
   }
 
-  appointments = appointments.map((item) =>
-    item.id === appointment.id && isSamePatient(item)
-      ? { ...item, status: "cancelled" }
-      : item
-  );
   patientData.saveAppointments(appointments);
   renderCalendar();
   renderSummary();
   renderUpcomingAppointmentsPopup();
-  showToast("Consulta cancelada com sucesso.");
+  showToast("Consulta cancelada com sucesso. O horário foi liberado.");
 }
 
 /* =========================================================
