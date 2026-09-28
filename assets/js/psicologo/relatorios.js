@@ -661,10 +661,15 @@ async function init() {
   }
 
   elements.reportAppointment.addEventListener('change', () => {
-    const appointment = elements.reportAppointment.value ? findAppointment(elements.reportAppointment.value) : null;
+    const appointmentId = elements.reportAppointment.value || '';
+    const appointment = appointmentId ? findAppointment(appointmentId) : null;
     renderAppointmentInfo(appointment);
     renderPatientAvatar(appointment);
-    if (appointment && !elements.reportPatient.value.trim()) {
+
+    currentMood = appointmentId ? data.getAppointmentMood(appointmentId) || null : null;
+    renderMoodPicker();
+
+    if (appointment) {
       elements.reportPatient.value = appointment.patient;
     }
     scheduleDraftSave();
