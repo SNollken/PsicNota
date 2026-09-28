@@ -1,0 +1,56 @@
+/**
+ * Offline layout regression check. Requires Playwright (npm install --no-save playwright).
+ * Run: node tests/responsive-layout.cjs
+ * Optional: CHROME_PATH=/path/to/chromium QA_OUT=/tmp/psicnota-qa
+ * Blocks external requests and backend scripts; checks page layouts, the real
+ * patient-home renderer with fixture data, and populated calendar grids.
+ * This is a layout test, not authentication or database integration coverage.
+ */
+const {chromium}=require('playwright');
+const fs=require('fs');
+const path=require('path');
+const assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'..');
+const server=require('http').createServer((req,res)=>{const p=root+decodeURIComponent(req.url.split('?')[0]);try{res.setHeader('Content-Type',p.endsWith('.css')?'text/css':p.endsWith('.js')?'text/javascript':p.endsWith('.html')?'text/html':'application/octet-stream');res.end(fs.readFileSync(p))}catch{res.statusCode=404;res.end()}});
+(async()=>{
+ await new Promise(r=>server.listen(8899,'127.0.0.1',r));
+ const executablePath=process.env.CHROME_PATH;
+ const browser=await chromium.launch({headless:true,...(executablePath?{executablePath}:{}),args:['--no-sandbox']});
+ const pages=['index.html',...['auth','paciente','psicologo'].flatMap(d=>fs.readdirSync(`${root}/${d}`).filter(f=>f.endsWith('.html')).map(f=>`${d}/${f}`))];
+ const results=[];
+ for(const width of [320,375,430,768,1024,1440]){
+  const page=await browser.newPage({viewport:{width,height:900}});
+  await page.route('**/*',r=>{const u=r.request().url();return !u.startsWith('http://127.0.0.1:8899')|| (u.endsWith('.js')&&!u.endsWith('/menu.js'))?r.abort():r.continue()});
+  for(const p of pages){
+   await page.goto(`http://127.0.0.1:8899/${p}`);
+   if(p==='paciente/home.html') {
+    await page.evaluate(()=>{
+      window.PsicNotaBackend={requireProfile:async()=>({id:'layout-test'})};
+      window.PsiNoteData={getSession:()=>({id:'layout-test'}),getProfiles:()=>[{id:'layout-test',fullName:'Maria de Teste',role:'paciente'}],fromDateKey:d=>new Date(d+'T12:00:00'),getAppointments:()=>[1,2,3].map(n=>({patientId:'layout-test',date:'2099-09-'+(20+n),time:'15:30',psychologist:'Psicóloga com nome completo de exemplo',mode:'online'}))};
+    });
+    await page.addScriptTag({content:fs.readFileSync(root+'/assets/js/paciente/home.js','utf8')});
+   }
+   if(p.includes('agenda-')) await page.evaluate(()=>{
+     const grid=document.querySelector('[role=grid]');
+     const patient=document.body.classList.contains('patient-view');
+     if(grid)grid.innerHTML=Array.from({length:35},(_,i)=>`<button class="${patient?'patient-day':'psic-day'}"><span class="${patient?'patient-day-number':'psic-day-number'}">${i%30+1}</span><span class="${patient?'patient-day-info':'psic-day-info'}">15:30</span></button>`).join('');
+   });
+   if(process.env.QA_OUT && width===375 && p==='paciente/home.html') {
+     fs.mkdirSync(process.env.QA_OUT,{recursive:true});
+     await page.screenshot({path:path.join(process.env.QA_OUT,'patient-home-mobile.png'),fullPage:true});
+   }
+   const issues=await page.evaluate(()=>[...document.querySelectorAll('body *')].filter(e=>{
+    if(e.closest('.sidebar, .sr-only, [hidden]'))return false;
+    const b=e.getBoundingClientRect(),s=getComputedStyle(e);
+    if(!b.width||!b.height||s.visibility==='hidden'||s.display==='none')return false;
+    let a=e.parentElement;while(a&&a!==document.body){if(['auto','scroll'].includes(getComputedStyle(a).overflowX))return false;a=a.parentElement}
+    return b.right>innerWidth+2||b.left< -2;
+   }).map(e=>({tag:e.tagName,cls:e.className,right:Math.round(e.getBoundingClientRect().right),left:Math.round(e.getBoundingClientRect().left)})).slice(0,8));
+   if(issues.length) results.push({width,page:p,issues});
+  }
+  await page.close();
+ }
+ await browser.close();server.close();
+ assert.deepEqual(results,[],JSON.stringify(results,null,2));
+ console.log(`Layout OK: ${pages.length} pages × 6 viewport widths (offline fixtures).`);
+})().catch(error=>{console.error(error);process.exit(1)});

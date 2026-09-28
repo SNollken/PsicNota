@@ -1060,12 +1060,6 @@ input::placeholder {
   }
 }
 
-  .fields-grid-5,
-  .fields-grid-4,
-  .fields-grid-3 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
 
 @media (max-width: 720px) {
   .app-shell {

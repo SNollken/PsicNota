@@ -249,6 +249,7 @@ svg {
 /* Informações */
 
 .next-info {
+    flex: 1;
     min-width: 0;
 
     display: flex;
@@ -267,7 +268,7 @@ svg {
 
     font-weight: 700;
 
-    white-space: nowrap;
+    white-space: normal;
 }
 
 .next-info span {
@@ -287,6 +288,7 @@ svg {
 ========================= */
 
 .next-buttons {
+    width: 100%;
     display: flex;
 
     flex-direction: column;
@@ -302,10 +304,10 @@ svg {
     align-items: center;
     justify-content: center;
 
-    width: 170px;
-    height: 38px;
+    width: min(100%, 220px);
+    min-height: 44px;
 
-    padding: 0;
+    padding: 10px 12px;
 
     border: 1px solid var(--primary);
 
@@ -350,6 +352,7 @@ svg {
 }
 
 .future-header {
+    flex-wrap: wrap;
     display: flex;
 
     justify-content: space-between;
@@ -471,7 +474,7 @@ svg {
 
     line-height: 1.25;
 
-    white-space: nowrap;
+    white-space: normal;
 
     text-overflow: ellipsis;
 }
@@ -485,7 +488,7 @@ svg {
 
     line-height: 1.25;
 
-    white-space: nowrap;
+    white-space: normal;
 }
 
 
@@ -618,11 +621,11 @@ svg {
 
     display:grid;
 
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:minmax(0, 1fr);
 
-    gap:22px;
+    gap:16px;
 
-    margin-top:40px;
+    margin-top:24px;
 
 }
 
