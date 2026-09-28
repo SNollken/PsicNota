@@ -11,11 +11,16 @@
   async function requireProfile(expectedRole) {
     if (!client) throw new Error("Conexão com o banco indisponível.");
 
-    const { data: authData, error: authError } = await client.auth.getUser();
-    if (authError || !authData.user) {
+    // getSession() usa cache local (sem request ao servidor) — evita deslogar
+    // por falha de rede momentãnea ou race no refresh do token.
+    const { data: sessionData } = await client.auth.getSession();
+    const user = sessionData?.session?.user;
+    if (!user) {
       window.location.replace("../auth/login.html");
       return null;
     }
+    // Reutiliza o objeto no formato esperado pelo restante da função
+    const authData = { user };
 
     const { data: profile, error: profileError } = await client
       .from("perfis")
