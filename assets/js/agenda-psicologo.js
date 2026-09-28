@@ -380,7 +380,7 @@ function getPatientOptions() {
     });
   }
 
-  const profiles = supabaseClient ? remotePatientProfiles : data.getProfiles();
+  const profiles = (typeof remotePatientProfiles !== "undefined" && Array.isArray(remotePatientProfiles) && remotePatientProfiles.length) ? remotePatientProfiles : data.getProfiles();
   profiles.forEach((profile) => {
     const role = profile.role || profile.papel;
     if (role !== "paciente" && role !== "patient") return;
@@ -406,7 +406,7 @@ function getPatientOptions() {
     );
   });
 
-  if (!supabaseClient) {
+  if (typeof supabaseClient === "undefined" || !supabaseClient) {
     [...requests, ...appointments].forEach((item) => {
       if (item.patient) {
         upsertPatientOption(

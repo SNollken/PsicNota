@@ -603,9 +603,6 @@
     if (!client || !appointmentId) return false;
 
     try {
-      const user = await getAuthUser();
-      if (!user) return false;
-
       const { data, error } = await client.rpc(
         "cancelar_consulta_paciente",
         { p_consulta_id: appointmentId }

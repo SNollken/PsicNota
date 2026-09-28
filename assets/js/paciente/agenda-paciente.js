@@ -448,6 +448,20 @@ async function cancelUpcomingAppointment(appointment, button) {
     "Cancelando consulta marcada para " + appointmentLabel
   );
 
+  if (!supabaseClient || !usingRemoteAppointments) {
+    appointments = appointments.map((item) =>
+      item.id === appointment.id && isSamePatient(item)
+        ? { ...item, status: "cancelled" }
+        : item
+    );
+    patientData.saveAppointments(appointments);
+    renderCalendar();
+    renderSummary();
+    renderUpcomingAppointmentsPopup();
+    showToast("Consulta cancelada com sucesso. O horário foi liberado.");
+    return;
+  }
+
   let cancelled = false;
   let remoteAppointments = null;
   try {
