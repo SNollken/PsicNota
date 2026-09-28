@@ -903,10 +903,15 @@ function createAppointmentCard(item, withActions) {
     cancel.setAttribute("aria-label", `Cancelar consulta de ${item.patient}`);
     cancel.title = "Cancelar consulta";
     cancel.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
-    cancel.addEventListener("click", (event) => {
+    cancel.addEventListener("click", async (event) => {
       event.preventDefault();
       event.stopPropagation();
-      deleteAppointment(item.id);
+      cancel.disabled = true;
+      try {
+        await deleteAppointment(item.id);
+      } finally {
+        if (cancel.isConnected) cancel.disabled = false;
+      }
     });
 
     actions.append(open, cancel);
@@ -958,26 +963,20 @@ async function deleteAppointment(appointmentId) {
   if (!visibleAppointment) return;
 
   if (supabaseClient) {
-    if (!await loadRemoteAppointments()) {
-      showToast("Não foi possível carregar as consultas para cancelar. Tente novamente.", true);
-      return;
-    }
-
-    const appointment = appointments.find((item) => item.id === appointmentId);
-    if (!appointment || appointment.status === "cancelled") {
+    if (visibleAppointment.status === "cancelled") {
       showToast("Esta consulta não está mais agendada.", true);
       return;
     }
 
     const cancelled = await data.cancelAppointmentInDb(appointmentId);
     if (!cancelled) {
-      await loadRemoteAppointments();
-      showToast("Não foi possível cancelar a consulta no banco.", true);
+      showToast("Não foi possível cancelar a consulta. Tente novamente.", true);
       return;
     }
-    appointment.status = "cancelled";
+    visibleAppointment.status = "cancelled";
     data.saveAppointments(appointments);
     renderAll();
+    await loadRemoteAppointments();
     showToast("Consulta cancelada. O horário voltou a ficar disponível.");
     return;
   }

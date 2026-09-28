@@ -148,7 +148,7 @@ input::placeholder, textarea::placeholder { color: #64727c; }
 .form-error { margin: 18px 0 0; padding: 10px 12px; border-left: 3px solid var(--danger); color: var(--danger); background: var(--danger-bg); font-size: 11px; font-weight: 650; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin: 24px -26px 0; padding: 17px 26px; border-top: 1px solid var(--line); background: #f8fafb; }
 
-.toast { position: fixed; right: 24px; bottom: 24px; z-index: 70; display: flex; align-items: center; gap: 9px; max-width: min(390px, calc(100vw - 40px)); border-left: 3px solid var(--success); background: var(--success-bg); color: var(--success); box-shadow: 0 14px 34px rgba(17, 24, 39, .12); padding: 12px 15px; font-size: 12px; font-weight: 700; }
+.toast { position: fixed; right: 24px; bottom: 24px; z-index: 1100; display: flex; align-items: center; gap: 9px; max-width: min(390px, calc(100vw - 40px)); border-left: 3px solid var(--success); background: var(--success-bg); color: var(--success); box-shadow: 0 14px 34px rgba(17, 24, 39, .12); padding: 12px 15px; font-size: 12px; font-weight: 700; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 body.modal-open { overflow: hidden; }
 
