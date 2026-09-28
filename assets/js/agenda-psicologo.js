@@ -380,7 +380,8 @@ function getPatientOptions() {
     });
   }
 
-  [...remotePatientProfiles, ...data.getProfiles()].forEach((profile) => {
+  const profiles = supabaseClient ? remotePatientProfiles : data.getProfiles();
+  profiles.forEach((profile) => {
     const role = profile.role || profile.papel;
     if (role !== "paciente" && role !== "patient") return;
 
@@ -405,15 +406,17 @@ function getPatientOptions() {
     );
   });
 
-  [...requests, ...appointments].forEach((item) => {
-    if (item.patient) {
-      upsertPatientOption(
-        item.patient,
-        item.patientId || null,
-        renderableAvatarUrl(item.avatarDataUrl, item.patientAvatar)
-      );
-    }
-  });
+  if (!supabaseClient) {
+    [...requests, ...appointments].forEach((item) => {
+      if (item.patient) {
+        upsertPatientOption(
+          item.patient,
+          item.patientId || null,
+          renderableAvatarUrl(item.avatarDataUrl, item.patientAvatar)
+        );
+      }
+    });
+  }
 
   return [...map.values()].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
 }
