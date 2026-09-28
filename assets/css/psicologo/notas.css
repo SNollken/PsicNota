@@ -33,3 +33,12 @@ body { margin: 0; background: var(--notes-canvas); color: var(--notes-ink); font
 }
 @media (max-width: 1024px) { .mobile-menu { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); z-index: 1; } }
 @media (max-width: 720px) { .notes-main { margin-left: 0; } .notes-topbar { height: 74px; } .notes-topbar h1 { font-size: 23px; transform: none; } .mobile-menu { display: block; font-size: 27px; } .notes-content { padding: 26px 18px; } #noteText { height: 55vh; } .notes-actions { padding: 0; margin-top: 24px; } .notes-actions button { width: 100%; } }
+
+@media (max-width: 720px) {
+  .notes-topbar {
+    height: auto;
+    min-height: 82px;
+    padding: 16px 18px 16px 76px;
+  }
+  .notes-topbar h1 { font-size: 22px; overflow-wrap: anywhere; }
+}

@@ -30,6 +30,10 @@ const server=require('http').createServer((req,res)=>{const p=root+decodeURIComp
     });
     await page.addScriptTag({content:fs.readFileSync(root+'/assets/js/paciente/home.js','utf8')});
    }
+   if(p==='psicologo/pacientes.html') await page.evaluate(()=>{
+     document.querySelector('#patientTotal').textContent='2 pacientes no total';
+     document.querySelector('.patient-list').innerHTML=['Carlos Eduardo Menezes','Mario'].map(name=>`<a class="patient-card" href="paciente-perfil.html"><div class="patient-avatar">${name[0]}</div><div class="patient-info"><strong>${name}</strong><div class="patient-meta"><span class="patient-next">Próxima: 29/09/2026 às 09:00</span><span>Última consulta: 28/09/2026</span></div></div><div class="patient-arrow">›</div></a>`).join('');
+   });
    if(p.includes('agenda-')) await page.evaluate(()=>{
      const grid=document.querySelector('[role=grid]');
      const patient=document.body.classList.contains('patient-view');
@@ -39,6 +43,20 @@ const server=require('http').createServer((req,res)=>{const p=root+decodeURIComp
      fs.mkdirSync(process.env.QA_OUT,{recursive:true});
      await page.screenshot({path:path.join(process.env.QA_OUT,'patient-home-mobile.png'),fullPage:true});
    }
+   const overlaps=await page.evaluate(()=>{
+     const problems=[];
+     for(const heading of document.querySelectorAll('main h1')) {
+       const header=heading.closest('header') || heading.parentElement;
+       for(const control of header.querySelectorAll('button, a, .patients-count, .badge')) {
+         if(control.closest('[hidden]'))continue;
+         const a=heading.getBoundingClientRect(), b=control.getBoundingClientRect();
+         if(b.width && b.height && Math.min(a.right,b.right)-Math.max(a.left,b.left)>1 && Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>1) problems.push({title:heading.textContent.trim(),control:control.className});
+       }
+     }
+     return problems;
+   });
+   if(overlaps.length)results.push({width,page:p,overlaps});
+   if(process.env.QA_OUT && width===375 && p==='psicologo/pacientes.html') await page.screenshot({path:path.join(process.env.QA_OUT,'patients-mobile.png'),fullPage:true});
    const issues=await page.evaluate(()=>[...document.querySelectorAll('body *')].filter(e=>{
     if(e.closest('.sidebar, .sr-only, [hidden]'))return false;
     const b=e.getBoundingClientRect(),s=getComputedStyle(e);
