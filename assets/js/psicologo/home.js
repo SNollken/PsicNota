@@ -169,8 +169,10 @@
 
   async function loadHome() {
     if (!client) return;
-    const { data: authData, error: authError } = await client.auth.getUser();
-    if (authError || !authData.user) {
+    // getSession() usa cache local — evita redirect pra login por falha de rede momentânea
+    const { data: sessionData } = await client.auth.getSession();
+    const authData = { user: sessionData?.session?.user };
+    if (!authData.user) {
       window.location.replace("../auth/login.html");
       return;
     }
