@@ -1,0 +1,24 @@
+/* Correção mobile do marcador "HOJE" na agenda do paciente.
+   Mantém o número do dia legível e posiciona o rótulo abaixo dele
+   quando o mesmo dia também possui um horário/status. */
+
+@media (max-width: 760px) {
+  .patient-day {
+    padding: 10px 7px;
+  }
+
+  .patient-day-number {
+    position: relative;
+    z-index: 1;
+  }
+
+  .patient-day-today-label {
+    top: 28px;
+    left: 7px;
+    right: auto;
+    font-size: 8px;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+}
