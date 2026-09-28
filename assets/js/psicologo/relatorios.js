@@ -176,7 +176,7 @@ function renderMoodPicker() {
   });
 }
 
-const DRAFT_KEY = 'psinote.reportDraft';
+const DRAFT_KEY = data.getAccountStorageKey('psinote.reportDraft');
 let draftTimer = null;
 
 let toastTimeout = null;

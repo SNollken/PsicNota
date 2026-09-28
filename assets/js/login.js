@@ -4,9 +4,10 @@
   const form = document.getElementById("loginForm");
   const message = document.getElementById("loginMessage");
   const client = window.PsicNotaSupabase;
+  const data = window.PsiNoteData;
   const USER_EMAIL_DOMAIN = "@psicnota.test";
 
-  if (!form || !client) return;
+  if (!form || !client || !data) return;
 
   function setFieldError(input, text) {
     const error = document.getElementById(input.id + "Error");
@@ -94,13 +95,8 @@
       email: profile.email,
       loggedAt: new Date().toISOString()
     };
-    const storage = document.getElementById("rememberMe").checked ? localStorage : sessionStorage;
-    [localStorage, sessionStorage].forEach((item) => {
-      item.removeItem("psinote.auth.session");
-      item.removeItem("psinoteSession");
-    });
-    storage.setItem("psinote.auth.session", JSON.stringify(legacySession));
-    storage.setItem("psinoteSession", JSON.stringify(legacySession));
+    const remember = document.getElementById("rememberMe").checked;
+    data.setSession(legacySession, remember);
 
     showMessage("Login realizado com sucesso!", "success");
     window.location.href = profile.papel === "psicologo" ? "../psicologo/home.html" : "../paciente/home.html";

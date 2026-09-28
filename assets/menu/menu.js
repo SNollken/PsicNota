@@ -140,13 +140,28 @@
     return 'psicologo';
   }
 
-  /* MVP-04: logout apaga só a sessão, preservando dados clínicos do demo
-     (consultas, notas, relatórios cacheados no localStorage). */
+  function limparCacheClinico() {
+    var prefixes = [
+      'psinote.agenda.appointments',
+      'psinote.agenda.requests',
+      'psinote.agenda.notes',
+      'psinote.reports',
+      'psinote.reportDraft'
+    ];
+    try {
+      for (var index = window.localStorage.length - 1; index >= 0; index -= 1) {
+        var key = window.localStorage.key(index);
+        if (prefixes.some(function (prefix) { return key === prefix || key.indexOf(prefix + '::') === 0; })) {
+          window.localStorage.removeItem(key);
+        }
+      }
+    } catch {}
+  }
 
   /* Logout global do <psic-menu>. Funciona com ou sem backend/cliente Supabase:
        1) signOut do Supabase global (melhor esforço);
        2) signOut do PsicNotaBackend se existir (perfil.html);
-       3) clearSession do shared-data (remove só as chaves de sessão);
+       3) clearSession do shared-data (limpa cache clínico e sessão local);
        4) redirect para o login. */
   function sair() {
     try {
@@ -164,6 +179,8 @@
     try {
       if (window.PsiNoteData && typeof window.PsiNoteData.clearSession === 'function') {
         window.PsiNoteData.clearSession();
+      } else {
+        limparCacheClinico();
       }
     } catch (error) { /* melhor esforço */ }
 

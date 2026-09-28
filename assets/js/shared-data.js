@@ -10,7 +10,15 @@
     latestProfile: "psinoteProfileDemo",
     session: "psinote.auth.session"
   };
+  const CLINICAL_STORAGE_KEYS = [
+    STORAGE_KEYS.appointments,
+    STORAGE_KEYS.requests,
+    STORAGE_KEYS.notes,
+    STORAGE_KEYS.reports
+  ];
+  const REPORT_DRAFT_KEY = "psinote.reportDraft";
   const UNLINKED_NOTE_PREFIX = "__sem_consulta__:";
+  let legacyCacheCleaned = false;
 
   function createId(prefix = "item") {
     if (window.crypto && typeof window.crypto.randomUUID === "function") {
@@ -50,7 +58,151 @@
   }
 
   function write(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
+    localStorage.setItem(storageKeyFor(key), JSON.stringify(value));
+  }
+
+  function getAccountStorageKey(key, accountId) {
+    const session = getSession();
+    const id = accountId || session?.id || "anonymous";
+    return `${key}::${encodeURIComponent(String(id))}`;
+  }
+
+  function storageKeyFor(key) {
+    return CLINICAL_STORAGE_KEYS.includes(key) ? getAccountStorageKey(key) : key;
+  }
+
+  function isClinicalCacheKey(key) {
+    if (!key) return false;
+    return CLINICAL_STORAGE_KEYS.some((base) => key === base || key.startsWith(`${base}::`))
+      || key === REPORT_DRAFT_KEY
+      || key.startsWith(`${REPORT_DRAFT_KEY}::`);
+  }
+
+  function clearClinicalCache() {
+    try {
+      for (let index = localStorage.length - 1; index >= 0; index -= 1) {
+        const key = localStorage.key(index);
+        if (isClinicalCacheKey(key)) localStorage.removeItem(key);
+      }
+    } catch (error) {
+      console.warn("Não foi possível limpar todo o cache clínico.", error);
+    }
+
+    CLINICAL_STORAGE_KEYS.forEach((key) => {
+      try {
+        localStorage.removeItem(key);
+        localStorage.removeItem(getAccountStorageKey(key));
+      } catch (error) {
+        console.warn(`Não foi possível remover ${key} do cache.`, error);
+      }
+    });
+    try {
+      localStorage.removeItem(REPORT_DRAFT_KEY);
+      localStorage.removeItem(getAccountStorageKey(REPORT_DRAFT_KEY));
+    } catch (error) {
+      console.warn("Não foi possível remover o rascunho do relatório.", error);
+    }
+  }
+
+  function clearLegacyClinicalCache() {
+    CLINICAL_STORAGE_KEYS.forEach((key) => {
+      try {
+        localStorage.removeItem(key);
+      } catch (error) {
+        console.warn(`Não foi possível remover o cache antigo ${key}.`, error);
+      }
+    });
+    try {
+      localStorage.removeItem(REPORT_DRAFT_KEY);
+    } catch (error) {
+      console.warn("Não foi possível remover o rascunho antigo do relatório.", error);
+    }
+  }
+
+  function migrateLegacyClinicalCache(session) {
+    const accountId = String(session?.id || "");
+    const role = String(session?.role || session?.papel || "").toLowerCase();
+    const isPatient = ["paciente", "patient"].includes(role);
+    const isPsychologist = ["psicologo", "psychologist"].includes(role);
+    if (!accountId || (!isPatient && !isPsychologist)) return false;
+
+    const scopedKey = (key) => getAccountStorageKey(key, accountId);
+    const hasScopedValue = (key) => {
+      try {
+        return localStorage.getItem(scopedKey(key)) !== null;
+      } catch {
+        return true;
+      }
+    };
+    const legacyAppointments = readStorage(localStorage, STORAGE_KEYS.appointments, []);
+    const ownsAppointment = (item) => isPatient
+      ? String(item?.patientId || "") === accountId
+      : String(item?.psychologistId || "") === accountId;
+    const importedAppointments = Array.isArray(legacyAppointments)
+      ? legacyAppointments.filter(ownsAppointment)
+      : [];
+    const appointments = hasScopedValue(STORAGE_KEYS.appointments)
+      ? readStorage(localStorage, scopedKey(STORAGE_KEYS.appointments), [])
+      : importedAppointments;
+
+    if (!hasScopedValue(STORAGE_KEYS.appointments)) {
+      localStorage.setItem(scopedKey(STORAGE_KEYS.appointments), JSON.stringify(importedAppointments));
+    }
+
+    const appointmentIds = new Set(
+      (Array.isArray(appointments) ? appointments : []).map((item) => String(item?.id || ""))
+    );
+    const legacyRequests = readStorage(localStorage, STORAGE_KEYS.requests, []);
+    const importedRequests = Array.isArray(legacyRequests)
+      ? legacyRequests.filter((item) => isPatient
+        ? String(item?.patientId || "") === accountId
+        : String(item?.psychologistId || "") === accountId)
+      : [];
+    if (!hasScopedValue(STORAGE_KEYS.requests)) {
+      localStorage.setItem(scopedKey(STORAGE_KEYS.requests), JSON.stringify(importedRequests));
+    }
+
+    const legacyNotes = readStorage(localStorage, STORAGE_KEYS.notes, {});
+    const importedNotes = {};
+    if (isPsychologist && legacyNotes && typeof legacyNotes === "object" && !Array.isArray(legacyNotes)) {
+      Object.entries(legacyNotes).forEach(([key, value]) => {
+        if (key === `note:unlinked:${accountId}`) {
+          importedNotes[key] = value;
+          return;
+        }
+        if (!key.startsWith("appt:")) return;
+        const appointmentId = key.slice("appt:".length).replace(/:mood$/, "");
+        if (appointmentIds.has(appointmentId)) importedNotes[key] = value;
+      });
+    }
+    if (!hasScopedValue(STORAGE_KEYS.notes)) {
+      localStorage.setItem(scopedKey(STORAGE_KEYS.notes), JSON.stringify(importedNotes));
+    }
+
+    const legacyReports = readStorage(localStorage, STORAGE_KEYS.reports, []);
+    const importedReports = isPsychologist && Array.isArray(legacyReports)
+      ? legacyReports.filter((item) =>
+        String(item?.psychologistId || "") === accountId
+        || appointmentIds.has(String(item?.appointmentId || "")))
+      : [];
+    if (!hasScopedValue(STORAGE_KEYS.reports)) {
+      localStorage.setItem(scopedKey(STORAGE_KEYS.reports), JSON.stringify(importedReports));
+    }
+
+    const legacyDraft = readStorage(localStorage, REPORT_DRAFT_KEY, null);
+    const scopedDraftKey = getAccountStorageKey(REPORT_DRAFT_KEY, accountId);
+    if (isPsychologist && legacyDraft?.appointmentId && appointmentIds.has(String(legacyDraft.appointmentId))) {
+      try {
+        if (localStorage.getItem(scopedDraftKey) === null) {
+          localStorage.setItem(scopedDraftKey, JSON.stringify(legacyDraft));
+        }
+      } catch (error) {
+        console.warn("Não foi possível migrar o rascunho vinculado à conta.", error);
+      }
+    }
+
+    clearLegacyClinicalCache();
+    return true;
   }
 
   function defaultSlotsForDate(dateKey) {
@@ -66,20 +218,23 @@
   }
 
   function ensureData() {
-    if (!Array.isArray(readStorage(localStorage, STORAGE_KEYS.appointments, null))) write(STORAGE_KEYS.appointments, []);
-    if (!Array.isArray(readStorage(localStorage, STORAGE_KEYS.requests, null))) write(STORAGE_KEYS.requests, []);
-    const notes = readStorage(localStorage, STORAGE_KEYS.notes, null);
+    if (!legacyCacheCleaned && getSession()?.id) {
+      legacyCacheCleaned = migrateLegacyClinicalCache(getSession());
+    }
+    if (!Array.isArray(readStorage(localStorage, storageKeyFor(STORAGE_KEYS.appointments), null))) write(STORAGE_KEYS.appointments, []);
+    if (!Array.isArray(readStorage(localStorage, storageKeyFor(STORAGE_KEYS.requests), null))) write(STORAGE_KEYS.requests, []);
+    const notes = readStorage(localStorage, storageKeyFor(STORAGE_KEYS.notes), null);
     if (!notes || typeof notes !== "object" || Array.isArray(notes)) write(STORAGE_KEYS.notes, {});
     if (!Array.isArray(readStorage(localStorage, STORAGE_KEYS.profiles, null))) {
       const latest = readStorage(localStorage, STORAGE_KEYS.latestProfile, null);
       write(STORAGE_KEYS.profiles, latest ? [latest] : []);
     }
-    if (!Array.isArray(readStorage(localStorage, STORAGE_KEYS.reports, null))) write(STORAGE_KEYS.reports, []);
+    if (!Array.isArray(readStorage(localStorage, storageKeyFor(STORAGE_KEYS.reports), null))) write(STORAGE_KEYS.reports, []);
   }
 
   function getAppointments() {
     ensureData();
-    return readStorage(localStorage, STORAGE_KEYS.appointments, []);
+    return readStorage(localStorage, storageKeyFor(STORAGE_KEYS.appointments), []);
   }
 
   function saveAppointments(items) {
@@ -88,7 +243,7 @@
 
   function getRequests() {
     ensureData();
-    return readStorage(localStorage, STORAGE_KEYS.requests, []);
+    return readStorage(localStorage, storageKeyFor(STORAGE_KEYS.requests), []);
   }
 
   function saveRequests(items) {
@@ -97,7 +252,7 @@
 
   function getNotes() {
     ensureData();
-    return readStorage(localStorage, STORAGE_KEYS.notes, {});
+    return readStorage(localStorage, storageKeyFor(STORAGE_KEYS.notes), {});
   }
 
   function saveNotes(notes) {
@@ -115,7 +270,7 @@
 
   function getReports() {
     ensureData();
-    return readStorage(localStorage, STORAGE_KEYS.reports, []);
+    return readStorage(localStorage, storageKeyFor(STORAGE_KEYS.reports), []);
   }
 
   function saveReports(items) {
@@ -180,24 +335,35 @@
   }
 
   function setSession(user, remember = true) {
-    clearSession();
+    const previousUserId = getSession()?.id || null;
+    const nextUserId = user?.id || null;
+    const changedAccount = Boolean(nextUserId && previousUserId && previousUserId !== nextUserId);
+    if (changedAccount) clearClinicalCache();
+    removeSessionKeys();
     const storage = remember ? localStorage : sessionStorage;
     storage.setItem(STORAGE_KEYS.session, JSON.stringify(user));
     storage.setItem("psinoteSession", JSON.stringify(user));
+    legacyCacheCleaned = changedAccount || migrateLegacyClinicalCache(user);
   }
 
-  function clearSession() {
+  function removeSessionKeys() {
     [localStorage, sessionStorage].forEach((storage) => {
       storage.removeItem(STORAGE_KEYS.session);
       storage.removeItem("psinoteSession");
     });
   }
 
+  function clearSession() {
+    clearClinicalCache();
+    removeSessionKeys();
+    legacyCacheCleaned = false;
+  }
+
   /* =========================================================
      SINCRONIZAÇÃO COM O BANCO (Supabase)
      Em sessão autenticada o banco é a fonte de verdade e o
-     localStorage vira cache (write-through). Sem cliente ou sem
-     sessão, o cache local continua a fonte (offline).
+     localStorage vira cache isolado por conta (write-through).
+     Sem cliente ou sessão, o cache anônimo continua disponível.
      ========================================================= */
 
   function getSupabaseClient() {
@@ -570,6 +736,7 @@
 
   window.PsiNoteData = {
     STORAGE_KEYS,
+    getAccountStorageKey,
     createId,
     toDateKey,
     fromDateKey,
