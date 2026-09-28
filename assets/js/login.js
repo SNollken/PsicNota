@@ -5,7 +5,7 @@
   const message = document.getElementById("loginMessage");
   const client = window.PsicNotaSupabase;
   const data = window.PsiNoteData;
-  const USER_EMAIL_DOMAIN = "@psicnota.test";
+  const DEMO_USERS = new Set(["psicologo", "paciente"]);
 
   if (!form || !client || !data) return;
 
@@ -39,20 +39,15 @@
     const password = passwordInput.value;
     const submit = form.querySelector('button[type="submit"]');
 
-    setFieldError(usernameInput, identifier ? "" : "Informe seu usuário ou e-mail.");
+    setFieldError(usernameInput, identifier ? "" : "Informe psicologo ou paciente.");
     setFieldError(passwordInput, password ? "" : "Informe sua senha.");
     if (!identifier || !password) {
       showMessage("Revise os campos indicados antes de continuar.", "error");
       return;
     }
-    const email = identifier.includes("@")
-      ? identifier
-      : /^[a-z0-9._-]+$/.test(identifier)
-        ? identifier + USER_EMAIL_DOMAIN
-        : null;
-    if (!email) {
-      setFieldError(usernameInput, "Digite um e-mail válido ou nome de usuário.");
-      showMessage("Confira o e-mail ou usuário informado.", "error");
+    if (!DEMO_USERS.has(identifier)) {
+      setFieldError(usernameInput, "Digite psicologo ou paciente.");
+      showMessage("Use psicologo ou paciente para entrar.", "error");
       return;
     }
 
@@ -60,10 +55,19 @@
     submit.textContent = "Entrando...";
     showMessage("");
 
-    const { data, error } = await client.auth.signInWithPassword({
-      email,
-      password
-    });
+    let authResult;
+    try {
+      authResult = await client.auth.signInWithPassword({
+        email: `${identifier}@psicnota.test`,
+        password
+      });
+    } catch (error) {
+      showMessage("Não foi possível conectar. Verifique sua internet e tente novamente.", "error");
+      submit.disabled = false;
+      submit.textContent = "Entrar";
+      return;
+    }
+    const { data: authData, error } = authResult;
 
     if (error) {
       setFieldError(passwordInput, "Usuário ou senha incorretos.");
@@ -73,11 +77,20 @@
       return;
     }
 
-    const { data: profile, error: profileError } = await client
-      .from("perfis")
-      .select("id, papel, nome_completo, nome_social, email")
-      .eq("id", data.user.id)
-      .single();
+    let profileResult;
+    try {
+      profileResult = await client
+        .from("perfis")
+        .select("id, papel, nome_completo, nome_social, email")
+        .eq("id", authData.user.id)
+        .single();
+    } catch (error) {
+      showMessage("Não foi possível carregar o perfil. Tente novamente.", "error");
+      submit.disabled = false;
+      submit.textContent = "Entrar";
+      return;
+    }
+    const { data: profile, error: profileError } = profileResult;
 
     if (profileError) {
       await client.auth.signOut();
