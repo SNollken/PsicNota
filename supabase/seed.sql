@@ -10,6 +10,7 @@
 --   1) schema-base aplicado (schema-proposto.sql do histórico)
 --   2) supabase/migrations/20260916000001_recria_helpers_de_papel_publico.sql
 --   3) supabase/migrations/20260916100000_recria_tabela_relatorios.sql
+--   4) supabase/migrations/20260923120000_adiciona_modalidade_disponibilidades.sql
 -- Como rodar: Supabase Dashboard > SQL Editor > colar tudo > Run.
 -- Idempotente: pode rodar de novo que os dados são re-sincronizados.
 -- As contas de auth.users (criadas pelo app) não são tocadas; os UUIDs
@@ -109,20 +110,29 @@ begin
 
   -- -----------------------------------------------------------------
   -- 3) DISPONIBILIDADES SEMANAIS (0 = domingo)
-  --    seg: 09h 10h 14h 15h | ter: 09h 10h | qua: 09h 10h 11h 14h
-  --    sex: 09h 10h 14h
+  --    Atendimento somente segunda (1), quarta (3) e sexta (5).
+  --    Em cada dia: 4 horários online + 2 horários presenciais.
+  --    Online: 09h, 10h, 14h e 15h | Presencial: 11h e 16h
   -- -----------------------------------------------------------------
   delete from public.disponibilidades where psicologo_id = psi;
 
-  insert into public.disponibilidades (psicologo_id, dia_semana, horario)
-  select psi, d.dia::smallint, d.horario::time
+  insert into public.disponibilidades (psicologo_id, dia_semana, horario, modalidade)
+  select psi, d.dia::smallint, d.horario::time, d.modalidade
   from (values
-    (1, '09:00'), (1, '10:00'), (1, '14:00'), (1, '15:00'),
-    (2, '09:00'), (2, '10:00'),
-    (3, '09:00'), (3, '10:00'), (3, '11:00'), (3, '14:00'),
-    (5, '09:00'), (5, '10:00'), (5, '14:00')
-  ) as d(dia, horario)
-  on conflict (psicologo_id, dia_semana, horario) do nothing;
+    (1, '09:00', 'online'), (1, '10:00', 'online'),
+    (1, '14:00', 'online'), (1, '15:00', 'online'),
+    (1, '11:00', 'presencial'), (1, '16:00', 'presencial'),
+
+    (3, '09:00', 'online'), (3, '10:00', 'online'),
+    (3, '14:00', 'online'), (3, '15:00', 'online'),
+    (3, '11:00', 'presencial'), (3, '16:00', 'presencial'),
+
+    (5, '09:00', 'online'), (5, '10:00', 'online'),
+    (5, '14:00', 'online'), (5, '15:00', 'online'),
+    (5, '11:00', 'presencial'), (5, '16:00', 'presencial')
+  ) as d(dia, horario, modalidade)
+  on conflict (psicologo_id, dia_semana, horario) do update set
+    modalidade = excluded.modalidade;
 
   -- -----------------------------------------------------------------
   -- 4) SOLICITAÇÕES PENDENTES (uma por paciente; a psicóloga
