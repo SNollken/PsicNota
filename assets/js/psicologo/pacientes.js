@@ -412,7 +412,7 @@ function renderPatient(patient) {
   function openHistory() {
 
     window.location.href =
-      `historico.html?${patient.id ? `id=${encodeURIComponent(patient.id)}&` : ""}paciente=${encodeURIComponent(
+      `paciente-perfil.html?${patient.id ? `id=${encodeURIComponent(patient.id)}&` : ""}paciente=${encodeURIComponent(
         patient.name
       )}`;
 
@@ -590,7 +590,7 @@ function renderPatient(patient) {
 
   /* =========================
      MONTAR CARD
-  ========================= */
+  ========================== */
 
   card.append(
     avatar,

@@ -1,18 +1,7 @@
-/* Ajustes visuais da agenda do paciente. */
-
-/* Dias com horário disponível usam a mesma paleta azul do marcador de hoje. */
-.patient-day.has-available {
-  border-color: #174e61;
-}
-
-.patient-day.has-available .patient-day-number,
-.patient-day.has-available .patient-day-info {
-  color: #174e61;
-}
-
 /* Correção mobile do marcador "HOJE" na agenda do paciente.
    Mantém o número do dia legível e posiciona o rótulo abaixo dele
    quando o mesmo dia também possui um horário/status. */
+
 @media (max-width: 760px) {
   .patient-day {
     padding: 10px 7px;

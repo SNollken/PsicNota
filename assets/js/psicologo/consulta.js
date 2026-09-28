@@ -84,7 +84,7 @@ function renderAppointmentInfo() {
   const encodedPatient = encodeURIComponent(appointment.patient);
   const idParam = appointment.patientId ? `id=${encodeURIComponent(appointment.patientId)}&` : "";
   elements.patientPillAvatar.textContent = getInitials(appointment.patient);
-  elements.historicoLink.href = `historico.html?${idParam}paciente=${encodedPatient}`;
+  elements.historicoLink.href = `paciente-perfil.html?${idParam}paciente=${encodedPatient}`;
 }
 
 async function loadPatientAvatar() {
@@ -253,7 +253,7 @@ async function init() {
   elements.finishAppointmentButton.addEventListener('click', async () => {
     await saveNotes();
     if (elements.sessionReport.value.trim()) await saveReport();
-    window.location.href = `historico.html?${appointment.patientId ? `id=${encodeURIComponent(appointment.patientId)}&` : ""}paciente=${encodeURIComponent(appointment.patient)}`;
+    window.location.href = `paciente-perfil.html?${appointment.patientId ? `id=${encodeURIComponent(appointment.patientId)}&` : ""}paciente=${encodeURIComponent(appointment.patient)}`;
   });
   elements.noteMoodPicker.querySelectorAll('.mood-option').forEach((option) => {
     option.addEventListener('click', () => {
