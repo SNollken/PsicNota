@@ -953,7 +953,6 @@ function renderCompletedPopup(dateKey = null) {
 async function deleteAppointment(appointmentId) {
   const visibleAppointment = appointments.find((item) => item.id === appointmentId);
   if (!visibleAppointment) return;
-  if (!window.confirm(`Cancelar a consulta de ${visibleAppointment.patient} às ${visibleAppointment.time}?`)) return;
 
   if (supabaseClient) {
     if (!await loadRemoteAppointments()) {
@@ -980,7 +979,7 @@ async function deleteAppointment(appointmentId) {
     return;
   }
 
-  appointment.status = "cancelled";
+  visibleAppointment.status = "cancelled";
   data.saveAppointments(appointments);
   renderAll();
   showToast("Consulta cancelada. O horário voltou a ficar disponível.");
