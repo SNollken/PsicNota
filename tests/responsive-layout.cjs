@@ -20,9 +20,30 @@ const server=require('http').createServer((req,res)=>{const p=root+decodeURIComp
  const results=[];
  for(const width of [320,375,430,768,1024,1440]){
   const page=await browser.newPage({viewport:{width,height:900}});
-  await page.route('**/*',r=>{const u=r.request().url();return !u.startsWith('http://127.0.0.1:8899')|| (u.endsWith('.js')&&!u.endsWith('/menu.js'))?r.abort():r.continue()});
+  await page.route('**/*',r=>{const u=r.request().url();return !u.startsWith('http://127.0.0.1:8899')|| (u.endsWith('.js')&&!u.endsWith('/menu.js')&&!u.endsWith('/landing-menu.js'))?r.abort():r.continue()});
   for(const p of pages){
    await page.goto(`http://127.0.0.1:8899/${p}`);
+   if(p==='index.html') {
+     const signIn=page.locator('.topbar-actions .button-ghost');
+     assert.equal(await signIn.isVisible(),true,`Sign in must be visible at ${width}px`);
+     if(width<=900) {
+       const header=await page.locator('.topbar-inner').boundingBox();
+       assert.ok(header.height<=90,`Mobile header must stay on one row at ${width}px`);
+       const toggle=page.locator('.landing-mobile-menu summary');
+       await toggle.click();
+       assert.equal(await page.locator('.landing-mobile-links a[href="auth/cadastro.html"]').isVisible(),true);
+       await page.keyboard.press('Escape');
+       assert.equal(await page.locator('.landing-mobile-menu').getAttribute('open'),null);
+       await toggle.click();
+       await page.locator('.landing-mobile-links a[href="#recursos"]').click();
+       assert.equal(await page.locator('.landing-mobile-menu').getAttribute('open'),null);
+       await page.evaluate(()=>window.scrollTo(0,0));
+       if(process.env.QA_OUT && width===375) {
+         fs.mkdirSync(process.env.QA_OUT,{recursive:true});
+         await page.screenshot({path:path.join(process.env.QA_OUT,'landing-mobile.png')});
+       }
+     }
+   }
    if(p==='paciente/home.html') {
     await page.evaluate(()=>{
       window.PsicNotaBackend={requireProfile:async()=>({id:'layout-test'})};
