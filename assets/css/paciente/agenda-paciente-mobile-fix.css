@@ -10,6 +10,50 @@
   color: #174e61;
 }
 
+/* Mantém o cancelamento de consulta como um X vermelho compacto na lateral,
+   mesmo quando estilos responsivos genéricos tentam expandir os botões. */
+.upcoming-appointment-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.upcoming-appointment-cancel,
+.appointments-popup .upcoming-appointment-cancel {
+  display: grid !important;
+  place-items: center;
+  width: 32px !important;
+  min-width: 32px !important;
+  max-width: 32px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  flex: 0 0 32px !important;
+  border: 0 !important;
+  border-radius: 50%;
+  background: transparent !important;
+  color: #d90307 !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  overflow: hidden;
+}
+
+.upcoming-appointment-cancel:hover:not(:disabled),
+.appointments-popup .upcoming-appointment-cancel:hover:not(:disabled) {
+  background: #fff1f2 !important;
+}
+
+.upcoming-appointment-cancel svg,
+.appointments-popup .upcoming-appointment-cancel svg {
+  display: block;
+  width: 18px !important;
+  height: 18px !important;
+  margin: 0 !important;
+  stroke: currentColor;
+  stroke-width: 2.4;
+}
+
 /* Correção mobile do marcador "HOJE" na agenda do paciente.
    Mantém o número do dia legível e posiciona o rótulo abaixo dele
    quando o mesmo dia também possui um horário/status. */
