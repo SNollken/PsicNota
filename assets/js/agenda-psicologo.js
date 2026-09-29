@@ -865,7 +865,6 @@ async function approveRequest(requestId) {
 async function rejectRequest(requestId) {
   const request = requests.find((item) => item.id === requestId);
   if (!request || request.status !== "pending") return;
-  if (!window.confirm(`Recusar a solicitação de ${request.patient} para ${request.time}?`)) return;
 
   if (supabaseClient && usingRemoteRequests) {
     const { error: rejectError, count } = await supabaseClient
