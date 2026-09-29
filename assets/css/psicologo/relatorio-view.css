@@ -246,42 +246,16 @@ body { background: var(--blue-25); }
 .report-mood-options .mood-pill.is-selected { background: var(--blue-200); font-weight: 700; }
 
 .report-view-editor {
-  min-height: 663px;
+  min-height: 0;
   border-color: var(--line);
   border-radius: 25px;
   background: var(--blue-50);
   box-shadow: none;
 }
 
-.report-view-editor .editor-toolbar {
-  top: 14px;
-  min-height: 52px;
-  padding: 3px 7px;
-  border-color: #b8d6ff;
-  border-radius: 10px;
-  background: #f8fbff;
-  box-shadow: none;
-}
-
-.report-view-editor .toolbar-group { padding: 0 4px; }
-.report-view-editor .toolbar-group + .toolbar-group { border-left: 1px solid #d5e5ff; }
-
-.report-view-editor .toolbar-select {
-  min-width: 110px;
-  height: 34px;
-  padding: 0 12px;
-  border: 1px solid #c8dcff;
-  border-radius: 7px;
-  background: #f8fbff;
-}
-
-.report-view-editor .toolbar-size { min-width: 66px; }
-.report-view-editor .toolbar-button { color: #123b72; }
-.report-view-editor .toolbar-button.is-muted { color: #91afd9; }
-
 .report-view-body {
-  min-height: 663px;
-  padding: 84px 28px 34px;
+  min-height: 320px;
+  padding: 34px 28px;
   color: var(--ink);
   font-size: 1.05rem;
   line-height: 1.4;
@@ -314,10 +288,8 @@ body { background: var(--blue-25); }
   .report-view-header { min-height: 82px; margin-inline: -18px; padding-inline: 18px; }
   .report-view-header h1 { font-size: 23px; }
   .report-view-document { padding-top: 24px; }
-  .report-view-editor { min-height: 480px; }
-  .report-view-editor .editor-toolbar { position: static; transform: none; flex-wrap: wrap; justify-content: center; margin: 12px; padding: 8px; }
-  .report-view-editor .toolbar-group + .toolbar-group { border-left: 0; }
-  .report-view-body { min-height: 390px; padding: 24px 18px; font-size: 1rem; }
+  .report-view-editor { min-height: 0; }
+  .report-view-body { min-height: 260px; padding: 24px 18px; font-size: 1rem; }
   .report-view-body .report-block-text { font-size: 1rem; }
   .report-view-footer { flex-direction: column-reverse; }
   .report-view-footer .button { width: 100%; }
@@ -328,7 +300,6 @@ body { background: var(--blue-25); }
   .report-view-header, .report-view-footer, .sidebar, .mobile-menu { display: none !important; }
   .report-view-document { width: 100%; padding: 0; }
   .report-view-editor { min-height: 0; border: 0; background: #fff; }
-  .report-view-editor .editor-toolbar { display: none; }
   .report-view-body { min-height: 0; padding: 0; }
 }
 
