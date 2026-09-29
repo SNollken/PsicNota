@@ -990,6 +990,7 @@ body.modal-open { overflow: hidden; }
 .psic-day.has-completed { border-color: #3bae24; }
 .psic-day.has-pending { border-color: #d90307; }
 .psic-day.has-confirmed { border-color: #1f637a; }
+.psic-day.has-available { border-color: #1f637a; }
 .psic-day.today { border-color: #174e61; }
 .psic-day.selected { z-index: 3; box-shadow: inset 0 0 0 1px #1f637a; }
 .psic-day-today-label {
