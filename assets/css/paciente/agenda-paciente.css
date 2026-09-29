@@ -2965,23 +2965,34 @@ input[readonly] {
 }
 
 .pending-request-cancel {
-  padding: 8px 12px;
+  display: grid;
+  place-items: center;
 
-  border: 1px solid #d90307;
-  border-radius: 9px;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  flex: 0 0 36px;
+  padding: 0;
+
+  border: 1px solid #dce6ea;
+  border-radius: 10px;
 
   color: #d90307;
   background: var(--white);
-
-  font-size: 10px;
-  font-weight: 800;
-
   cursor: pointer;
 }
 
 .pending-request-cancel:hover {
-  color: var(--white);
-  background: #d90307;
+  background: #f8fafb;
+}
+
+.pending-request-cancel svg {
+  width: 18px;
+  height: 18px;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
 }
 
 
@@ -3571,11 +3582,7 @@ input[readonly] {
   }
 
   .pending-request-item {
-    grid-template-columns: 1fr;
-  }
-
-  .pending-request-cancel {
-    width: 100%;
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   .upcoming-appointment-item {
