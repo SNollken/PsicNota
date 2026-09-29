@@ -54,7 +54,6 @@ const ui = {
   requestsPopupClose: document.querySelector("#psicRequestsPopupClose"),
   requestsPopupTitle: document.querySelector("#psicRequestsPopupTitle"),
   requestsList: document.querySelector("#psicRequestsPopupList"),
-  requestsOpenException: document.querySelector("#psicRequestsOpenException"),
 
   appointmentsPopup: document.querySelector("#psicAppointmentsPopup"),
   appointmentsPopupClose: document.querySelector("#psicAppointmentsPopupClose"),
@@ -713,10 +712,6 @@ async function persistMarkedAppointment(newAppointment) {
 function renderRequestsPopup(dateKey = requestsPopupDateKey) {
   requestsPopupDateKey = dateKey;
   const pending = getPendingRequests().filter((item) => !dateKey || item.date === dateKey);
-  const requestedDate = dateKey ? data.fromDateKey(dateKey) : null;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  ui.requestsOpenException.hidden = !requestedDate || requestedDate < today;
   ui.requestsPopupTitle.textContent = dateKey
     ? `Solicitações de ${capitalizeFirst(popupDateFormatter.format(data.fromDateKey(dateKey)))}`
     : "Pedidos pendentes";
@@ -1331,12 +1326,6 @@ ui.schedulePopup.addEventListener("click", (event) => {
 });
 
 ui.requestsPopupClose.addEventListener("click", () => closePopup(ui.requestsPopup));
-ui.requestsOpenException.addEventListener("click", () => {
-  if (!requestsPopupDateKey) return;
-  const date = data.fromDateKey(requestsPopupDateKey);
-  closePopup(ui.requestsPopup);
-  openSchedulePopup(date);
-});
 ui.appointmentsPopupClose.addEventListener("click", () => closePopup(ui.appointmentsPopup));
 ui.completedPopupClose.addEventListener("click", () => closePopup(ui.completedPopup));
 
