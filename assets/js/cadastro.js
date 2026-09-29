@@ -7,6 +7,7 @@
   const registerForm = document.querySelector("#registerForm");
   const registerMessage = document.querySelector("#registerMessage");
 
+  const registrationBlockedForPresentation = true;
   if (!registerForm) return;
 
   const psychologistFields = document.querySelector("#psychologistFields");
@@ -145,8 +146,11 @@
 
   registerForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-    window.alert("cadastro de contas bloqueado durante a apresentação");
-    return;
+    if (registrationBlockedForPresentation) {
+      window.alert("cadastro de contas bloqueado durante a apresentação");
+      return;
+    }
+    if (!client) return;
 
     clearMessage();
 
