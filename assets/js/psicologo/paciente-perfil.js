@@ -136,6 +136,34 @@
     selectTab(tabs.includes(aba) ? aba : "overview");
   }
 
+  async function loadPatientNotes() {
+    const { data: authData, error: authError } = await client.auth.getUser();
+    if (authError || !authData?.user) {
+      throw new Error("Entre novamente para carregar as notas do paciente.");
+    }
+
+    const { data: rows, error } = await client
+      .from("notas")
+      .select("consulta_id, conteudo, atualizado_em, consultas!inner(id, paciente_id, data, horario, modalidade)")
+      .eq("psicologo_id", authData.user.id)
+      .eq("consultas.paciente_id", profile.id)
+      .order("atualizado_em", { ascending: false });
+
+    if (error) throw error;
+
+    notes = (rows || [])
+      .filter((row) => row.conteudo && row.consultas)
+      .map((row) => ({
+        appointment: {
+          id: row.consultas.id,
+          date: row.consultas.data,
+          time: row.consultas.horario,
+          mode: row.consultas.modalidade
+        },
+        text: row.conteudo
+      }));
+  }
+
   async function loadProfile() {
     if (!client) throw new Error("Não foi possível iniciar a conexão com o banco de dados.");
     let patient = null;
@@ -188,6 +216,7 @@
     }
 
     loadLocalRecords();
+    await loadPatientNotes();
     render();
   }
 
