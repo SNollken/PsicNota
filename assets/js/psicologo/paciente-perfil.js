@@ -45,7 +45,12 @@
 
   function formatDate(value) {
     if (!value) return "Data não informada";
-    const parsed = value.includes("/") ? new Date(value.split("/").reverse().join("-") + "T00:00:00") : new Date(value + "T00:00:00");
+    const text = String(value);
+    const brazilian = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(text);
+    const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(text);
+    const parsed = brazilian
+      ? new Date(Number(brazilian[3]), Number(brazilian[2]) - 1, Number(brazilian[1]))
+      : new Date(dateOnly ? `${text}T00:00:00` : text);
     return Number.isNaN(parsed.getTime()) ? "Data não informada" : dateFormat.format(parsed);
   }
 
