@@ -282,8 +282,6 @@ function renderCalendar() {
       button.append(info);
     } else if (available.length) {
       button.classList.add("has-available");
-      info.textContent = `${available.length} ${available.length === 1 ? "horário" : "horários"}`;
-      button.append(info);
     } else if (isPast) {
       button.classList.add("is-unavailable");
     }
