@@ -108,7 +108,7 @@ const calendarMonthStorageKey = "psicnota:psicologo:agenda:visibleMonth";
 function readVisibleMonth() {
   try {
     const saved = window.sessionStorage.getItem(calendarMonthStorageKey);
-    if (/^\\d{4}-(0[1-9]|1[0-2])$/.test(saved || "")) {
+    if (/^\d{4}-(0[1-9]|1[0-2])$/.test(saved || "")) {
       const [year, month] = saved.split("-").map(Number);
       return new Date(year, month - 1, 1);
     }
