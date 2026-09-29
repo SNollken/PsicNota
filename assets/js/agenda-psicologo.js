@@ -251,6 +251,7 @@ function renderCalendar() {
 
     const confirmed = getConfirmedForDate(dateKey);
     const pending = getPendingForDate(dateKey);
+    const available = getSelectableSlots(dateKey);
 
     const button = document.createElement("button");
     button.type = "button";
@@ -279,8 +280,10 @@ function renderCalendar() {
       button.classList.add(upcoming ? "has-confirmed" : "has-completed");
       info.textContent = (upcoming || confirmed[0]).time;
       button.append(info);
-    } else if (dateKey === todayKey) {
-      info.textContent = "";
+    } else if (available.length) {
+      button.classList.add("has-available");
+      info.textContent = `${available.length} ${available.length === 1 ? "horário" : "horários"}`;
+      button.append(info);
     } else if (isPast) {
       button.classList.add("is-unavailable");
     }
