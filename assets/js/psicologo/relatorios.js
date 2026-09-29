@@ -410,7 +410,7 @@ function renderList() {
 
     const main = document.createElement('a');
     main.className = 'report-card-main';
-    main.href = `relatorio-view.html?id=${encodeURIComponent(report.id)}`;
+    main.href = `relatorios.html?edit=${encodeURIComponent(report.id)}`;
 
     const icon = document.createElement('span');
     icon.className = 'report-card-icon';
