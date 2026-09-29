@@ -41,7 +41,6 @@ const elements = {
   blockProxima: document.querySelector('#blockProxima'),
   freeText: document.querySelector('#freeText'),
   moodPicker: document.querySelector('#moodPicker'),
-  saveDraftButton: document.querySelector('#saveDraftButton'),
   draftStatus: document.querySelector('#draftStatus'),
   toast: document.querySelector('#toast'),
   toastMessage: document.querySelector('#toastMessage'),
@@ -596,12 +595,6 @@ async function handleReportSubmit(event) {
   window.location.href = 'relatorios.html';
 }
 
-async function handleSaveDraft() {
-  if (!(await persistReport('rascunho'))) return;
-  showToast('Rascunho salvo. Você pode retomá-lo quando quiser.');
-  window.location.href = 'relatorios.html';
-}
-
 async function init() {
   const _auth = await window.PsicNotaBackend.requireProfile("psicologo");
   if (!_auth) return;
@@ -611,7 +604,6 @@ async function init() {
   await data.syncRemoteData();
 
   elements.reportForm.addEventListener('submit', handleReportSubmit);
-  elements.saveDraftButton.addEventListener('click', handleSaveDraft);
 
   elements.moodPicker.querySelectorAll('.mood-option').forEach((option) => {
     option.addEventListener('click', () => {
