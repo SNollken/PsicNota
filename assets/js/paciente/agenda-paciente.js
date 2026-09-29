@@ -1241,8 +1241,7 @@ function renderCalendar() {
 
 
     const openSlots =
-      !isPast &&
-      !isOtherMonth
+      !isPast
         ? getSelectableSlots(
             dateKey
           )
@@ -1426,7 +1425,6 @@ function renderCalendar() {
 
 
     const selectable =
-      !isOtherMonth &&
       !isPast &&
       (openSlots.length > 0 || dateKey === todayKey);
 
