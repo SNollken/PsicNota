@@ -2347,8 +2347,13 @@ function renderPendingRequestsPopup() {
       cancel.className =
         "pending-request-cancel";
 
-      cancel.textContent =
-        "Cancelar";
+      cancel.title = "Cancelar solicitação";
+      cancel.setAttribute(
+        "aria-label",
+        `Cancelar solicitação de ${formatRequestDate(request.date)} às ${request.time}`
+      );
+      cancel.innerHTML =
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 
 
       cancel.addEventListener(
