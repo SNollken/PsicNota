@@ -73,7 +73,7 @@
   }
 
   function reportCards(items) {
-    return items.map(item => recordCard("report", formatDate(item.updatedAt || item.createdAt), item.title || item.tipo || "Relatório", `relatorio-view.html?id=${encodeURIComponent(item.id)}`)).join("");
+    return items.map(item => recordCard("report", formatDate(item.updatedAt || item.createdAt), item.title || item.tipo || "Relatório", `relatorios.html?edit=${encodeURIComponent(item.id)}`)).join("");
   }
 
 
