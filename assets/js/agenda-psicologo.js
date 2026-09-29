@@ -103,7 +103,34 @@ let selectedDateKey = "";
 let requestsPopupDateKey = null;
 
 const now0 = new Date();
-let visibleMonth = new Date(now0.getFullYear(), now0.getMonth(), 1);
+const calendarMonthStorageKey = "psicnota:psicologo:agenda:visibleMonth";
+
+function readVisibleMonth() {
+  try {
+    const saved = window.sessionStorage.getItem(calendarMonthStorageKey);
+    if (/^\\d{4}-(0[1-9]|1[0-2])$/.test(saved || "")) {
+      const [year, month] = saved.split("-").map(Number);
+      return new Date(year, month - 1, 1);
+    }
+  } catch {
+    // A agenda continua funcionando se o navegador bloquear o armazenamento.
+  }
+  return new Date(now0.getFullYear(), now0.getMonth(), 1);
+}
+
+let visibleMonth = readVisibleMonth();
+
+function setVisibleMonth(date) {
+  visibleMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+  try {
+    window.sessionStorage.setItem(
+      calendarMonthStorageKey,
+      `${visibleMonth.getFullYear()}-${String(visibleMonth.getMonth() + 1).padStart(2, "0")}`
+    );
+  } catch {
+    // A navegação do calendário também funciona sem armazenamento.
+  }
+}
 
 let popupSelectedDate = null;
 let popupSelectedTime = "";
@@ -282,7 +309,7 @@ function renderCalendar() {
     button.disabled = false;
     button.addEventListener("click", () => {
       if (isOtherMonth) {
-        visibleMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+        setVisibleMonth(date);
       }
       selectedDateKey = dateKey;
       renderCalendar();
@@ -1204,12 +1231,12 @@ function renderAll() {
    ========================================================= */
 
 ui.previousMonth.addEventListener("click", () => {
-  visibleMonth = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() - 1, 1);
+  setVisibleMonth(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() - 1, 1));
   renderCalendar();
 });
 
 ui.nextMonth.addEventListener("click", () => {
-  visibleMonth = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 1);
+  setVisibleMonth(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 1));
   renderCalendar();
 });
 
