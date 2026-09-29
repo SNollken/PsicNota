@@ -7,7 +7,7 @@
   const registerForm = document.querySelector("#registerForm");
   const registerMessage = document.querySelector("#registerMessage");
 
-  if (!registerForm || !client) return;
+  if (!registerForm) return;
 
   const psychologistFields = document.querySelector("#psychologistFields");
   const roleInputs = document.querySelectorAll('input[name="role"]');
@@ -145,6 +145,9 @@
 
   registerForm.addEventListener("submit", async (event) => {
     event.preventDefault();
+    window.alert("cadastro de contas bloqueado durante a apresentação");
+    return;
+
     clearMessage();
 
     const selectedRole = document.querySelector('input[name="role"]:checked').value;
