@@ -684,12 +684,20 @@ function handleMarkAppointment() {
 }
 
 async function persistMarkedAppointment(newAppointment) {
-  const createdId = await data.persistAppointmentToDb(newAppointment);
-  if (!createdId) {
-    showToast("Não foi possível marcar a consulta no banco.", true);
+  ui.scheduleSubmit.disabled = true;
+  let result;
+  try {
+    result = await data.persistAppointmentToDb(newAppointment);
+  } catch (error) {
+    console.error("[agenda-psicologo] Falha inesperada ao marcar consulta:", error);
+    result = { error: "Falha de conexão ao marcar a consulta. Tente novamente." };
+  }
+  if (!result?.id) {
+    showToast(result?.error || "Não foi possível marcar a consulta no banco.", true);
+    updateScheduleSubmit();
     return;
   }
-  newAppointment.id = createdId;
+  newAppointment.id = result.id;
   appointments.push(newAppointment);
   data.saveAppointments(appointments);
 
