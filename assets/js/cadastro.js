@@ -7,7 +7,6 @@
   const registerForm = document.querySelector("#registerForm");
   const registerMessage = document.querySelector("#registerMessage");
 
-  const registrationBlockedForPresentation = true;
   if (!registerForm) return;
 
   const psychologistFields = document.querySelector("#psychologistFields");
@@ -146,10 +145,6 @@
 
   registerForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-    if (registrationBlockedForPresentation) {
-      window.alert("cadastro de contas bloqueado durante a apresentação");
-      return;
-    }
     if (!client) return;
 
     clearMessage();
@@ -266,11 +261,20 @@
     submitButton.disabled = true;
     submitButton.textContent = "Criando conta...";
 
-    const { data, error } = await client.auth.signUp({
-      email,
-      password,
-      options: { data: metadata }
-    });
+    let result;
+    try {
+      result = await client.auth.signUp({
+        email,
+        password,
+        options: { data: metadata }
+      });
+    } catch (error) {
+      showMessage(traduzirErro(error), "error");
+      submitButton.disabled = false;
+      submitButton.textContent = "Criar conta";
+      return;
+    }
+    const { data, error } = result;
 
     if (error) {
       showMessage(traduzirErro(error), "error");
@@ -281,8 +285,8 @@
 
     if (!data.session) {
       showMessage(
-        "O Supabase ainda exige confirmação de e-mail. Desative ‘Confirm email’ nas configurações de Auth para liberar o login imediato.",
-        "error"
+        "Cadastro realizado! Confira seu e-mail para confirmar a conta antes de entrar.",
+        "success"
       );
       submitButton.disabled = false;
       submitButton.textContent = "Criar conta";
