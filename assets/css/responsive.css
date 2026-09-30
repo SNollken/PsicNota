@@ -1,0 +1,102 @@
+/* Shared responsive rules, loaded after each page's stylesheet.
+   Keep horizontal scrolling inside calendars/tables, never on the whole page. */
+@media screen and (max-width: 1024px) {
+  .app-shell { display: block; }
+  .app-shell > main { min-width: 0; max-width: 100%; margin-left: 0; }
+  .patient-view .agenda-patient-page { zoom: 1; }
+  .sidebar { max-width: calc(100vw - 48px); overflow-y: auto; overscroll-behavior: contain; }
+  .sidebar-profile { flex-shrink: 0; }
+  body .mobile-menu { min-width: 44px; min-height: 44px; }
+}
+
+@media screen and (max-width: 760px) {
+  *, *::before, *::after { box-sizing: border-box; }
+  main, section, article, form, fieldset { min-width: 0; }
+  input, select, textarea { max-width: 100%; font-size: 16px; }
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), select { min-height: 44px; }
+  button, .button, .primary-button { touch-action: manipulation; }
+  p, h1, h2, h3, label { overflow-wrap: anywhere; }
+  .table-scroll, .availability-wrap, .patient-tabs { max-width: 100%; overscroll-behavior-x: contain; }
+  .profile-person-copy, .profile-contacts, .patient-identity, .patient-contact,
+  .report-details, .report-consultation, .consultation-field, .form-group, .field { min-width: 0; max-width: 100%; }
+  .profile-contact span { white-space: normal; overflow-wrap: anywhere; }
+  .profile-header { gap: 16px; }
+  .profile-actions { margin-left: 0; }
+  .profile-actions .button { flex: 0 1 auto; min-height: 48px; }
+  .modal-overlay { padding: 12px; overflow-y: auto; }
+  .modal-card { max-width: 100%; max-height: calc(100dvh - 24px); overflow-y: auto; }
+  .modal-actions { flex-wrap: wrap; }
+
+  /* Patient home: allow long dates and every action to stay inside its card. */
+  .dashboard-content { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .next-content { gap: 12px; }
+  .next-info, .upcoming-detail { overflow-wrap: anywhere; }
+  .next-buttons a, .next-buttons button { height: auto; line-height: 1.4; }
+  .future-header a { min-height: 32px; }
+
+  /* Agenda navigation stays visible; the seven days scroll together below. */
+  .patient-calendar-header { min-width: 0; grid-template-columns: 1fr; gap: 12px; justify-items: center; }
+  .patient-calendar-navigation { justify-content: center; }
+  .patient-calendar-header > h2 { font-size: 20px; }
+  .patient-calendar-card { max-width: 100%; overflow-x: visible; }
+  .patient-calendar-scroll { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+  .patient-calendar-header > div:empty { display: none; }
+  .calendar-arrow { min-width: 44px; min-height: 44px; }
+  .schedule-popup-card, .requests-popup-card, .appointments-popup-card, .completed-popup-card,
+  .psic-schedule-popup-card, .psic-requests-popup-card, .psic-appointments-popup-card, .psic-completed-popup-card {
+    max-width: 100%; max-height: calc(100dvh - 24px); overflow-y: auto; min-height: 0;
+  }
+  .schedule-popup, .requests-popup, .appointments-popup, .completed-popup,
+  .psic-schedule-popup, .psic-requests-popup, .psic-appointments-popup, .psic-completed-popup { padding: 12px; }
+  .psic-request-actions, .psic-appointment-actions { flex-wrap: wrap; }
+
+  /* Editors, patient records and their controls. */
+  .notes-controls { gap: 20px; }
+  .moods { gap: 8px; }
+  .moods button { flex: 1 1 110px; min-height: 44px; }
+  .notes-status { position: static; margin-top: 12px; text-align: left; }
+  .editor-toolbar, .toolbar-group, .report-toolbar, .report-toolbar-group { flex-wrap: wrap; max-width: 100%; }
+  .toolbar-select, .report-consultation-select { min-width: 0; max-width: 100%; }
+  .report-editor-footer, .report-save-actions, .note-footer, .note-mood-group, .consulta-head, .consulta-footer { flex-wrap: wrap; gap: 12px; }
+  .patient-contact p { overflow-wrap: anywhere; }
+  .summary-actions { flex-wrap: wrap; }
+  .patient-info h2 { font-size: 26px; }
+  .patient-info p, .patient-contact p { font-size: 16px; }
+  .appointment-box, .list-item { min-width: 0; }
+  .patient-tabs { display: flex; overflow-x: auto; }
+  .patient-tabs > * { flex-shrink: 0; }
+
+  /* Public pages and authentication forms. */
+  .auth-form input, .auth-form select, .auth-form textarea { font-size: 16px; }
+  .auth-form label, .terms-row { font-size: 14px; }
+  .auth-panel-inner, .brand-content { min-width: 0; max-width: 100%; }
+  .topbar-actions, .hero-actions, .footer-bottom { flex-wrap: wrap; }
+}
+
+@media screen and (max-width: 560px) {
+  .profile-contacts { flex: 0 1 auto; width: 100%; }
+  .profile-actions { width: 100%; }
+  .profile-actions .button { flex-basis: auto; width: 100%; }
+  .profile-section .section-heading { flex-wrap: wrap; gap: 12px; }
+  .availability-card { min-width: 0; }
+  .detail-grid, .detail-grid.four, .detail-grid.three { grid-template-columns: minmax(0, 1fr); }
+  .slot-link { grid-template-columns: 48px minmax(0, 1fr); }
+  .slot-link .badge { grid-column: 2; justify-self: start; }
+  .slot-name { white-space: normal; overflow-wrap: anywhere; }
+  .home-panel .list-card, .home-panel .notes-card, .home-panel .reports-card { padding: 16px 12px; }
+  .report-save-actions, .report-editor-footer { flex-direction: column; align-items: stretch; }
+  .report-save-actions .button { width: 100%; min-width: 0; }
+}
+
+@media screen and (max-width: 760px) {
+  .patient-view .agenda-topbar { margin-inline: 0; }
+  .small-card { width: 100%; height: auto; min-height: 179px; }
+  .small-card h3 { font-size: 24px; }
+  .appointment-box { max-width: 100%; height: auto; min-height: 94px; grid-template-columns: 40px minmax(0, 1fr) 20px; }
+  .appointment-info { min-width: 0; overflow-wrap: anywhere; }
+  .page-header:has(.mobile-menu) { gap: 12px; padding-block: 16px; }
+  .page-header > .mobile-menu { position: static; flex-shrink: 0; margin: 0; }
+  .page-header h1 { min-width: 0; }
+  .page-title, .page-heading { padding-inline: 52px; height: auto; min-height: 82px; }
+  .page-title h1, .page-heading h1 { text-align: center; font-size: 23px; }
+}

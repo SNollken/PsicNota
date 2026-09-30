@@ -546,10 +546,11 @@
 
   async function persistAppointmentToDb(appointment) {
     const client = getSupabaseClient();
-    if (!client) return null;
+    if (!client) return { error: "Conexão com o banco indisponível." };
 
     const user = await getAuthUser();
-    if (!user || !appointment.patientId) return null;
+    if (!user) return { error: "Sua sessão expirou. Entre novamente para marcar a consulta." };
+    if (!appointment.patientId) return { error: "Não foi possível identificar o paciente. Atualize a página e selecione-o novamente." };
 
     const payload = {
       psicologo_id: user.id,
@@ -565,8 +566,13 @@
     };
 
     const { data, error } = await client.from("consultas").insert(payload).select("id").single();
-    if (error) return null;
-    return data.id;
+    if (error) {
+      console.error("[PsicNota] Falha ao marcar consulta:", error);
+      if (error.code === "23505") return { error: "Esse horário já está ocupado. Escolha outro horário." };
+      if (error.code === "42501") return { error: "Sua sessão não tem permissão para marcar esta consulta. Entre novamente." };
+      return { error: `Não foi possível marcar a consulta (${error.code || "erro de conexão"}).` };
+    }
+    return { id: data.id };
   }
 
   async function cancelAppointmentInDb(appointmentId) {
@@ -603,9 +609,6 @@
     if (!client || !appointmentId) return false;
 
     try {
-      const user = await getAuthUser();
-      if (!user) return false;
-
       const { data, error } = await client.rpc(
         "cancelar_consulta_paciente",
         { p_consulta_id: appointmentId }

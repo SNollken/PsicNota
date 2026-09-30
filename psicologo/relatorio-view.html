@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="../assets/css/psicologo/relatorio-view.css" />
   <link rel="stylesheet" href="../assets/menu/menu.css" />
   <script src="../assets/menu/menu.js"></script>
+  <link rel="stylesheet" href="../assets/css/responsive.css">
 </head>
 
 <body class="report-view-page">
@@ -74,29 +75,13 @@
         </section>
 
         <section class="editor-card report-view-editor" aria-label="Conteúdo do relatório">
-          <div class="editor-toolbar" role="presentation" aria-hidden="true">
-            <div class="toolbar-group toolbar-selects">
-              <span class="toolbar-select toolbar-style">Normal</span><span class="select-chevron-wrap"><svg viewBox="0 0 24 24"><path d="m7 9.5 5 5 5-5" /></svg></span>
-              <span class="toolbar-select toolbar-size">14</span><span class="select-chevron-wrap"><svg viewBox="0 0 24 24"><path d="m7 9.5 5 5 5-5" /></svg></span>
-            </div>
-            <div class="toolbar-group"><span class="toolbar-button text-format bold">B</span><span class="toolbar-button text-format italic">I</span><span class="toolbar-button text-format underline">U</span></div>
-            <div class="toolbar-group">
-              <span class="toolbar-button"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11" /><circle cx="4.5" cy="6" r=".7" /><circle cx="4.5" cy="12" r=".7" /><circle cx="4.5" cy="18" r=".7" /></svg></span>
-              <span class="toolbar-button"><svg viewBox="0 0 24 24"><path d="M10 6h10M10 12h10M10 18h10M4 5h1.5v3M4 8h2M4 13h1.4a1 1 0 0 1 0 2H4v2h2" /></svg></span>
-              <span class="toolbar-button"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h11M4 18h14" /></svg></span>
-            </div>
-            <div class="toolbar-group">
-              <span class="toolbar-button"><svg viewBox="0 0 24 24"><path d="m9 7-5 5 5 5M4 12h9a6 6 0 0 1 6 6" /></svg></span>
-              <span class="toolbar-button is-muted"><svg viewBox="0 0 24 24"><path d="m15 7 5 5-5 5M20 12h-9a6 6 0 0 0-6 6" /></svg></span>
-              <span class="toolbar-button"><svg viewBox="0 0 24 24"><path d="m21.4 11.6-8.9 8.9a6 6 0 0 1-8.5-8.5l9.6-9.6a4 4 0 0 1 5.7 5.7l-9.6 9.6a2 2 0 1 1-2.8-2.8l8.9-8.9" /></svg></span>
-            </div>
-          </div>
           <div class="report-view-body" id="docBlocks"></div>
         </section>
 
         <footer class="report-view-footer">
           <a class="button button-secondary" href="relatorios.html">Voltar para relatórios</a>
-          <button class="button button-primary" id="printButton" type="button" hidden>
+          <a class="button button-primary" id="editReportButton" href="relatorios.html" hidden>Editar relatório</a>
+          <button class="button button-secondary" id="printButton" type="button" hidden>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 17v3h14v-3" /></svg>
             Baixar PDF
           </button>

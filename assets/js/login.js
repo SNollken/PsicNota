@@ -5,7 +5,7 @@
   const message = document.getElementById("loginMessage");
   const client = window.PsicNotaSupabase;
   const data = window.PsiNoteData;
-  const USER_EMAIL_DOMAIN = "@psicnota.test";
+  const LEGACY_USERS = new Set(["psicologo", "paciente", "paciente2"]);
 
   if (!form || !client || !data || !window.PsicNotaAuth) return;
 
@@ -40,18 +40,14 @@
     const password = passwordInput.value;
     const submit = form.querySelector('button[type="submit"]');
 
-    setFieldError(usernameInput, identifier ? "" : "Informe seu usuário ou e-mail.");
+    setFieldError(usernameInput, identifier ? "" : "Informe seu e-mail ou usuário.");
     setFieldError(passwordInput, password ? "" : "Informe sua senha.");
     if (!identifier || !password) {
       showMessage("Revise os campos indicados antes de continuar.", "error");
       return;
     }
-    const email = identifier.includes("@")
-      ? identifier
-      : /^[a-z0-9._-]+$/.test(identifier)
-        ? identifier + USER_EMAIL_DOMAIN
-        : null;
-    if (!email) {
+    const email = LEGACY_USERS.has(identifier) ? `${identifier}@psicnota.test` : identifier;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setFieldError(usernameInput, "Digite um e-mail válido ou nome de usuário.");
       showMessage("Confira o e-mail ou usuário informado.", "error");
       return;

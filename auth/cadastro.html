@@ -39,6 +39,7 @@
     rel="stylesheet"
     href="../assets/css/cadastro.css"
   >
+  <link rel="stylesheet" href="../assets/css/responsive.css">
 </head>
 
 
@@ -273,6 +274,16 @@
           </fieldset>
 
 
+
+          <div id="inviteFields" class="form-section" hidden>
+            <div class="form-group">
+              <label for="inviteCode">Código de convite do psicólogo</label>
+              <input id="inviteCode" name="inviteCode" type="text"
+                     autocomplete="off" spellcheck="false"
+                     placeholder="Cole o código recebido" aria-describedby="inviteCodeError">
+              <small class="field-error" id="inviteCodeError"></small>
+            </div>
+          </div>
 
           <!-- ===============================================
                DADOS PESSOAIS

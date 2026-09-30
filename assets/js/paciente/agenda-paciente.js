@@ -448,6 +448,20 @@ async function cancelUpcomingAppointment(appointment, button) {
     "Cancelando consulta marcada para " + appointmentLabel
   );
 
+  if (!supabaseClient || !usingRemoteAppointments) {
+    appointments = appointments.map((item) =>
+      item.id === appointment.id && isSamePatient(item)
+        ? { ...item, status: "cancelled" }
+        : item
+    );
+    patientData.saveAppointments(appointments);
+    renderCalendar();
+    renderSummary();
+    renderUpcomingAppointmentsPopup();
+    showToast("Consulta cancelada com sucesso. O horário foi liberado.");
+    return;
+  }
+
   let cancelled = false;
   let remoteAppointments = null;
   try {
@@ -1227,8 +1241,7 @@ function renderCalendar() {
 
 
     const openSlots =
-      !isPast &&
-      !isOtherMonth
+      !isPast
         ? getSelectableSlots(
             dateKey
           )
@@ -1374,7 +1387,7 @@ function renderCalendar() {
 
 
       info.textContent =
-        openSlots[0];
+        openSlots[0].time;
 
 
       button.append(
@@ -1412,7 +1425,6 @@ function renderCalendar() {
 
 
     const selectable =
-      !isOtherMonth &&
       !isPast &&
       (openSlots.length > 0 || dateKey === todayKey);
 
@@ -2333,8 +2345,13 @@ function renderPendingRequestsPopup() {
       cancel.className =
         "pending-request-cancel";
 
-      cancel.textContent =
-        "Cancelar";
+      cancel.title = "Cancelar solicitação";
+      cancel.setAttribute(
+        "aria-label",
+        `Cancelar solicitação de ${formatRequestDate(request.date)} às ${request.time}`
+      );
+      cancel.innerHTML =
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 
 
       cancel.addEventListener(

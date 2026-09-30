@@ -41,7 +41,6 @@ const elements = {
   blockProxima: document.querySelector('#blockProxima'),
   freeText: document.querySelector('#freeText'),
   moodPicker: document.querySelector('#moodPicker'),
-  saveDraftButton: document.querySelector('#saveDraftButton'),
   draftStatus: document.querySelector('#draftStatus'),
   toast: document.querySelector('#toast'),
   toastMessage: document.querySelector('#toastMessage'),
@@ -208,35 +207,50 @@ function getInitials(name) {
   return String(name || '').split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toUpperCase() || 'PS';
 }
 
-function renderPatientAvatar(appointment) {
-  if (!elements.reportPatientAvatar) return;
-  const name = appointment?.patient || '';
-  elements.reportPatientAvatar.replaceChildren();
-  const fallback = document.createElement('span');
-  fallback.textContent = getInitials(name);
-  elements.reportPatientAvatar.append(fallback);
+const patientAvatarUrls = new Map();
 
-  if (!supabaseClient || !appointment?.patientId) return;
-  const patientId = appointment.patientId;
-  supabaseClient
-    .from('perfis')
-    .select('avatar_url')
-    .eq('id', patientId)
-    .eq('papel', 'paciente')
-    .maybeSingle()
-    .then(({ data: patient, error }) => {
-      if (error || !patient?.avatar_url) return null;
-      return supabaseClient.storage.from('avatars').createSignedUrl(patient.avatar_url, 3600);
-    })
-    .then((signed) => {
-      if (!signed?.data?.signedUrl) return;
-      if (elements.reportAppointment.value !== appointment.id) return;
-      const image = document.createElement('img');
-      image.alt = '';
-      image.addEventListener('load', () => elements.reportPatientAvatar.replaceChildren(image), { once: true });
-      image.src = signed.data.signedUrl;
-    })
-    .catch(() => {});
+function loadPatientAvatarUrl(patientId) {
+  if (!supabaseClient || !patientId) return Promise.resolve(null);
+  if (!patientAvatarUrls.has(patientId)) {
+    const request = Promise.resolve(supabaseClient
+      .from('perfis')
+      .select('avatar_url')
+      .eq('id', patientId)
+      .eq('papel', 'paciente')
+      .maybeSingle())
+      .then(({ data: patient, error }) => {
+        if (error || !patient?.avatar_url) return null;
+        return supabaseClient.storage.from('avatars').createSignedUrl(patient.avatar_url, 3600);
+      })
+      .then((signed) => signed?.data?.signedUrl || null)
+      .catch(() => null);
+    patientAvatarUrls.set(patientId, request);
+  }
+  return patientAvatarUrls.get(patientId);
+}
+
+function renderAvatar(container, appointment) {
+  if (!container) return;
+  const token = {};
+  container.avatarRequest = token;
+  container.textContent = getInitials(appointment?.patient || '');
+  loadPatientAvatarUrl(appointment?.patientId).then((url) => {
+    if (!url || container.avatarRequest !== token) return;
+    const image = document.createElement('img');
+    image.alt = '';
+    image.style.width = '100%';
+    image.style.height = '100%';
+    image.style.objectFit = 'cover';
+    image.addEventListener('load', () => {
+      if (container.avatarRequest === token) container.replaceChildren(image);
+    }, { once: true });
+    image.src = url;
+  });
+}
+
+function renderPatientAvatar(appointment) {
+  renderAvatar(elements.reportPatientAvatar, appointment);
+  renderAvatar(dropdownBtn?.querySelector('.dropdown-pill-avatar'), appointment);
 }
 
 function appointmentLabel(appointment) {
@@ -375,7 +389,7 @@ function buildAppointmentOptions(selectedAppointmentId) {
       b.dataset.value = appointment.id;
       const av = document.createElement('span');
       av.className = 'dropdown-pill-avatar';
-      av.textContent = getInitials(appointment.patient);
+      renderAvatar(av, appointment);
       const lb = document.createElement('span');
       lb.className = 'dropdown-pill-label';
       lb.textContent = appointmentLabel(appointment);
@@ -410,7 +424,7 @@ function renderList() {
 
     const main = document.createElement('a');
     main.className = 'report-card-main';
-    main.href = `relatorio-view.html?id=${encodeURIComponent(report.id)}`;
+    main.href = `relatorios.html?edit=${encodeURIComponent(report.id)}`;
 
     const icon = document.createElement('span');
     icon.className = 'report-card-icon';
@@ -596,12 +610,6 @@ async function handleReportSubmit(event) {
   window.location.href = 'relatorios.html';
 }
 
-async function handleSaveDraft() {
-  if (!(await persistReport('rascunho'))) return;
-  showToast('Rascunho salvo. Você pode retomá-lo quando quiser.');
-  window.location.href = 'relatorios.html';
-}
-
 async function init() {
   const _auth = await window.PsicNotaBackend.requireProfile("psicologo");
   if (!_auth) return;
@@ -611,7 +619,6 @@ async function init() {
   await data.syncRemoteData();
 
   elements.reportForm.addEventListener('submit', handleReportSubmit);
-  elements.saveDraftButton.addEventListener('click', handleSaveDraft);
 
   elements.moodPicker.querySelectorAll('.mood-option').forEach((option) => {
     option.addEventListener('click', () => {
@@ -661,10 +668,15 @@ async function init() {
   }
 
   elements.reportAppointment.addEventListener('change', () => {
-    const appointment = elements.reportAppointment.value ? findAppointment(elements.reportAppointment.value) : null;
+    const appointmentId = elements.reportAppointment.value || '';
+    const appointment = appointmentId ? findAppointment(appointmentId) : null;
     renderAppointmentInfo(appointment);
     renderPatientAvatar(appointment);
-    if (appointment && !elements.reportPatient.value.trim()) {
+
+    currentMood = appointmentId ? data.getAppointmentMood(appointmentId) || null : null;
+    renderMoodPicker();
+
+    if (appointment) {
       elements.reportPatient.value = appointment.patient;
     }
     scheduleDraftSave();

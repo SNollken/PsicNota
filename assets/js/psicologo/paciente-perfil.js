@@ -45,7 +45,12 @@
 
   function formatDate(value) {
     if (!value) return "Data não informada";
-    const parsed = value.includes("/") ? new Date(value.split("/").reverse().join("-") + "T00:00:00") : new Date(value + "T00:00:00");
+    const text = String(value);
+    const brazilian = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(text);
+    const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(text);
+    const parsed = brazilian
+      ? new Date(Number(brazilian[3]), Number(brazilian[2]) - 1, Number(brazilian[1]))
+      : new Date(dateOnly ? `${text}T00:00:00` : text);
     return Number.isNaN(parsed.getTime()) ? "Data não informada" : dateFormat.format(parsed);
   }
 
@@ -68,7 +73,7 @@
   }
 
   function reportCards(items) {
-    return items.map(item => recordCard("report", formatDate(item.updatedAt || item.createdAt), item.title || item.tipo || "Relatório", `relatorio-view.html?id=${encodeURIComponent(item.id)}`)).join("");
+    return items.map(item => recordCard("report", formatDate(item.updatedAt || item.createdAt), item.title || item.tipo || "Relatório", `relatorios.html?edit=${encodeURIComponent(item.id)}`)).join("");
   }
 
 
@@ -131,6 +136,34 @@
     selectTab(tabs.includes(aba) ? aba : "overview");
   }
 
+  async function loadPatientNotes() {
+    const { data: authData, error: authError } = await client.auth.getUser();
+    if (authError || !authData?.user) {
+      throw new Error("Entre novamente para carregar as notas do paciente.");
+    }
+
+    const { data: rows, error } = await client
+      .from("notas")
+      .select("consulta_id, conteudo, atualizado_em, consultas!inner(id, paciente_id, data, horario, modalidade)")
+      .eq("psicologo_id", authData.user.id)
+      .eq("consultas.paciente_id", profile.id)
+      .order("atualizado_em", { ascending: false });
+
+    if (error) throw error;
+
+    notes = (rows || [])
+      .filter((row) => row.conteudo && row.consultas)
+      .map((row) => ({
+        appointment: {
+          id: row.consultas.id,
+          date: row.consultas.data,
+          time: row.consultas.horario,
+          mode: row.consultas.modalidade
+        },
+        text: row.conteudo
+      }));
+  }
+
   async function loadProfile() {
     if (!client) throw new Error("Não foi possível iniciar a conexão com o banco de dados.");
     let patient = null;
@@ -183,6 +216,7 @@
     }
 
     loadLocalRecords();
+    await loadPatientNotes();
     render();
   }
 

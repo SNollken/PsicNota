@@ -8,7 +8,7 @@
   const patientAvatar = document.querySelector('#patientAvatar');
   const defaultPatientAvatar = patientAvatar.src;
   const supabaseClient = window.PsicNotaSupabase;
-  const moodButtons = [...document.querySelectorAll('#notesMoodPicker [data-mood]')];
+  const moodButtons = [...document.querySelectorAll('.moods [data-mood]')];
   const params = new URLSearchParams(location.search);
   let psychologistId = '';
   let selectedMood = '';

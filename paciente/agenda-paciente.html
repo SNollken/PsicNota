@@ -16,6 +16,8 @@
   <link rel="stylesheet" href="../assets/css/paciente/agenda-paciente.css?v=2" />
   <link rel="stylesheet" href="../assets/menu/menu.css" />
   <script src="../assets/menu/menu.js"></script>
+  <link rel="stylesheet" href="../assets/css/responsive.css">
+  <link rel="stylesheet" href="../assets/css/paciente/agenda-paciente-mobile-fix.css?v=2">
 </head>
 
 <body class="patient-view">
@@ -110,6 +112,7 @@
 
           </div>
 
+          <div class="patient-calendar-scroll" tabindex="0" role="region" aria-label="Dias do calendário, deslize para ver a semana completa">
           <div class="weekdays patient-weekdays" aria-hidden="true">
             <span>DOM</span>
             <span>SEG</span>
@@ -121,6 +124,7 @@
           </div>
 
           <div class="calendar-grid patient-calendar-grid" id="patientCalendarGrid" role="grid"></div>
+          </div>
 
         </section>
 
@@ -263,11 +267,11 @@
 
   <div class="toast" id="patientToast" role="status" aria-live="polite" hidden><span aria-hidden="true">✓</span><span
       id="patientToastMessage"></span></div>
-  <script src="../assets/js/shared-data.js"></script>
+  <script src="../assets/js/shared-data.js?v=2"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/supabase-client.js?v=2"></script>
   <script src="../assets/js/profile-backend.js"></script>
-  <script src="../assets/js/paciente/agenda-paciente.js?v=4"></script>
+  <script src="../assets/js/paciente/agenda-paciente.js?v=5"></script>
 </body>
 
 </html>

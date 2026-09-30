@@ -169,8 +169,10 @@
 
   async function loadHome() {
     if (!client) return;
-    const { data: authData, error: authError } = await client.auth.getUser();
-    if (authError || !authData.user) {
+    // getSession() usa cache local — evita redirect pra login por falha de rede momentânea
+    const { data: sessionData } = await client.auth.getSession();
+    const authData = { user: sessionData?.session?.user };
+    if (!authData.user) {
       window.location.replace("../auth/login.html");
       return;
     }
@@ -178,7 +180,7 @@
     const psychologistId = authData.user.id;
     const [profileResult, patientsResult, appointmentsResult, requestsResult, notesResult, notesCountResult, reportsResult] = await Promise.all([
       client.from("perfis").select("nome_completo, nome_social, papel").eq("id", psychologistId).single(),
-      client.from("consultas").select("paciente_id").eq("psicologo_id", psychologistId).neq("status", "cancelled"),
+      client.from("perfis").select("id").eq("papel", "paciente"),
       client.from("consultas").select("id, horario, modalidade, paciente:perfis!consultas_paciente_id_fkey(nome_completo, nome_social)").eq("psicologo_id", psychologistId).eq("data", today).neq("status", "cancelled").order("horario"),
       client.from("solicitacoes").select("horario, modalidade, paciente:perfis!solicitacoes_paciente_id_fkey(nome_completo, nome_social)").eq("psicologo_id", psychologistId).eq("status", "pending").order("data_desejada").order("horario"),
       client.from("notas").select("consulta_id, conteudo, atualizado_em, consultas!inner(data, paciente:perfis!consultas_paciente_id_fkey(nome_completo, nome_social))").eq("psicologo_id", psychologistId).not("conteudo", "is", null).order("atualizado_em", { ascending: false }).limit(3),
@@ -205,7 +207,7 @@
     }
     setText("homeUserName", displayName(profileResult.data).split(" ")[0]);
     setText("statConsultas", appointments.length);
-    setText("statPacientes", new Set((patientsResult.data || []).map((item) => item.paciente_id)).size);
+    setText("statPacientes", (patientsResult.data || []).length);
     setText("statAnotacoes", notesCountResult.count || 0);
     renderSlots("agendaHojeList", appointments, "Confirmado", "badge--ok", "Nenhuma consulta para hoje.");
     renderSlots("pendentesList", requests, "Pendente", "badge--pending", "Nenhuma consulta pendente.");

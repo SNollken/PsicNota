@@ -54,7 +54,6 @@ const ui = {
   requestsPopupClose: document.querySelector("#psicRequestsPopupClose"),
   requestsPopupTitle: document.querySelector("#psicRequestsPopupTitle"),
   requestsList: document.querySelector("#psicRequestsPopupList"),
-  requestsOpenException: document.querySelector("#psicRequestsOpenException"),
 
   appointmentsPopup: document.querySelector("#psicAppointmentsPopup"),
   appointmentsPopupClose: document.querySelector("#psicAppointmentsPopupClose"),
@@ -103,7 +102,34 @@ let selectedDateKey = "";
 let requestsPopupDateKey = null;
 
 const now0 = new Date();
-let visibleMonth = new Date(now0.getFullYear(), now0.getMonth(), 1);
+const calendarMonthStorageKey = "psicnota:psicologo:agenda:visibleMonth";
+
+function readVisibleMonth() {
+  try {
+    const saved = window.sessionStorage.getItem(calendarMonthStorageKey);
+    if (/^\d{4}-(0[1-9]|1[0-2])$/.test(saved || "")) {
+      const [year, month] = saved.split("-").map(Number);
+      return new Date(year, month - 1, 1);
+    }
+  } catch {
+    // A agenda continua funcionando se o navegador bloquear o armazenamento.
+  }
+  return new Date(now0.getFullYear(), now0.getMonth(), 1);
+}
+
+let visibleMonth = readVisibleMonth();
+
+function setVisibleMonth(date) {
+  visibleMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+  try {
+    window.sessionStorage.setItem(
+      calendarMonthStorageKey,
+      `${visibleMonth.getFullYear()}-${String(visibleMonth.getMonth() + 1).padStart(2, "0")}`
+    );
+  } catch {
+    // A navegação do calendário também funciona sem armazenamento.
+  }
+}
 
 let popupSelectedDate = null;
 let popupSelectedTime = "";
@@ -225,6 +251,7 @@ function renderCalendar() {
 
     const confirmed = getConfirmedForDate(dateKey);
     const pending = getPendingForDate(dateKey);
+    const available = getSelectableSlots(dateKey);
 
     const button = document.createElement("button");
     button.type = "button";
@@ -253,8 +280,8 @@ function renderCalendar() {
       button.classList.add(upcoming ? "has-confirmed" : "has-completed");
       info.textContent = (upcoming || confirmed[0]).time;
       button.append(info);
-    } else if (dateKey === todayKey) {
-      info.textContent = "";
+    } else if (available.length) {
+      button.classList.add("has-available");
     } else if (isPast) {
       button.classList.add("is-unavailable");
     }
@@ -282,7 +309,7 @@ function renderCalendar() {
     button.disabled = false;
     button.addEventListener("click", () => {
       if (isOtherMonth) {
-        visibleMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+        setVisibleMonth(date);
       }
       selectedDateKey = dateKey;
       renderCalendar();
@@ -380,7 +407,8 @@ function getPatientOptions() {
     });
   }
 
-  [...remotePatientProfiles, ...data.getProfiles()].forEach((profile) => {
+  const profiles = (typeof remotePatientProfiles !== "undefined" && Array.isArray(remotePatientProfiles) && remotePatientProfiles.length) ? remotePatientProfiles : data.getProfiles();
+  profiles.forEach((profile) => {
     const role = profile.role || profile.papel;
     if (role !== "paciente" && role !== "patient") return;
 
@@ -405,15 +433,17 @@ function getPatientOptions() {
     );
   });
 
-  [...requests, ...appointments].forEach((item) => {
-    if (item.patient) {
-      upsertPatientOption(
-        item.patient,
-        item.patientId || null,
-        renderableAvatarUrl(item.avatarDataUrl, item.patientAvatar)
-      );
-    }
-  });
+  if (typeof supabaseClient === "undefined" || !supabaseClient) {
+    [...requests, ...appointments].forEach((item) => {
+      if (item.patient) {
+        upsertPatientOption(
+          item.patient,
+          item.patientId || null,
+          renderableAvatarUrl(item.avatarDataUrl, item.patientAvatar)
+        );
+      }
+    });
+  }
 
   return [...map.values()].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
 }
@@ -654,12 +684,20 @@ function handleMarkAppointment() {
 }
 
 async function persistMarkedAppointment(newAppointment) {
-  const createdId = await data.persistAppointmentToDb(newAppointment);
-  if (!createdId) {
-    showToast("Não foi possível marcar a consulta no banco.", true);
+  ui.scheduleSubmit.disabled = true;
+  let result;
+  try {
+    result = await data.persistAppointmentToDb(newAppointment);
+  } catch (error) {
+    console.error("[agenda-psicologo] Falha inesperada ao marcar consulta:", error);
+    result = { error: "Falha de conexão ao marcar a consulta. Tente novamente." };
+  }
+  if (!result?.id) {
+    showToast(result?.error || "Não foi possível marcar a consulta no banco.", true);
+    updateScheduleSubmit();
     return;
   }
-  newAppointment.id = createdId;
+  newAppointment.id = result.id;
   appointments.push(newAppointment);
   data.saveAppointments(appointments);
 
@@ -675,10 +713,6 @@ async function persistMarkedAppointment(newAppointment) {
 function renderRequestsPopup(dateKey = requestsPopupDateKey) {
   requestsPopupDateKey = dateKey;
   const pending = getPendingRequests().filter((item) => !dateKey || item.date === dateKey);
-  const requestedDate = dateKey ? data.fromDateKey(dateKey) : null;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  ui.requestsOpenException.hidden = !requestedDate || requestedDate < today;
   ui.requestsPopupTitle.textContent = dateKey
     ? `Solicitações de ${capitalizeFirst(popupDateFormatter.format(data.fromDateKey(dateKey)))}`
     : "Pedidos pendentes";
@@ -827,7 +861,6 @@ async function approveRequest(requestId) {
 async function rejectRequest(requestId) {
   const request = requests.find((item) => item.id === requestId);
   if (!request || request.status !== "pending") return;
-  if (!window.confirm(`Recusar a solicitação de ${request.patient} para ${request.time}?`)) return;
 
   if (supabaseClient && usingRemoteRequests) {
     const { error: rejectError, count } = await supabaseClient
@@ -900,10 +933,15 @@ function createAppointmentCard(item, withActions) {
     cancel.setAttribute("aria-label", `Cancelar consulta de ${item.patient}`);
     cancel.title = "Cancelar consulta";
     cancel.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
-    cancel.addEventListener("click", (event) => {
+    cancel.addEventListener("click", async (event) => {
       event.preventDefault();
       event.stopPropagation();
-      deleteAppointment(item.id);
+      cancel.disabled = true;
+      try {
+        await deleteAppointment(item.id);
+      } finally {
+        if (cancel.isConnected) cancel.disabled = false;
+      }
     });
 
     actions.append(open, cancel);
@@ -953,34 +991,27 @@ function renderCompletedPopup(dateKey = null) {
 async function deleteAppointment(appointmentId) {
   const visibleAppointment = appointments.find((item) => item.id === appointmentId);
   if (!visibleAppointment) return;
-  if (!window.confirm(`Cancelar a consulta de ${visibleAppointment.patient} às ${visibleAppointment.time}?`)) return;
 
   if (supabaseClient) {
-    if (!await loadRemoteAppointments()) {
-      showToast("Não foi possível carregar as consultas para cancelar. Tente novamente.", true);
-      return;
-    }
-
-    const appointment = appointments.find((item) => item.id === appointmentId);
-    if (!appointment || appointment.status === "cancelled") {
+    if (visibleAppointment.status === "cancelled") {
       showToast("Esta consulta não está mais agendada.", true);
       return;
     }
 
     const cancelled = await data.cancelAppointmentInDb(appointmentId);
     if (!cancelled) {
-      await loadRemoteAppointments();
-      showToast("Não foi possível cancelar a consulta no banco.", true);
+      showToast("Não foi possível cancelar a consulta. Tente novamente.", true);
       return;
     }
-    appointment.status = "cancelled";
+    visibleAppointment.status = "cancelled";
     data.saveAppointments(appointments);
     renderAll();
+    await loadRemoteAppointments();
     showToast("Consulta cancelada. O horário voltou a ficar disponível.");
     return;
   }
 
-  appointment.status = "cancelled";
+  visibleAppointment.status = "cancelled";
   data.saveAppointments(appointments);
   renderAll();
   showToast("Consulta cancelada. O horário voltou a ficar disponível.");
@@ -1203,12 +1234,12 @@ function renderAll() {
    ========================================================= */
 
 ui.previousMonth.addEventListener("click", () => {
-  visibleMonth = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() - 1, 1);
+  setVisibleMonth(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() - 1, 1));
   renderCalendar();
 });
 
 ui.nextMonth.addEventListener("click", () => {
-  visibleMonth = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 1);
+  setVisibleMonth(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 1));
   renderCalendar();
 });
 
@@ -1296,12 +1327,6 @@ ui.schedulePopup.addEventListener("click", (event) => {
 });
 
 ui.requestsPopupClose.addEventListener("click", () => closePopup(ui.requestsPopup));
-ui.requestsOpenException.addEventListener("click", () => {
-  if (!requestsPopupDateKey) return;
-  const date = data.fromDateKey(requestsPopupDateKey);
-  closePopup(ui.requestsPopup);
-  openSchedulePopup(date);
-});
 ui.appointmentsPopupClose.addEventListener("click", () => closePopup(ui.appointmentsPopup));
 ui.completedPopupClose.addEventListener("click", () => closePopup(ui.completedPopup));
 

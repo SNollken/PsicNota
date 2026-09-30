@@ -25,6 +25,7 @@ const elements = {
   docDraftBadge: document.querySelector('#docDraftBadge'),
   docBlocks: document.querySelector('#docBlocks'),
   printButton: document.querySelector('#printButton'),
+  editButton: document.querySelector('#editReportButton'),
   sidebar: document.querySelector('.sidebar'),
   mobileMenu: document.querySelector('.mobile-menu'),
   logoutLink: document.querySelector('#logoutLink')
@@ -91,6 +92,8 @@ async function render() {
   elements.notFound.hidden = true;
   elements.reportDocument.hidden = false;
   elements.printButton.hidden = false;
+  elements.editButton.href = `relatorios.html?edit=${encodeURIComponent(report.id)}`;
+  elements.editButton.hidden = false;
 
   const appointment = report.appointmentId
     ? data.getAppointments().find((item) => item.id === report.appointmentId)
