@@ -1150,3 +1150,25 @@ input::placeholder {
     border-radius: 18px;
   }
 }
+
+
+/* Convite independente dos dados do perfil. */
+.invite-settings { margin: 24px 24px 24px -3px; padding: 24px 26px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--blue-50); scroll-margin-top: 24px; }
+.invite-settings h2 { margin: 0 0 8px; font-size: 20px; color: var(--blue-800); }
+.invite-settings-copy p { margin: 0 0 20px; color: var(--muted); font-size: 14px; line-height: 1.5; }
+#inviteCodeForm > label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; }
+.invite-code-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+#psychologistInviteCode { width: 240px; max-width: 100%; min-height: 45px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 9px; background: var(--white); color: var(--ink); font-weight: 600; letter-spacing: .04em; }
+#psychologistInviteCode:focus-visible { outline: 2px solid var(--blue-700); outline-offset: 2px; }
+#psychologistInviteCode[aria-invalid="true"] { border-color: #a12e2e; }
+.invite-copy-button { border: 1px solid var(--blue-700); background: var(--white); color: var(--blue-800); }
+.invite-code-help { max-width: 680px; margin: 12px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.invite-code-status { margin: 10px 0 0; color: var(--blue-800); font-size: 13px; line-height: 1.5; }
+.invite-code-status.is-error { color: #a12e2e; }
+#retryInviteCode { margin-top: 12px; }
+@media (max-width: 640px) {
+  .invite-settings { margin: 20px 0 20px; padding: 20px 16px; }
+  .invite-code-controls { align-items: stretch; }
+  #psychologistInviteCode { width: 100%; }
+  .invite-code-controls .button { flex: 1 1 160px; }
+}

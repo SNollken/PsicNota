@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Laila:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../assets/css/psicologo/perfil.css" />
+  <link rel="stylesheet" href="../assets/css/psicologo/perfil.css?v=20260930-convite" />
   <link rel="stylesheet" href="../assets/menu/menu.css" />
   <script src="../assets/menu/menu.js"></script>
   <link rel="stylesheet" href="../assets/css/responsive.css">
@@ -23,6 +23,24 @@
 
     <main class="main-content">
       <button class="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+
+      <section class="invite-settings" id="convidar-pacientes" aria-labelledby="inviteSettingsTitle">
+        <div class="invite-settings-copy">
+          <h2 id="inviteSettingsTitle">Convidar pacientes</h2>
+          <p>Seu código não vence e pode ser usado por vários pacientes.</p>
+        </div>
+        <form id="inviteCodeForm" novalidate>
+          <label for="psychologistInviteCode">Seu código de convite</label>
+          <div class="invite-code-controls">
+            <input id="psychologistInviteCode" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" minlength="3" maxlength="24" pattern="[A-Z0-9][A-Z0-9-]{2,23}" aria-describedby="inviteCodeHelp inviteCodeStatus" disabled>
+            <button class="button button-save" id="saveInviteCode" type="submit" disabled>Salvar código</button>
+            <button class="button invite-copy-button" id="copyInviteLink" type="button" disabled>Copiar link de convite</button>
+          </div>
+          <p class="invite-code-help" id="inviteCodeHelp">Use de 3 a 24 letras, números ou hífens. Ao alterar, os links anteriores deixam de funcionar; seus pacientes continuam vinculados.</p>
+          <p class="invite-code-status" id="inviteCodeStatus" role="status" aria-live="polite">Carregando seu código...</p>
+          <button class="button invite-copy-button" id="retryInviteCode" type="button" hidden>Tentar novamente</button>
+        </form>
+      </section>
 
       <form id="profileForm" novalidate>
 
@@ -444,6 +462,8 @@
         </div>
 
       </form>
+
+
     </main>
   </div>
 
@@ -462,5 +482,6 @@
   <script src="../assets/js/profile-backend.js"></script>
   <script src="../assets/js/shared-data.js"></script>
   <script src="../assets/js/psicologo/perfil.js"></script>
+  <script src="../assets/js/psicologo/codigo-convite.js"></script>
 </body>
 </html>

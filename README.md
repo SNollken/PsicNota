@@ -54,7 +54,7 @@ O arquivo `assets/js/supabase-client.js` já aponta para um projeto Supabase e c
 1. Na página de cadastro, escolha paciente ou psicólogo e preencha os dados. Pacientes precisam do código fixo enviado pelo psicólogo. Para psicólogos, CRP, UF, área de atuação e formato de atendimento são obrigatórios. A senha deve ter pelo menos 8 caracteres e o aceite dos textos do cadastro começa desmarcado.
 2. Com confirmação de e-mail desativada no Supabase, o cadastro abre a sessão e direciona ao painel automaticamente. O primeiro acesso do psicólogo oferece links para completar o perfil e configurar os horários. Se a confirmação estiver ativada, a página orienta a verificar o e-mail e entrar depois.
 3. Para voltar à conta, entre em `auth/login.html`. O login aceita e-mail ou os usuários existentes `psicologo`, `paciente` e `paciente2`; para esses usuários, o código acrescenta `@psicnota.test`.
-4. Cada psicólogo recebe automaticamente um código único, como `PN-27`. Em Meus pacientes, o código é exibido e pode ser compartilhado por link; não vence e aceita vários cadastros. O paciente fica vinculado ao psicólogo ao se cadastrar. Psicólogos existentes também recebem seu código. Convites temporários antigos ainda não usados continuam válidos até o vencimento original.
+4. Cada psicólogo recebe automaticamente um código único, como `PN-27`. Em Meu perfil → Convidar pacientes, o código pode ser personalizado e compartilhado por link; não vence e aceita vários cadastros. O paciente fica vinculado ao psicólogo ao se cadastrar. Psicólogos existentes também recebem seu código. Ao personalizar, use de 3 a 24 letras, números ou hífens; códigos repetidos e o formato automático PN-N são reservados. A troca invalida o link anterior sem alterar os pacientes já vinculados. Convites temporários antigos ainda não usados continuam válidos até o vencimento original.
 5. Como psicólogo, configure disponibilidades e acompanhe as solicitações pela agenda. É possível aprovar ou recusar uma solicitação; após a aprovação, a consulta fica registrada.
 6. Como paciente, acesse a agenda, escolha um horário disponível e envie a solicitação. Acompanhe as informações nas telas do paciente.
 
@@ -73,3 +73,5 @@ O roteiro de navegador `tests/roteiro-cdp.mjs` é separado: usa Puppeteer, acess
 ### Verificação do código fixo no banco
 
 `supabase/tests/codigo_fixo_psicologo.sql` verifica criação automática, reutilização, códigos inválidos e isolamento entre contas em uma transação terminada em ROLLBACK. Execute em um banco com o esquema do projeto e as três migrações `20260930190000`, `20260930190100` e `20260930190200` aplicadas. O teste não mantém contas nem vínculos sintéticos, mas a sequência dos códigos pode avançar; os códigos não dependem de uma numeração sem intervalos.
+
+`supabase/tests/codigo_personalizado_psicologo.sql` verifica a personalização, duplicidade, formato, autorização e cadastro com o código novo após a migração `20260930200000`.

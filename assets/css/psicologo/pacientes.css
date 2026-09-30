@@ -683,8 +683,6 @@ svg {
   .patient-arrow { flex-basis: 24px; width: 24px; }
 }
 
-.patient-invite { margin-bottom: 24px; padding: 20px; border: 1px solid var(--line, #dce6ea); border-radius: 16px; background: var(--white, #fff); }
-.patient-invite h2 { margin: 0 0 8px; font-size: 20px; }
-.patient-invite p { line-height: 1.5; }
-#patientInviteResult label { display: block; margin-bottom: 8px; }
-#patientInviteCode { box-sizing: border-box; width: 100%; max-width: 320px; padding: 12px; border: 1px solid var(--line, #dce6ea); border-radius: 8px; font: inherit; }
+.invite-profile-link { position: absolute; left: 0; top: 50%; transform: translateY(-50%); color: var(--blue-800, #174e61); font-size: 14px; font-weight: 600; text-underline-offset: 4px; }
+
+@media (max-width: 720px) { .invite-profile-link { position: static; transform: none; } }

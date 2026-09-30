@@ -24,7 +24,7 @@
 
   <link
     rel="stylesheet"
-    href="../assets/css/psicologo/pacientes.css"
+    href="../assets/css/psicologo/pacientes.css?v=20260930-convite"
   >
 
   <script src="../assets/menu/menu.js"></script>
@@ -60,6 +60,8 @@
 
           <h1>PACIENTES</h1>
 
+          <a class="invite-profile-link" href="perfil.html#convidar-pacientes">Convidar pacientes</a>
+
           <span
             id="patientTotal"
             class="patients-count">
@@ -68,18 +70,6 @@
 
         </header>
 
-
-        <section class="patient-invite" aria-label="Convidar paciente">
-          <h2>Seu código de cadastro</h2>
-          <p>Compartilhe este código com seus pacientes. Ele é fixo, não vence e pode ser usado por vários pacientes.</p>
-          <button id="createPatientInvite" class="load-more" type="button" hidden>Tentar carregar código novamente</button>
-          <p id="patientInviteMessage" role="status" aria-live="polite"></p>
-          <div id="patientInviteResult" hidden>
-            <label for="patientInviteCode">Código do psicólogo</label>
-            <input id="patientInviteCode" type="text" readonly aria-describedby="patientInviteMessage">
-            <button id="copyPatientInvite" class="load-more" type="button">Copiar link de cadastro</button>
-          </div>
-        </section>
 
         <div class="patients-search-wrapper">
 
@@ -166,7 +156,7 @@
   <script src="../assets/js/supabase-client.js"></script>
   <script src="../assets/js/profile-backend.js"></script>
   <script src="../assets/js/shared-data.js"></script>
-  <script src="../assets/js/psicologo/pacientes.js"></script>
+  <script src="../assets/js/psicologo/pacientes.js?v=20260930-convite"></script>
 
 </body>
 
