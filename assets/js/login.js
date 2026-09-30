@@ -39,15 +39,16 @@
     const password = passwordInput.value;
     const submit = form.querySelector('button[type="submit"]');
 
-    setFieldError(usernameInput, identifier ? "" : "Informe psicologo, paciente ou paciente2.");
+    setFieldError(usernameInput, identifier ? "" : "Informe seu e-mail ou usuário.");
     setFieldError(passwordInput, password ? "" : "Informe sua senha.");
     if (!identifier || !password) {
       showMessage("Revise os campos indicados antes de continuar.", "error");
       return;
     }
-    if (!DEMO_USERS.has(identifier)) {
-      setFieldError(usernameInput, "Digite psicologo, paciente ou paciente2.");
-      showMessage("Use psicologo, paciente ou paciente2 para entrar.", "error");
+    const email = DEMO_USERS.has(identifier) ? `${identifier}@psicnota.test` : identifier;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setFieldError(usernameInput, "Digite um e-mail válido ou usuário de demonstração.");
+      showMessage("Confira o e-mail ou usuário informado.", "error");
       return;
     }
 
@@ -58,7 +59,7 @@
     let authResult;
     try {
       authResult = await client.auth.signInWithPassword({
-        email: `${identifier}@psicnota.test`,
+        email,
         password
       });
     } catch (error) {
