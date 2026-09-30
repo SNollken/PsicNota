@@ -7,7 +7,7 @@
   const data = window.PsiNoteData;
   const USER_EMAIL_DOMAIN = "@psicnota.test";
 
-  if (!form || !client || !data) return;
+  if (!form || !client || !data || !window.PsicNotaAuth) return;
 
   function setFieldError(input, text) {
     const error = document.getElementById(input.id + "Error");
@@ -33,6 +33,7 @@
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
+    if (form.querySelector('button[type="submit"]').disabled) return;
     const usernameInput = document.getElementById("loginEmail");
     const passwordInput = document.getElementById("loginPassword");
     const identifier = usernameInput.value.trim().toLowerCase();
@@ -60,46 +61,29 @@
     submit.textContent = "Entrando...";
     showMessage("");
 
-    const { data, error } = await client.auth.signInWithPassword({
-      email,
-      password
-    });
-
-    if (error) {
-      setFieldError(passwordInput, "Usuário ou senha incorretos.");
-      showMessage("Não foi possível entrar. Confira o usuário e a senha.", "error");
+    try {
+      const { data: authData, error } = await client.auth.signInWithPassword({ email, password });
+      if (error) {
+        if (error.code === "email_not_confirmed") {
+          showMessage("Confirme seu cadastro pelo link enviado ao seu e-mail antes de entrar.", "error");
+        } else {
+          setFieldError(passwordInput, "Usuário ou senha incorretos.");
+          showMessage("Não foi possível entrar. Confira o usuário e a senha.", "error");
+        }
+        return;
+      }
+      const remember = document.getElementById("rememberMe").checked;
+      const destination = await window.PsicNotaAuth.openAccount(authData.user, remember);
+      showMessage("Login realizado com sucesso!", "success");
+      window.location.href = destination;
+    } catch (error) {
+      const message = error.message || "";
+      showMessage(message.startsWith("Seu cadastro profissional") || message.startsWith("Não foi possível carregar seu perfil")
+        ? message : "Não foi possível conectar ao serviço. Verifique sua conexão e tente novamente.", "error");
+    } finally {
       submit.disabled = false;
       submit.textContent = "Entrar";
-      return;
     }
-
-    const { data: profile, error: profileError } = await client
-      .from("perfis")
-      .select("id, papel, nome_completo, nome_social, email")
-      .eq("id", data.user.id)
-      .single();
-
-    if (profileError) {
-      await client.auth.signOut();
-      showMessage("Sua conta não possui um perfil válido.", "error");
-      submit.disabled = false;
-      submit.textContent = "Entrar";
-      return;
-    }
-
-    const legacySession = {
-      id: profile.id,
-      role: profile.papel,
-      name: profile.nome_social || profile.nome_completo,
-      fullName: profile.nome_completo,
-      email: profile.email,
-      loggedAt: new Date().toISOString()
-    };
-    const remember = document.getElementById("rememberMe").checked;
-    data.setSession(legacySession, remember);
-
-    showMessage("Login realizado com sucesso!", "success");
-    window.location.href = profile.papel === "psicologo" ? "../psicologo/home.html" : "../paciente/home.html";
   });
 
   form.addEventListener("input", (event) => {

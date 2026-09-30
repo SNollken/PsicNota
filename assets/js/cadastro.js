@@ -7,7 +7,14 @@
   const registerForm = document.querySelector("#registerForm");
   const registerMessage = document.querySelector("#registerMessage");
 
-  if (!registerForm || !client) return;
+  if (!registerForm) return;
+  if (!client || !window.PsiNoteData || !window.PsicNotaAuth) {
+    registerMessage.textContent = "Não foi possível conectar ao serviço. Recarregue a página para tentar novamente.";
+    registerMessage.className = "form-message is-error";
+    registerForm.querySelector('button[type="submit"]').disabled = true;
+    return;
+  }
+  let submitting = false;
 
   const psychologistFields = document.querySelector("#psychologistFields");
   const roleInputs = document.querySelectorAll('input[name="role"]');
@@ -123,6 +130,9 @@
     if (mensagem.includes("network") || mensagem.includes("fetch")) {
       return "Sem conexão com o servidor. Verifique sua internet e tente novamente.";
     }
+    if (error.status === 429 || mensagem.includes("rate limit")) {
+      return "Muitas tentativas de cadastro. Aguarde alguns minutos e tente novamente.";
+    }
     return "Não foi possível criar sua conta. Tente novamente.";
   }
 
@@ -145,6 +155,7 @@
 
   registerForm.addEventListener("submit", async (event) => {
     event.preventDefault();
+    if (submitting) return;
     clearMessage();
 
     const selectedRole = document.querySelector('input[name="role"]:checked').value;
@@ -159,10 +170,11 @@
 
     let isValid = true;
     const fullName = fullNameInput.value.trim();
-    const email = emailInput.value.trim();
+    const email = emailInput.value.trim().toLowerCase();
     const phoneDigits = phoneInput.value.replace(/\D/g, "");
     const password = passwordInput.value;
     const confirmPassword = confirmPasswordInput.value;
+    const birthDate = parseBirthDate(birthDateInput.value);
 
     if (fullName.length < 3 || !fullName.includes(" ")) {
       setFieldError(fullNameInput, "Digite seu nome e sobrenome.");
@@ -172,7 +184,7 @@
     if (!birthDateInput.value) {
       setFieldError(birthDateInput, "Informe sua data de nascimento.");
       isValid = false;
-    } else if (!parseBirthDate(birthDateInput.value)) {
+    } else if (!birthDate || birthDate.getFullYear() < 1900 || birthDate > new Date()) {
       setFieldError(birthDateInput, "Data de nascimento inválida.");
       isValid = false;
     }
@@ -193,6 +205,9 @@
     if (!password) {
       setFieldError(passwordInput, "Crie uma senha.");
       isValid = false;
+    } else if (password.length < 8) {
+      setFieldError(passwordInput, "Use uma senha com pelo menos 8 caracteres.");
+      isValid = false;
     }
 
     if (!confirmPassword) {
@@ -209,7 +224,7 @@
       const specialtyInput = document.querySelector("#specialty");
       const serviceFormatInput = document.querySelector("#serviceFormat");
 
-      if (crpInput.value.trim().length < 4) {
+      if (!/^\d{4,10}$/.test(crpInput.value.trim())) {
         setFieldError(crpInput, "Informe um número de CRP válido.");
         isValid = false;
       }
@@ -244,7 +259,7 @@
     const metadata = {
       papel: selectedRole,
       nome_completo: fullName,
-      data_nascimento: birthDateInput.value,
+      data_nascimento: `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, "0")}-${String(birthDate.getDate()).padStart(2, "0")}`,
       telefone: phoneInput.value
     };
 
@@ -259,33 +274,45 @@
     submitButton.disabled = true;
     submitButton.textContent = "Criando conta...";
 
-    const { data, error } = await client.auth.signUp({
-      email,
-      password,
-      options: { data: metadata }
-    });
-
-    if (error) {
-      showMessage(traduzirErro(error), "error");
-      submitButton.disabled = false;
-      submitButton.textContent = "Criar conta";
-      return;
+    submitting = true;
+    let accountCreated = false;
+    try {
+      const { data, error } = await client.auth.signUp({
+        email,
+        password,
+        options: {
+          data: metadata,
+          emailRedirectTo: new URL("login.html", window.location.href).href
+        }
+      });
+      if (error) {
+        showMessage(traduzirErro(error), "error");
+        return;
+      }
+      accountCreated = true;
+      passwordInput.value = "";
+      confirmPasswordInput.value = "";
+      if (!data.session) {
+        showMessage("Confira seu e-mail para confirmar o cadastro. Depois, entre com seu e-mail e senha. Se já possui uma conta, use Entrar ou recupere sua senha.", "success");
+        submitButton.textContent = "Confira seu e-mail";
+        return;
+      }
+      const destination = await window.PsicNotaAuth.openAccount(data.user);
+      showMessage("Conta criada! Abrindo seu painel...", "success");
+      window.location.replace(destination + (selectedRole === "psicologo" ? "?boas-vindas=1" : ""));
+    } catch (error) {
+      showMessage(accountCreated
+        ? "Sua conta foi criada, mas não foi possível abrir o painel. Use Entrar para tentar novamente."
+        : traduzirErro(error), "error");
+    } finally {
+      if (!accountCreated) {
+        submitting = false;
+        submitButton.disabled = false;
+        submitButton.textContent = "Criar conta";
+      } else if (submitButton.textContent === "Criando conta...") {
+        submitButton.textContent = "Conta criada";
+      }
     }
-
-    if (!data.session) {
-      showMessage(
-        "O Supabase ainda exige confirmação de e-mail. Desative ‘Confirm email’ nas configurações de Auth para liberar o login imediato.",
-        "error"
-      );
-      submitButton.disabled = false;
-      submitButton.textContent = "Criar conta";
-      return;
-    }
-
-    showMessage("Cadastro realizado! Redirecionando para o login...", "success");
-    window.setTimeout(() => {
-      window.location.href = "login.html";
-    }, 1500);
   });
 
   updateRoleFields();

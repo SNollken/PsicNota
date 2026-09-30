@@ -51,10 +51,13 @@ O arquivo `assets/js/supabase-client.js` já aponta para um projeto Supabase e c
 
 ## Fluxo básico
 
-1. Na página de cadastro, escolha paciente ou psicólogo e crie a conta; o perfil correspondente é usado para direcionar a entrada.
-2. Entre em `auth/login.html`. O login aceita e-mail ou nome de usuário; neste último caso, o código acrescenta `@psicnota.test`.
-3. Como psicólogo, configure disponibilidades e acompanhe as solicitações pela agenda. É possível aprovar ou recusar uma solicitação; após a aprovação, a consulta fica registrada.
-4. Como paciente, acesse a agenda, escolha um horário disponível e envie a solicitação. Acompanhe as informações nas telas do paciente.
+1. Na página de cadastro, escolha paciente ou psicólogo e preencha os dados. Para psicólogos, CRP, UF, área de atuação e formato de atendimento são obrigatórios. A senha deve ter pelo menos 8 caracteres e o aceite dos textos do cadastro começa desmarcado.
+2. Com confirmação de e-mail desativada no Supabase, o cadastro abre a sessão e direciona ao painel automaticamente. O primeiro acesso do psicólogo oferece links para completar o perfil e configurar os horários. Se a confirmação estiver ativada, a página orienta a verificar o e-mail e entrar depois.
+3. Para voltar à conta, entre em `auth/login.html`. O login aceita e-mail ou nome de usuário; neste último caso, o código acrescenta `@psicnota.test`.
+4. Como psicólogo, configure disponibilidades e acompanhe as solicitações pela agenda. É possível aprovar ou recusar uma solicitação; após a aprovação, a consulta fica registrada.
+5. Como paciente, acesse a agenda, escolha um horário disponível e envie a solicitação. Acompanhe as informações nas telas do paciente.
+
+Os links de Termos de Uso e Política de Privacidade abrem páginas com lorem ipsum, solicitado como conteúdo provisório. Substitua esses textos quando as versões oficiais estiverem disponíveis.
 
 ## Testes
 

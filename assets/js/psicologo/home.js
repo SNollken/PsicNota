@@ -199,6 +199,10 @@
     const requests = (requestsResult.data || []).map((item) => ({ time: formatTime(item.horario), patient: displayName(item.paciente), mode: formatMode(item.modalidade) }));
     const notes = notesResult.data || [];
 
+    const welcome = document.getElementById("signupWelcome");
+    if (welcome && new URLSearchParams(window.location.search).get("boas-vindas") === "1") {
+      welcome.hidden = false;
+    }
     setText("homeUserName", displayName(profileResult.data).split(" ")[0]);
     setText("statConsultas", appointments.length);
     setText("statPacientes", new Set((patientsResult.data || []).map((item) => item.paciente_id)).size);

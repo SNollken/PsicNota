@@ -1,0 +1,5 @@
+body { margin: 0; background: #f3fbfe; color: #111827; font-family: Inter, Arial, sans-serif; line-height: 1.6; }
+main { max-width: 760px; margin: 40px auto; padding: 32px; background: #fff; border-radius: 16px; }
+a { color: #1f637a; }
+h1 { line-height: 1.2; }
+@media (max-width: 600px) { main { margin: 16px; padding: 24px; } }

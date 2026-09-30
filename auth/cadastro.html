@@ -498,7 +498,7 @@
                   class="field-help"
                   id="registerPasswordHelp"
                 >
-                  Use letras maiúsculas, minúsculas e números.
+                  Use pelo menos 8 caracteres. Combine letras e números.
                 </small>
 
 
@@ -774,21 +774,24 @@
               name="terms"
               type="checkbox"
               aria-describedby="termsError"
-              checked
               required
             >
 
             <span>
               Li e concordo com os
               <a
-                href="#"
+                href="termos.html"
+                target="_blank"
+                rel="noopener"
                 class="text-link"
               >
                 Termos de Uso
               </a>
               e com a
               <a
-                href="#"
+                href="privacidade.html"
+                target="_blank"
+                rel="noopener"
                 class="text-link"
               >
                 Política de Privacidade
@@ -865,6 +868,8 @@
   <!-- JavaScript já existente -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/shared-data.js"></script>
+  <script src="../assets/js/auth-session.js"></script>
   <script src="../assets/js/cadastro.js"></script>
 
 </body>
