@@ -316,6 +316,11 @@
     }, 1500);
   });
 
+  const codeFromLink = new URLSearchParams(window.location.search).get("codigo");
+  if (codeFromLink) {
+    document.querySelector("#rolePatient").checked = true;
+    inviteInput.value = codeFromLink.trim().toUpperCase();
+  }
   updateRoleFields();
   setupPasswordToggles();
 }());
