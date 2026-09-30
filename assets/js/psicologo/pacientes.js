@@ -1266,3 +1266,38 @@ void loadPatientsFromDatabase().catch((error) => {
     elements.databaseError.hidden = false;
   }
 });
+
+/* Convite emitido pelo Supabase para cadastro de um paciente. */
+const createInviteButton = document.querySelector("#createPatientInvite");
+const inviteMessage = document.querySelector("#patientInviteMessage");
+const inviteResult = document.querySelector("#patientInviteResult");
+const inviteCode = document.querySelector("#patientInviteCode");
+const copyInviteButton = document.querySelector("#copyPatientInvite");
+
+createInviteButton?.addEventListener("click", async () => {
+  createInviteButton.disabled = true;
+  inviteMessage.textContent = "Gerando código...";
+  try {
+    const { data: code, error } = await client.rpc("criar_convite_paciente");
+    if (error) throw error;
+    inviteCode.value = code;
+    inviteResult.hidden = false;
+    inviteMessage.textContent = "Código gerado. Envie o convite ao paciente.";
+  } catch (error) {
+    inviteMessage.textContent = "Não foi possível gerar o código. Entre como psicólogo e tente novamente.";
+  } finally {
+    createInviteButton.disabled = false;
+  }
+});
+
+copyInviteButton?.addEventListener("click", async () => {
+  const inviteUrl = new URL("../auth/cadastro.html", window.location.href);
+  inviteUrl.searchParams.set("codigo", inviteCode.value);
+  try {
+    await navigator.clipboard.writeText(inviteUrl.toString());
+    inviteMessage.textContent = "Link com código copiado.";
+  } catch (error) {
+    inviteCode.select();
+    inviteMessage.textContent = "Copie o código exibido e envie ao paciente.";
+  }
+});
