@@ -10,6 +10,8 @@
   if (!registerForm) return;
 
   const psychologistFields = document.querySelector("#psychologistFields");
+  const inviteFields = document.querySelector("#inviteFields");
+  const inviteInput = document.querySelector("#inviteCode");
   const roleInputs = document.querySelectorAll('input[name="role"]');
   const phoneInput = document.querySelector("#phone");
   const birthDateInput = document.querySelector("#birthDate");
@@ -76,6 +78,12 @@
     const isPsychologist = selectedRole === "psicologo";
 
     psychologistFields.hidden = !isPsychologist;
+    inviteFields.hidden = isPsychologist;
+    inviteInput.required = !isPsychologist;
+    if (isPsychologist) {
+      inviteInput.value = "";
+      setFieldError(inviteInput, "");
+    }
 
     ["crp", "crpState", "specialty", "serviceFormat"].forEach((id) => {
       const field = document.querySelector(`#${id}`);
@@ -205,6 +213,11 @@
       isValid = false;
     }
 
+    if (selectedRole === "paciente" && !inviteInput.value.trim()) {
+      setFieldError(inviteInput, "Informe o código enviado pelo psicólogo.");
+      isValid = false;
+    }
+
     if (selectedRole === "psicologo") {
       const crpInput = document.querySelector("#crp");
       const crpStateInput = document.querySelector("#crpState");
@@ -249,6 +262,10 @@
       data_nascimento: birthDateInput.value,
       telefone: phoneInput.value
     };
+
+    if (selectedRole === "paciente") {
+      metadata.codigo_convite = inviteInput.value.trim().toUpperCase();
+    }
 
     if (selectedRole === "psicologo") {
       metadata.crp_numero = document.querySelector("#crp").value.trim();
