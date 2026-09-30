@@ -1267,35 +1267,39 @@ void loadPatientsFromDatabase().catch((error) => {
   }
 });
 
-/* Convite emitido pelo Supabase para cadastro de um paciente. */
 const createInviteButton = document.querySelector("#createPatientInvite");
 const inviteMessage = document.querySelector("#patientInviteMessage");
 const inviteResult = document.querySelector("#patientInviteResult");
 const inviteCode = document.querySelector("#patientInviteCode");
 const copyInviteButton = document.querySelector("#copyPatientInvite");
 
-createInviteButton?.addEventListener("click", async () => {
+async function loadPsychologistCode() {
   createInviteButton.disabled = true;
-  inviteMessage.textContent = "Gerando código...";
+  createInviteButton.hidden = true;
+  inviteMessage.textContent = "Carregando seu código...";
   try {
-    const { data: code, error } = await client.rpc("criar_convite_paciente");
-    if (error) throw error;
+    const { data: code, error } = await client.rpc("obter_codigo_psicologo");
+    if (error || !code) throw error || new Error("Código indisponível");
     inviteCode.value = code;
     inviteResult.hidden = false;
-    inviteMessage.textContent = "Código gerado. Envie o convite ao paciente.";
+    inviteMessage.textContent = "Seu código está pronto para compartilhar.";
   } catch (error) {
-    inviteMessage.textContent = "Não foi possível gerar o código. Entre como psicólogo e tente novamente.";
+    inviteMessage.textContent = "Não foi possível carregar seu código. Tente novamente.";
+    createInviteButton.hidden = false;
   } finally {
     createInviteButton.disabled = false;
   }
-});
+}
+
+createInviteButton?.addEventListener("click", loadPsychologistCode);
+if (createInviteButton) void loadPsychologistCode();
 
 copyInviteButton?.addEventListener("click", async () => {
   const inviteUrl = new URL("../auth/cadastro.html", window.location.href);
   inviteUrl.searchParams.set("codigo", inviteCode.value);
   try {
     await navigator.clipboard.writeText(inviteUrl.toString());
-    inviteMessage.textContent = "Link com código copiado.";
+    inviteMessage.textContent = "Link com seu código copiado.";
   } catch (error) {
     inviteCode.select();
     inviteMessage.textContent = "Copie o código exibido e envie ao paciente.";

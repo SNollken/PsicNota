@@ -51,11 +51,12 @@ O arquivo `assets/js/supabase-client.js` já aponta para um projeto Supabase e c
 
 ## Fluxo básico
 
-1. Na página de cadastro, escolha paciente ou psicólogo e preencha os dados. Pacientes precisam do código de convite enviado pelo psicólogo. Para psicólogos, CRP, UF, área de atuação e formato de atendimento são obrigatórios. A senha deve ter pelo menos 8 caracteres e o aceite dos textos do cadastro começa desmarcado.
+1. Na página de cadastro, escolha paciente ou psicólogo e preencha os dados. Pacientes precisam do código fixo enviado pelo psicólogo. Para psicólogos, CRP, UF, área de atuação e formato de atendimento são obrigatórios. A senha deve ter pelo menos 8 caracteres e o aceite dos textos do cadastro começa desmarcado.
 2. Com confirmação de e-mail desativada no Supabase, o cadastro abre a sessão e direciona ao painel automaticamente. O primeiro acesso do psicólogo oferece links para completar o perfil e configurar os horários. Se a confirmação estiver ativada, a página orienta a verificar o e-mail e entrar depois.
 3. Para voltar à conta, entre em `auth/login.html`. O login aceita e-mail ou os usuários existentes `psicologo`, `paciente` e `paciente2`; para esses usuários, o código acrescenta `@psicnota.test`.
-4. Como psicólogo, configure disponibilidades e acompanhe as solicitações pela agenda. É possível aprovar ou recusar uma solicitação; após a aprovação, a consulta fica registrada.
-5. Como paciente, acesse a agenda, escolha um horário disponível e envie a solicitação. Acompanhe as informações nas telas do paciente.
+4. Cada psicólogo recebe automaticamente um código único, como `PN-27`. Em Meus pacientes, o código é exibido e pode ser compartilhado por link; não vence e aceita vários cadastros. O paciente fica vinculado ao psicólogo ao se cadastrar. Psicólogos existentes também recebem seu código. Convites temporários antigos ainda não usados continuam válidos até o vencimento original.
+5. Como psicólogo, configure disponibilidades e acompanhe as solicitações pela agenda. É possível aprovar ou recusar uma solicitação; após a aprovação, a consulta fica registrada.
+6. Como paciente, acesse a agenda, escolha um horário disponível e envie a solicitação. Acompanhe as informações nas telas do paciente.
 
 Os links de Termos de Uso e Política de Privacidade abrem páginas com lorem ipsum, solicitado como conteúdo provisório. Substitua esses textos quando as versões oficiais estiverem disponíveis.
 
@@ -68,3 +69,7 @@ node --test tests/*.test.js
 ```
 
 O roteiro de navegador `tests/roteiro-cdp.mjs` é separado: usa Puppeteer, acessa o servidor na porta `8899` e depende de contas e dados de teste no Supabase. As instruções e os pré-requisitos específicos estão no início desse arquivo. Ele interage com dados reais do projeto configurado, portanto use um ambiente de desenvolvimento apropriado.
+
+### Verificação do código fixo no banco
+
+`supabase/tests/codigo_fixo_psicologo.sql` verifica criação automática, reutilização, códigos inválidos e isolamento entre contas em uma transação terminada em ROLLBACK. Execute em um banco com o esquema do projeto e as três migrações `20260930190000`, `20260930190100` e `20260930190200` aplicadas. O teste não mantém contas nem vínculos sintéticos, mas a sequência dos códigos pode avançar; os códigos não dependem de uma numeração sem intervalos.

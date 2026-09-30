@@ -227,7 +227,7 @@
     }
 
     if (selectedRole === "paciente" && !inviteInput.value.trim()) {
-      setFieldError(inviteInput, "Informe o código enviado pelo psicólogo.");
+      setFieldError(inviteInput, "Informe o código do seu psicólogo.");
       isValid = false;
     }
 
