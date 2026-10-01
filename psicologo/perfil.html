@@ -76,7 +76,7 @@
             </span>
           </div>
 
-          <div class="profile-actions">
+          <div class="profile-actions"><button class="button button-save" type="submit">Salvar alterações</button>
             <input
               id="avatarInput"
               type="file"
@@ -280,23 +280,46 @@
 
               <label class="field">
                 <span>Estado do CRP</span>
-                <input
-                  name="crpState"
-                  type="text"
-                  maxlength="2"
-                  placeholder="DF"
-                  disabled
-                />
+                <select name="crpState" disabled>
+                  <option value="">Selecione</option>
+                  <option value="AC">AC - Acre</option>
+                  <option value="AL">AL - Alagoas</option>
+                  <option value="AP">AP - Amapá</option>
+                  <option value="AM">AM - Amazonas</option>
+                  <option value="BA">BA - Bahia</option>
+                  <option value="CE">CE - Ceará</option>
+                  <option value="DF">DF - Distrito Federal</option>
+                  <option value="ES">ES - Espírito Santo</option>
+                  <option value="GO">GO - Goiás</option>
+                  <option value="MA">MA - Maranhão</option>
+                  <option value="MT">MT - Mato Grosso</option>
+                  <option value="MS">MS - Mato Grosso do Sul</option>
+                  <option value="MG">MG - Minas Gerais</option>
+                  <option value="PA">PA - Pará</option>
+                  <option value="PB">PB - Paraíba</option>
+                  <option value="PR">PR - Paraná</option>
+                  <option value="PE">PE - Pernambuco</option>
+                  <option value="PI">PI - Piauí</option>
+                  <option value="RJ">RJ - Rio de Janeiro</option>
+                  <option value="RN">RN - Rio Grande do Norte</option>
+                  <option value="RS">RS - Rio Grande do Sul</option>
+                  <option value="RO">RO - Rondônia</option>
+                  <option value="RR">RR - Roraima</option>
+                  <option value="SC">SC - Santa Catarina</option>
+                  <option value="SP">SP - São Paulo</option>
+                  <option value="SE">SE - Sergipe</option>
+                  <option value="TO">TO - Tocantins</option>
+                </select>
               </label>
 
               <label class="field">
                 <span>Área de atuação</span>
-                <input name="specialty" type="text" placeholder="Psicologia clínica" disabled />
+                <select name="specialty"><option value="">Selecione</option><option value="Psicologia clínica">Psicologia clínica</option><option value="Psicologia escolar e educacional">Psicologia escolar e educacional</option><option value="Psicologia organizacional e do trabalho">Psicologia organizacional e do trabalho</option><option value="Psicologia hospitalar">Psicologia hospitalar</option><option value="Psicologia jurídica">Psicologia jurídica</option><option value="Psicologia do esporte">Psicologia do esporte</option><option value="Psicologia social">Psicologia social</option><option value="Neuropsicologia">Neuropsicologia</option><option value="Psicologia da saúde">Psicologia da saúde</option><option value="Outra">Outra</option></select>
               </label>
 
               <label class="field">
                 <span>Forma de Atendimento</span>
-                <input name="serviceFormat" type="text" placeholder="Online/presencial" disabled />
+                <select name="serviceFormat"><option value="">Selecione</option><option value="online">Online</option><option value="presencial">Presencial</option><option value="ambos">Online e presencial</option></select>
               </label>
             </div>
           </section>
@@ -479,6 +502,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/phone-country-data.js"></script>
+  <script src="../assets/js/phone-input.js"></script>
   <script src="../assets/js/profile-backend.js"></script>
   <script src="../assets/js/shared-data.js"></script>
   <script src="../assets/js/psicologo/perfil.js"></script>

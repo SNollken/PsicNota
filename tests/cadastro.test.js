@@ -30,7 +30,7 @@ function setup(signUp, openAccount = async () => "../psicologo/home.html") {
     querySelector(selector) { return selector.includes("submit") ? submit : Object.values(fields).find(f => f.attrs?.["aria-invalid"] === "true"); }
   };
   let destination;
-  const window = { PsicNotaSupabase: { auth: { signUp } }, PsiNoteData: {},
+  const window = { PsicNotaSupabase: { auth: { signUp } }, PsiNoteData: {}, PsicNotaPhone: { valid: input => input.value.replace(/\D/g, "").length >= 4, value: input => "+55" + input.value.replace(/\D/g, "") },
     PsicNotaAuth: { openAccount }, location: { search: "", href: "https://example.com/auth/cadastro.html", replace(url) { destination = url; } } };
   const document = {
     querySelector(selector) { return selector.includes(":checked") ? fields.role : fields[selector.slice(1)]; },

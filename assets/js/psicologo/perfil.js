@@ -76,6 +76,7 @@
   function setValue(name, fieldValue) {
     const field = form.elements.namedItem(name);
     if (!field) return;
+    if (name === "phone") { window.PsicNotaPhone.set(field, fieldValue); return; }
     if (field.type === "checkbox") field.checked = Boolean(fieldValue);
     else {
       const nextValue = fieldValue || "";
@@ -410,7 +411,7 @@
       socialName: value("socialName").trim(),
       pronoun: value("pronoun"),
       email: value("email").trim(),
-      phone: value("phone").trim(),
+      phone: window.PsicNotaPhone.value(form.elements.namedItem("phone")),
       city: value("city").trim(),
       state: value("state"),
       crp: value("crp").trim(),
@@ -456,9 +457,9 @@
   let editing = false;
 
   function setEditing(next) {
-    editing = next;
+    editing = true;
 
-    form.querySelectorAll("input, select").forEach((field) => {
+    form.querySelectorAll("input, select, textarea").forEach((field) => {
       if (field.id === "avatarInput") return;
       if (field.name === "city") {
         field.disabled = !form.elements.namedItem("state").value ||
@@ -467,7 +468,7 @@
         field.disabled = false;
       } else {
         field.disabled = false;
-        field.readOnly = !editing;
+        field.readOnly = false;
       }
     });
     if (elements.areasToggle) {
@@ -535,6 +536,7 @@
       await render(snapshot);
       setEditing(false);
       if (showSuccess) openModal(elements.successModal);
+      if (profile.emailChangePending) showFeedback("Confirme a alteração de e-mail pelo link enviado pelo Supabase.");
       return true;
     } catch (error) {
       console.error(error);

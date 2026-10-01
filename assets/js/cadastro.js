@@ -63,15 +63,6 @@
     return isValid ? date : null;
   }
 
-  function formatPhone(value) {
-    const digits = value.replace(/\D/g, "").slice(0, 11);
-
-    if (digits.length <= 2) return digits;
-    if (digits.length <= 6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
-    if (digits.length <= 10) return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
-    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
-  }
-
   function formatBirthDate(value) {
     const digits = value.replace(/\D/g, "").slice(0, 8);
 
@@ -146,9 +137,7 @@
 
   roleInputs.forEach((input) => input.addEventListener("change", updateRoleFields));
 
-  phoneInput.addEventListener("input", () => {
-    phoneInput.value = formatPhone(phoneInput.value);
-  });
+
 
   birthDateInput.addEventListener("input", () => {
     birthDateInput.value = formatBirthDate(birthDateInput.value);
@@ -179,7 +168,6 @@
     let isValid = true;
     const fullName = fullNameInput.value.trim();
     const email = emailInput.value.trim().toLowerCase();
-    const phoneDigits = phoneInput.value.replace(/\D/g, "");
     const password = passwordInput.value;
     const confirmPassword = confirmPasswordInput.value;
     const birthDate = parseBirthDate(birthDateInput.value);
@@ -197,8 +185,8 @@
       isValid = false;
     }
 
-    if (phoneDigits.length < 10) {
-      setFieldError(phoneInput, "Digite um telefone válido com DDD.");
+    if (!window.PsicNotaPhone.valid(phoneInput)) {
+      setFieldError(phoneInput, "Selecione o país e digite um telefone válido.");
       isValid = false;
     }
 
@@ -273,7 +261,7 @@
       papel: selectedRole,
       nome_completo: fullName,
       data_nascimento: `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, "0")}-${String(birthDate.getDate()).padStart(2, "0")}`,
-      telefone: phoneInput.value
+      telefone: window.PsicNotaPhone.value(phoneInput)
     };
 
     if (selectedRole === "paciente") {
