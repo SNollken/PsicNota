@@ -60,6 +60,10 @@ O arquivo `assets/js/supabase-client.js` já aponta para um projeto Supabase e c
 
 Os links de Termos de Uso e Política de Privacidade abrem páginas com lorem ipsum, solicitado como conteúdo provisório. Substitua esses textos quando as versões oficiais estiverem disponíveis.
 
+## Edição de perfil
+
+Os perfis de paciente e psicólogo permitem editar os dados e gravar pelo botão **Salvar alterações**. Estado, UF do CRP, formato de atendimento, área de atuação, gênero e pronomes usam seletores. O telefone no cadastro e nos perfis tem seleção de país/DDI, incluindo Japão (+81), e é gravado com o código internacional. Telefones brasileiros antigos continuam sendo lidos como +55. A alteração de e-mail usa o Supabase Auth; quando houver confirmação pendente, o perfil mantém o e-mail confirmado e orienta a confirmar a troca.
+
 ## Testes
 
 Os testes automatizados em `tests/*.test.js` usam o executor nativo do Node.js e podem ser executados na raiz com:

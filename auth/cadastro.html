@@ -378,7 +378,7 @@
                   inputmode="tel"
                   autocomplete="tel"
                   placeholder="(61) 99999-9999"
-                  maxlength="15"
+                  maxlength="20"
                   aria-describedby="phoneError"
                   required
                 >
@@ -709,13 +709,7 @@
                   Área de atuação
                 </label>
 
-                <input
-                  id="specialty"
-                  name="specialty"
-                  type="text"
-                  placeholder="Ex.: Psicologia clínica"
-                  aria-describedby="specialtyError"
-                >
+                <select id="specialty" name="specialty" aria-describedby="specialtyError"><option value="">Selecione</option><option value="Psicologia clínica">Psicologia clínica</option><option value="Psicologia escolar e educacional">Psicologia escolar e educacional</option><option value="Psicologia organizacional e do trabalho">Psicologia organizacional e do trabalho</option><option value="Psicologia hospitalar">Psicologia hospitalar</option><option value="Psicologia jurídica">Psicologia jurídica</option><option value="Psicologia do esporte">Psicologia do esporte</option><option value="Psicologia social">Psicologia social</option><option value="Neuropsicologia">Neuropsicologia</option><option value="Psicologia da saúde">Psicologia da saúde</option><option value="Outra">Outra</option></select>
 
                 <small
                   class="field-error"
@@ -881,6 +875,8 @@
   <script src="../assets/js/supabase-client.js"></script>
   <script src="../assets/js/shared-data.js"></script>
   <script src="../assets/js/auth-session.js"></script>
+  <script src="../assets/js/phone-country-data.js"></script>
+  <script src="../assets/js/phone-input.js"></script>
   <script src="../assets/js/cadastro.js"></script>
 
 </body>

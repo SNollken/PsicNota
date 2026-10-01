@@ -55,6 +55,15 @@
   }
 
   async function saveProfile(userId, role, values, avatarFile, removeAvatar, currentAvatarPath) {
+    const { data: authData, error: authError } = await client.auth.getUser();
+    if (authError) throw authError;
+    if (authData?.user?.id !== userId) throw new Error("Sessão inválida.");
+    if (values.email !== authData.user.email) {
+      const { data, error } = await client.auth.updateUser({ email: values.email });
+      if (error) throw error;
+      values.emailChangePending = data.user.email !== values.email;
+      values.email = data.user.email;
+    }
     let avatarPath = currentAvatarPath || null;
 
     if (removeAvatar && avatarPath) {
@@ -100,7 +109,7 @@
       }
     }
 
-    const { error: profileError } = await client.from("perfis").update(profileRow).eq("id", userId);
+    const { error: profileError } = await client.from("perfis").update(profileRow).eq("id", userId).select("id").single();
     if (profileError) throw profileError;
 
     if (role === "psicologo") {
@@ -113,7 +122,7 @@
         abordagem_terapeutica: emptyToNull(values.approach),
         publico_atendido: emptyToNull(values.audience),
         areas_atuacao: values.areas || []
-      }).eq("perfil_id", userId);
+      }).eq("perfil_id", userId).select("perfil_id").single();
       if (professionalError) throw professionalError;
     }
 
