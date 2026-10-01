@@ -76,7 +76,7 @@
             </span>
           </div>
 
-          <div class="profile-actions"><button class="button button-save" type="submit">Salvar alterações</button>
+          <div class="profile-actions">
             <input
               id="avatarInput"
               type="file"
@@ -492,10 +492,11 @@
 
   <div class="modal-overlay" id="successModal" hidden>
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="successModalTitle">
+      <span class="confirmation-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m6 12 4 4 8-8"/></svg></span>
       <h2 id="successModalTitle">Alterações salvas</h2>
-      <p>Seu perfil foi atualizado com sucesso.</p>
+      <p>Seu perfil foi atualizado com sucesso. As alterações já estão disponíveis.</p>
       <div class="modal-actions">
-        <button class="btn-primary" type="button" id="successOkBtn">OK</button>
+        <button class="btn-primary" type="button" id="successOkBtn">Entendi</button>
       </div>
     </div>
   </div>
@@ -504,6 +505,7 @@
   <script src="../assets/js/supabase-client.js"></script>
   <script src="../assets/js/phone-country-data.js"></script>
   <script src="../assets/js/phone-input.js"></script>
+  <script src="../assets/js/profile-autosave.js"></script>
   <script src="../assets/js/profile-backend.js"></script>
   <script src="../assets/js/shared-data.js"></script>
   <script src="../assets/js/psicologo/perfil.js"></script>

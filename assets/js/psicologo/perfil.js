@@ -239,6 +239,7 @@
         remove.addEventListener("click", () => {
           areas.splice(index, 1);
           renderAreas(true);
+          void autosave.request();
         });
         chip.appendChild(remove);
 
@@ -487,7 +488,7 @@
   }
 
   function openModal(modal) {
-    if (modal) modal.hidden = false;
+    if (modal) { modal.hidden = false; elements.successOk?.focus(); }
   }
 
   function closeModal(modal) {
@@ -535,6 +536,7 @@
       snapshot.areas = areas.slice();
       await render(snapshot);
       setEditing(false);
+      autosave.markSaved();
       if (showSuccess) openModal(elements.successModal);
       if (profile.emailChangePending) showFeedback("Confirme a alteração de e-mail pelo link enviado pelo Supabase.");
       return true;
@@ -565,12 +567,7 @@
       if (!editing) startEditing();
     });
 
-    field.addEventListener("keydown", (event) => {
-      if (event.key !== "Enter" || !editing) return;
-      event.preventDefault();
-      if (!form.reportValidity()) return;
-      void saveProfile();
-    });
+
   });
 
   form.elements.namedItem("state").addEventListener("change", (event) => {
@@ -619,6 +616,7 @@
     }
     areas.push(area);
     renderAreas(true);
+    void autosave.request();
   });
 
   elements.areasToggle?.addEventListener("click", () => {
@@ -630,13 +628,13 @@
     }
   });
 
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    if (!form.reportValidity()) return;
-    void saveProfile();
-  });
+
 
   elements.successOk?.addEventListener("click", () => closeModal(elements.successModal));
+  elements.successModal?.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeModal(elements.successModal);
+    if (event.key === "Tab") { event.preventDefault(); elements.successOk?.focus(); }
+  });
 
   elements.logout?.addEventListener("click", async (event) => {
     event.preventDefault();
@@ -644,6 +642,8 @@
     data.clearSession();
     window.location.href = "../auth/login.html";
   });
+
+  const autosave = window.PsicNotaAutosave.create(form, () => ({ ...collectForm(), areas: areas.slice() }), () => saveProfile());
 
   async function initialize() {
     try {
@@ -684,6 +684,7 @@
       snapshot.areas = areas.slice();
       await render(snapshot);
       setEditing(false);
+      autosave.markSaved();
       await loadWeeklyAvailability();
     } catch (error) {
       console.error(error);

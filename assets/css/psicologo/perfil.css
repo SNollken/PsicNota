@@ -1172,3 +1172,14 @@ input::placeholder {
   #psychologistInviteCode { width: 100%; }
   .invite-code-controls .button { flex: 1 1 160px; }
 }
+
+/* Confirmação de edição automática, na paleta do PsicNota. */
+#successModal { background: rgba(23, 78, 97, .24); backdrop-filter: blur(3px); }
+#successModal .modal-card { text-align: center; justify-items: center; background: #f4fbfe; border: 1px solid #c7d7dd; padding: 32px 28px; box-shadow: 0 18px 50px rgba(23, 78, 97, .18); }
+#successModal .confirmation-icon { display: grid; place-items: center; width: 56px; height: 56px; margin-bottom: 8px; border-radius: 50%; background: #e4f6fc; color: #1f637a; }
+#successModal .confirmation-icon svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+#successModal h2 { color: #1f637a; font-size: 20px; }
+#successModal p { max-width: 300px; color: #64727c; line-height: 1.6; }
+#successModal .modal-actions { width: 100%; margin-top: 14px; }
+#successModal .btn-primary { width: 100%; background: #1f637a; border-color: #1f637a; }
+#successModal .btn-primary:hover { background: #174e61; }

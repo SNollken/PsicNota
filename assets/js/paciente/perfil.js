@@ -318,7 +318,7 @@
   }
 
   function openModal(modal) {
-    if (modal) modal.hidden = false;
+    if (modal) { modal.hidden = false; elements.successOk?.focus(); }
   }
 
   function closeModal(modal) {
@@ -356,9 +356,10 @@
       render(snapshot);
       renderWeeklyAvailability(snapshot);
       setEditing(false);
+      autosave.markSaved();
       if (showSuccess) openModal(elements.successModal);
       if (profile.emailChangePending) showFeedback("Confirme a alteração de e-mail pelo link enviado pelo Supabase.");
-      else showFeedback("Disponibilidade salva.");
+      else if (!showSuccess) showFeedback("Disponibilidade salva.");
       return true;
     } catch (error) {
       console.error(error);
@@ -420,11 +421,7 @@
       if (!editing) startEditing();
     });
 
-    field.addEventListener("keydown", (event) => {
-      if (event.key !== "Enter" || !editing) return;
-      event.preventDefault();
-      void saveFromField();
-    });
+
   });
 
   elements.changePhoto?.addEventListener("click", openPhotoPicker);
@@ -454,13 +451,13 @@
     setAvatar("", value("fullName"));
   });
 
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    if (!form.reportValidity()) return;
-    void saveProfile();
-  });
+
 
   elements.successOk?.addEventListener("click", () => closeModal(elements.successModal));
+  elements.successModal?.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeModal(elements.successModal);
+    if (event.key === "Tab") { event.preventDefault(); elements.successOk?.focus(); }
+  });
 
   elements.logout?.addEventListener("click", async (event) => {
     event.preventDefault();
@@ -468,6 +465,8 @@
     data.clearSession();
     window.location.href = "../auth/login.html";
   });
+
+  const autosave = window.PsicNotaAutosave.create(form, collectForm, () => saveProfile());
 
   async function initialize() {
     try {
@@ -505,6 +504,7 @@
       if (!session.availabilitySupported) {
         showFeedback("A disponibilidade semanal ficará disponível após a atualização do banco.", true);
       }
+      autosave.markSaved();
     } catch (error) {
       console.error(error);
       showFeedback("Não foi possível carregar seu perfil.", true);
