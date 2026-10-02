@@ -1,0 +1,5 @@
+
+# Preserve pinned third-party runtime artifacts byte-for-byte.
+assets/vendor/transformers/*.js -text
+assets/vendor/transformers/*.mjs -text
+assets/vendor/transformers/*.wasm -text

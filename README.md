@@ -80,32 +80,28 @@ O roteiro de navegador `tests/roteiro-cdp.mjs` é separado: usa Puppeteer, acess
 
 `supabase/tests/codigo_personalizado_psicologo.sql` verifica a personalização, duplicidade, formato, autorização e cadastro com o código novo após a migração `20260930200000`.
 
-## Anotações por voz nos relatórios
+## Anotações por voz locais nos relatórios
 
-No editor de relatórios, o microfone grava até 5 minutos (máximo 10 MB). Ao parar, o áudio é transcrito em português com `gpt-4o-transcribe`. É possível ouvir a gravação, corrigir a transcrição e inserir o texto no cursor do relatório. O texto inserido participa do mesmo salvamento automático de rascunhos. Uma transcrição pendente precisa ser inserida ou descartada antes de salvar ou trocar a consulta.
+O microfone do editor grava até 5 minutos (máximo 10 MB). Ao parar, Whisper Small multilíngue transcreve em português no próprio navegador, usando CPU/WebAssembly em um Web Worker. Você pode ouvir o áudio, corrigir o texto e inseri-lo no cursor do relatório. A inserção dispara o salvamento automático de rascunhos existente. Uma gravação pendente precisa ser inserida ou descartada antes de salvar ou trocar a consulta.
 
-O áudio fica temporariamente na memória da página; não é salvo no banco ou no Storage do PsicNota. Ele é enviado ao Supabase e à OpenAI para processamento. A página informa isso antes de gravar. A saída não gera observações clínicas nem um relatório novo: apenas transcreve a fala, sujeita à revisão profissional. Fechar a página descarta o áudio; se houver falha de transcrição, é possível tentar novamente enquanto a página permanece aberta.
+O áudio e os dados enviados ao worker permanecem no dispositivo. Não há chamada de transcrição para Supabase, OpenAI ou outro servidor, e não é necessária chave de API. O relatório escrito continua seguindo o salvamento normal do aplicativo no Supabase. O áudio fica apenas na memória da página; fechar ou descartar a gravação remove essa cópia.
 
-Configuração do servidor:
+No primeiro uso, o navegador baixa cerca de 250 MB de pesos e configuração de `Xenova/whisper-small` do Hugging Face, na revisão fixa `2d67713f236afa48a18992566e7647f6ca848e13`, e os armazena no Cache Storage quando disponível. Apenas downloads GET desses arquivos são feitos, sem áudio. Os arquivos de execução estão versionados em `assets/vendor/transformers/`: Transformers.js 3.8.1 e ONNX Runtime Web 1.22.0-dev.20250409-89f8206ba4, com licenças e hashes. Após o modelo estar carregado, a inferência funciona sem conexão. Limpar os dados do navegador exige baixar novamente. Isso não transforma a autenticação ou o restante do aplicativo em um aplicativo offline.
 
-1. Configure o secret `OPENAI_API_KEY` em [Edge Function Secrets do projeto](https://supabase.com/dashboard/project/gjfqslgoplpqeqewytdn/functions/secrets). Use uma chave de API OpenAI com faturamento habilitado; a assinatura do ChatGPT não substitui esse acesso. Nunca coloque a chave no frontend ou no Git.
-2. Publique `supabase/functions/transcribe-report/index.ts` com `verify_jwt = true`, conforme `supabase/config.toml`. A função também valida a sessão com Auth e exige `perfis.papel = 'psicologo'` usando as permissões do próprio usuário.
-3. Verifique o `GET /functions/v1/transcribe-report` autenticado: deve retornar `{"ready":true}`. A falta do secret retorna 503 e a interface explica que a transcrição não foi ativada, antes de solicitar o microfone.
-4. Faça uma gravação curta com voz real e confira o texto. O endpoint aceita WebM, MP4 e WAV, e não registra áudio ou texto em logs. O faturamento e a política de retenção do provedor dependem da conta OpenAI configurada.
+A interface mostra o progresso do download e permite cancelar carregamento/processamento. Após uma falha ou cancelamento da inferência, o áudio permanece disponível para tentar novamente. Não existe fallback de transcrição em nuvem. A antiga Edge Function `transcribe-report` retorna 410 e não lê nem encaminha áudio.
 
-A gravação exige HTTPS (ou localhost), permissão de microfone e MediaRecorder com WebM/MP4. Testes locais com resposta de transcrição simulada verificam a interface, mas não comprovam a qualidade do reconhecimento real.
+É necessário HTTPS (ou localhost), permissão de microfone, MediaRecorder WebM/MP4, WebAssembly e Web Workers. O tempo de processamento varia com o dispositivo; o primeiro uso leva mais tempo e aparelhos com pouca memória podem não conseguir executar o modelo. A transcrição precisa ser revisada pelo profissional.
 
-Teste do endpoint (requer Deno):
-
-```bash
-deno check supabase/functions/transcribe-report/index.ts
-deno test --allow-env tests/transcribe-report.test.ts
-```
-
-Teste da interface (Playwright disponível no projeto ou via `PLAYWRIGHT_PATH`, e Chrome instalado):
+Testes da interface com resposta local simulada (Playwright + Chrome):
 
 ```bash
 node tests/report-voice.browser.cjs
 ```
 
-Esse teste usa áudio sintético do Chromium com MediaRecorder real e simula apenas as respostas do provedor. Verifica gravação, liberação do microfone, bloqueio de salvamento durante o fluxo, revisão, inserção segura de texto, tentativa após falha e layout em desktop/celular. As capturas são salvas em `QA_OUT` ou na pasta temporária do sistema.
+Esse teste usa áudio sintético e MediaRecorder real, verificando gravação, liberação do microfone, bloqueio de salvamento, revisão, inserção segura, erro/tentativa e layout em desktop/celular. As capturas vão para `QA_OUT` ou para a pasta temporária.
+
+Verificação da função desativada (Deno):
+
+```bash
+deno test tests/transcribe-report.test.ts
+```

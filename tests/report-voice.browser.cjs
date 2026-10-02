@@ -1,4 +1,4 @@
-// Uses a real MediaRecorder with Chromium test audio; provider responses are simulated.
+// Uses a real MediaRecorder with Chromium test audio; local engine responses are simulated.
 const {chromium} = require(process.env.PLAYWRIGHT_PATH || 'playwright');
 const fs=require('fs'), path=require('path'), assert=require('node:assert/strict'), http=require('http');
 const root=path.resolve(__dirname,'..'), out=process.env.QA_OUT || path.join(require('os').tmpdir(),'psicnota-report-voice-qa');
@@ -20,13 +20,15 @@ const server=http.createServer((req,res)=>{try{const p=path.join(root,decodeURIC
    navigator.mediaDevices.getUserMedia=async options=>{window.qaStream=await getUserMedia(options);return window.qaStream;};
    document.querySelector('#freeText').innerHTML='<b>Texto existente.</b>';
    document.querySelector('#freeText').addEventListener('input',()=>window.qaInputs++);
-   window.PsicNotaSupabase={functions:{invoke:async(name,options)=>{
-    window.qaCalls.push({method:options.method||'POST',size:options.body?.size,type:options.body?.type});
-    if(window.qaMode==='missing')return {error:{context:new Response(JSON.stringify({error:'A transcrição ainda não foi ativada.'}),{status:503})}};
-    if(options.method==='GET')return {data:{ready:true}};
-    if(window.qaMode==='failure')return {error:{context:new Response(JSON.stringify({error:'Falha temporária.'}),{status:502})}};
-    return {data:{text:'Anotação transcrita para revisão.'}};
-   }}};
+   window.PsiLocalTranscription={
+    prepare:async()=>{if(window.qaMode==='missing')throw new Error('Não foi possível carregar o modelo local.');},
+    transcribe:async blob=>{
+     window.qaCalls.push({method:'local',size:blob.size,type:blob.type});
+     if(window.qaMode==='failure')throw new Error('Falha temporária no modelo local.');
+     return {text:'Anotação transcrita para revisão.'};
+    },
+    cancel:()=>{}
+   };
   });
   await page.addScriptTag({content:fs.readFileSync(path.join(root,'assets/js/psicologo/relatorio-voz.js'),'utf8')});
   await page.evaluate(()=>window.PsiReportVoice.init());
@@ -45,7 +47,7 @@ const server=http.createServer((req,res)=>{try{const p=path.join(root,decodeURIC
   assert.equal(await page.locator('#freeText b').count(),1);
   assert.equal(await page.locator('#freeText script').count(),0);
   assert.ok(await page.evaluate(()=>window.qaInputs)>0);
-  assert.ok(await page.evaluate(()=>window.qaCalls.find(x=>x.method==='POST').size)>0);
+  assert.ok(await page.evaluate(()=>window.qaCalls.find(x=>x.method==='local').size)>0);
   assert.equal(await page.evaluate(()=>document.querySelector('#reportVoiceAudio').getAttribute('src')),null);
   await page.evaluate(()=>window.qaMode='failure');
   await page.locator('#reportMicrophone').click();
@@ -59,12 +61,20 @@ const server=http.createServer((req,res)=>{try{const p=path.join(root,decodeURIC
   await page.locator('#reportVoiceDiscard').click();
   const before=await page.locator('#freeText').innerHTML();
   await page.evaluate(()=>window.qaMode='missing');await page.locator('#reportMicrophone').click();
-  await page.waitForFunction(()=>document.querySelector('#reportVoiceStatus').textContent.includes('não foi ativada'));
+  await page.waitForFunction(()=>document.querySelector('#reportVoiceStatus').textContent.includes('carregar o modelo local'));
   assert.equal(await page.locator('#freeText').innerHTML(),before);
   assert.equal(await page.locator('#reportMicrophone').isDisabled(),false);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   assert.deepEqual(errors,[]);
-  results.push({width,realMediaRecorder:true,transcription:'simulated',checks:'record/stop/review/edit/insert/plain text/draft input/retain/retry/discard/missing service/no overflow',passed:true});
+  await page.evaluate(()=>window.qaMode='ready');
+  await page.locator('#reportMicrophone').click();
+  await page.waitForFunction(()=>document.querySelector('#reportMicrophone').getAttribute('aria-pressed')==='true');
+  await page.waitForTimeout(1100);
+  await page.evaluate(()=>{document.querySelector('#reportMicrophone').click();document.querySelector('#reportMicrophone').click();});
+  assert.equal(await page.evaluate(()=>window.qaStream.getTracks().every(track=>track.readyState==='ended')),true);
+  assert.equal(await page.locator('#reportMicrophone').getAttribute('aria-pressed'),'false');
+  assert.equal(await page.locator('#appointmentDropdownBtn').isDisabled(),false);
+  results.push({width,realMediaRecorder:true,transcription:'local engine simulated',checks:'record/stop/review/edit/insert/plain text/draft input/retain/retry/discard/missing service/no overflow',passed:true});
   await page.close();
  }
  fs.writeFileSync(path.join(out,'browser-results.json'),JSON.stringify(results,null,2));

@@ -225,7 +225,7 @@
               aria-label="Anotações da sessão" data-placeholder="Digite suas anotações da sessão..."></div>
 
             <div class="report-voice-feedback">
-              <p id="reportVoiceStatus" role="status" aria-live="polite">Grave uma anotação de até 5 minutos. O áudio será enviado à OpenAI para transcrição.</p>
+              <p id="reportVoiceStatus" role="status" aria-live="polite">Transcrição local: o áudio fica neste dispositivo. No primeiro uso, baixamos o modelo de voz (cerca de 250 MB).</p>
               <div id="reportVoiceReview" hidden>
                 <audio id="reportVoiceAudio" controls aria-label="Ouvir gravação"></audio>
                 <label for="reportVoiceText">Revise a transcrição antes de inserir no relatório</label>
@@ -306,6 +306,7 @@
 <script src="../assets/js/supabase-client.js"></script>
 <script src="../assets/js/profile-backend.js"></script>
 <script src="../assets/js/shared-data.js"></script>
+  <script src="../assets/js/psicologo/relatorio-voz-local.js"></script>
   <script src="../assets/js/psicologo/relatorio-voz.js"></script>
   <script src="../assets/js/psicologo/relatorios.js"></script>
 

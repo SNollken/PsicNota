@@ -14,8 +14,8 @@
     const form = document.querySelector('#reportForm');
     const appointment = document.querySelector('#reportAppointment');
     const dropdown = document.querySelector('#appointmentDropdownBtn');
-    const client = window.PsicNotaSupabase;
-    const idleMessage = 'Grave uma anotação de até 5 minutos. O áudio será enviado à OpenAI para transcrição.';
+    const engine = window.PsiLocalTranscription;
+    const idleMessage = 'Transcrição local: o áudio fica neste dispositivo. No primeiro uso, baixamos o modelo de voz (cerca de 250 MB).';
     let state = 'idle';
     let recorder = null;
     let stream = null;
@@ -24,7 +24,6 @@
     let range = null;
     let timer = null;
     let generation = 0;
-    let requestController = null;
     let recordingStarted = 0;
     const maxBytes = 10 * 1024 * 1024;
 
@@ -33,10 +32,10 @@
       status.textContent = message;
       const recording = next === 'recording';
       button.setAttribute('aria-pressed', String(recording));
-      const label = recording ? 'Parar gravação e transcrever' : 'Gravar anotação por voz';
+      const label = recording ? 'Parar gravação e transcrever' : ['checking', 'processing'].includes(next) ? 'Cancelar processamento local' : 'Gravar anotação por voz';
       button.setAttribute('aria-label', label);
       button.title = label;
-      button.disabled = !['idle', 'recording'].includes(next);
+      button.disabled = !['idle', 'recording', 'checking', 'processing'].includes(next);
       appointment.disabled = next !== 'idle';
       dropdown.disabled = next !== 'idle';
       insert.hidden = next !== 'review';
@@ -44,7 +43,7 @@
       text.hidden = next !== 'review';
       review.querySelector('label').hidden = next !== 'review';
       review.hidden = !blob;
-      discard.disabled = next === 'processing';
+      discard.disabled = false;
     }
 
     function releaseMicrophone() {
@@ -56,7 +55,7 @@
 
     function reset(message = idleMessage) {
       generation += 1;
-      requestController?.abort();
+      if (['checking', 'processing'].includes(state)) engine?.cancel();
       if (recorder && recorder.state !== 'inactive') recorder.stop();
       recorder = null;
       releaseMicrophone();
@@ -70,34 +69,26 @@
       setState('idle', message);
     }
 
-    async function invoke(options) {
-      const { data, error } = await client.functions.invoke('transcribe-report', options);
-      if (error) {
-        let message = 'Não foi possível acessar a transcrição. Tente novamente.';
-        if (error.context instanceof Response) {
-          try { message = (await error.context.json()).error || message; } catch { /* No JSON response. */ }
-        }
-        throw new Error(message);
+    function modelProgress(progress) {
+      if (!['checking', 'processing'].includes(state)) return;
+      if (progress.status === 'progress') {
+        status.textContent = 'Baixando arquivo do modelo local: ' + Math.round(progress.progress || 0) + '%. O áudio não é enviado.';
+      } else if (progress.status === 'ready') {
+        status.textContent = 'Modelo local pronto. Processando neste dispositivo…';
       }
-      return data;
     }
 
     async function transcribe(id) {
-      setState('processing', 'Transcrevendo sua anotação…');
-      const controller = new AbortController();
-      requestController = controller;
-      const timeout = window.setTimeout(() => controller.abort(), 100000);
+      setState('processing', 'Transcrevendo neste dispositivo. Isso pode levar alguns minutos.');
       try {
-        const result = await invoke({ body: blob, headers: { 'Content-Type': blob.type }, signal: controller.signal });
+        const result = await engine.transcribe(blob, modelProgress);
         if (id !== generation) return;
         if (typeof result?.text !== 'string' || !result.text.trim()) throw new Error('Nenhuma fala foi reconhecida. Grave novamente.');
         text.value = result.text;
-        setState('review', 'Transcrição pronta. Confira o texto antes de inserir.');
+        setState('review', 'Transcrição local pronta. Confira o texto antes de inserir.');
         text.focus();
       } catch (error) {
-        if (id === generation) setState('error', `${error.message} A gravação continua disponível nesta tela.`);
-      } finally {
-        window.clearTimeout(timeout);
+        if (id === generation) setState('error', error.message + ' A gravação continua disponível nesta tela.');
       }
     }
 
@@ -106,12 +97,9 @@
       const selection = window.getSelection();
       range = selection.rangeCount && editor.contains(selection.getRangeAt(0).commonAncestorContainer)
         ? selection.getRangeAt(0).cloneRange() : null;
-      setState('checking', 'Verificando o serviço de transcrição…');
-      const controller = new AbortController();
-      requestController = controller;
-      const timeout = window.setTimeout(() => controller.abort(), 15000);
+      setState('checking', 'Preparando o modelo local. No primeiro uso, aguarde o download.');
       try {
-        await invoke({ method: 'GET', signal: controller.signal });
+        await engine.prepare(modelProgress);
         if (id !== generation) return;
         setState('requesting', 'Permita o acesso ao microfone para começar.');
         const acquired = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -155,8 +143,6 @@
         const message = error.name === 'NotAllowedError' ? 'Acesso ao microfone negado. Permita o acesso nas configurações do navegador.'
           : error.name === 'NotFoundError' ? 'Nenhum microfone encontrado. Conecte um microfone e tente novamente.' : error.message;
         reset(message);
-      } finally {
-        window.clearTimeout(timeout);
       }
     }
 
@@ -168,7 +154,17 @@
     }
 
     button.addEventListener('mousedown', event => event.preventDefault());
-    button.addEventListener('click', () => { if (state === 'recording') stop(); else if (state === 'idle') void start(); });
+    button.addEventListener('click', () => {
+      if (state === 'recording') stop();
+      else if (state === 'idle') void start();
+      else if (state === 'checking') reset();
+      else if (state === 'processing') {
+        if (!blob) { reset('Gravação cancelada.'); return; }
+        generation += 1;
+        engine.cancel();
+        setState('error', 'Processamento cancelado. Você pode tentar novamente ou descartar a gravação.');
+      }
+    });
     retry.addEventListener('click', () => void transcribe(generation));
     discard.addEventListener('click', () => reset());
     insert.addEventListener('click', () => {
@@ -204,7 +200,7 @@
     }, true);
     window.addEventListener('pagehide', () => reset());
     document.addEventListener('visibilitychange', () => { if (document.hidden && state === 'recording') stop(); });
-    if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia || !window.MediaRecorder || !client) {
+    if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia || !window.MediaRecorder || !window.Worker || !window.OfflineAudioContext || !engine) {
       setState('unsupported', 'Gravação indisponível. Abra o site por HTTPS em um navegador com suporte a microfone.');
       appointment.disabled = false;
       dropdown.disabled = false;
