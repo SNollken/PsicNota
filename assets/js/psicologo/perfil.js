@@ -76,6 +76,7 @@
   function setValue(name, fieldValue) {
     const field = form.elements.namedItem(name);
     if (!field) return;
+    if (name === "phone") { window.PsicNotaPhone.set(field, fieldValue); return; }
     if (field.type === "checkbox") field.checked = Boolean(fieldValue);
     else {
       const nextValue = fieldValue || "";
@@ -238,6 +239,7 @@
         remove.addEventListener("click", () => {
           areas.splice(index, 1);
           renderAreas(true);
+          void autosave.request();
         });
         chip.appendChild(remove);
 
@@ -410,7 +412,7 @@
       socialName: value("socialName").trim(),
       pronoun: value("pronoun"),
       email: value("email").trim(),
-      phone: value("phone").trim(),
+      phone: window.PsicNotaPhone.value(form.elements.namedItem("phone")),
       city: value("city").trim(),
       state: value("state"),
       crp: value("crp").trim(),
@@ -456,9 +458,9 @@
   let editing = false;
 
   function setEditing(next) {
-    editing = next;
+    editing = true;
 
-    form.querySelectorAll("input, select").forEach((field) => {
+    form.querySelectorAll("input, select, textarea").forEach((field) => {
       if (field.id === "avatarInput") return;
       if (field.name === "city") {
         field.disabled = !form.elements.namedItem("state").value ||
@@ -467,7 +469,7 @@
         field.disabled = false;
       } else {
         field.disabled = false;
-        field.readOnly = !editing;
+        field.readOnly = false;
       }
     });
     if (elements.areasToggle) {
@@ -486,7 +488,7 @@
   }
 
   function openModal(modal) {
-    if (modal) modal.hidden = false;
+    if (modal) { modal.hidden = false; elements.successOk?.focus(); }
   }
 
   function closeModal(modal) {
@@ -534,7 +536,9 @@
       snapshot.areas = areas.slice();
       await render(snapshot);
       setEditing(false);
+      autosave.markSaved();
       if (showSuccess) openModal(elements.successModal);
+      if (profile.emailChangePending) showFeedback("Confirme a alteração de e-mail pelo link enviado pelo Supabase.");
       return true;
     } catch (error) {
       console.error(error);
@@ -563,12 +567,7 @@
       if (!editing) startEditing();
     });
 
-    field.addEventListener("keydown", (event) => {
-      if (event.key !== "Enter" || !editing) return;
-      event.preventDefault();
-      if (!form.reportValidity()) return;
-      void saveProfile();
-    });
+
   });
 
   form.elements.namedItem("state").addEventListener("change", (event) => {
@@ -617,6 +616,7 @@
     }
     areas.push(area);
     renderAreas(true);
+    void autosave.request();
   });
 
   elements.areasToggle?.addEventListener("click", () => {
@@ -628,13 +628,13 @@
     }
   });
 
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    if (!form.reportValidity()) return;
-    void saveProfile();
-  });
+
 
   elements.successOk?.addEventListener("click", () => closeModal(elements.successModal));
+  elements.successModal?.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeModal(elements.successModal);
+    if (event.key === "Tab") { event.preventDefault(); elements.successOk?.focus(); }
+  });
 
   elements.logout?.addEventListener("click", async (event) => {
     event.preventDefault();
@@ -642,6 +642,8 @@
     data.clearSession();
     window.location.href = "../auth/login.html";
   });
+
+  const autosave = window.PsicNotaAutosave.create(form, () => ({ ...collectForm(), areas: areas.slice() }), () => saveProfile());
 
   async function initialize() {
     try {
@@ -682,6 +684,7 @@
       snapshot.areas = areas.slice();
       await render(snapshot);
       setEditing(false);
+      autosave.markSaved();
       await loadWeeklyAvailability();
     } catch (error) {
       console.error(error);

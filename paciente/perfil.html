@@ -144,12 +144,26 @@
 
               <label class="field">
                 <span>Pronomes</span>
-                <input name="pronoun" type="text" placeholder="Não informado" disabled />
+                <select name="pronoun" disabled>
+                  <option value="">Selecione</option>
+                  <option value="ela/dela">Ela/Dela</option>
+                  <option value="ele/dele">Ele/Dele</option>
+                  <option value="elu/delu">Elu/Delu</option>
+                  <option value="outros">Outro(s)</option>
+                  <option value="prefiro_nao_informar">Prefiro não informar</option>
+                </select>
               </label>
 
               <label class="field">
                 <span>Gênero</span>
-                <input name="gender" type="text" placeholder="Não informado" disabled />
+                <select name="gender" disabled>
+                  <option value="">Selecione</option>
+                  <option value="feminino">Feminino</option>
+                  <option value="masculino">Masculino</option>
+                  <option value="nao-binario">Não binário</option>
+                  <option value="outro">Outro</option>
+                  <option value="prefiro_nao_informar">Prefiro não informar</option>
+                </select>
               </label>
             </div>
           </section>
@@ -193,7 +207,36 @@
 
               <label class="field">
                 <span>Estado</span>
-                <input name="state" type="text" maxlength="2" placeholder="UF" disabled />
+                <select name="state" disabled>
+                  <option value="">Selecione</option>
+                  <option value="AC">AC - Acre</option>
+                  <option value="AL">AL - Alagoas</option>
+                  <option value="AP">AP - Amapá</option>
+                  <option value="AM">AM - Amazonas</option>
+                  <option value="BA">BA - Bahia</option>
+                  <option value="CE">CE - Ceará</option>
+                  <option value="DF">DF - Distrito Federal</option>
+                  <option value="ES">ES - Espírito Santo</option>
+                  <option value="GO">GO - Goiás</option>
+                  <option value="MA">MA - Maranhão</option>
+                  <option value="MT">MT - Mato Grosso</option>
+                  <option value="MS">MS - Mato Grosso do Sul</option>
+                  <option value="MG">MG - Minas Gerais</option>
+                  <option value="PA">PA - Pará</option>
+                  <option value="PB">PB - Paraíba</option>
+                  <option value="PR">PR - Paraná</option>
+                  <option value="PE">PE - Pernambuco</option>
+                  <option value="PI">PI - Piauí</option>
+                  <option value="RJ">RJ - Rio de Janeiro</option>
+                  <option value="RN">RN - Rio Grande do Norte</option>
+                  <option value="RS">RS - Rio Grande do Sul</option>
+                  <option value="RO">RO - Rondônia</option>
+                  <option value="RR">RR - Roraima</option>
+                  <option value="SC">SC - Santa Catarina</option>
+                  <option value="SP">SP - São Paulo</option>
+                  <option value="SE">SE - Sergipe</option>
+                  <option value="TO">TO - Tocantins</option>
+                </select>
               </label>
             </div>
           </section>
@@ -485,16 +528,20 @@
 
   <div class="modal-overlay" id="successModal" hidden>
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="successModalTitle">
+      <span class="confirmation-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m6 12 4 4 8-8"/></svg></span>
       <h2 id="successModalTitle">Alterações salvas</h2>
-      <p>Seu perfil foi atualizado com sucesso.</p>
+      <p>Seu perfil foi atualizado com sucesso. As alterações já estão disponíveis.</p>
       <div class="modal-actions">
-        <button class="btn-primary" type="button" id="successOkBtn">OK</button>
+        <button class="btn-primary" type="button" id="successOkBtn">Entendi</button>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/phone-country-data.js"></script>
+  <script src="../assets/js/phone-input.js"></script>
+  <script src="../assets/js/profile-autosave.js"></script>
   <script src="../assets/js/profile-backend.js"></script>
   <script src="../assets/js/shared-data.js"></script>
   <script src="../assets/js/paciente/perfil.js"></script>
