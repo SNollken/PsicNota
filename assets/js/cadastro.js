@@ -15,6 +15,8 @@
     return;
   }
   let submitting = false;
+  let isGoogleOAuthUser = false;
+  let googleUser = null;
 
   const psychologistFields = document.querySelector("#psychologistFields");
   const inviteFields = document.querySelector("#inviteFields");
@@ -117,6 +119,12 @@
 
     const mensagem = (error.message || "").toLowerCase();
 
+    if (mensagem.includes("código do psicólogo inválido") || mensagem.includes("codigo do psicologo")) {
+      return "Código do psicólogo inválido.";
+    }
+    if (mensagem.includes("dados de crp")) {
+      return "Dados de CRP obrigatórios.";
+    }
     if (mensagem.includes("already registered") || mensagem.includes("already been registered")) {
       return "Este e-mail já está cadastrado. Tente fazer login ou recupere sua senha.";
     }
@@ -198,20 +206,22 @@
       isValid = false;
     }
 
-    if (!password) {
-      setFieldError(passwordInput, "Crie uma senha.");
-      isValid = false;
-    } else if (password.length < 8) {
-      setFieldError(passwordInput, "Use uma senha com pelo menos 8 caracteres.");
-      isValid = false;
-    }
+    if (!isGoogleOAuthUser) {
+      if (!password) {
+        setFieldError(passwordInput, "Crie uma senha.");
+        isValid = false;
+      } else if (password.length < 8) {
+        setFieldError(passwordInput, "Use uma senha com pelo menos 8 caracteres.");
+        isValid = false;
+      }
 
-    if (!confirmPassword) {
-      setFieldError(confirmPasswordInput, "Confirme sua senha.");
-      isValid = false;
-    } else if (password !== confirmPassword) {
-      setFieldError(confirmPasswordInput, "As senhas não coincidem.");
-      isValid = false;
+      if (!confirmPassword) {
+        setFieldError(confirmPasswordInput, "Confirme sua senha.");
+        isValid = false;
+      } else if (password !== confirmPassword) {
+        setFieldError(confirmPasswordInput, "As senhas não coincidem.");
+        isValid = false;
+      }
     }
 
     if (selectedRole === "paciente" && !inviteInput.value.trim()) {
@@ -254,6 +264,47 @@
     if (!isValid) {
       showMessage("Revise os campos indicados antes de criar sua conta.", "error");
       registerForm.querySelector('[aria-invalid="true"]')?.focus();
+      return;
+    }
+
+    if (isGoogleOAuthUser) {
+      const submitButton = registerForm.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.textContent = "Concluindo cadastro...";
+      submitting = true;
+
+      const payload = {
+        p_papel: selectedRole,
+        p_nome_completo: fullName,
+        p_data_nascimento: `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, "0")}-${String(birthDate.getDate()).padStart(2, "0")}`,
+        p_telefone: window.PsicNotaPhone.value(phoneInput)
+      };
+
+      if (selectedRole === "paciente") {
+        payload.p_codigo_convite = inviteInput.value.trim().toUpperCase();
+      } else if (selectedRole === "psicologo") {
+        payload.p_crp_numero = document.querySelector("#crp").value.trim();
+        payload.p_crp_uf = document.querySelector("#crpState").value;
+        payload.p_especialidade = document.querySelector("#specialty").value.trim();
+        payload.p_formato_atendimento = document.querySelector("#serviceFormat").value;
+      }
+
+      try {
+        await window.PsicNotaAuth.completeOAuthRegistration(payload);
+        window.sessionStorage?.removeItem("psicnota_oauth_draft");
+        const destination = await window.PsicNotaAuth.openAccount(googleUser);
+        showMessage("Conta criada! Abrindo seu painel...", "success");
+        window.location.replace(destination + (selectedRole === "psicologo" ? "?boas-vindas=1" : ""));
+      } catch (err) {
+        submitting = false;
+        submitButton.disabled = false;
+        submitButton.textContent = "Concluir cadastro";
+        const msg = (err.message || "").toLowerCase();
+        if (msg.includes("código do psicólogo inválido") || msg.includes("codigo do psicologo")) {
+          setFieldError(inviteInput, "Código do psicólogo inválido.");
+        }
+        showMessage(traduzirErro(err), "error");
+      }
       return;
     }
 
@@ -327,4 +378,118 @@
   }
   updateRoleFields();
   setupPasswordToggles();
+
+  const googleSignupBtn = document.querySelector("#googleSignupBtn");
+  if (googleSignupBtn) {
+    googleSignupBtn.addEventListener("click", async () => {
+      try {
+        googleSignupBtn.disabled = true;
+        const selectedRoleInput = document.querySelector('input[name="role"]:checked');
+        const draft = {
+          role: selectedRoleInput ? selectedRoleInput.value : "paciente",
+          fullName: document.querySelector("#fullName")?.value || "",
+          birthDate: document.querySelector("#birthDate")?.value || "",
+          phone: document.querySelector("#phone")?.value || "",
+          inviteCode: document.querySelector("#inviteCode")?.value || "",
+          crp: document.querySelector("#crp")?.value || "",
+          crpState: document.querySelector("#crpState")?.value || "",
+          specialty: document.querySelector("#specialty")?.value || "",
+          serviceFormat: document.querySelector("#serviceFormat")?.value || ""
+        };
+        window.sessionStorage?.setItem("psicnota_oauth_draft", JSON.stringify(draft));
+        showMessage("Conectando com o Google...", "");
+        // ponytail: redireciona de volta com flag completar=google
+        const redirectBase = window.location.href.split("?")[0].split("#")[0];
+        await window.PsicNotaAuth.signInWithGoogle({
+          redirectTo: redirectBase + "?completar=google"
+        });
+      } catch (err) {
+        googleSignupBtn.disabled = false;
+        showMessage(err.message || "Erro ao conectar com Google.", "error");
+      }
+    });
+  }
+
+  function aplicarModoGoogle(user) {
+    if (isGoogleOAuthUser || !user) return;
+    isGoogleOAuthUser = true;
+    googleUser = user;
+
+    const emailInput = document.querySelector("#registerEmail");
+    if (emailInput) {
+      emailInput.value = user.email || "";
+      emailInput.readOnly = true;
+    }
+
+    const fullNameInput = document.querySelector("#fullName");
+    if (fullNameInput && !fullNameInput.value) {
+      const googleName = user.user_metadata?.full_name || user.user_metadata?.name || "";
+      if (googleName) fullNameInput.value = googleName;
+    }
+
+    const passwordFields = document.querySelector("#passwordFields");
+    if (passwordFields) passwordFields.hidden = true;
+
+    try {
+      const saved = window.sessionStorage?.getItem("psicnota_oauth_draft");
+      if (saved) {
+        const draft = JSON.parse(saved);
+        if (draft.role) {
+          const radio = document.querySelector(`input[name="role"][value="${draft.role}"]`);
+          if (radio) radio.checked = true;
+        }
+        if (draft.fullName && fullNameInput) fullNameInput.value = draft.fullName;
+        if (draft.birthDate) birthDateInput.value = draft.birthDate;
+        if (draft.phone && phoneInput) phoneInput.value = draft.phone;
+        if (draft.inviteCode && inviteInput) inviteInput.value = draft.inviteCode;
+        if (draft.crp) { const f = document.querySelector("#crp"); if (f) f.value = draft.crp; }
+        if (draft.crpState) { const f = document.querySelector("#crpState"); if (f) f.value = draft.crpState; }
+        if (draft.specialty) { const f = document.querySelector("#specialty"); if (f) f.value = draft.specialty; }
+        if (draft.serviceFormat) { const f = document.querySelector("#serviceFormat"); if (f) f.value = draft.serviceFormat; }
+        updateRoleFields();
+      }
+    } catch (_) {}
+
+    const submitBtn = registerForm.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.textContent = "Concluir cadastro";
+    if (googleSignupBtn) googleSignupBtn.hidden = true;
+    const divider = document.querySelector(".auth-divider");
+    if (divider) divider.hidden = true;
+
+    const topTitle = document.querySelector("#register-title");
+    if (topTitle) topTitle.textContent = "Complete seu cadastro";
+  }
+
+  async function verificarSessaoOAuth(user) {
+    if (!user) return;
+    try {
+      const { exists } = await window.PsicNotaAuth.resolveProfile(user);
+      if (exists) {
+        const destination = await window.PsicNotaAuth.openAccount(user);
+        window.location.replace(destination);
+        return;
+      }
+      aplicarModoGoogle(user);
+    } catch (_) {
+      aplicarModoGoogle(user);
+    }
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const isCompletarGoogle = urlParams.get("completar") === "google" || urlParams.has("code") || (window.location.hash && window.location.hash.includes("access_token"));
+  if (isCompletarGoogle && client?.auth?.getSession) {
+    client.auth.getSession().then(({ data: sessionData }) => {
+      if (sessionData?.session?.user) {
+        verificarSessaoOAuth(sessionData.session.user);
+      }
+    });
+  }
+
+  if (client?.auth?.onAuthStateChange) {
+    client.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session?.user && (isCompletarGoogle || session.user.app_metadata?.provider === "google")) {
+        verificarSessaoOAuth(session.user);
+      }
+    });
+  }
 }());

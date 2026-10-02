@@ -6,17 +6,28 @@ const path = require("node:path");
 const vm = require("node:vm");
 const source = fs.readFileSync(path.join(__dirname, "../assets/js/auth-session.js"), "utf8");
 
-function setup(profileResult, professionalResult) {
+function setup(profileResult, professionalResult, rpcResult = { data: { ok: true }, error: null }) {
   const calls = [], sessions = [];
-  let signedOut = false, cleared = false;
+  let signedOut = false, cleared = false, oAuthParams = null;
   const window = {
+    location: { href: "https://example.com/auth/login.html" },
     PsicNotaSupabase: {
-      auth: { async signOut() { signedOut = true; } },
+      auth: {
+        async signOut() { signedOut = true; },
+        async signInWithOAuth(params) { oAuthParams = params; return { data: {}, error: null }; }
+      },
+      rpc(name, payload) {
+        calls.push(`rpc:${name}`);
+        return Promise.resolve(rpcResult);
+      },
       from(table) {
         calls.push(table);
         return { select() { return { eq(column, id) {
           assert.equal(id, "account");
-          return { async single() { return table === "perfis" ? profileResult : professionalResult; } };
+          return {
+            async single() { return table === "perfis" ? profileResult : professionalResult; },
+            async maybeSingle() { return table === "perfis" ? profileResult : professionalResult; }
+          };
         } }; } };
       }
     },
@@ -26,8 +37,15 @@ function setup(profileResult, professionalResult) {
     }
   };
   vm.runInNewContext(source, {window});
-  return {open: remember => window.PsicNotaAuth.openAccount({id:"account"}, remember), calls, sessions,
-    signedOut: () => signedOut, cleared: () => cleared};
+  return {
+    open: remember => window.PsicNotaAuth.openAccount({id:"account"}, remember),
+    resolve: () => window.PsicNotaAuth.resolveProfile({id:"account"}),
+    signInGoogle: options => window.PsicNotaAuth.signInWithGoogle(options),
+    completeOAuth: payload => window.PsicNotaAuth.completeOAuthRegistration(payload),
+    calls, sessions,
+    getOAuthParams: () => oAuthParams,
+    signedOut: () => signedOut, cleared: () => cleared
+  };
 }
 
 const profile = papel => ({ data: { id: "account", papel, nome_completo: "Pessoa Teste", email: "teste@example.com" }, error: null });
@@ -55,3 +73,35 @@ test("perfil inválido ou profissional ausente encerra sessão sem criar cache",
     assert.equal(auth.sessions.length, 0);
   }
 });
+
+test("resolveProfile retorna exists=true e dados quando perfil existe", async () => {
+  const auth = setup(profile("psicologo"), {data:{perfil_id:"account"}, error:null});
+  const res = await auth.resolve();
+  assert.equal(res.exists, true);
+  assert.equal(res.profile.papel, "psicologo");
+});
+
+test("resolveProfile retorna exists=false sem deslogar quando perfil não existe", async () => {
+  const auth = setup({ data: null, error: null }, null);
+  const res = await auth.resolve();
+  assert.equal(res.exists, false);
+  assert.equal(res.profile, null);
+  assert.equal(auth.signedOut(), false);
+  assert.equal(auth.cleared(), false);
+});
+
+test("signInWithGoogle dispara signInWithOAuth com provedor google e redirectTo", async () => {
+  const auth = setup(profile("paciente"), null);
+  await auth.signInGoogle({ redirectTo: "https://example.com/retorno" });
+  const params = auth.getOAuthParams();
+  assert.equal(params.provider, "google");
+  assert.equal(params.options.redirectTo, "https://example.com/retorno");
+});
+
+test("completeOAuthRegistration chama RPC concluir_cadastro_oauth", async () => {
+  const auth = setup(profile("paciente"), null, { data: { ok: true, papel: "paciente" }, error: null });
+  const res = await auth.completeOAuth({ p_papel: "paciente", p_nome_completo: "Teste", p_data_nascimento: "2000-01-01" });
+  assert.equal(res.ok, true);
+  assert.ok(auth.calls.includes("rpc:concluir_cadastro_oauth"));
+});
+

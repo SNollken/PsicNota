@@ -857,6 +857,71 @@ fieldset {
   background: #174e61;
 }
 
+.auth-divider {
+  display: flex;
+  align-items: center;
+  margin: 18px 0 14px;
+  color: var(--muted, #64727C);
+  font-size: 0.88rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line, #DCE6EA);
+}
+
+.auth-divider span {
+  padding: 0 12px;
+  font-weight: 500;
+  text-transform: lowercase;
+}
+
+.google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 20px;
+  color: var(--ink, #111827);
+  background: #FFFFFF;
+  border: 1px solid var(--line-strong, #DCE6EA);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.98rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.google-button:hover {
+  background: #F8FAFB;
+  border-color: #B8C7CE;
+}
+
+.google-button:focus-visible {
+  outline: none;
+  border-color: #1F637A;
+  box-shadow: 0 0 0 3px rgba(46, 111, 135, 0.15);
+}
+
+.google-button:active {
+  transform: translateY(1px);
+}
+
+.google-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.google-icon {
+  flex-shrink: 0;
+}
+
 
 /* =========================================================
    LOGIN ABAIXO DO BOTÃO
