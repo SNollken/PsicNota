@@ -1,0 +1,2 @@
+[functions.transcribe-report]
+verify_jwt = true

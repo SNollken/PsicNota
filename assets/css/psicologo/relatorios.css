@@ -1696,6 +1696,36 @@ input[readonly] {
   stroke-linejoin: round;
 }
 
+.report-microphone {
+  border: 1px solid var(--blue-200);
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--blue-800);
+  cursor: pointer;
+}
+
+.report-microphone[aria-pressed="true"] {
+  background: var(--blue-800);
+  color: var(--white);
+}
+
+.report-microphone:focus-visible {
+  outline: 2px solid var(--blue-700);
+  outline-offset: 3px;
+}
+
+.report-microphone:disabled { opacity: .55; cursor: default; }
+
+.report-voice-feedback {
+  padding: 8px 54px 0 12px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.report-voice-feedback p { margin: 0 0 4px; }
+#reportVoicePreview { color: var(--blue-800); font-style: italic; }
+
 .report-legacy-fields { display: none; }
 
 /* -------------------------
@@ -1781,3 +1811,23 @@ input[readonly] {
 .report-editor-topbar h1 {
   border: none;
 }
+
+#reportVoiceReview audio { display: block; width: 100%; max-width: 400px; margin: 8px 0; }
+#reportVoiceReview label { display: block; margin: 8px 0; color: var(--ink); }
+#reportVoiceText {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid var(--blue-200);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--ink);
+  font: inherit;
+  resize: vertical;
+}
+#reportVoiceText[hidden] { display: none; }
+.report-voice-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.report-voice-actions .button { font-size: 12px; padding: 8px 12px; }
+.report-voice-actions .button[hidden] { display: none; }
+#reportVoiceReview [hidden] { display: none; }

@@ -615,6 +615,7 @@ async function init() {
   if (!_auth) return;
 
   renderHeader();
+  window.PsiReportVoice.init();
 
   await data.syncRemoteData();
 

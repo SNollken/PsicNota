@@ -224,8 +224,21 @@
             <div id="freeText" class="report-main-textarea" contenteditable="true" role="textbox" aria-multiline="true"
               aria-label="Anotações da sessão" data-placeholder="Digite suas anotações da sessão..."></div>
 
-            <button class="report-microphone" type="button" aria-label="Gravar anotação por voz"
-              title="Anotação por voz">
+            <div class="report-voice-feedback">
+              <p id="reportVoiceStatus" role="status" aria-live="polite">Grave uma anotação de até 5 minutos. O áudio será enviado à OpenAI para transcrição.</p>
+              <div id="reportVoiceReview" hidden>
+                <audio id="reportVoiceAudio" controls aria-label="Ouvir gravação"></audio>
+                <label for="reportVoiceText">Revise a transcrição antes de inserir no relatório</label>
+                <textarea id="reportVoiceText" rows="4"></textarea>
+                <div class="report-voice-actions">
+                  <button id="reportVoiceInsert" type="button" class="button button-primary" hidden>Inserir no relatório</button>
+                  <button id="reportVoiceRetry" type="button" class="button button-secondary" hidden>Tentar transcrever novamente</button>
+                  <button id="reportVoiceDiscard" type="button" class="button button-secondary">Descartar gravação</button>
+                </div>
+              </div>
+            </div>
+            <button id="reportMicrophone" class="report-microphone" type="button" aria-label="Gravar anotação por voz"
+              aria-pressed="false" aria-describedby="reportVoiceStatus" title="Gravar anotação por voz">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Z" />
                 <path d="M19 11a7 7 0 0 1-14 0M12 18v4M8 22h8" />
@@ -293,6 +306,7 @@
 <script src="../assets/js/supabase-client.js"></script>
 <script src="../assets/js/profile-backend.js"></script>
 <script src="../assets/js/shared-data.js"></script>
+  <script src="../assets/js/psicologo/relatorio-voz.js"></script>
   <script src="../assets/js/psicologo/relatorios.js"></script>
 
 </body>

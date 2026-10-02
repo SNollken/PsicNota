@@ -75,3 +75,33 @@ O roteiro de navegador `tests/roteiro-cdp.mjs` é separado: usa Puppeteer, acess
 `supabase/tests/codigo_fixo_psicologo.sql` verifica criação automática, reutilização, códigos inválidos e isolamento entre contas em uma transação terminada em ROLLBACK. Execute em um banco com o esquema do projeto e as três migrações `20260930190000`, `20260930190100` e `20260930190200` aplicadas. O teste não mantém contas nem vínculos sintéticos, mas a sequência dos códigos pode avançar; os códigos não dependem de uma numeração sem intervalos.
 
 `supabase/tests/codigo_personalizado_psicologo.sql` verifica a personalização, duplicidade, formato, autorização e cadastro com o código novo após a migração `20260930200000`.
+
+## Anotações por voz nos relatórios
+
+No editor de relatórios, o microfone grava até 5 minutos (máximo 10 MB). Ao parar, o áudio é transcrito em português com `gpt-4o-transcribe`. É possível ouvir a gravação, corrigir a transcrição e inserir o texto no cursor do relatório. O texto inserido participa do mesmo salvamento automático de rascunhos. Uma transcrição pendente precisa ser inserida ou descartada antes de salvar ou trocar a consulta.
+
+O áudio fica temporariamente na memória da página; não é salvo no banco ou no Storage do PsicNota. Ele é enviado ao Supabase e à OpenAI para processamento. A página informa isso antes de gravar. A saída não gera observações clínicas nem um relatório novo: apenas transcreve a fala, sujeita à revisão profissional. Fechar a página descarta o áudio; se houver falha de transcrição, é possível tentar novamente enquanto a página permanece aberta.
+
+Configuração do servidor:
+
+1. Configure o secret `OPENAI_API_KEY` em [Edge Function Secrets do projeto](https://supabase.com/dashboard/project/gjfqslgoplpqeqewytdn/functions/secrets). Use uma chave de API OpenAI com faturamento habilitado; a assinatura do ChatGPT não substitui esse acesso. Nunca coloque a chave no frontend ou no Git.
+2. Publique `supabase/functions/transcribe-report/index.ts` com `verify_jwt = true`, conforme `supabase/config.toml`. A função também valida a sessão com Auth e exige `perfis.papel = 'psicologo'` usando as permissões do próprio usuário.
+3. Verifique o `GET /functions/v1/transcribe-report` autenticado: deve retornar `{"ready":true}`. A falta do secret retorna 503 e a interface explica que a transcrição não foi ativada, antes de solicitar o microfone.
+4. Faça uma gravação curta com voz real e confira o texto. O endpoint aceita WebM, MP4 e WAV, e não registra áudio ou texto em logs. O faturamento e a política de retenção do provedor dependem da conta OpenAI configurada.
+
+A gravação exige HTTPS (ou localhost), permissão de microfone e MediaRecorder com WebM/MP4. Testes locais com resposta de transcrição simulada verificam a interface, mas não comprovam a qualidade do reconhecimento real.
+
+Teste do endpoint (requer Deno):
+
+```bash
+deno check supabase/functions/transcribe-report/index.ts
+deno test --allow-env tests/transcribe-report.test.ts
+```
+
+Teste da interface (Playwright disponível no projeto ou via `PLAYWRIGHT_PATH`, e Chrome instalado):
+
+```bash
+node tests/report-voice.browser.cjs
+```
+
+Esse teste usa áudio sintético do Chromium com MediaRecorder real e simula apenas as respostas do provedor. Verifica gravação, liberação do microfone, bloqueio de salvamento durante o fluxo, revisão, inserção segura de texto, tentativa após falha e layout em desktop/celular. As capturas são salvas em `QA_OUT` ou na pasta temporária do sistema.
