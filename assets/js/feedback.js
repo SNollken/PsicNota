@@ -45,6 +45,13 @@
       "#pn-fb-ok p{margin:0 0 14px;line-height:1.5}",
       "#pn-fb-ok button{border:0;border-radius:10px;background:#1f637a;color:#fff;padding:9px 18px;font:600 13px Inter,Arial,sans-serif;cursor:pointer}",
       ".pn-fb-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}",
+      "#pn-fb-files{display:none}",
+      ".pn-fb-file{display:inline-flex;align-items:center;gap:6px;border:1px dashed #bcd8e4;border-radius:10px;padding:8px 10px;color:#1f637a;font-weight:600;cursor:pointer}",
+      ".pn-fb-file:hover{background:#eef7fb}",
+      "#pn-fb-files-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}",
+      ".pn-fb-chip{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#eef7fb;border-radius:8px;padding:6px 8px;font-size:12px;color:#17313b}",
+      ".pn-fb-chip button{border:0;background:transparent;color:#5b7883;font-size:15px;line-height:1;cursor:pointer;padding:0 2px}",
+      ".pn-fb-chip button:hover{color:#b42318}",
       "@media (max-width:480px){#pn-fb-open{right:12px;bottom:12px}#pn-fb-panel{right:12px;bottom:64px}}",
     ].join("");
     var style = document.createElement("style");
@@ -76,6 +83,9 @@
       '<textarea id="pn-fb-msg" maxlength="2000" placeholder="Sugestão, problema ou elogio..." required></textarea>' +
       '<label for="pn-fb-contact">Contato (opcional)</label>' +
       '<input id="pn-fb-contact" maxlength="200" autocomplete="off" placeholder="E-mail ou telefone">' +
+      '<label for="pn-fb-files" class="pn-fb-file">Anexar imagem ou PDF (até 3, 3 MB cada)</label>' +
+      '<input id="pn-fb-files" type="file" accept="image/*,.pdf" multiple>' +
+      '<div id="pn-fb-files-list"></div>' +
       '<input class="pn-fb-hp" id="pn-fb-site" tabindex="-1" autocomplete="off" aria-hidden="true">' +
       '<div id="pn-fb-error" role="alert" hidden></div>' +
       '<button id="pn-fb-send" type="submit">Enviar</button>' +
@@ -94,6 +104,67 @@
     var formulario = painel.querySelector("#pn-fb-form");
     var enviar = painel.querySelector("#pn-fb-send");
     var sucesso = painel.querySelector("#pn-fb-ok");
+    var campoArquivos = painel.querySelector("#pn-fb-files");
+    var listaArquivos = painel.querySelector("#pn-fb-files-list");
+    var arquivos = [];
+
+    function tamanhoLegivel(bytes) {
+      return bytes >= 1048576 ? (bytes / 1048576).toFixed(1) + " MB" : Math.max(1, Math.round(bytes / 1024)) + " KB";
+    }
+
+    function renderizarArquivos() {
+      listaArquivos.innerHTML = "";
+      arquivos.forEach(function (arquivo, indice) {
+        var chip = document.createElement("div");
+        chip.className = "pn-fb-chip";
+        var nome = document.createElement("span");
+        nome.textContent = arquivo.name + " (" + tamanhoLegivel(arquivo.size) + ")";
+        var remover = document.createElement("button");
+        remover.type = "button";
+        remover.setAttribute("aria-label", "Remover anexo");
+        remover.textContent = "\u00d7";
+        remover.addEventListener("click", function () {
+          arquivos.splice(indice, 1);
+          renderizarArquivos();
+        });
+        chip.appendChild(nome);
+        chip.appendChild(remover);
+        listaArquivos.appendChild(chip);
+      });
+    }
+
+    function limparArquivos() {
+      arquivos = [];
+      campoArquivos.value = "";
+      renderizarArquivos();
+    }
+
+    campoArquivos.addEventListener("change", function () {
+      erro.hidden = true;
+      var novos = Array.prototype.slice.call(campoArquivos.files || []);
+      campoArquivos.value = "";
+      for (var i = 0; i < novos.length; i++) {
+        var arquivo = novos[i];
+        var tipoOk = arquivo.type.indexOf("image/") === 0 || arquivo.type === "application/pdf";
+        if (!tipoOk) {
+          erro.textContent = "Envie apenas imagem ou PDF.";
+          erro.hidden = false;
+          return;
+        }
+        if (arquivo.size > 3 * 1024 * 1024) {
+          erro.textContent = "Cada anexo pode ter no máximo 3 MB.";
+          erro.hidden = false;
+          return;
+        }
+        if (arquivos.length >= 3) {
+          erro.textContent = "Máximo de 3 anexos.";
+          erro.hidden = false;
+          return;
+        }
+        arquivos.push(arquivo);
+      }
+      renderizarArquivos();
+    });
 
     function abrir() {
       painel.hidden = false;
@@ -115,6 +186,7 @@
       enviar.disabled = false;
       enviar.textContent = "Enviar";
       formulario.reset();
+      limparArquivos();
     }
 
     botao.addEventListener("click", function () {
@@ -157,19 +229,22 @@
       var controle = new AbortController();
       var limite = window.setTimeout(function () {
         controle.abort();
-      }, 12000);
+      }, 30000);
+
+      var dados = new FormData();
+      dados.append("mensagem", mensagem);
+      dados.append("contato", contato.value.trim());
+      dados.append("tela", location.pathname);
+      dados.append("papel", papelDaTela());
+      dados.append("site", painel.querySelector("#pn-fb-site").value);
+      arquivos.forEach(function (arquivo) {
+        dados.append("anexos", arquivo);
+      });
 
       fetch(ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         signal: controle.signal,
-        body: JSON.stringify({
-          mensagem: mensagem,
-          contato: contato.value.trim(),
-          tela: location.pathname,
-          papel: papelDaTela(),
-          site: painel.querySelector("#pn-fb-site").value,
-        }),
+        body: dados,
       })
         .then(function (resposta) {
           if (resposta.ok) {
