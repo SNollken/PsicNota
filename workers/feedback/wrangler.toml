@@ -1,0 +1,10 @@
+name = "psicnota-feedback"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+[[kv_namespaces]]
+binding = "FEEDBACK"
+id = "d0dccca091074147a65af4e49e87e338"
+
+# O token de leitura/remoção vive como secret: wrangler secret put FEEDBACK_TOKEN
