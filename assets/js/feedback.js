@@ -58,6 +58,7 @@
     botao.id = "pn-fb-open";
     botao.type = "button";
     botao.setAttribute("aria-haspopup", "dialog");
+    botao.setAttribute("aria-expanded", "false");
     botao.innerHTML =
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
       '<path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.5 8.9 8.9 0 0 1-3.8-.8L3 21l1.8-5.2A8.4 8.4 0 0 1 12.5 3 8.4 8.4 0 0 1 21 11.5Z"/></svg>' +
@@ -79,7 +80,7 @@
       '<div id="pn-fb-error" role="alert" hidden></div>' +
       '<button id="pn-fb-send" type="submit">Enviar</button>' +
       "</form>" +
-      '<div id="pn-fb-ok" hidden><div class="pn-fb-check">' +
+      '<div id="pn-fb-ok" role="status" aria-live="polite" hidden><div class="pn-fb-check">' +
       '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">' +
       '<path d="m5 12 5 5L20 7"/></svg></div><p>Feedback enviado. Obrigada por ajudar a melhorar o PsicNota.</p>' +
       '<button id="pn-fb-fechar-ok" type="button">Fechar</button></div>';
