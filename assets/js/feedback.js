@@ -83,7 +83,7 @@
       '<textarea id="pn-fb-msg" maxlength="2000" placeholder="Sugestão, problema ou elogio..." required></textarea>' +
       '<label for="pn-fb-contact">Contato (opcional)</label>' +
       '<input id="pn-fb-contact" maxlength="200" autocomplete="off" placeholder="E-mail ou telefone">' +
-      '<label for="pn-fb-files" class="pn-fb-file">Anexar imagem ou PDF (até 3, 3 MB cada)</label>' +
+      '<label for="pn-fb-files" class="pn-fb-file">Anexar imagem ou PDF (até 3 arquivos, 3 MB cada)</label>' +
       '<input id="pn-fb-files" type="file" accept="image/*,.pdf" multiple>' +
       '<div id="pn-fb-files-list"></div>' +
       '<input class="pn-fb-hp" id="pn-fb-site" tabindex="-1" autocomplete="off" aria-hidden="true">' +
