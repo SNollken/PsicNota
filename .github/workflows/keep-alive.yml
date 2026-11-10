@@ -1,0 +1,48 @@
+name: keep-alive
+
+on:
+  schedule:
+    - cron: "23 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: keep-alive
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Acordar o Supabase
+        env:
+          SUPABASE_KEY: sb_publishable_UxS7h_Kh4zwWB6kEjhJfxQ_T79Q4q5x
+        run: |
+          curl -fsS --retry 3 --max-time 30 \
+            -H "apikey: $SUPABASE_KEY" \
+            "https://gjfqslgoplpqeqewytdn.supabase.co/auth/v1/health" > /dev/null
+          curl -fsS --retry 3 --max-time 30 \
+            -H "apikey: $SUPABASE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_KEY" \
+            "https://gjfqslgoplpqeqewytdn.supabase.co/rest/v1/perfis?select=id&limit=1" > /dev/null
+
+      - name: Acordar o site
+        run: curl -fsS --retry 3 --max-time 30 https://psicnota.onrender.com/ > /dev/null
+
+      # O GitHub desativa workflows agendados em repositórios públicos após 60
+      # dias sem atividade. Este commit mensal mantém o agendamento vivo.
+      - name: Manter o agendamento ativo
+        run: |
+          if [ -z "$(find .github/keepalive.txt -mtime -30 2>/dev/null)" ]; then
+            date -u +%F > .github/keepalive.txt
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add .github/keepalive.txt
+            git commit -m "registra sinal de vida do keep-alive"
+            git push
+          fi
