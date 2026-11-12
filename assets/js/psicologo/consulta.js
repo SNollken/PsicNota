@@ -79,7 +79,10 @@ function renderAppointmentInfo() {
   elements.infoTime.textContent = appointment.time;
   elements.infoDuration.textContent = formatDuration(appointment.duration);
   elements.infoMode.textContent = appointment.mode;
-  elements.infoStatus.textContent = appointment.status === 'confirmed' ? 'Confirmada' : appointment.status === 'cancelled' ? 'Cancelada' : 'Pendente';
+  const statusLabel = appointment.status === 'confirmed' ? 'Confirmada' : appointment.status === 'cancelled' ? 'Cancelada' : 'Pendente';
+  elements.infoStatus.textContent = statusLabel;
+  elements.infoStatus.classList.toggle('is-confirmed', appointment.status === 'confirmed' || appointment.status === 'completed');
+  elements.infoStatus.classList.toggle('is-cancelled', appointment.status === 'cancelled');
 
   const encodedPatient = encodeURIComponent(appointment.patient);
   const idParam = appointment.patientId ? `id=${encodeURIComponent(appointment.patientId)}&` : "";

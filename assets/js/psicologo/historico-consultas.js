@@ -215,15 +215,15 @@ function renderAppointments(){
     const isOnline = (item.mode || "").toLowerCase().includes("online");
     const isDone = item.status === "completed";
     const isCancelled = item.status === "cancelled";
-    const statusClass = isCancelled ? "status-cancelled" : "status-completed";
-    const statusLabel = isCancelled ? "Cancelada" : isDone ? "Realizada" : "Confirmada";
+    const statusClass = isCancelled ? "status-cancelled" : isDone ? "status-completed" : "status-pending";
+    const statusLabel = isCancelled ? "Cancelada" : isDone ? "Realizada" : "Pendente";
 
     const tr = document.createElement("tr");
     tr.innerHTML =
       '<td><strong class="date">' + formatDate(item.date) + '</strong><span class="time">' + (item.time || "") + '</span></td>' +
       '<td><div class="patient"><span class="patient-copy"><strong>' + name + '</strong></span></div></td>' +
       '<td><span class="appointment-type">' + (isOnline ? svgOnline : svgPresencial) + (isOnline ? "Online" : "Presencial") + '</span></td>' +
-      '<td>50 min</td>' +
+      '<td>' + (item.duration ? item.duration : 50) + ' min</td>' +
       '<td><span class="status ' + statusClass + '">' + statusLabel + '</span></td>' +
       '<td><div class="row-actions"><a href="consulta.html?id=' + item.id + '" aria-label="Visualizar consulta de ' + name + '">' + svgEye + '</a></div></td>';
 

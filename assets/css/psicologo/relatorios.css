@@ -301,7 +301,7 @@
 
 :root {
   --blue-25: #F8FAFB;
-  --blue-50: #E4F6FC;
+  --blue-50: #F3FBFE;
   --blue-75: #E4F6FC;
   --blue-100: #E4F6FC;
   --blue-150: #E4F6FC;
@@ -312,18 +312,18 @@
 
   --ink: #111827;
   --muted: #64727C;
-  --line: #E4F6FC;
+  --line: #DCE6EA;
   --white: #ffffff;
   --sidebar-bg: #F3FBFE;
 
-  --success-bg: #3BAE24;
+  --success-bg: #F3FBFE;
   --success-line: #3BAE24;
-  --success: #174E61;
+  --success: #3BAE24;
   --warning-bg: #E4F6FC;
-  --warning-line: #E4F6FC;
+  --warning-line: #FF8D28;
   --warning: #64727C;
   --danger: #D90307;
-  --danger-bg: #D90307;
+  --danger-bg: #F3FBFE;
   --danger-line: #D90307;
 
   --sidebar-width: 294px;

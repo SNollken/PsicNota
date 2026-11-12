@@ -212,18 +212,16 @@
   let editing = false;
 
   function setEditing(next) {
-    editing = true;
+    editing = next;
 
     form.querySelectorAll("input, select, textarea").forEach((field) => {
       if (field.id === "avatarInput") return;
-      if (field.type === "checkbox" || field.tagName === "SELECT") {
-        field.disabled = false;
-      } else {
-        field.disabled = false;
-        field.readOnly = false;
+      field.disabled = !next;
+      if (field.type !== "checkbox" && field.tagName !== "SELECT") {
+        field.readOnly = !next;
       }
     });
-    if (elements.edit) elements.edit.hidden = false;
+    if (elements.edit) elements.edit.hidden = !next;
   }
 
   function renderAvailability(button, isAvailable) {

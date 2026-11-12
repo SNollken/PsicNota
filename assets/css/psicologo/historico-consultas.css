@@ -10,6 +10,8 @@
   --white: #ffffff;
   --success: #3bae24;
   --success-soft: #edf9ea;
+  --warning: #946300;
+  --warning-soft: #fff4e5;
   --danger: #d90307;
   --danger-bg: #fdecea;
   --radius: 8px;
@@ -83,6 +85,7 @@ svg {
   align-items: center;
 }
 
+.row-actions a,
 .row-actions button {
   display: inline-grid;
   place-items: center;
@@ -92,17 +95,20 @@ svg {
   transition: background 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
 }
 
+.row-actions a,
 .row-actions button {
   border: 1px solid var(--line);
   background: var(--white);
 }
 
+.row-actions a:hover,
 .row-actions button:hover {
   transform: translateY(-1px);
   border-color: var(--blue-200);
   background: var(--blue-50);
 }
 
+.row-actions a:focus-visible,
 .row-actions button:focus-visible {
   outline: 3px solid var(--blue-200);
   outline-offset: 2px;
@@ -264,8 +270,14 @@ tbody tr:hover { background: var(--blue-50); }
   background: var(--danger-bg);
 }
 
+.status-pending {
+  color: var(--warning);
+  background: var(--warning-soft);
+}
+
 .row-actions { gap: 8px; }
 
+.row-actions a,
 .row-actions button {
   width: 36px;
   height: 36px;
