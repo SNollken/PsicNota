@@ -10,7 +10,7 @@
   --ink: #111827;
   --muted: #64727C;
   --line: #DCE6EA;
-  --white: #ffffff;
+  --white: #F8FAFB;
 
   --radius-lg: 24px;
   --radius-md: 12px;
@@ -122,7 +122,7 @@ svg {
   background-position: center;
   background-size: cover;
 
-  color: #ffffff;
+  color: #F8FAFB;
 
   font-size: 26px;
   font-weight: 800;
@@ -279,7 +279,7 @@ h1 {
   border: 1px solid var(--blue-700);
 
   background: var(--blue-700);
-  color: #ffffff;
+  color: #F8FAFB;
 }
 
 .button-edit:hover,
@@ -292,7 +292,7 @@ h1 {
   border: 1px solid var(--blue-700);
 
   background: var(--blue-700);
-  color: #ffffff;
+  color: #F8FAFB;
 }
 
 .button-photo:hover {
@@ -303,7 +303,7 @@ h1 {
 .button-password {
   border: 2px solid var(--blue-700);
 
-  background: #ffffff;
+  background: #F8FAFB;
   color: var(--blue-700);
 }
 
@@ -314,7 +314,7 @@ h1 {
 .button-cancel {
   border: 2px solid var(--line);
 
-  background: #ffffff;
+  background: #F8FAFB;
   color: var(--muted);
 }
 
@@ -326,12 +326,12 @@ h1 {
 .button-remove-photo {
   border: 2px solid #D90307;
 
-  background: #ffffff;
+  background: #F8FAFB;
   color: #D90307;
 }
 
 .button-remove-photo:hover {
-  background: #FFF6F6;
+  background: #F3FBFE;
 }
 
 .button-logout {
@@ -381,7 +381,7 @@ h1 {
 .feedback.is-error {
   border-color: #D90307;
 
-  background: #FFF6F6;
+  background: #F3FBFE;
 
   color: #D90307;
 }
@@ -762,7 +762,7 @@ input::placeholder {
 
   border-radius: 20px;
 
-  background: #ffffff;
+  background: #F8FAFB;
 
   box-shadow:
     0 18px 50px
@@ -811,7 +811,7 @@ input::placeholder {
   border: 1px solid var(--blue-800);
 
   background: var(--blue-800);
-  color: #ffffff;
+  color: #F8FAFB;
 }
 
 .btn-primary:hover {
@@ -822,7 +822,7 @@ input::placeholder {
 .btn-secondary {
   border: 2px solid var(--line);
 
-  background: #ffffff;
+  background: #F8FAFB;
   color: var(--muted);
 }
 
@@ -966,7 +966,7 @@ input::placeholder {
     border: 1px solid var(--line);
     border-radius: 8px;
 
-    background: #ffffff;
+    background: #F8FAFB;
     color: var(--blue-800);
   }
 
@@ -1016,11 +1016,11 @@ input::placeholder {
 
 /* Confirmação de edição automática, na paleta do PsicNota. */
 #successModal { background: rgba(23, 78, 97, .24); backdrop-filter: blur(3px); }
-#successModal .modal-card { text-align: center; justify-items: center; background: #f4fbfe; border: 1px solid #c7d7dd; padding: 32px 28px; box-shadow: 0 18px 50px rgba(23, 78, 97, .18); }
-#successModal .confirmation-icon { display: grid; place-items: center; width: 56px; height: 56px; margin-bottom: 8px; border-radius: 50%; background: #e4f6fc; color: #1f637a; }
+#successModal .modal-card { text-align: center; justify-items: center; background: #F3FBFE; border: 1px solid #DCE6EA; padding: 32px 28px; box-shadow: 0 18px 50px rgba(23, 78, 97, .18); }
+#successModal .confirmation-icon { display: grid; place-items: center; width: 56px; height: 56px; margin-bottom: 8px; border-radius: 50%; background: #E4F6FC; color: #1F637A; }
 #successModal .confirmation-icon svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-#successModal h2 { color: #1f637a; font-size: 20px; }
-#successModal p { max-width: 300px; color: #64727c; line-height: 1.6; }
+#successModal h2 { color: #1F637A; font-size: 20px; }
+#successModal p { max-width: 300px; color: #64727C; line-height: 1.6; }
 #successModal .modal-actions { width: 100%; margin-top: 14px; }
-#successModal .btn-primary { width: 100%; background: #1f637a; border-color: #1f637a; }
-#successModal .btn-primary:hover { background: #174e61; }
+#successModal .btn-primary { width: 100%; background: #1F637A; border-color: #1F637A; }
+#successModal .btn-primary:hover { background: #174E61; }

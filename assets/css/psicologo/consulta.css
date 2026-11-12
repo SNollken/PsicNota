@@ -2,8 +2,8 @@
    psicologo/consulta.css — tela "Histórico da consulta" (detalhe de uma
    consulta do psicólogo). CSS auto-contido: tokens + shell + topbar + card
    de detalhe com linhas separadas por divisórias, tiles de 49px #BFE7F5
-   rx24.5, botões quadrados 39px #E4F6FC rx7.5, badges de status #BEEFBE /
-   #EBA1A2 e card #F3FBFE rx35, conforme docs/designs/Historico da
+   rx24.5, botões quadrados 39px #E4F6FC rx7.5, badges de status #E4F6FC /
+   #E4F6FC e card #F3FBFE rx35, conforme docs/designs/Historico da
    consulta.svg. O menu lateral vem por @import do menu.css (<psic-menu>).
    Pill do paciente na topbar: geometria 47px rx23.5 #F3FBFE stroke #DCE6EA
    (compartilhada com o design Notas Psicologo.svg do mesmo drop).
@@ -18,18 +18,18 @@
   --blue-150: #E4F6FC;
   --blue-200: #BFE7F5;
 
-  --blue-700: #1f637a;
-  --blue-800: #174e61;
+  --blue-700: #1F637A;
+  --blue-800: #174E61;
 
   --ink: #111827;
   --muted: #64727C;
   --line: #DCE6EA;
-  --white: #ffffff;
+  --white: #F8FAFB;
   --sidebar-bg: #F3FBFE;
 
-  --ok-bg: #BEEFBE;
+  --ok-bg: #E4F6FC;
   --ok-ink: #174E61;
-  --cancel-bg: #EBA1A2;
+  --cancel-bg: #E4F6FC;
   --cancel-ink: #D90307;
 
   --sidebar-width: 294px;
@@ -449,7 +449,7 @@ h1 {
 .mood-option:hover { background: var(--blue-200); }
 
 .mood-option.selected {
-  background: #A7B6C0;
+  background: #64727C;
   border-color: var(--blue-700);
   color: var(--white);
 }

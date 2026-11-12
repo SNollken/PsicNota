@@ -1,13 +1,13 @@
 :root {
-    --bg: #e4f6fc;
-    --card: #ffffff;
-    --soft: #bfe7f5;
+    --bg: #E4F6FC;
+    --card: #F8FAFB;
+    --soft: #BFE7F5;
 
-    --primary: #1f637a;
-    --text: #174e61;
-    --muted: #64727c;
+    --primary: #1F637A;
+    --text: #174E61;
+    --muted: #64727C;
 
-    --border: #dce6ea;
+    --border: #DCE6EA;
 
     --sidebar-width: 294px;
 
@@ -30,7 +30,7 @@ html {
 body {
     margin: 0;
     min-width: 320px;
-    background: #fff;
+    background: #F8FAFB;
     color: var(--text);
 }
 
@@ -313,7 +313,7 @@ svg {
 
     border-radius: 8px;
 
-    background: #fff;
+    background: #F8FAFB;
 
     color: var(--primary);
 
@@ -335,7 +335,7 @@ svg {
 .next-buttons .enter {
     background: var(--primary);
 
-    color: #fff;
+    color: #F8FAFB;
 }
 
 .next-buttons .enter:hover {
@@ -588,7 +588,7 @@ svg {
 
         border-radius: 8px;
 
-        background: #fff;
+        background: #F8FAFB;
 
         color: var(--primary);
     }

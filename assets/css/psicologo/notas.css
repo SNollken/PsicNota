@@ -21,7 +21,7 @@ body { margin: 0; background: var(--notes-canvas); color: var(--notes-ink); font
 #noteText { display: block; width: 100%; height: 663px; min-height: 380px; resize: none; border: 1px solid var(--notes-border); border-radius: 25px; background: var(--notes-panel); padding: var(--space-6); color: var(--notes-ink); font: 16px/1.6 Inter, sans-serif; outline-color: var(--notes-primary); }
 .notes-actions { display: flex; justify-content: flex-end; margin-top: 48px; padding-right: 19px; }
 .notes-actions button { width: 191px; height: 49px; border-radius: 9px; font: 700 14px Inter, sans-serif; cursor: pointer; }
-.finish-button { border: 1px solid var(--notes-primary); background: var(--notes-primary); color: #fff; }
+.finish-button { border: 1px solid var(--notes-primary); background: var(--notes-primary); color: #F8FAFB; }
 .notes-status { position: absolute; right: 19px; bottom: 20px; min-height: 20px; margin: 0; text-align: right; font-size: 13px; color: var(--notes-primary); }
 .mobile-menu { display: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }

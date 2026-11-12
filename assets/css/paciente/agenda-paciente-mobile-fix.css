@@ -2,12 +2,12 @@
 
 /* Dias com horário disponível usam a mesma paleta azul do marcador de hoje. */
 .patient-day.has-available {
-  border-color: #174e61;
+  border-color: #174E61;
 }
 
 .patient-day.has-available .patient-day-number,
 .patient-day.has-available .patient-day-info {
-  color: #174e61;
+  color: #174E61;
 }
 
 /* Mantém o cancelamento de consulta como um X vermelho compacto na lateral,
@@ -33,7 +33,7 @@
   border: 0 !important;
   border-radius: 50%;
   background: transparent !important;
-  color: #d90307 !important;
+  color: #D90307 !important;
   font-size: 0 !important;
   line-height: 0 !important;
   overflow: hidden;
@@ -41,7 +41,7 @@
 
 .upcoming-appointment-cancel:hover:not(:disabled),
 .appointments-popup .upcoming-appointment-cancel:hover:not(:disabled) {
-  background: #fff1f2 !important;
+  background: #F3FBFE !important;
 }
 
 .upcoming-appointment-cancel svg,

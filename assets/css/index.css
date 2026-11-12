@@ -1,16 +1,16 @@
 :root {
-  --primary: #1f637a;
-  --primary-dark: #174e61;
-  --primary-soft: #2f7d93;
-  --cyan-50: #f3fbfe;
-  --cyan-100: #e4f6fc;
-  --cyan-200: #bfe7f5;
-  --card: #f0f8fa;
-  --banner: #e0f2f5;
+  --primary: #1F637A;
+  --primary-dark: #174E61;
+  --primary-soft: #1F637A;
+  --cyan-50: #F3FBFE;
+  --cyan-100: #E4F6FC;
+  --cyan-200: #BFE7F5;
+  --card: #F3FBFE;
+  --banner: #E4F6FC;
   --ink: #111827;
-  --muted: #64727c;
-  --line: #dce6ea;
-  --white: #ffffff;
+  --muted: #64727C;
+  --line: #DCE6EA;
+  --white: #F8FAFB;
   --radius-sm: 10px;
   --radius-md: 18px;
   --radius-lg: 28px;
@@ -279,7 +279,7 @@ svg {
 }
 
 .features-section {
-  background: linear-gradient(180deg, var(--white), #fbfdfe 45%, var(--white));
+  background: linear-gradient(180deg, var(--white), #F8FAFB 45%, var(--white));
 }
 
 .features-grid {
@@ -377,7 +377,7 @@ svg {
   align-items: center;
   justify-content: center;
   color: var(--primary);
-  background: linear-gradient(145deg, var(--cyan-100), #d8f1f8);
+  background: linear-gradient(145deg, var(--cyan-100), #E4F6FC);
   border: 1px solid var(--cyan-200);
   border-radius: 22px;
 }
@@ -399,7 +399,7 @@ svg {
 .check-tag {
   position: relative;
   padding-left: 30px;
-  color: #35434b;
+  color: #111827;
   font-size: 0.91rem;
   font-weight: 600;
   line-height: 1.45;
@@ -530,7 +530,7 @@ svg {
 }
 
 .security-section {
-  background: #ffffff;
+  background: #F8FAFB;
 }
 
 .split-layout-reverse {
@@ -555,7 +555,7 @@ svg {
 
   background:
     radial-gradient(circle at center, rgba(255, 255, 255, 0.95) 0 22%, transparent 23%),
-    linear-gradient(145deg, #eef9fc, #d9f0f5);
+    linear-gradient(145deg, #F3FBFE, #E4F6FC);
 
 }
 
@@ -1010,12 +1010,12 @@ svg {
     border: 1px solid var(--line);
     border-radius: 10px;
     color: var(--primary);
-    background: #fff;
+    background: #F8FAFB;
   }
   .landing-mobile-menu summary::-webkit-details-marker { display: none; }
   .landing-mobile-menu summary svg { width: 22px; height: 22px; }
   .landing-mobile-menu summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
-  .landing-mobile-menu[open] summary { background: #e4f6fc; }
+  .landing-mobile-menu[open] summary { background: #E4F6FC; }
   .landing-mobile-links {
     position: absolute;
     top: calc(100% + 8px);
@@ -1027,7 +1027,7 @@ svg {
     padding: 12px;
     border: 1px solid var(--line);
     border-radius: 14px;
-    background: #fff;
+    background: #F8FAFB;
     box-shadow: 0 12px 30px rgb(23 78 97 / 12%);
     max-height: calc(100dvh - 100px);
     overflow-y: auto;

@@ -21,10 +21,10 @@
   /* Tokens que o menu usa. Definidos aqui pra folha ser autossuficiente
      (o menu.html abre sozinho). Nos CSSs de página que definem os mesmos
      tokens, o valor de lá prevalece. */
-  --blue-700: #1f637a;
-  --blue-800: #174e61;
+  --blue-700: #1F637A;
+  --blue-800: #174E61;
   --ink: #111827;
-  --white: #ffffff;
+  --white: #F8FAFB;
   --line: #DCE6EA;
 }
 
@@ -307,20 +307,20 @@
   --blue-150: #E4F6FC;
   --blue-200: #BFE7F5;
 
-  --blue-700: #1f637a;
-  --blue-800: #174e61;
+  --blue-700: #1F637A;
+  --blue-800: #174E61;
 
   --ink: #111827;
   --muted: #64727C;
   --line: #DCE6EA;
-  --white: #ffffff;
+  --white: #F8FAFB;
   --sidebar-bg: #F3FBFE;
 
   --success-bg: #F3FBFE;
   --success-line: #3BAE24;
   --success: #3BAE24;
   --warning-bg: #E4F6FC;
-  --warning-line: #FF8D28;
+  --warning-line: #1F637A;
   --warning: #64727C;
   --danger: #D90307;
   --danger-bg: #F3FBFE;

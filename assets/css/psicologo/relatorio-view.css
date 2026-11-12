@@ -2,7 +2,7 @@
    psicologo/relatorio-view.css — CSS da tela "Visualização de relatório"
    do psicólogo. Importa relatorios.css (que embute menu.css, tokens,
    topbar, botões, badges, avisos, report-block) e adiciona
-   só as regras da página: cartão do documento com acento roxo (#6750A4),
+   só as regras da página: cartão do documento com acento roxo (#1F637A),
    pill de humor, badge "Rascunho", estado não-encontrado e impressão.
    ========================================================================== */
 @import url("relatorios.css");
@@ -11,7 +11,7 @@
 :root {
   /* Acento roxo do design. Usado apenas como acento:
      eyebrow, borda superior do documento e badge de rascunho. */
-  --accent: #6750A4;
+  --accent: #1F637A;
   --accent-soft: rgba(103, 80, 164, 0.12);
 }
 
@@ -264,7 +264,7 @@ body { background: var(--blue-25); }
 .report-view-body .report-block { margin: 0 0 24px; }
 .report-view-body .report-block:last-child { margin-bottom: 0; }
 .report-view-body .report-block-label { display: none; }
-.report-view-body .report-block-text { margin: 0; padding: 0; border: 0; background: transparent; color: #111; font-size: 1.15rem; font-weight: 600; line-height: 1.2; text-indent: 28px; white-space: pre-wrap; overflow-wrap: anywhere; box-shadow: none; }
+.report-view-body .report-block-text { margin: 0; padding: 0; border: 0; background: transparent; color: #111827; font-size: 1.15rem; font-weight: 600; line-height: 1.2; text-indent: 28px; white-space: pre-wrap; overflow-wrap: anywhere; box-shadow: none; }
 
 .report-view-footer {
   display: flex;
@@ -299,7 +299,7 @@ body { background: var(--blue-25); }
   .report-view-page .main-content { max-width: none; padding: 0; }
   .report-view-header, .report-view-footer, .sidebar, .mobile-menu { display: none !important; }
   .report-view-document { width: 100%; padding: 0; }
-  .report-view-editor { min-height: 0; border: 0; background: #fff; }
+  .report-view-editor { min-height: 0; border: 0; background: #F8FAFB; }
   .report-view-body { min-height: 0; padding: 0; }
 }
 

@@ -5,21 +5,21 @@
 
 :root {
   --blue-50: #E4F6FC;
-  --blue-100: #e4f6fc;
-  --blue-200: #bfe7f5;
+  --blue-100: #E4F6FC;
+  --blue-200: #BFE7F5;
   --blue-300: #E4F6FC;
-  --blue-700: #1f637a;
-  --blue-800: #174e61;
+  --blue-700: #1F637A;
+  --blue-800: #174E61;
   --ink: #111827;
-  --muted: #64727c;
-  --line: #dce6ea;
+  --muted: #64727C;
+  --line: #DCE6EA;
   --line-strong: #DCE6EA;
-  --white: #ffffff;
+  --white: #F8FAFB;
   --success-bg: #3BAE24;
   --success: #3BAE24;
-  --error-bg: #FFF6F6;
+  --error-bg: #F3FBFE;
   --error: #D90307;
-  --error-line: #EBA1A2;
+  --error-line: #E4F6FC;
   --radius: 8px;
   --shadow-focus: 0 0 0 4px rgba(31, 99, 122, 0.12);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -290,7 +290,7 @@ select:focus {
 input[aria-invalid="true"],
 select[aria-invalid="true"] {
   border-color: var(--error);
-  background: #FFFBFB;
+  background: #F8FAFB;
 }
 
 input[aria-invalid="true"]:focus,
@@ -434,7 +434,7 @@ select[aria-invalid="true"]:focus {
 
 .google-button:hover {
   background: #F8FAFB;
-  border-color: #B8C7CE;
+  border-color: #DCE6EA;
 }
 
 .google-button:focus-visible {

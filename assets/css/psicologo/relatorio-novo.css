@@ -1,15 +1,15 @@
 :root {
   --sidebar-width: 294px;
-  --blue-50: #f3fbfe;
-  --blue-100: #e8f7fa;
-  --blue-200: #aee2ef;
-  --blue-700: #1f637a;
-  --blue-800: #174e61;
+  --blue-50: #F3FBFE;
+  --blue-100: #F3FBFE;
+  --blue-200: #BFE7F5;
+  --blue-700: #1F637A;
+  --blue-800: #174E61;
   --ink: #111827;
-  --muted: #64727c;
-  --line: #dce6ea;
-  --editor-line: #e2e8f0;
-  --white: #ffffff;
+  --muted: #64727C;
+  --line: #DCE6EA;
+  --editor-line: #DCE6EA;
+  --white: #F8FAFB;
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 20px;
